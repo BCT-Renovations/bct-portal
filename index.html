@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 59365)
-Total output lines: 1611
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -470,7 +467,999 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
 
   <div class="card section">
-    <div class="toolbar"><div><h3>Homeowner Project Review</h3><p class="muted">Customer information is BCT-only. Contr…39365 tokens truncated…ror('Contractor application not found.');let count=0;
+    <div class="toolbar"><div><h3>Homeowner Project Review</h3><p class="muted">Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.</p></div><span class="badge info" id="a-customer-projects">0 Customer Projects</span></div>
+    <div id="customerProjectAdminList" class="grid section"></div>
+  </div>
+
+  <div class="card section">
+    <h3>BCT Bid Review</h3>
+    <p class="muted">Review subcontractor bids and award or reject each submission.</p>
+    <div class="bid-review-wrap" style="overflow:auto"><table class="bid-review-table">
+      <thead><tr><th>Job</th><th>Subcontractor</th><th>Subcontractor Bid</th><th>BCT Target</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
+      <tbody id="bidTable"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card section" id="jobHealthDashboard">
+    <div class="toolbar"><div><h3>Live Job Health Dashboard</h3><p class="muted">Every active BCT job: customer, contractor, job number, schedule, completion, weather, materials, approvals, financing, escrow, messages, and items that need attention.</p></div><button type="button" class="secondary" id="refreshJobHealthBtn">Refresh Live Health</button></div>
+    <div class="grid grid-4 section">
+      <div class="card"><div id="jh-active" class="metric">0</div><small>Active Jobs</small></div>
+      <div class="card"><div id="jh-track" class="metric">0</div><small>On Track</small></div>
+      <div class="card"><div id="jh-attention" class="metric">0</div><small>Needs Attention</small></div>
+      <div class="card"><div id="jh-risk" class="metric">0</div><small>Delayed / Critical</small></div>
+    </div>
+    <div id="jobHealthList" class="grid"></div>
+  </div>
+
+  <div id="jobManagementPanel" class="card section hidden">
+    <div class="toolbar"><div><h3 id="jobManagementTitle">Manage BCT Job</h3><p id="jobManagementSub" class="muted"></p></div><button type="button" class="secondary" id="closeJobManagementBtn">Close</button></div>
+    <div id="jobManagementStatus" class="notice hidden"></div>
+    <div class="grid grid-2 section">
+      <form id="jobStatusForm" class="stage"><h3>Job Status</h3><label>Status</label><select name="status"><option value="open_for_bids">Open for bids</option><option value="bid_review">Bid review</option><option value="awarded">Awarded</option><option value="scheduled">Scheduled</option><option value="in_progress">In progress</option><option value="on_hold">On hold</option><option value="completed">Completed</option></select><button type="submit">Save Status</button></form>
+      <form id="jobScheduleForm" class="stage"><h3>Schedule</h3><label>Event Type</label><select name="eventType"><option>Site Visit</option><option>Start</option><option>Work Day</option><option>Inspection</option><option>Customer Meeting</option></select><label>Title</label><input name="title" required><label>Starts</label><input name="startsAt" type="datetime-local" required><label>Ends</label><input name="endsAt" type="datetime-local"><label>Notes</label><textarea name="notes"></textarea><button type="submit">Add Schedule Event</button></form>
+      <form id="jobWeatherForm" class="stage"><h3>Weather Check</h3><label>Date</label><input name="checkDate" type="date" required><label>Location</label><input name="location" required><label>Condition</label><input name="condition" required><div class="grid grid-2"><div><label>High °F</label><input name="high" type="number"></div><div><label>Low °F</label><input name="low" type="number"></div></div><label>Precipitation Chance %</label><input name="precip" type="number" min="0" max="100"><label>Work Impact</label><select name="impact"><option value="none">No impact</option><option value="caution">Caution</option><option value="delay">Delay</option><option value="reschedule">Reschedule</option></select><button type="submit">Record Weather</button></form>
+      <form id="jobMaterialForm" class="stage"><h3>Materials</h3><label>Item</label><input name="item" required><div class="grid grid-2"><div><label>Quantity</label><input name="quantity" type="number" min="0" step="any" value="1"></div><div><label>Unit</label><input name="unit" value="each"></div></div><label>Responsible Party</label><input name="responsibility" placeholder="BCT, contractor, homeowner"><label>Vendor</label><input name="vendor"><label>Cost</label><input name="cost" type="number" min="0" step="0.01"><label>Notes</label><textarea name="notes"></textarea><button type="submit">Add Material</button></form>
+      <form id="jobChangeOrderForm" class="stage"><h3>Change Order</h3><label>Title</label><input name="title" required><label>Description</label><textarea name="description" required></textarea><div class="grid grid-2"><div><label>Amount Change</label><input name="amount" type="number" step="0.01" value="0"></div><div><label>Days Change</label><input name="days" type="number" value="0"></div></div><button type="submit">Create Change Order</button></form>
+      <form id="jobApprovalForm" class="stage"><h3>Approval Request</h3><label>Approval Type</label><select name="type"><option>Change Order</option><option>Material Selection</option><option>Schedule Change</option><option>Completion</option><option>Other</option></select><label>Notes</label><textarea name="notes" required></textarea><button type="submit">Request Approval</button></form>
+      <form id="jobFinanceForm" class="stage"><h3>Financing</h3><label>Status</label><select name="status"><option value="not_started">Not started</option><option value="applied">Applied</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="declined">Declined</option></select><label>Application Reference</label><input name="reference"><label>Approved Amount</label><input name="amount" type="number" step="0.01"><label><input type="checkbox" name="shared" style="width:auto"> Customer shared approval</label><label>Notes</label><textarea name="notes"></textarea><button type="submit">Save Financing</button></form>
+      <form id="jobEscrowForm" class="stage"><h3>Escrow</h3><label>Status</label><select name="status"><option value="not_started">Not started</option><option value="pending">Pending</option><option value="funded">Funded</option><option value="hold">Hold</option><option value="release_pending">Release pending</option><option value="released">Released</option></select><label>Provider</label><input name="provider"><label>Reference</label><input name="reference"><label>Amount</label><input name="amount" type="number" step="0.01"><label><input type="checkbox" name="homeownerRelease" style="width:auto"> Homeowner approved release</label><label><input type="checkbox" name="bctRelease" style="width:auto"> BCT approved release</label><label>Notes</label><textarea name="notes"></textarea><button type="submit">Save Escrow</button></form>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h3>BCT Service Calls</h3>
+    <p class="muted">Create a service call tied to an original BCT job for warranty, workmanship, or post-completion concerns. BCT service team inspects first; responsibility is determined after review.</p>
+    <form id="serviceCallForm"><div class="grid grid-2"><div><label>Original Job Number</label><input name="jobNumber" placeholder="JOB-2026-123456" required></div><div><label>Service Call Type</label><select name="type"><option>Warranty / Workmanship Review</option><option>Customer Concern</option><option>Material Issue</option><option>Other</option></select></div></div><label>Issue Reported</label><textarea name="issue" required></textarea><button type="submit">Create BCT Service Call</button></form>
+    <div id="serviceCallList" class="grid section"></div>
+  </div>
+
+  <div class="card section">
+    <h3>Post BCT Job</h3>
+    <form id="jobForm">
+      <div class="grid grid-2">
+        <div><label>BCT Project</label><select name="projectId" id="bctAdminJobProject" required><option value="">Choose a verified project</option></select></div>
+        <div><label>Job Title</label><input name="title" required></div>
+        <div><label>Trade</label><select name="trade" required><option value="">Loading BCT services…</option></select></div>
+        <div><label>City</label><input name="city" required></div><div><label>State</label><select name="jobState" required autocomplete="address-level1"><option value="">Select state</option><option value="AL">Alabama (AL)</option><option value="AK">Alaska (AK)</option><option value="AZ">Arizona (AZ)</option><option value="AR">Arkansas (AR)</option><option value="CA">California (CA)</option><option value="CO">Colorado (CO)</option><option value="CT">Connecticut (CT)</option><option value="DE">Delaware (DE)</option><option value="FL">Florida (FL)</option><option value="GA">Georgia (GA)</option><option value="HI">Hawaii (HI)</option><option value="ID">Idaho (ID)</option><option value="IL">Illinois (IL)</option><option value="IN" selected>Indiana (IN)</option><option value="IA">Iowa (IA)</option><option value="KS">Kansas (KS)</option><option value="KY">Kentucky (KY)</option><option value="LA">Louisiana (LA)</option><option value="ME">Maine (ME)</option><option value="MD">Maryland (MD)</option><option value="MA">Massachusetts (MA)</option><option value="MI">Michigan (MI)</option><option value="MN">Minnesota (MN)</option><option value="MS">Mississippi (MS)</option><option value="MO">Missouri (MO)</option><option value="MT">Montana (MT)</option><option value="NE">Nebraska (NE)</option><option value="NV">Nevada (NV)</option><option value="NH">New Hampshire (NH)</option><option value="NJ">New Jersey (NJ)</option><option value="NM">New Mexico (NM)</option><option value="NY">New York (NY)</option><option value="NC">North Carolina (NC)</option><option value="ND">North Dakota (ND)</option><option value="OH">Ohio (OH)</option><option value="OK">Oklahoma (OK)</option><option value="OR">Oregon (OR)</option><option value="PA">Pennsylvania (PA)</option><option value="RI">Rhode Island (RI)</option><option value="SC">South Carolina (SC)</option><option value="SD">South Dakota (SD)</option><option value="TN">Tennessee (TN)</option><option value="TX">Texas (TX)</option><option value="UT">Utah (UT)</option><option value="VT">Vermont (VT)</option><option value="VA">Virginia (VA)</option><option value="WA">Washington (WA)</option><option value="WV">West Virginia (WV)</option><option value="WI">Wisconsin (WI)</option><option value="WY">Wyoming (WY)</option><option value="DC">District of Columbia (DC)</option></select></div>
+        <div><label>Target Subcontract Amount</label><input name="budget" type="number" min="1" required></div>
+        <div><label>Desired Start Date</label><input name="startDate" type="date"></div>
+        <div><label>Bid Deadline</label><input name="bidDeadline" type="date"></div>
+      </div>
+      <label>Scope of Work</label><textarea name="scope" required></textarea>
+      <button type="submit">Publish BCT Job</button>
+    </form>
+  </div>
+</section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+const SUPABASE_URL='https://onpqykpikxbbypfvmtin.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_JToQ3bPaJql-xHq-iyM0bg_Fweenyfh';
+const supabaseClient=window.supabase ? window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY) : null;
+
+const BCT_LANGUAGE_KEY='bctPreferredLanguage';
+const BCT_ENGLISH_FALLBACK={
+  'nav.home':'Home',
+  'nav.homeowner_portal':'Homeowner Portal',
+  'nav.pre_application':'Pre-Application',
+  'nav.applicant_status':'Applicant Status',
+  'nav.available_jobs':'Available Jobs',
+  'nav.bct_admin':'BCT Admin',
+  'site.subtitle':'Homeowner Project Management & Contractor Network',
+  'site.language':'Language',
+  'home.hero_title':'BCT Renovations manages the project from request to completion.',
+  'home.hero_description':'Homeowners submit projects privately to BCT. BCT reviews the request, develops the contractor scope, controls private bidding, selects qualified subcontractors, coordinates the project, and performs a BCT Quality Review before completion.',
+  'home.project_button':'Tell BCT About Your Project',
+  'dashboard.applications':'Applications',
+  'dashboard.approved_subs':'Approved Subs',
+  'dashboard.open_jobs':'Open Jobs',
+  'dashboard.bids_received':'Bids Received',
+  'dashboard.admin_auth_upgrade':'Admin Authentication Upgrade',
+  'dashboard.admin_auth_description':'BCT Administration now uses Supabase authentication. Sign in with your authorized BCT Admin account to access administrative tools.',
+  'admin.secure_access':'Secure BCT Access',
+  'admin.login_title':'BCT Admin Login',
+  'admin.login_description':'Sign in with the BCT administrator account. Only users whose Supabase account has the admin role can open the dashboard.',
+  'admin.email':'Email',
+  'admin.password':'Password',
+  'admin.password_placeholder':'BCT Admin password',
+  'admin.sign_in':'Sign In to BCT Admin',
+  'admin.back_home':'Back to Home',
+  'admin.security_label':'Security:',
+  'admin.security_message':'The password is sent directly to Supabase Authentication and is not stored in this HTML file.',
+  'jobs.available_title':'Available BCT Jobs',
+  'jobs.approved_only':'Only approved subcontractors may submit bids in the production version.',
+  'jobs.none_posted':'No BCT jobs posted yet.',
+  'status.title':'Applicant Status',
+  'status.application_id':'Application ID',
+  'status.check_status':'Check Status'
+};
+const BCT_LOCAL_TRANSLATIONS={
+  "es": {
+    "status.title": 'Estado de la solicitud',
+    "status.application_id": 'ID de la solicitud',
+    "status.check_status": 'Verificar estado',
+    "jobs.available_title": 'Trabajos disponibles de BCT',
+    "jobs.approved_only": 'Solo los subcontratistas aprobados pueden presentar ofertas en la versión de producción.',
+    "jobs.none_posted": 'Aún no hay trabajos de BCT publicados.',
+    "nav.home": "Inicio",
+    "nav.homeowner_portal": "Portal del propietario",
+    "nav.pre_application": "Pre-solicitud",
+    "nav.applicant_status": "Estado de la solicitud",
+    "nav.available_jobs": "Trabajos disponibles",
+    "nav.bct_admin": "Administración BCT",
+    "admin.secure_access": "Acceso seguro de BCT",
+    "admin.login_title": "Inicio de sesión de Administración de BCT",
+    "admin.login_description": "Inicie sesión con la cuenta de administrador de BCT. Solo los usuarios cuya cuenta de Supabase tenga el rol de administrador pueden abrir el panel.",
+    "admin.email": "Correo electrónico"
+  },
+  "fr": {
+    "status.title": 'Statut de la candidature',
+    "status.application_id": 'ID de la candidature',
+    "status.check_status": 'Vérifier le statut',
+    "jobs.available_title": 'Travaux BCT disponibles',
+    "jobs.approved_only": 'Seuls les sous-traitants approuvés peuvent soumettre des offres dans la version de production.',
+    "jobs.none_posted": 'Aucun travail BCT n’a encore été publié.',
+    "admin.secure_access": "Accès sécurisé BCT",
+    "admin.login_title": "Connexion administrateur BCT",
+    "admin.login_description": "Connectez-vous avec le compte administrateur BCT. Seuls les utilisateurs dont le compte Supabase possède le rôle administrateur peuvent ouvrir le tableau de bord.",
+    "admin.email": "E-mail"
+  },
+  "ht": {
+    "status.title": 'Estati aplikasyon',
+    "status.application_id": 'ID aplikasyon',
+    "status.check_status": 'Tcheke estati',
+    "jobs.available_title": 'Travay BCT ki disponib',
+    "jobs.approved_only": 'Se sèlman soutretan ki apwouve yo ki ka soumèt òf nan vèsyon pwodiksyon an.',
+    "jobs.none_posted": 'Pa gen okenn travay BCT ki afiche pou kounye a.',
+    "admin.secure_access": "Aksè sekirize BCT",
+    "admin.login_title": "Koneksyon Administrasyon BCT",
+    "admin.login_description": "Konekte ak kont administratè BCT la. Se sèlman itilizatè ki gen wòl administratè sou kont Supabase yo ki ka ouvri tablodbò a.",
+    "admin.email": "Imèl"
+  },
+  "pt": {
+    "status.title": 'Status da inscrição',
+    "status.application_id": 'ID da inscrição',
+    "status.check_status": 'Verificar status',
+    "jobs.available_title": 'Trabalhos BCT disponíveis',
+    "jobs.approved_only": 'Somente subcontratados aprovados podem enviar propostas na versão de produção.',
+    "jobs.none_posted": 'Nenhum trabalho BCT foi publicado ainda.',
+    "admin.secure_access": "Acesso seguro BCT",
+    "admin.login_title": "Login da Administração BCT",
+    "admin.login_description": "Entre com a conta de administrador BCT. Somente usuários cuja conta Supabase tenha a função de administrador podem abrir o painel.",
+    "admin.email": "E-mail"
+  },
+  "vi": {
+    "status.title": 'Trạng thái đơn đăng ký',
+    "status.application_id": 'Mã đơn đăng ký',
+    "status.check_status": 'Kiểm tra trạng thái',
+    "jobs.available_title": 'Công việc BCT hiện có',
+    "jobs.approved_only": 'Chỉ các nhà thầu phụ đã được phê duyệt mới có thể gửi giá thầu trong phiên bản chính thức.',
+    "jobs.none_posted": 'Chưa có công việc BCT nào được đăng.',
+    "admin.secure_access": "Truy cập BCT an toàn",
+    "admin.login_title": "Đăng nhập Quản trị BCT",
+    "admin.login_description": "Đăng nhập bằng tài khoản quản trị BCT. Chỉ người dùng có vai trò quản trị viên trong tài khoản Supabase mới có thể mở bảng điều khiển.",
+    "admin.email": "Email"
+  },
+  "zh": {
+    "status.title": '申请状态',
+    "status.application_id": '申请编号',
+    "status.check_status": '检查状态',
+    "jobs.available_title": '可用的 BCT 工作',
+    "jobs.approved_only": '只有获得批准的分包商才能在正式版本中提交报价。',
+    "jobs.none_posted": '目前还没有发布 BCT 工作。',
+    "admin.secure_access": "BCT 安全访问",
+    "admin.login_title": "BCT 管理员登录",
+    "admin.login_description": "使用 BCT 管理员账户登录。只有 Supabase 账户具有管理员角色的用户才能打开管理面板。",
+    "admin.email": "电子邮件"
+  },
+  "ar": {
+    "status.title": 'حالة الطلب',
+    "status.application_id": 'معرّف الطلب',
+    "status.check_status": 'التحقق من الحالة',
+    "jobs.available_title": 'وظائف BCT المتاحة',
+    "jobs.approved_only": 'يمكن فقط للمقاولين من الباطن المعتمدين تقديم عروض في النسخة الإنتاجية.',
+    "jobs.none_posted": 'لم يتم نشر أي وظائف BCT حتى الآن.',
+    "admin.secure_access": "وصول آمن إلى BCT",
+    "admin.login_title": "تسجيل دخول إدارة BCT",
+    "admin.login_description": "سجّل الدخول باستخدام حساب مسؤول BCT. لا يمكن فتح لوحة التحكم إلا للمستخدمين الذين يحمل حسابهم في Supabase دور المسؤول.",
+    "admin.email": "البريد الإلكتروني"
+  }
+  ,
+  "ru": {
+    "status.title":"Статус заявки","status.application_id":"ID заявки","status.check_status":"Проверить статус",
+    "jobs.available_title":"Доступные работы BCT","jobs.approved_only":"В рабочей версии заявки могут подавать только одобренные субподрядчики.","jobs.none_posted":"Работы BCT пока не опубликованы.",
+    "admin.secure_access":"Безопасный доступ BCT","admin.login_title":"Вход администратора BCT","admin.login_description":"Войдите с учетной записью администратора BCT. Панель могут открыть только пользователи с ролью администратора в Supabase.","admin.email":"Эл. почта"
+  }
+};
+async function fetchBctTranslation(key,language){
+  const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_ui_translation`,{
+    method:'POST',
+    headers:{
+      'apikey':SUPABASE_PUBLISHABLE_KEY,
+      'Authorization':`Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({p_translation_key:key,p_language_code:language})
+  });
+  if(!response.ok) throw new Error(`Translation request failed: ${response.status}`);
+  return await response.json();
+}
+const BCT_STATIC_ES={"BCT Homeowner Portal": "Portal del propietario de BCT", "Tell BCT About Your Project": "Cuéntele a BCT sobre su proyecto", "Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.": "Envíe su proyecto de forma privada a BCT Renovations. BCT actúa entre el propietario y la red de contratistas y controla qué información del proyecto se comparte para recibir ofertas.", "1 Account": "1 Cuenta", "2 Property": "2 Propiedad", "3 Work": "3 Trabajo", "4 Photos": "4 Fotos", "5 Budget": "5 Presupuesto", "6 Timeline": "6 Cronograma", "7 Review": "7 Revisión", "Already submitted?": "¿Ya lo envió?", "Use your project number to check the current BCT status.": "Use su número de proyecto para verificar el estado actual de BCT.", "Project Number": "Número de proyecto", "Check Project": "Verificar proyecto", "1 — Create Your Private Customer Account": "1 — Cree su cuenta privada de cliente", "Your private customer account and project are securely created through BCT’s Supabase authentication and database.": "Aquí se recopilan los datos de la cuenta de prueba. Las cuentas de producción usarán autenticación segura y almacenamiento cifrado.", "First Name": "Nombre", "Last Name": "Apellido", "Email": "Correo electrónico", "Mobile Phone": "Teléfono móvil", "Create Password": "Crear contraseña", "Confirm Password": "Confirmar contraseña", "2 — Property Information": "2 — Información de la propiedad", "Street Address": "Dirección", "City": "Ciudad", "State": "Estado", "ZIP Code": "Código postal", "Property Type": "Tipo de propiedad", "Single-family home": "Casa unifamiliar", "Condo / Townhome": "Condominio / Casa adosada", "Rental property": "Propiedad de alquiler", "Multi-family": "Multifamiliar", "Commercial": "Comercial", "Other": "Otro", "Are you the property owner?": "¿Es usted el propietario?", "Yes": "Sí", "No - authorized representative": "No - representante autorizado", "3 — What Work Do You Need?": "3 — ¿Qué trabajo necesita?", "Select every service that may apply.": "Seleccione todos los servicios que correspondan.", "Gutters & Drainage": "Canaletas y drenaje", "Roofing": "Techos", "Siding": "Revestimiento", "Windows & Doors": "Ventanas y puertas", "Drywall": "Paneles de yeso", "Painting": "Pintura", "Flooring": "Pisos", "Kitchen Remodeling": "Remodelación de cocina", "Bathroom Remodeling": "Remodelación de baño", "Decks & Porches": "Terrazas y porches", "Electrical": "Electricidad", "Plumbing": "Plomería", "Carpentry": "Carpintería", "Water / Flood Damage": "Daños por agua / inundación", "Full Renovation": "Renovación completa", "Handyman Services": "Servicios de mantenimiento", "What best describes the project?": "¿Qué describe mejor el proyecto?", "Repair": "Reparar", "Replace": "Reemplazar", "Install new": "Instalar nuevo", "Remodel": "Remodelar", "Emergency": "Emergencia", "Not sure - I need BCT's recommendation": "No estoy seguro - necesito la recomendación de BCT", "Describe what you would like done": "Describa lo que desea realizar", "4 — Photos, Video & Documents": "4 — Fotos, video y documentos", "Upload Project Files": "Subir archivos del proyecto", "Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.": "En este prototipo solo se registran los nombres de los archivos. La versión de producción usará almacenamiento privado en la nube con controles de acceso.", "5 — Budget": "5 — Presupuesto", "Do you have a project budget?": "¿Tiene un presupuesto para el proyecto?", "Not sure": "No estoy seguro", "I need BCT to help determine project cost": "Necesito que BCT ayude a determinar el costo del proyecto", "Estimated Budget Range": "Rango de presupuesto estimado", "Under $1,000": "Menos de $1,000", "6 — Timeline": "6 — Cronograma", "When would you like work started?": "¿Cuándo desea que comience el trabajo?", "As soon as possible": "Lo antes posible", "Within 1 week": "Dentro de 1 semana", "Within 30 days": "Dentro de 30 días", "Within 1-3 months": "Dentro de 1-3 meses", "I'm flexible": "Soy flexible", "Specific date": "Fecha específica", "Specific Start Date (optional)": "Fecha específica de inicio (opcional)", "Must be completed by a certain date?": "¿Debe completarse antes de una fecha determinada?", "No": "No", "Completion Deadline (optional)": "Fecha límite de finalización (opcional)", "7 — Submit to BCT": "7 — Enviar a BCT", "I certify the project information I provided is accurate to the best of my knowledge.": "Certifico que la información del proyecto que proporcioné es correcta según mi leal saber y entender.", "Submit Project Privately to BCT": "Enviar proyecto de forma privada a BCT", "Stage 1 — Subcontractor Pre-Application": "Etapa 1 — Pre-solicitud de subcontratista", "This form helps BCT learn who the applicant is before background screening.": "Este formulario ayuda a BCT a conocer al solicitante antes de la verificación de antecedentes.", "Legal Name": "Nombre legal", "Business / Crew Name": "Nombre de empresa / equipo", "Phone": "Teléfono", "City / State": "Ciudad / Estado", "Years Experience": "Años de experiencia", "Primary Trade": "Oficio principal", "Crew Size": "Tamaño del equipo", "Service Area": "Área de servicio", "Reliable Work Vehicle?": "¿Vehículo de trabajo confiable?", "Other Trades": "Otros oficios", "Tools / Equipment Owned": "Herramientas / equipo propio", "Most Recent Contractor / Employer": "Contratista / empleador más reciente", "Dates Worked": "Fechas trabajadas", "Reason for Leaving": "Motivo de salida", "Work Performed": "Trabajo realizado", "Additional Work History": "Historial laboral adicional", "Professional Reference #1": "Referencia profesional #1", "Reference #1 Contact": "Contacto de referencia #1", "Professional Reference #2": "Referencia profesional #2", "Reference #2 Contact": "Contacto de referencia #2", "Previous Work Photos": "Fotos de trabajos anteriores", "Describe the Projects in Your Photos": "Describa los proyectos de sus fotos", "Currently Insured?": "¿Actualmente asegurado?", "Can Provide Certificate of Insurance?": "¿Puede proporcionar certificado de seguro?", "I certify the information is accurate.": "Certifico que la información es correcta.", "I certify the uploaded photos represent work I performed or helped perform.": "Certifico que las fotos cargadas representan trabajo que realicé o ayudé a realizar.", "I authorize BCT to contact my listed references.": "Autorizo a BCT a contactar las referencias indicadas.", "I understand a separate background-screening authorization may be required.": "Entiendo que puede requerirse una autorización separada para la verificación de antecedentes.", "Submit Pre-Application": "Enviar pre-solicitud", "Sign Out": "Cerrar sesión", "BCT Admin Dashboard": "Panel de administración de BCT", "Protected by Supabase Authentication and the BCT admin role.": "Protegido por Supabase Authentication y el rol de administrador de BCT.", "Pending Review": "Pendiente de revisión", "Background Stage": "Etapa de antecedentes", "Approved": "Aprobado", "Applicant Pipeline": "Proceso de solicitantes", "Homeowner Project Review": "Revisión de proyectos de propietarios", "Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.": "La información del cliente es solo para BCT. Los contratistas reciben un alcance separado y depurado cuando BCT publica el proyecto para recibir ofertas.", "Customer Projects": "Proyectos de clientes", "BCT Bid Review": "Revisión de ofertas de BCT", "Review subcontractor bids and award or reject each submission.": "Revise las ofertas de los subcontratistas y adjudique o rechace cada propuesta.", "Post BCT Job": "Publicar trabajo de BCT", "Job Title": "Título del trabajo", "Trade": "Oficio", "Location": "Ubicación", "Target Subcontract Amount": "Monto objetivo del subcontrato", "Desired Start Date": "Fecha de inicio deseada", "Bid Deadline": "Fecha límite de ofertas", "Scope of Work": "Alcance del trabajo", "Publish BCT Job": "Publicar trabajo de BCT", "Applicant Status": "Estado de la solicitud", "Application ID": "ID de la solicitud", "Check Status": "Verificar estado", "Gutters": "Canaletas", "Decks & Carpentry": "Terrazas y carpintería", "General Repairs": "Reparaciones generales", "Demolition": "Demolición", "Privacy:": "Privacidad:", "Customer contact information is for BCT use and is not displayed in the contractor bidding view.": "La información de contacto del cliente es para uso de BCT y no se muestra en la vista de ofertas de los contratistas.", "I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.": "Entiendo que BCT puede compartir información limitada del proyecto con contratistas aprobados cuando sea necesario para las ofertas o la ejecución del proyecto, mientras BCT mantiene bajo control mi información privada de contacto.", "BCT Project Oversight:": "Supervisión del proyecto por BCT:", "BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.": "BCT puede coordinar el proyecto y realizar revisiones o verificaciones de calidad. Esto no es un servicio de inspección de viviendas con licencia."};
+
+const BCT_STATIC_FORMS={
+fr:{
+"BCT Homeowner Portal":"Portail propriétaire BCT",
+"Tell BCT About Your Project":"Parlez à BCT de votre projet",
+"Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.":"Soumettez votre projet en privé à BCT Renovations. BCT reste l’intermédiaire entre le propriétaire et le réseau d’entrepreneurs et contrôle les informations du projet communiquées pour les soumissions.",
+"1 Account":"1 Compte",
+"2 Property":"2 Propriété",
+"3 Work":"3 Travaux",
+"4 Photos":"4 Photos",
+"5 Budget":"5 Budget",
+"6 Timeline":"6 Calendrier",
+"7 Review":"7 Vérification",
+"Already submitted?":"Déjà soumis ?",
+"Use your project number to check the current BCT status.":"Utilisez votre numéro de projet pour vérifier son statut actuel auprès de BCT.",
+"Project Number":"Numéro de projet",
+"Check Project":"Vérifier le projet",
+"1 — Create Your Private Customer Account":"1 — Créez votre compte client privé",
+"Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"Les champs du compte prototype sont recueillis ici. Les comptes de production utiliseront une authentification sécurisée côté serveur et un stockage chiffré.",
+"2 — Property Information":"2 — Informations sur la propriété",
+"3 — What Work Do You Need?":"3 — Quels travaux vous faut-il ?",
+"Select every service that may apply.":"Sélectionnez tous les services qui peuvent s’appliquer.",
+"What best describes the project?":"Qu’est-ce qui décrit le mieux le projet ?",
+"Describe what you would like done":"Décrivez les travaux que vous souhaitez faire réaliser",
+"4 — Photos, Video & Documents":"4 — Photos, vidéos et documents",
+"Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"Pour ce prototype, seuls les noms de fichiers sont enregistrés. La version de production utilisera un stockage cloud privé avec contrôle d’accès.",
+"5 — Budget":"5 — Budget",
+"Do you have a project budget?":"Avez-vous un budget pour le projet ?",
+"I need BCT to help determine project cost":"J’ai besoin de l’aide de BCT pour déterminer le coût du projet",
+"Estimated Budget Range":"Fourchette de budget estimée",
+"6 — Timeline":"6 — Calendrier",
+"When would you like work started?":"Quand souhaitez-vous que les travaux commencent ?",
+"Specific Start Date (optional)":"Date de début précise (facultatif)",
+"Must be completed by a certain date?":"Les travaux doivent-ils être terminés avant une date précise ?",
+"Completion Deadline (optional)":"Date limite d’achèvement (facultatif)",
+"7 — Submit to BCT":"7 — Soumettre à BCT",
+"I certify the project information I provided is accurate to the best of my knowledge.":"Je certifie que les informations sur le projet que j’ai fournies sont exactes au meilleur de ma connaissance.",
+"Submit Project Privately to BCT":"Soumettre le projet en privé à BCT",
+"Stage 1 — Subcontractor Pre-Application":"Étape 1 — Pré-candidature de sous-traitant",
+"This form helps BCT learn who the applicant is before background screening.":"Ce formulaire permet à BCT de mieux connaître le candidat avant la vérification des antécédents.",
+"Sign Out":"Se déconnecter",
+"BCT Admin Dashboard":"Tableau de bord administrateur BCT",
+"Protected by Supabase Authentication and the BCT admin role.":"Protégé par Supabase Authentication et le rôle administrateur BCT.",
+"Pending Review":"En attente d’examen",
+"Background Stage":"Étape de vérification des antécédents",
+"Approved":"Approuvé",
+"Applicant Pipeline":"Suivi des candidats",
+"Homeowner Project Review":"Examen des projets de propriétaires",
+"Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.":"Les informations du client sont réservées à BCT. Les entrepreneurs reçoivent une description distincte et expurgée lorsque BCT publie le projet pour soumission.",
+"Customer Projects":"Projets clients",
+"BCT Bid Review":"Examen des soumissions BCT",
+"Review subcontractor bids and award or reject each submission.":"Examinez les soumissions des sous-traitants et acceptez ou refusez chaque proposition.",
+"Post BCT Job":"Publier un travail BCT",
+"Job Title":"Titre du travail",
+"Trade":"Métier",
+"Location":"Emplacement",
+"Target Subcontract Amount":"Montant cible de sous-traitance",
+"Desired Start Date":"Date de début souhaitée",
+"Bid Deadline":"Date limite de soumission",
+"Scope of Work":"Étendue des travaux",
+"Publish BCT Job":"Publier le travail BCT",
+"Applicant Status":"Statut de la candidature",
+"Application ID":"Identifiant de la candidature",
+"Check Status":"Vérifier le statut",
+"Privacy:":"Confidentialité :",
+"Customer contact information is for BCT use and is not displayed in the contractor bidding view.":"Les coordonnées du client sont réservées à l’usage de BCT et ne sont pas affichées dans la vue de soumission des entrepreneurs.",
+"I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.":"Je comprends que BCT peut partager des informations limitées sur le projet avec des entrepreneurs approuvés lorsque cela est nécessaire pour les soumissions ou l’exécution du projet, tout en gardant mes coordonnées privées sous le contrôle de BCT.",
+"BCT Project Oversight:":"Supervision du projet par BCT :",
+"BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.":"BCT peut coordonner le projet et effectuer des examens ou vérifications de qualité. Il ne s’agit pas d’un service d’inspection résidentielle agréé.",
+"Describe the Projects in Your Photos":"Décrivez les projets présentés dans vos photos","I certify the information is accurate.":"Je certifie que les informations sont exactes.","I certify the uploaded photos represent work I performed or helped perform.":"Je certifie que les photos téléversées représentent des travaux que j’ai réalisés ou auxquels j’ai participé.","I authorize BCT to contact my listed references.":"J’autorise BCT à contacter les références que j’ai indiquées.","I understand a separate background-screening authorization may be required.":"Je comprends qu’une autorisation distincte de vérification des antécédents peut être requise.","Submit Pre-Application":"Soumettre la pré-demande","First Name":"Prénom","Last Name":"Nom","Email":"E-mail","Mobile Phone":"Téléphone portable","Create Password":"Créer un mot de passe","Confirm Password":"Confirmer le mot de passe","Street Address":"Adresse","City":"Ville","State":"État","ZIP Code":"Code postal","Property Type":"Type de propriété","Single-family home":"Maison individuelle","Condo / Townhome":"Condo / Maison de ville","Rental property":"Bien locatif","Multi-family":"Immeuble multifamilial","Commercial":"Commercial","Other":"Autre","Are you the property owner?":"Êtes-vous propriétaire du bien ?","Yes":"Oui","No - authorized representative":"Non - représentant autorisé","Gutters & Drainage":"Gouttières et drainage","Roofing":"Toiture","Siding":"Revêtement extérieur","Windows & Doors":"Fenêtres et portes","Drywall":"Cloisons sèches","Painting":"Peinture","Flooring":"Revêtement de sol","Kitchen Remodeling":"Rénovation de cuisine","Bathroom Remodeling":"Rénovation de salle de bain","Decks & Porches":"Terrasses et porches","Electrical":"Électricité","Plumbing":"Plomberie","Carpentry":"Menuiserie","Water / Flood Damage":"Dégâts d’eau / inondation","Full Renovation":"Rénovation complète","Handyman Services":"Services de bricolage","Repair":"Réparer","Replace":"Remplacer","Install new":"Installer neuf","Remodel":"Rénover","Emergency":"Urgence","Not sure - I need BCT's recommendation":"Pas sûr - j’ai besoin de la recommandation de BCT","Upload Project Files":"Téléverser les fichiers du projet","Not sure":"Pas sûr","Under $1,000":"Moins de 1 000 $","As soon as possible":"Dès que possible","Within 1 week":"Dans la semaine","Within 30 days":"Dans les 30 jours","Within 1-3 months":"Dans 1 à 3 mois","I'm flexible":"Je suis flexible","Specific date":"Date précise","No":"Non","Legal Name":"Nom légal","Business / Crew Name":"Nom de l’entreprise / équipe","Phone":"Téléphone","City / State":"Ville / État","Years Experience":"Années d’expérience","Primary Trade":"Métier principal","Crew Size":"Taille de l’équipe","Service Area":"Zone de service","Reliable Work Vehicle?":"Véhicule de travail fiable ?","Other Trades":"Autres métiers","Tools / Equipment Owned":"Outils / équipement possédés","Most Recent Contractor / Employer":"Dernier entrepreneur / employeur","Dates Worked":"Dates travaillées","Reason for Leaving":"Raison du départ","Work Performed":"Travail effectué","Additional Work History":"Expérience professionnelle supplémentaire","Professional Reference #1":"Référence professionnelle n°1","Reference #1 Contact":"Contact de la référence n°1","Professional Reference #2":"Référence professionnelle n°2","Reference #2 Contact":"Contact de la référence n°2","Previous Work Photos":"Photos de travaux précédents","Currently Insured?":"Actuellement assuré ?","Can Provide Certificate of Insurance?":"Peut fournir une attestation d’assurance ?","Gutters":"Gouttières","Decks & Carpentry":"Terrasses et menuiserie","General Repairs":"Réparations générales","Demolition":"Démolition"},
+ht:{"First Name":"Prenon","Last Name":"Siyati","Email":"Imèl","Mobile Phone":"Telefòn mobil","Create Password":"Kreye modpas","Confirm Password":"Konfime modpas","Street Address":"Adrès","City":"Vil","State":"Eta","ZIP Code":"Kòd postal","Property Type":"Kalite pwopriyete","Single-family home":"Kay pou yon fanmi","Condo / Townhome":"Kondo / kay kole","Rental property":"Pwopriyete lokasyon","Multi-family":"Plizyè fanmi","Commercial":"Komèsyal","Other":"Lòt","Are you the property owner?":"Èske ou se pwopriyetè a?","Yes":"Wi","No - authorized representative":"Non - reprezantan otorize","Gutters & Drainage":"Goutyè ak drenaj","Roofing":"Twati","Siding":"Revètman eksteryè","Windows & Doors":"Fenèt ak pòt","Drywall":"Klwazon sèch","Painting":"Penti","Flooring":"Planche","Kitchen Remodeling":"Renovasyon kwizin","Bathroom Remodeling":"Renovasyon twalèt","Decks & Porches":"Teras ak galri","Electrical":"Elektrik","Plumbing":"Plonbri","Carpentry":"Chapant","Water / Flood Damage":"Domaj dlo / inondasyon","Full Renovation":"Renovasyon konplè","Handyman Services":"Sèvis reparasyon","Repair":"Repare","Replace":"Ranplase","Install new":"Enstale nouvo","Remodel":"Renove","Emergency":"Ijans","Not sure - I need BCT's recommendation":"Mwen pa sèten - mwen bezwen rekòmandasyon BCT","Upload Project Files":"Telechaje fichye pwojè","Not sure":"Pa sèten","Under $1,000":"Mwens pase $1,000","As soon as possible":"Pi vit posib","Within 1 week":"Nan 1 semèn","Within 30 days":"Nan 30 jou","Within 1-3 months":"Nan 1-3 mwa","I'm flexible":"Mwen fleksib","Specific date":"Dat espesifik","No":"Non","Legal Name":"Non legal","Business / Crew Name":"Non biznis / ekip","Phone":"Telefòn","City / State":"Vil / Eta","Years Experience":"Ane eksperyans","Primary Trade":"Metye prensipal","Crew Size":"Gwosè ekip","Service Area":"Zòn sèvis","Reliable Work Vehicle?":"Machin travay fyab?","Other Trades":"Lòt metye","Tools / Equipment Owned":"Zouti / ekipman ou posede","Most Recent Contractor / Employer":"Dènye kontraktè / anplwayè","Dates Worked":"Dat travay","Reason for Leaving":"Rezon ou kite","Work Performed":"Travay ki fèt","Additional Work History":"Lòt eksperyans travay","Professional Reference #1":"Referans pwofesyonèl #1","Reference #1 Contact":"Kontak referans #1","Professional Reference #2":"Referans pwofesyonèl #2","Reference #2 Contact":"Kontak referans #2","Previous Work Photos":"Foto travay anvan","Currently Insured?":"Èske ou gen asirans kounye a?","Can Provide Certificate of Insurance?":"Èske ou ka bay sètifika asirans?","Gutters":"Goutyè","Decks & Carpentry":"Teras ak chapant","General Repairs":"Reparasyon jeneral","Demolition":"Demolisyon","BCT Homeowner Portal":"Pòtal Pwopriyetè BCT","Tell BCT About Your Project":"Pale BCT sou pwojè ou a","Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.":"Soumèt pwojè ou an prive bay BCT Renovations. BCT rete ant pwopriyetè a ak rezo kontraktè a epi li kontwole ki enfòmasyon sou pwojè a ki pataje pou òf.","1 Account":"1 Kont","2 Property":"2 Pwopriyete","3 Work":"3 Travay","4 Photos":"4 Foto","5 Budget":"5 Bidjè","6 Timeline":"6 Kalandriye","7 Review":"7 Revizyon","Already submitted?":"Ou deja soumèt?","Use your project number to check the current BCT status.":"Sèvi ak nimewo pwojè ou pou tcheke estati aktyèl BCT la.","Project Number":"Nimewo Pwojè","Check Project":"Tcheke Pwojè","1 — Create Your Private Customer Account":"1 — Kreye kont kliyan prive ou","Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"Nou kolekte enfòmasyon kont pwototip la isit la. Kont pwodiksyon yo pral itilize otantifikasyon sekirize sou sèvè ak depo chiffres.","2 — Property Information":"2 — Enfòmasyon sou Pwopriyete","3 — What Work Do You Need?":"3 — Ki Travay Ou Bezwen?","Select every service that may apply.":"Chwazi tout sèvis ki ka aplike.","What best describes the project?":"Ki sa ki pi byen dekri pwojè a?","Describe what you would like done":"Dekri travay ou ta renmen fèt","4 — Photos, Video & Documents":"4 — Foto, Videyo ak Dokiman","Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"Pou pwototip sa a, se sèlman non fichye yo ki anrejistre. Vèsyon pwodiksyon an pral itilize depo prive nan nwaj la ak kontwòl aksè.","5 — Budget":"5 — Bidjè","Do you have a project budget?":"Èske ou gen yon bidjè pou pwojè a?","I need BCT to help determine project cost":"Mwen bezwen BCT ede detèmine pri pwojè a","Estimated Budget Range":"Ranje Bidjè Estime","6 — Timeline":"6 — Kalandriye","When would you like work started?":"Kilè ou ta renmen travay la kòmanse?","Specific Start Date (optional)":"Dat Kòmansman Espesifik (opsyonèl)","Must be completed by a certain date?":"Èske travay la dwe fini anvan yon dat espesifik?","Completion Deadline (optional)":"Dat Limit pou Fini (opsyonèl)","7 — Submit to BCT":"7 — Soumèt bay BCT","I certify the project information I provided is accurate to the best of my knowledge.":"Mwen sètifye enfòmasyon pwojè mwen bay yo egzak selon sa mwen konnen.","Submit Project Privately to BCT":"Soumèt Pwojè a an Prive bay BCT","Stage 1 — Subcontractor Pre-Application":"Etap 1 — Pre-aplikasyon Soukontraktè","This form helps BCT learn who the applicant is before background screening.":"Fòm sa a ede BCT konnen kiyès aplikan an ye anvan verifikasyon antesedan.","Describe the Projects in Your Photos":"Dekri pwojè ki nan foto ou yo","I certify the information is accurate.":"Mwen sètifye enfòmasyon yo egzak.","I certify the uploaded photos represent work I performed or helped perform.":"Mwen sètifye foto mwen telechaje yo montre travay mwen te fè oswa mwen te ede fè.","I authorize BCT to contact my listed references.":"Mwen otorize BCT kontakte referans mwen mete yo.","I understand a separate background-screening authorization may be required.":"Mwen konprann yo ka mande yon otorizasyon apa pou verifikasyon antesedan.","Submit Pre-Application":"Soumèt Pre-aplikasyon","Sign Out":"Dekonekte","BCT Admin Dashboard":"Tablo Administrasyon BCT","Protected by Supabase Authentication and the BCT admin role.":"Pwoteje pa Supabase Authentication ak wòl administratè BCT la.","Pending Review":"Ap Tann Revizyon","Background Stage":"Etap Verifikasyon Antesedan","Approved":"Apwouve","Applicant Pipeline":"Swivi Aplikan yo","Homeowner Project Review":"Revizyon Pwojè Pwopriyetè","Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.":"Enfòmasyon kliyan an se pou BCT sèlman. Kontraktè yo resevwa yon deskripsyon travay apa san enfòmasyon prive lè BCT pibliye pwojè a pou òf.","Customer Projects":"Pwojè Kliyan","BCT Bid Review":"Revizyon Òf BCT","Review subcontractor bids and award or reject each submission.":"Revize òf soukontraktè yo epi aksepte oswa rejte chak soumisyon.","Post BCT Job":"Pibliye Travay BCT","Job Title":"Tit Travay","Trade":"Metye","Location":"Kote","Target Subcontract Amount":"Montan Sib Soukontra","Desired Start Date":"Dat Kòmansman Swete","Bid Deadline":"Dat Limit Òf","Scope of Work":"Deskripsyon Travay","Publish BCT Job":"Pibliye Travay BCT","Applicant Status":"Estati Aplikasyon","Application ID":"ID Aplikasyon","Check Status":"Tcheke Estati","Privacy:":"Konfidansyalite:","Customer contact information is for BCT use and is not displayed in the contractor bidding view.":"Enfòmasyon kontak kliyan an se pou BCT itilize sèlman epi li pa parèt nan ekran òf kontraktè yo.","I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.":"Mwen konprann BCT ka pataje enfòmasyon limite sou pwojè a ak kontraktè apwouve lè sa nesesè pou òf oswa pou fè travay la, pandan BCT kenbe kontwòl sou enfòmasyon kontak prive mwen.","BCT Project Oversight:":"Sipèvizyon Pwojè BCT:","BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.":"BCT ka kowòdone pwojè a epi fè revizyon oswa verifikasyon kalite. Sa a pa yon sèvis enspeksyon kay ki gen lisans."},
+pt:{"First Name":"Nome","Last Name":"Sobrenome","Email":"E-mail","Mobile Phone":"Celular","Create Password":"Criar senha","Confirm Password":"Confirmar senha","Street Address":"Endereço","City":"Cidade","State":"Estado","ZIP Code":"CEP","Property Type":"Tipo de imóvel","Single-family home":"Casa unifamiliar","Condo / Townhome":"Condomínio / Sobrado","Rental property":"Imóvel para aluguel","Multi-family":"Multifamiliar","Commercial":"Comercial","Other":"Outro","Are you the property owner?":"Você é o proprietário do imóvel?","Yes":"Sim","No - authorized representative":"Não - representante autorizado","Gutters & Drainage":"Calhas e drenagem","Roofing":"Telhado","Siding":"Revestimento externo","Windows & Doors":"Janelas e portas","Drywall":"Drywall","Painting":"Pintura","Flooring":"Pisos","Kitchen Remodeling":"Reforma de cozinha","Bathroom Remodeling":"Reforma de banheiro","Decks & Porches":"Decks e varandas","Electrical":"Elétrica","Plumbing":"Encanamento","Carpentry":"Carpintaria","Water / Flood Damage":"Danos por água / inundação","Full Renovation":"Reforma completa","Handyman Services":"Serviços de manutenção","Repair":"Reparar","Replace":"Substituir","Install new":"Instalar novo","Remodel":"Reformar","Emergency":"Emergência","Not sure - I need BCT's recommendation":"Não tenho certeza - preciso da recomendação da BCT","Upload Project Files":"Enviar arquivos do projeto","Not sure":"Não tenho certeza","Under $1,000":"Menos de US$ 1.000","As soon as possible":"O mais rápido possível","Within 1 week":"Dentro de 1 semana","Within 30 days":"Dentro de 30 dias","Within 1-3 months":"Dentro de 1-3 meses","I'm flexible":"Sou flexível","Specific date":"Data específica","No":"Não","Legal Name":"Nome legal","Business / Crew Name":"Nome da empresa / equipe","Phone":"Telefone","City / State":"Cidade / Estado","Years Experience":"Anos de experiência","Primary Trade":"Ofício principal","Crew Size":"Tamanho da equipe","Service Area":"Área de atendimento","Reliable Work Vehicle?":"Veículo de trabalho confiável?","Other Trades":"Outros ofícios","Tools / Equipment Owned":"Ferramentas / equipamentos próprios","Most Recent Contractor / Employer":"Contratante / empregador mais recente","Dates Worked":"Período trabalhado","Reason for Leaving":"Motivo da saída","Work Performed":"Trabalho realizado","Additional Work History":"Experiência profissional adicional","Professional Reference #1":"Referência profissional nº 1","Reference #1 Contact":"Contato da referência nº 1","Professional Reference #2":"Referência profissional nº 2","Reference #2 Contact":"Contato da referência nº 2","Previous Work Photos":"Fotos de trabalhos anteriores","Currently Insured?":"Atualmente segurado?","Can Provide Certificate of Insurance?":"Pode fornecer certificado de seguro?","Gutters":"Calhas","Decks & Carpentry":"Decks e carpintaria","General Repairs":"Reparos gerais","Demolition":"Demolição","BCT Homeowner Portal":"Portal do Proprietário BCT","Tell BCT About Your Project":"Conte à BCT sobre seu projeto","Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.":"Envie seu projeto de forma privada para a BCT Renovations. A BCT atua entre o proprietário e a rede de contratados e controla quais informações do projeto são liberadas para propostas.","1 Account":"1 Conta","2 Property":"2 Propriedade","3 Work":"3 Trabalho","4 Photos":"4 Fotos","5 Budget":"5 Orçamento","6 Timeline":"6 Cronograma","7 Review":"7 Revisão","Already submitted?":"Já enviou?","Use your project number to check the current BCT status.":"Use o número do seu projeto para verificar o status atual na BCT.","Project Number":"Número do Projeto","Check Project":"Verificar Projeto","1 — Create Your Private Customer Account":"1 — Crie sua conta privada de cliente","Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"Os dados da conta de protótipo são coletados aqui. As contas de produção usarão autenticação segura no servidor e armazenamento criptografado.","2 — Property Information":"2 — Informações da Propriedade","3 — What Work Do You Need?":"3 — Que trabalho você precisa?","Select every service that may apply.":"Selecione todos os serviços que se aplicam.","What best describes the project?":"O que melhor descreve o projeto?","Describe what you would like done":"Descreva o que você gostaria que fosse feito","4 — Photos, Video & Documents":"4 — Fotos, vídeos e documentos","Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"Neste protótipo, apenas os nomes dos arquivos são registrados. A versão de produção usará armazenamento privado na nuvem com controles de acesso.","5 — Budget":"5 — Orçamento","Do you have a project budget?":"Você tem um orçamento para o projeto?","I need BCT to help determine project cost":"Preciso que a BCT ajude a determinar o custo do projeto","Estimated Budget Range":"Faixa de orçamento estimada","6 — Timeline":"6 — Cronograma","When would you like work started?":"Quando você gostaria que o trabalho começasse?","Specific Start Date (optional)":"Data específica de início (opcional)","Must be completed by a certain date?":"Precisa ser concluído até uma determinada data?","Completion Deadline (optional)":"Prazo de conclusão (opcional)","7 — Submit to BCT":"7 — Enviar para a BCT","I certify the project information I provided is accurate to the best of my knowledge.":"Certifico que as informações do projeto que forneci são corretas, de acordo com o meu conhecimento.","Submit Project Privately to BCT":"Enviar projeto de forma privada para a BCT","Stage 1 — Subcontractor Pre-Application":"Etapa 1 — Pré-candidatura de subcontratado","This form helps BCT learn who the applicant is before background screening.":"Este formulário ajuda a BCT a conhecer o candidato antes da verificação de antecedentes.","Sign Out":"Sair","BCT Admin Dashboard":"Painel Administrativo da BCT","Protected by Supabase Authentication and the BCT admin role.":"Protegido pelo Supabase Authentication e pela função de administrador da BCT.","Pending Review":"Aguardando revisão","Background Stage":"Etapa de verificação de antecedentes","Approved":"Aprovado","Applicant Pipeline":"Fluxo de candidatos","Homeowner Project Review":"Revisão de projetos de proprietários","Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.":"As informações do cliente são exclusivas da BCT. Os contratados recebem um escopo separado e sem dados privados quando a BCT publica o projeto para propostas.","Customer Projects":"Projetos de clientes","BCT Bid Review":"Revisão de propostas da BCT","Review subcontractor bids and award or reject each submission.":"Revise as propostas dos subcontratados e aceite ou rejeite cada envio.","Post BCT Job":"Publicar trabalho da BCT","Job Title":"Título do trabalho","Trade":"Especialidade","Location":"Localização","Target Subcontract Amount":"Valor-alvo da subcontratação","Desired Start Date":"Data de início desejada","Bid Deadline":"Prazo para propostas","Scope of Work":"Escopo do trabalho","Publish BCT Job":"Publicar trabalho da BCT","Applicant Status":"Status da candidatura","Application ID":"ID da candidatura","Check Status":"Verificar status","Privacy:":"Privacidade:","Customer contact information is for BCT use and is not displayed in the contractor bidding view.":"As informações de contato do cliente são para uso da BCT e não são exibidas na área de propostas dos contratados.","I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.":"Entendo que a BCT pode compartilhar informações limitadas do projeto com contratados aprovados quando necessário para propostas ou execução do projeto, mantendo minhas informações privadas de contato sob controle da BCT.","BCT Project Oversight:":"Supervisão do Projeto pela BCT:","BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.":"A BCT pode coordenar o projeto e realizar revisão ou verificação de qualidade. Este não é um serviço licenciado de inspeção residencial.","Describe the Projects in Your Photos":"Descreva os projetos mostrados em suas fotos","I certify the information is accurate.":"Certifico que as informações são corretas.","I certify the uploaded photos represent work I performed or helped perform.":"Certifico que as fotos enviadas representam trabalhos que realizei ou ajudei a realizar.","I authorize BCT to contact my listed references.":"Autorizo a BCT a entrar em contato com as referências que forneci.","I understand a separate background-screening authorization may be required.":"Entendo que pode ser necessária uma autorização separada para a verificação de antecedentes.","Submit Pre-Application":"Enviar pré-candidatura"},
+vi:{
+"First Name":"Tên","Last Name":"Họ","Email":"Email","Mobile Phone":"Điện thoại di động","Create Password":"Tạo mật khẩu","Confirm Password":"Xác nhận mật khẩu","Street Address":"Địa chỉ","City":"Thành phố","State":"Tiểu bang","ZIP Code":"Mã ZIP","Property Type":"Loại bất động sản","Single-family home":"Nhà một gia đình","Condo / Townhome":"Căn hộ / Nhà phố","Rental property":"Bất động sản cho thuê","Multi-family":"Nhà nhiều hộ","Commercial":"Thương mại","Other":"Khác","Are you the property owner?":"Bạn có phải là chủ sở hữu không?","Yes":"Có","No - authorized representative":"Không - đại diện được ủy quyền","Gutters & Drainage":"Máng xối và thoát nước","Roofing":"Mái nhà","Siding":"Ốp ngoài","Windows & Doors":"Cửa sổ và cửa ra vào","Drywall":"Vách thạch cao","Painting":"Sơn","Flooring":"Sàn","Kitchen Remodeling":"Cải tạo bếp","Bathroom Remodeling":"Cải tạo phòng tắm","Decks & Porches":"Sàn ngoài trời và hiên","Electrical":"Điện","Plumbing":"Hệ thống ống nước","Carpentry":"Mộc","Water / Flood Damage":"Thiệt hại do nước / ngập","Full Renovation":"Cải tạo toàn bộ","Handyman Services":"Dịch vụ sửa chữa","Repair":"Sửa chữa","Replace":"Thay thế","Install new":"Lắp mới","Remodel":"Cải tạo","Emergency":"Khẩn cấp","Not sure - I need BCT's recommendation":"Chưa chắc - tôi cần BCT tư vấn","Upload Project Files":"Tải tệp dự án lên","Not sure":"Chưa chắc","Under $1,000":"Dưới 1.000 USD","As soon as possible":"Càng sớm càng tốt","Within 1 week":"Trong vòng 1 tuần","Within 30 days":"Trong vòng 30 ngày","Within 1-3 months":"Trong vòng 1-3 tháng","I'm flexible":"Tôi linh hoạt","Specific date":"Ngày cụ thể","No":"Không","Legal Name":"Tên pháp lý","Business / Crew Name":"Tên doanh nghiệp / đội","Phone":"Điện thoại","City / State":"Thành phố / Tiểu bang","Years Experience":"Số năm kinh nghiệm","Primary Trade":"Nghề chính","Crew Size":"Quy mô đội","Service Area":"Khu vực phục vụ","Reliable Work Vehicle?":"Có xe làm việc đáng tin cậy?","Other Trades":"Nghề khác","Tools / Equipment Owned":"Dụng cụ / thiết bị sở hữu","Most Recent Contractor / Employer":"Nhà thầu / chủ lao động gần nhất","Dates Worked":"Thời gian làm việc","Reason for Leaving":"Lý do nghỉ","Work Performed":"Công việc đã thực hiện","Additional Work History":"Kinh nghiệm làm việc bổ sung","Professional Reference #1":"Người tham khảo nghề nghiệp #1","Reference #1 Contact":"Liên hệ tham khảo #1","Professional Reference #2":"Người tham khảo nghề nghiệp #2","Reference #2 Contact":"Liên hệ tham khảo #2","Previous Work Photos":"Ảnh công việc trước đây","Currently Insured?":"Hiện có bảo hiểm?","Can Provide Certificate of Insurance?":"Có thể cung cấp giấy chứng nhận bảo hiểm?","Gutters":"Máng xối","Decks & Carpentry":"Sàn ngoài trời và mộc","General Repairs":"Sửa chữa chung","Demolition":"Phá dỡ","BCT Homeowner Portal":"Cổng thông tin Chủ nhà BCT","Tell BCT About Your Project":"Hãy cho BCT biết về dự án của bạn","Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.":"Gửi dự án của bạn riêng tư cho BCT Renovations. BCT đóng vai trò trung gian giữa chủ nhà và mạng lưới nhà thầu, đồng thời kiểm soát thông tin dự án nào được cung cấp để đấu thầu.","1 Account":"1 Tài khoản","2 Property":"2 Bất động sản","3 Work":"3 Công việc","4 Photos":"4 Ảnh","5 Budget":"5 Ngân sách","6 Timeline":"6 Tiến độ","7 Review":"7 Xem lại","Already submitted?":"Đã gửi rồi?","Use your project number to check the current BCT status.":"Dùng số dự án của bạn để kiểm tra trạng thái BCT hiện tại.","Project Number":"Số dự án","Check Project":"Kiểm tra dự án","1 — Create Your Private Customer Account":"1 — Tạo tài khoản khách hàng riêng tư của bạn","Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"Thông tin tài khoản mẫu được thu thập tại đây. Tài khoản chính thức sẽ sử dụng xác thực an toàn phía máy chủ và lưu trữ được mã hóa.","2 — Property Information":"2 — Thông tin bất động sản","3 — What Work Do You Need?":"3 — Bạn cần thực hiện công việc gì?","Select every service that may apply.":"Chọn tất cả dịch vụ có thể áp dụng.","What best describes the project?":"Mô tả nào phù hợp nhất với dự án?","Describe what you would like done":"Mô tả công việc bạn muốn thực hiện","4 — Photos, Video & Documents":"4 — Ảnh, video và tài liệu","Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"Trong phiên bản mẫu này, chỉ tên tệp được ghi lại. Phiên bản chính thức sẽ sử dụng lưu trữ đám mây riêng với kiểm soát truy cập.","5 — Budget":"5 — Ngân sách","Do you have a project budget?":"Bạn có ngân sách cho dự án không?","I need BCT to help determine project cost":"Tôi cần BCT giúp xác định chi phí dự án","Estimated Budget Range":"Khoảng ngân sách ước tính","6 — Timeline":"6 — Tiến độ","When would you like work started?":"Bạn muốn công việc bắt đầu khi nào?","Specific Start Date (optional)":"Ngày bắt đầu cụ thể (không bắt buộc)","Must be completed by a certain date?":"Có cần hoàn thành trước một ngày nhất định không?","Completion Deadline (optional)":"Hạn hoàn thành (không bắt buộc)","7 — Submit to BCT":"7 — Gửi cho BCT","I certify the project information I provided is accurate to the best of my knowledge.":"Tôi xác nhận thông tin dự án tôi cung cấp là chính xác theo hiểu biết tốt nhất của tôi.","Submit Project Privately to BCT":"Gửi dự án riêng tư cho BCT","Stage 1 — Subcontractor Pre-Application":"Giai đoạn 1 — Đơn đăng ký sơ bộ của nhà thầu phụ","This form helps BCT learn who the applicant is before background screening.":"Biểu mẫu này giúp BCT tìm hiểu về người đăng ký trước khi kiểm tra lý lịch.","Sign Out":"Đăng xuất","BCT Admin Dashboard":"Bảng điều khiển quản trị BCT","Protected by Supabase Authentication and the BCT admin role.":"Được bảo vệ bằng Supabase Authentication và vai trò quản trị BCT.","Pending Review":"Đang chờ xem xét","Background Stage":"Giai đoạn kiểm tra lý lịch","Approved":"Đã phê duyệt","Applicant Pipeline":"Quy trình ứng viên","Homeowner Project Review":"Xem xét dự án của chủ nhà","Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.":"Thông tin khách hàng chỉ dành cho BCT. Nhà thầu nhận một phạm vi công việc riêng đã loại bỏ thông tin riêng tư khi BCT đăng dự án để đấu thầu.","Customer Projects":"Dự án khách hàng","BCT Bid Review":"Xem xét giá thầu BCT","Review subcontractor bids and award or reject each submission.":"Xem xét giá thầu của nhà thầu phụ và chấp nhận hoặc từ chối từng hồ sơ.","Post BCT Job":"Đăng công việc BCT","Job Title":"Tên công việc","Trade":"Ngành nghề","Location":"Địa điểm","Target Subcontract Amount":"Mức tiền mục tiêu cho nhà thầu phụ","Desired Start Date":"Ngày bắt đầu mong muốn","Bid Deadline":"Hạn nộp giá thầu","Scope of Work":"Phạm vi công việc","Publish BCT Job":"Đăng công việc BCT","Applicant Status":"Trạng thái đơn đăng ký","Application ID":"Mã đơn đăng ký","Check Status":"Kiểm tra trạng thái","Privacy:":"Quyền riêng tư:","Customer contact information is for BCT use and is not displayed in the contractor bidding view.":"Thông tin liên hệ của khách hàng chỉ dành cho BCT và không hiển thị trong giao diện đấu thầu của nhà thầu.","I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.":"Tôi hiểu BCT có thể chia sẻ một phần thông tin dự án với các nhà thầu đã được phê duyệt khi cần cho việc đấu thầu hoặc thực hiện dự án, trong khi thông tin liên hệ riêng tư của tôi vẫn do BCT kiểm soát.","BCT Project Oversight:":"Giám sát dự án của BCT:","BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.":"BCT có thể điều phối dự án và thực hiện xem xét/xác minh chất lượng. Đây không phải là dịch vụ kiểm định nhà ở có giấy phép.","Describe the Projects in Your Photos":"Mô tả các dự án trong ảnh của bạn","I certify the information is accurate.":"Tôi xác nhận thông tin là chính xác.","I certify the uploaded photos represent work I performed or helped perform.":"Tôi xác nhận các ảnh đã tải lên thể hiện công việc tôi đã thực hiện hoặc hỗ trợ thực hiện.","I authorize BCT to contact my listed references.":"Tôi cho phép BCT liên hệ với những người tham khảo mà tôi đã cung cấp.","I understand a separate background-screening authorization may be required.":"Tôi hiểu rằng có thể cần một giấy ủy quyền riêng cho việc kiểm tra lý lịch.","Submit Pre-Application":"Gửi đơn đăng ký sơ bộ"},
+zh:{
+"First Name":"名","Last Name":"姓","Email":"电子邮件","Mobile Phone":"手机","Create Password":"创建密码","Confirm Password":"确认密码","Street Address":"街道地址","City":"城市","State":"州","ZIP Code":"邮政编码","Property Type":"房产类型","Single-family home":"独栋住宅","Condo / Townhome":"公寓 / 联排住宅","Rental property":"出租房产","Multi-family":"多户住宅","Commercial":"商业","Other":"其他","Are you the property owner?":"您是房产所有者吗？","Yes":"是","No - authorized representative":"否 - 授权代表","Gutters & Drainage":"排水槽与排水","Roofing":"屋顶","Siding":"外墙板","Windows & Doors":"门窗","Drywall":"石膏板","Painting":"油漆","Flooring":"地板","Kitchen Remodeling":"厨房翻新","Bathroom Remodeling":"浴室翻新","Decks & Porches":"露台与门廊","Electrical":"电气","Plumbing":"管道","Carpentry":"木工","Water / Flood Damage":"水灾 / 洪水损坏","Full Renovation":"全面翻新","Handyman Services":"杂修服务","Repair":"维修","Replace":"更换","Install new":"新安装","Remodel":"翻新","Emergency":"紧急","Not sure - I need BCT's recommendation":"不确定 - 我需要 BCT 的建议","Upload Project Files":"上传项目文件","Not sure":"不确定","Under $1,000":"低于 1,000 美元","As soon as possible":"尽快","Within 1 week":"1 周内","Within 30 days":"30 天内","Within 1-3 months":"1-3 个月内","I'm flexible":"时间灵活","Specific date":"具体日期","No":"否","Legal Name":"法定姓名","Business / Crew Name":"公司 / 团队名称","Phone":"电话","City / State":"城市 / 州","Years Experience":"工作年限","Primary Trade":"主要工种","Crew Size":"团队人数","Service Area":"服务区域","Reliable Work Vehicle?":"有可靠的工作车辆？","Other Trades":"其他工种","Tools / Equipment Owned":"自有工具 / 设备","Most Recent Contractor / Employer":"最近的承包商 / 雇主","Dates Worked":"工作日期","Reason for Leaving":"离职原因","Work Performed":"完成的工作","Additional Work History":"其他工作经历","Professional Reference #1":"职业推荐人 #1","Reference #1 Contact":"推荐人 #1 联系方式","Professional Reference #2":"职业推荐人 #2","Reference #2 Contact":"推荐人 #2 联系方式","Previous Work Photos":"以往工作照片","Currently Insured?":"目前有保险？","Can Provide Certificate of Insurance?":"可以提供保险证明？","Gutters":"排水槽","Decks & Carpentry":"露台与木工","General Repairs":"一般维修","Demolition":"拆除"},
+ar:{
+"First Name":"الاسم الأول","Last Name":"اسم العائلة","Email":"البريد الإلكتروني","Mobile Phone":"الهاتف المحمول","Create Password":"إنشاء كلمة مرور","Confirm Password":"تأكيد كلمة المرور","Street Address":"عنوان الشارع","City":"المدينة","State":"الولاية","ZIP Code":"الرمز البريدي","Property Type":"نوع العقار","Single-family home":"منزل لعائلة واحدة","Condo / Townhome":"شقة / منزل متلاصق","Rental property":"عقار للإيجار","Multi-family":"متعدد العائلات","Commercial":"تجاري","Other":"أخرى","Are you the property owner?":"هل أنت مالك العقار؟","Yes":"نعم","No - authorized representative":"لا - ممثل مفوض","Gutters & Drainage":"المزاريب وتصريف المياه","Roofing":"الأسقف","Siding":"كسوة خارجية","Windows & Doors":"النوافذ والأبواب","Drywall":"ألواح الجبس","Painting":"الطلاء","Flooring":"الأرضيات","Kitchen Remodeling":"تجديد المطبخ","Bathroom Remodeling":"تجديد الحمام","Decks & Porches":"الأسطح والشرفات","Electrical":"الكهرباء","Plumbing":"السباكة","Carpentry":"النجارة","Water / Flood Damage":"أضرار المياه / الفيضانات","Full Renovation":"تجديد كامل","Handyman Services":"خدمات الصيانة","Repair":"إصلاح","Replace":"استبدال","Install new":"تركيب جديد","Remodel":"تجديد","Emergency":"طارئ","Not sure - I need BCT's recommendation":"غير متأكد - أحتاج توصية BCT","Upload Project Files":"رفع ملفات المشروع","Not sure":"غير متأكد","Under $1,000":"أقل من 1,000 دولار","As soon as possible":"في أقرب وقت ممكن","Within 1 week":"خلال أسبوع","Within 30 days":"خلال 30 يومًا","Within 1-3 months":"خلال 1-3 أشهر","I'm flexible":"أنا مرن","Specific date":"تاريخ محدد","No":"لا","Legal Name":"الاسم القانوني","Business / Crew Name":"اسم الشركة / الفريق","Phone":"الهاتف","City / State":"المدينة / الولاية","Years Experience":"سنوات الخبرة","Primary Trade":"المهنة الأساسية","Crew Size":"حجم الفريق","Service Area":"منطقة الخدمة","Reliable Work Vehicle?":"مركبة عمل موثوقة؟","Other Trades":"مهن أخرى","Tools / Equipment Owned":"الأدوات / المعدات المملوكة","Most Recent Contractor / Employer":"أحدث مقاول / صاحب عمل","Dates Worked":"تواريخ العمل","Reason for Leaving":"سبب المغادرة","Work Performed":"العمل المنجز","Additional Work History":"خبرة عمل إضافية","Professional Reference #1":"مرجع مهني #1","Reference #1 Contact":"اتصال المرجع #1","Professional Reference #2":"مرجع مهني #2","Reference #2 Contact":"اتصال المرجع #2","Previous Work Photos":"صور أعمال سابقة","Currently Insured?":"مؤمن حاليًا؟","Can Provide Certificate of Insurance?":"يمكن تقديم شهادة تأمين؟","Gutters":"المزاريب","Decks & Carpentry":"الأسطح والنجارة","General Repairs":"إصلاحات عامة","Demolition":"هدم"},
+ru:{
+"First Name":"Имя","Last Name":"Фамилия","Email":"Эл. почта","Mobile Phone":"Мобильный телефон","Create Password":"Создать пароль","Confirm Password":"Подтвердить пароль","Street Address":"Адрес","City":"Город","State":"Штат","ZIP Code":"Почтовый индекс","Property Type":"Тип недвижимости","Single-family home":"Односемейный дом","Condo / Townhome":"Кондоминиум / Таунхаус","Rental property":"Арендная недвижимость","Multi-family":"Многоквартирный дом","Commercial":"Коммерческая","Other":"Другое","Are you the property owner?":"Вы владелец недвижимости?","Yes":"Да","No - authorized representative":"Нет - уполномоченный представитель","Gutters & Drainage":"Водостоки и дренаж","Roofing":"Кровля","Siding":"Сайдинг","Windows & Doors":"Окна и двери","Drywall":"Гипсокартон","Painting":"Покраска","Flooring":"Напольные покрытия","Kitchen Remodeling":"Ремонт кухни","Bathroom Remodeling":"Ремонт ванной","Decks & Porches":"Террасы и крыльца","Electrical":"Электрика","Plumbing":"Сантехника","Carpentry":"Плотницкие работы","Water / Flood Damage":"Повреждения от воды / затопления","Full Renovation":"Полная реконструкция","Handyman Services":"Мелкий ремонт","Repair":"Ремонт","Replace":"Замена","Install new":"Новая установка","Remodel":"Реконструкция","Emergency":"Срочно","Not sure - I need BCT's recommendation":"Не уверен - нужна рекомендация BCT","Upload Project Files":"Загрузить файлы проекта","Not sure":"Не уверен","Under $1,000":"Менее 1 000 $","As soon as possible":"Как можно скорее","Within 1 week":"В течение 1 недели","Within 30 days":"В течение 30 дней","Within 1-3 months":"В течение 1-3 месяцев","I'm flexible":"Гибкие сроки","Specific date":"Конкретная дата","No":"Нет","Legal Name":"Юридическое имя","Business / Crew Name":"Название компании / бригады","Phone":"Телефон","City / State":"Город / Штат","Years Experience":"Лет опыта","Primary Trade":"Основная специальность","Crew Size":"Размер бригады","Service Area":"Зона обслуживания","Reliable Work Vehicle?":"Надёжный рабочий транспорт?","Other Trades":"Другие специальности","Tools / Equipment Owned":"Собственные инструменты / оборудование","Most Recent Contractor / Employer":"Последний подрядчик / работодатель","Dates Worked":"Период работы","Reason for Leaving":"Причина ухода","Work Performed":"Выполненные работы","Additional Work History":"Дополнительный опыт работы","Professional Reference #1":"Профессиональная рекомендация №1","Reference #1 Contact":"Контакт рекомендации №1","Professional Reference #2":"Профессиональная рекомендация №2","Reference #2 Contact":"Контакт рекомендации №2","Previous Work Photos":"Фотографии предыдущих работ","Currently Insured?":"Есть действующая страховка?","Can Provide Certificate of Insurance?":"Можете предоставить страховой сертификат?","Gutters":"Водостоки","Decks & Carpentry":"Террасы и плотницкие работы","General Repairs":"Общий ремонт","Demolition":"Демонтаж"}
+};
+
+// V32 full clean sweep: Chinese, Arabic, Russian. Vietnamese V31 full sweep retained.
+Object.assign(BCT_STATIC_FORMS.zh,{"BCT Homeowner Portal":"BCT 房主门户","Tell BCT About Your Project":"向 BCT 介绍您的项目","Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.":"将您的项目私密提交给 BCT Renovations。BCT 作为房主与承包商网络之间的协调方，并控制哪些项目信息可用于投标。","1 Account":"1 账户","2 Property":"2 房产","3 Work":"3 工作","4 Photos":"4 照片","5 Budget":"5 预算","6 Timeline":"6 时间安排","7 Review":"7 审核","Already submitted?":"已经提交？","Use your project number to check the current BCT status.":"使用您的项目编号查看当前 BCT 状态。","Project Number":"项目编号","Check Project":"查看项目","1 — Create Your Private Customer Account":"1 — 创建您的私人客户账户","Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"此处收集原型账户信息。正式版账户将使用安全的服务器端身份验证和加密存储。","2 — Property Information":"2 — 房产信息","3 — What Work Do You Need?":"3 — 您需要什么工作？","Select every service that may apply.":"选择所有可能适用的服务。","What best describes the project?":"哪一项最能描述该项目？","Describe what you would like done":"描述您希望完成的工作","4 — Photos, Video & Documents":"4 — 照片、视频和文件","Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"此原型仅记录文件名。正式版将使用带访问控制的私有云存储。","5 — Budget":"5 — 预算","Do you have a project budget?":"您有项目预算吗？","I need BCT to help determine project cost":"我需要 BCT 帮助确定项目费用","Estimated Budget Range":"预计预算范围","6 — Timeline":"6 — 时间安排","When would you like work started?":"您希望何时开始施工？","Specific Start Date (optional)":"具体开始日期（可选）","Must be completed by a certain date?":"是否必须在某个日期前完成？","Completion Deadline (optional)":"完成截止日期（可选）","7 — Submit to BCT":"7 — 提交给 BCT","I certify the project information I provided is accurate to the best of my knowledge.":"据我所知，我确认所提供的项目信息准确无误。","Submit Project Privately to BCT":"将项目私密提交给 BCT","Stage 1 — Subcontractor Pre-Application":"第 1 阶段 — 分包商预申请","This form helps BCT learn who the applicant is before background screening.":"此表格帮助 BCT 在背景审查前了解申请人。","Describe the Projects in Your Photos":"描述照片中的项目","I certify the information is accurate.":"我确认信息准确无误。","I certify the uploaded photos represent work I performed or helped perform.":"我确认上传的照片展示的是我完成或协助完成的工作。","I authorize BCT to contact my listed references.":"我授权 BCT 联系我列出的推荐人。","I understand a separate background-screening authorization may be required.":"我了解可能需要单独的背景审查授权。","Submit Pre-Application":"提交预申请","Sign Out":"退出登录","BCT Admin Dashboard":"BCT 管理员控制面板","Protected by Supabase Authentication and the BCT admin role.":"受 Supabase Authentication 和 BCT 管理员角色保护。","Pending Review":"待审核","Background Stage":"背景审查阶段","Approved":"已批准","Applicant Pipeline":"申请人流程","Homeowner Project Review":"房主项目审核","Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.":"客户信息仅供 BCT 使用。当 BCT 发布项目进行投标时，承包商会收到单独的去敏工作范围。","Customer Projects":"客户项目","BCT Bid Review":"BCT 投标审核","Review subcontractor bids and award or reject each submission.":"审核分包商报价，并对每份提交进行授予或拒绝。","Post BCT Job":"发布 BCT 工作","Job Title":"工作标题","Trade":"工种","Location":"地点","Target Subcontract Amount":"目标分包金额","Desired Start Date":"期望开始日期","Bid Deadline":"投标截止日期","Scope of Work":"工作范围","Publish BCT Job":"发布 BCT 工作","Applicant Status":"申请状态","Application ID":"申请 ID","Check Status":"查看状态","Privacy:":"隐私：","Customer contact information is for BCT use and is not displayed in the contractor bidding view.":"客户联系信息仅供 BCT 使用，不会显示在承包商投标视图中。","I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.":"我了解，在投标或项目实施需要时，BCT 可能会与获批承包商共享有限的项目信息，同时我的私人联系信息仍由 BCT 控制。","BCT Project Oversight:":"BCT 项目监督：","BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.":"BCT 可以协调项目并进行质量审核/验证。这不是持牌房屋检查服务。"});
+Object.assign(BCT_STATIC_FORMS.ar,{"BCT Homeowner Portal":"بوابة مالك المنزل BCT","Tell BCT About Your Project":"أخبر BCT عن مشروعك","Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.":"قدّم مشروعك بشكل خاص إلى BCT Renovations. تبقى BCT حلقة الوصل بين مالك المنزل وشبكة المقاولين وتتحكم في معلومات المشروع التي يتم إتاحتها لتقديم العطاءات.","1 Account":"1 الحساب","2 Property":"2 العقار","3 Work":"3 العمل","4 Photos":"4 الصور","5 Budget":"5 الميزانية","6 Timeline":"6 الجدول الزمني","7 Review":"7 المراجعة","Already submitted?":"هل سبق أن قدّمت الطلب؟","Use your project number to check the current BCT status.":"استخدم رقم مشروعك للتحقق من حالة BCT الحالية.","Project Number":"رقم المشروع","Check Project":"التحقق من المشروع","1 — Create Your Private Customer Account":"1 — أنشئ حساب العميل الخاص بك","Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"يتم جمع بيانات الحساب التجريبي هنا. ستستخدم حسابات الإنتاج مصادقة آمنة من جانب الخادم وتخزينًا مشفرًا.","2 — Property Information":"2 — معلومات العقار","3 — What Work Do You Need?":"3 — ما العمل الذي تحتاجه؟","Select every service that may apply.":"اختر كل خدمة قد تنطبق.","What best describes the project?":"ما الوصف الأنسب للمشروع؟","Describe what you would like done":"صف العمل الذي ترغب في إنجازه","4 — Photos, Video & Documents":"4 — الصور والفيديو والمستندات","Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"في هذا النموذج التجريبي، يتم تسجيل أسماء الملفات فقط. سيستخدم الإصدار الإنتاجي تخزينًا سحابيًا خاصًا مع ضوابط وصول.","5 — Budget":"5 — الميزانية","Do you have a project budget?":"هل لديك ميزانية للمشروع؟","I need BCT to help determine project cost":"أحتاج إلى مساعدة BCT في تحديد تكلفة المشروع","Estimated Budget Range":"نطاق الميزانية التقديرية","6 — Timeline":"6 — الجدول الزمني","When would you like work started?":"متى ترغب في بدء العمل؟","Specific Start Date (optional)":"تاريخ بدء محدد (اختياري)","Must be completed by a certain date?":"هل يجب إكمال العمل بحلول تاريخ معين؟","Completion Deadline (optional)":"الموعد النهائي للإكمال (اختياري)","7 — Submit to BCT":"7 — الإرسال إلى BCT","I certify the project information I provided is accurate to the best of my knowledge.":"أقر بأن معلومات المشروع التي قدمتها دقيقة حسب أفضل ما لدي من معرفة.","Submit Project Privately to BCT":"إرسال المشروع بشكل خاص إلى BCT","Stage 1 — Subcontractor Pre-Application":"المرحلة 1 — الطلب المبدئي للمقاول من الباطن","This form helps BCT learn who the applicant is before background screening.":"يساعد هذا النموذج BCT على التعرف على مقدم الطلب قبل فحص الخلفية.","Describe the Projects in Your Photos":"صف المشاريع الظاهرة في صورك","I certify the information is accurate.":"أقر بأن المعلومات دقيقة.","I certify the uploaded photos represent work I performed or helped perform.":"أقر بأن الصور المرفوعة تمثل أعمالًا نفذتها أو ساعدت في تنفيذها.","I authorize BCT to contact my listed references.":"أفوض BCT بالاتصال بالمراجع المدرجة لدي.","I understand a separate background-screening authorization may be required.":"أفهم أنه قد يلزم تفويض منفصل لفحص الخلفية.","Submit Pre-Application":"إرسال الطلب المبدئي","Sign Out":"تسجيل الخروج","BCT Admin Dashboard":"لوحة إدارة BCT","Protected by Supabase Authentication and the BCT admin role.":"محمي بواسطة Supabase Authentication ودور مسؤول BCT.","Pending Review":"قيد المراجعة","Background Stage":"مرحلة فحص الخلفية","Approved":"معتمد","Applicant Pipeline":"مسار المتقدمين","Homeowner Project Review":"مراجعة مشروع مالك المنزل","Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.":"معلومات العميل خاصة بـ BCT فقط. يتلقى المقاولون نطاق عمل منفصلًا ومنقحًا عندما تنشر BCT المشروع لتقديم العطاءات.","Customer Projects":"مشاريع العملاء","BCT Bid Review":"مراجعة عروض BCT","Review subcontractor bids and award or reject each submission.":"راجع عروض المقاولين من الباطن وقم بقبول أو رفض كل عرض.","Post BCT Job":"نشر وظيفة BCT","Job Title":"عنوان الوظيفة","Trade":"المهنة","Location":"الموقع","Target Subcontract Amount":"المبلغ المستهدف للمقاول من الباطن","Desired Start Date":"تاريخ البدء المطلوب","Bid Deadline":"الموعد النهائي للعطاء","Scope of Work":"نطاق العمل","Publish BCT Job":"نشر وظيفة BCT","Applicant Status":"حالة الطلب","Application ID":"معرّف الطلب","Check Status":"التحقق من الحالة","Privacy:":"الخصوصية:","Customer contact information is for BCT use and is not displayed in the contractor bidding view.":"معلومات اتصال العميل مخصصة لاستخدام BCT ولا تظهر في شاشة عطاءات المقاولين.","I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.":"أفهم أن BCT قد تشارك معلومات محدودة عن المشروع مع المقاولين المعتمدين عند الحاجة للعطاء أو تنفيذ المشروع، مع بقاء معلومات اتصالي الخاصة تحت سيطرة BCT.","BCT Project Oversight:":"إشراف BCT على المشروع:","BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.":"قد تنسق BCT المشروع وتجري مراجعة/تحققًا من الجودة. هذه ليست خدمة فحص منازل مرخصة."});
+Object.assign(BCT_STATIC_FORMS.ru,{"BCT Homeowner Portal":"Портал домовладельца BCT","Tell BCT About Your Project":"Расскажите BCT о вашем проекте","Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.":"Отправьте свой проект в BCT Renovations конфиденциально. BCT выступает связующим звеном между домовладельцем и сетью подрядчиков и контролирует, какая информация о проекте передается для торгов.","1 Account":"1 Аккаунт","2 Property":"2 Недвижимость","3 Work":"3 Работы","4 Photos":"4 Фото","5 Budget":"5 Бюджет","6 Timeline":"6 Сроки","7 Review":"7 Проверка","Already submitted?":"Уже отправили?","Use your project number to check the current BCT status.":"Используйте номер проекта, чтобы проверить текущий статус BCT.","Project Number":"Номер проекта","Check Project":"Проверить проект","1 — Create Your Private Customer Account":"1 — Создайте личный аккаунт клиента","Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"Здесь собираются данные аккаунта прототипа. В рабочей версии будет использоваться безопасная серверная аутентификация и зашифрованное хранение.","2 — Property Information":"2 — Информация о недвижимости","3 — What Work Do You Need?":"3 — Какие работы вам нужны?","Select every service that may apply.":"Выберите все подходящие услуги.","What best describes the project?":"Что лучше всего описывает проект?","Describe what you would like done":"Опишите, что вы хотите сделать","4 — Photos, Video & Documents":"4 — Фото, видео и документы","Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"В этом прототипе записываются только имена файлов. В рабочей версии будет использоваться частное облачное хранилище с контролем доступа.","5 — Budget":"5 — Бюджет","Do you have a project budget?":"У вас есть бюджет проекта?","I need BCT to help determine project cost":"Мне нужна помощь BCT в определении стоимости проекта","Estimated Budget Range":"Ориентировочный диапазон бюджета","6 — Timeline":"6 — Сроки","When would you like work started?":"Когда вы хотели бы начать работы?","Specific Start Date (optional)":"Конкретная дата начала (необязательно)","Must be completed by a certain date?":"Работы должны быть завершены к определенной дате?","Completion Deadline (optional)":"Крайний срок завершения (необязательно)","7 — Submit to BCT":"7 — Отправить в BCT","I certify the project information I provided is accurate to the best of my knowledge.":"Я подтверждаю, что предоставленная мной информация о проекте является точной, насколько мне известно.","Submit Project Privately to BCT":"Отправить проект в BCT конфиденциально","Stage 1 — Subcontractor Pre-Application":"Этап 1 — Предварительная заявка субподрядчика","This form helps BCT learn who the applicant is before background screening.":"Эта форма помогает BCT узнать заявителя до проверки биографических данных.","Describe the Projects in Your Photos":"Опишите проекты на ваших фотографиях","I certify the information is accurate.":"Я подтверждаю точность информации.","I certify the uploaded photos represent work I performed or helped perform.":"Я подтверждаю, что загруженные фотографии показывают работы, которые я выполнял или помогал выполнять.","I authorize BCT to contact my listed references.":"Я разрешаю BCT связаться с указанными мной рекомендателями.","I understand a separate background-screening authorization may be required.":"Я понимаю, что может потребоваться отдельное разрешение на проверку биографических данных.","Submit Pre-Application":"Отправить предварительную заявку","Sign Out":"Выйти","BCT Admin Dashboard":"Панель администратора BCT","Protected by Supabase Authentication and the BCT admin role.":"Защищено Supabase Authentication и ролью администратора BCT.","Pending Review":"Ожидает проверки","Background Stage":"Этап проверки биографических данных","Approved":"Одобрено","Applicant Pipeline":"Процесс заявителей","Homeowner Project Review":"Проверка проекта домовладельца","Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.":"Информация о клиенте доступна только BCT. При публикации проекта для торгов подрядчики получают отдельное обезличенное описание работ.","Customer Projects":"Проекты клиентов","BCT Bid Review":"Проверка предложений BCT","Review subcontractor bids and award or reject each submission.":"Проверяйте предложения субподрядчиков и принимайте или отклоняйте каждую заявку.","Post BCT Job":"Опубликовать работу BCT","Job Title":"Название работы","Trade":"Специальность","Location":"Местоположение","Target Subcontract Amount":"Целевая сумма субподряда","Desired Start Date":"Желаемая дата начала","Bid Deadline":"Срок подачи предложения","Scope of Work":"Объем работ","Publish BCT Job":"Опубликовать работу BCT","Applicant Status":"Статус заявки","Application ID":"ID заявки","Check Status":"Проверить статус","Privacy:":"Конфиденциальность:","Customer contact information is for BCT use and is not displayed in the contractor bidding view.":"Контактная информация клиента предназначена только для BCT и не отображается в интерфейсе торгов для подрядчиков.","I understand BCT may share limited project information with approved contractors when necessary for bidding or project performance, while keeping my private contact information controlled by BCT.":"Я понимаю, что BCT может передавать ограниченную информацию о проекте одобренным подрядчикам, когда это необходимо для торгов или выполнения проекта, при этом моя личная контактная информация остается под контролем BCT.","BCT Project Oversight:":"Контроль проекта BCT:","BCT may coordinate the project and perform quality review/verification. This is not a licensed home inspection service.":"BCT может координировать проект и проводить проверку/подтверждение качества. Это не лицензированная услуга инспекции жилья."});
+const BCT_STATIC_PLACEHOLDERS={
+fr:{"Example: APP-2026-123456":"Exemple : APP-2026-123456","Example: BCT-2026-123456":"Exemple : BCT-2026-123456"},
+ht:{"Example: APP-2026-123456":"Egzanp: APP-2026-123456","Example: BCT-2026-123456":"Egzanp: BCT-2026-123456"},
+pt:{"Example: APP-2026-123456":"Exemplo: APP-2026-123456","Example: BCT-2026-123456":"Exemplo: BCT-2026-123456"},
+vi:{"Example: APP-2026-123456":"Ví dụ: APP-2026-123456","Example: BCT-2026-123456":"Ví dụ: BCT-2026-123456"},
+zh:{"Example: APP-2026-123456":"示例：APP-2026-123456","Example: BCT-2026-123456":"示例：BCT-2026-123456"},
+ar:{"Example: APP-2026-123456":"مثال: APP-2026-123456","Example: BCT-2026-123456":"مثال: BCT-2026-123456"},
+ru:{"Example: APP-2026-123456":"Пример: APP-2026-123456","Example: BCT-2026-123456":"Пример: BCT-2026-123456"}
+};
+
+const BCT_ORIGINAL_TEXT=new WeakMap();
+const BCT_ORIGINAL_TEXT_NODE=new WeakMap();
+const BCT_ORIGINAL_PLACEHOLDER=new WeakMap();
+const BCT_STATIC_PLACEHOLDER_ES={
+  "Example: APP-2026-123456":"Ejemplo: APP-2026-123456",
+  "Example: BCT-2026-123456":"Ejemplo: BCT-2026-123456",
+  "Tell BCT what is happening, what you want changed, and anything we should know.":"Cuéntele a BCT qué está ocurriendo, qué desea cambiar y cualquier otra información que debamos saber.",
+  "BCT Admin password":"Contraseña de administrador de BCT"
+};
+function applyStaticLanguage(language){
+ // Translate ordinary leaf elements.
+ document.querySelectorAll("main *").forEach(el=>{
+   if(el.children.length===0 && !el.hasAttribute('data-i18n')){
+     if(!BCT_ORIGINAL_TEXT.has(el)) BCT_ORIGINAL_TEXT.set(el,el.textContent);
+     const original=BCT_ORIGINAL_TEXT.get(el);
+     const raw=(original||'').trim();
+     el.textContent=(language==='es' && BCT_STATIC_ES[raw]) ? BCT_STATIC_ES[raw] : (BCT_STATIC_FORMS[language]?.[raw]||original);
+   }
+ });
+ // Translate text nodes inside labels/containers that also contain inputs or other elements.
+ // This catches checkbox labels such as service names and certification statements.
+ const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT);
+ const textNodes=[]; let node;
+ while((node=walker.nextNode())) textNodes.push(node);
+ textNodes.forEach(t=>{
+   const parent=t.parentElement;
+   if(!parent || parent.closest('[data-i18n]') || ['SCRIPT','STYLE','OPTION'].includes(parent.tagName)) return;
+   if(!BCT_ORIGINAL_TEXT_NODE.has(t)) BCT_ORIGINAL_TEXT_NODE.set(t,t.nodeValue);
+   const original=BCT_ORIGINAL_TEXT_NODE.get(t);
+   const raw=(original||'').trim();
+   if(!raw) return;
+   const translated=(language==='es' && BCT_STATIC_ES[raw]) ? BCT_STATIC_ES[raw] : (BCT_STATIC_FORMS[language]?.[raw]||raw);
+   const leading=(original.match(/^\s*/)||[''])[0], trailing=(original.match(/\s*$/)||[''])[0];
+   t.nodeValue=leading+translated+trailing;
+ });
+ document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
+   if(el.hasAttribute('data-i18n-placeholder')) return;
+   if(!BCT_ORIGINAL_PLACEHOLDER.has(el)) BCT_ORIGINAL_PLACEHOLDER.set(el,el.getAttribute('placeholder'));
+   const original=BCT_ORIGINAL_PLACEHOLDER.get(el);
+   el.setAttribute('placeholder',(language==='es' && BCT_STATIC_PLACEHOLDER_ES[original]) ? BCT_STATIC_PLACEHOLDER_ES[original] : (BCT_STATIC_PLACEHOLDERS[language]?.[original]||original));
+ });
+}
+
+const BCT_FILE_UI={
+ en:{choose:'Choose Files',none:'No files selected',selected:n=>n===1?'1 file selected':`${n} files selected`},
+ es:{choose:'Elegir archivos',none:'Ningún archivo seleccionado',selected:n=>n===1?'1 archivo seleccionado':`${n} archivos seleccionados`},
+ fr:{choose:'Choisir des fichiers',none:'Aucun fichier sélectionné',selected:n=>n===1?'1 fichier sélectionné':`${n} fichiers sélectionnés`},
+ ht:{choose:'Chwazi fichye',none:'Pa gen fichye chwazi',selected:n=>n===1?'1 fichye chwazi':`${n} fichye chwazi`},
+ pt:{choose:'Escolher arquivos',none:'Nenhum arquivo selecionado',selected:n=>n===1?'1 arquivo selecionado':`${n} arquivos selecionados`},
+ vi:{choose:'Chọn tệp',none:'Chưa chọn tệp nào',selected:n=>`${n} tệp đã chọn`},
+ zh:{choose:'选择文件',none:'未选择文件',selected:n=>`已选择 ${n} 个文件`},
+ ar:{choose:'اختيار الملفات',none:'لم يتم اختيار ملفات',selected:n=>`تم اختيار ${n} ملف`},
+ ru:{choose:'Выбрать файлы',none:'Файлы не выбраны',selected:n=>n===1?'Выбран 1 файл':`Выбрано файлов: ${n}`}
+};
+function updateFileUploadUI(language){
+ const t=BCT_FILE_UI[language]||BCT_FILE_UI.en;
+ document.querySelectorAll('[data-file-choose]').forEach(el=>el.textContent=t.choose);
+ document.querySelectorAll('[data-file-name]').forEach(el=>{
+   const input=document.getElementById(el.dataset.fileName); const n=(accumulatedFiles[el.dataset.fileName]||[]).length||input?.files?.length||0;
+   el.textContent=n?t.selected(n):t.none;
+ });
+}
+document.querySelectorAll('.file-upload-ui input[type=file]').forEach(input=>input.addEventListener('change',()=>addAccumulatedFiles(input)));
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='contractorDocs')addAccumulatedFiles(e.target);});
+
+async function applyBctLanguage(languageCode){
+  const language=languageCode||'en';
+  localStorage.setItem(BCT_LANGUAGE_KEY,language);
+  document.documentElement.lang=language;
+  document.documentElement.dir=language==='ar'?'rtl':'ltr';
+  const selector=document.getElementById('bctLanguage');
+  if(selector) selector.value=language;
+  const nodes=[...document.querySelectorAll('[data-i18n]')];
+  await Promise.all(nodes.map(async node=>{
+    const key=node.dataset.i18n;
+    let translated=BCT_ENGLISH_FALLBACK[key]||key;
+    if(language!=='en'){
+      try{
+        const data=await fetchBctTranslation(key,language);
+        if(typeof data==='string' && data && data!==key) translated=data;
+        else if(BCT_LOCAL_TRANSLATIONS[language]?.[key]) translated=BCT_LOCAL_TRANSLATIONS[language][key];
+      }catch(e){
+        if(BCT_LOCAL_TRANSLATIONS[language]?.[key]) translated=BCT_LOCAL_TRANSLATIONS[language][key];
+        console.warn('BCT translation fallback used for',key,e);
+      }
+    }
+    node.textContent=translated;
+  }));
+  const placeholderNodes=[...document.querySelectorAll('[data-i18n-placeholder]')];
+  await Promise.all(placeholderNodes.map(async node=>{
+    const key=node.dataset.i18nPlaceholder;
+    let translated=BCT_ENGLISH_FALLBACK[key]||node.getAttribute('placeholder')||key;
+    if(language!=='en'){
+      try{
+        const data=await fetchBctTranslation(key,language);
+        if(typeof data==='string' && data && data!==key) translated=data;
+      }catch(e){ console.warn('BCT placeholder translation fallback used for',key,e); }
+    }
+    node.setAttribute('placeholder',translated);
+  }));
+  applyStaticLanguage(language);
+  updateFileUploadUI(language);
+}
+const bctLanguageSelector=document.getElementById('bctLanguage');
+if(bctLanguageSelector){
+  bctLanguageSelector.addEventListener('change',e=>applyBctLanguage(e.target.value));
+  applyBctLanguage(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
+}
+
+const KEY='bctPortalDataV1';
+const defaultData={applications:[],jobs:[],bids:[],customers:[],customerProjects:[],serviceCalls:[]};
+let db=JSON.parse(localStorage.getItem(KEY)||JSON.stringify(defaultData));
+db.applications=db.applications||[];db.jobs=db.jobs||[];db.bids=db.bids||[];db.customers=db.customers||[];db.customerProjects=db.customerProjects||[];db.serviceCalls=db.serviceCalls||[];
+db.customerProjects.forEach(p=>{p.workflowStage=p.workflowStage||p.status||'BCT Review';p.statusHistory=p.statusHistory||[{status:p.status||'Existing Project',at:p.created||new Date().toISOString(),note:'Existing project migrated to workflow'}];p.assignedContractorId=p.assignedContractorId||'';p.assignedContractorName=p.assignedContractorName||'';});
+const accumulatedFiles={customerFiles:[],workPhotos:[],contractorDocs:[]};
+window.bctAccumulatedFiles=accumulatedFiles;
+function addAccumulatedFiles(input){
+  const key=input.id;if(!accumulatedFiles[key])accumulatedFiles[key]=[];
+  const seen=new Set(accumulatedFiles[key].map(f=>f.name+'|'+f.size+'|'+f.lastModified));
+  [...(input.files||[])].forEach(f=>{const k=f.name+'|'+f.size+'|'+f.lastModified;if(!seen.has(k)){accumulatedFiles[key].push(f);seen.add(k);}});
+  const st=document.querySelector(`[data-file-name="${key}"]`)||document.getElementById(key+'Status');
+  const n=accumulatedFiles[key].length;if(st)st.textContent=n?(n===1?'1 file selected — tap Choose Files again to add more':n+' files selected — tap Choose Files again to add more'):'No files selected';
+  input.value='';
+}
+function uniqueCode(prefix,digits,collection){let code;do{code=prefix+Math.floor(10**(digits-1)+Math.random()*9*10**(digits-1));}while(collection.some(x=>x.id===code));return code;}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
+function id(){return uniqueCode('BCT-',6,db.applications)}
+function projectId(){return uniqueCode('PRJ-',6,db.customerProjects)}
+function jobId(){return uniqueCode('JOB-',4,db.jobs)}
+function bidId(){return uniqueCode('BID-',6,db.bids)}
+function statusBadge(s){
+  const cls=s.includes('Approved')?'good':s.includes('Rejected')?'bad':s.includes('Background')?'warn':'info';
+  return `<span class="badge ${cls}">${s}</span>`;
+}
+function setVisibleView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
+  const target=document.getElementById('view-'+name);
+  if(target) target.classList.remove('hidden');
+  if(name==='jobs')renderJobs();
+  if(name==='admin')renderCustomerProjectsAdmin();
+}
+function showView(name){
+  if(name==='admin') return openBctAdmin();
+  if(name==='status'){ const i=document.getElementById('statusId'),r=document.getElementById('statusResult'); if(i)i.value=''; if(r)r.innerHTML=''; }
+  setVisibleView(name);
+}
+async function openBctAdmin(){
+  // Always show the login screen immediately so mobile browsers never appear blank
+  // while Supabase checks for an existing authenticated admin session.
+  setVisibleView('admin-login');
+  const status=document.getElementById('adminAuthStatus');
+  if(status) status.innerHTML='';
+
+  if(!supabaseClient) return;
+
+  try{
+    const sessionResult=await Promise.race([
+      supabaseClient.auth.getSession(),
+      new Promise(resolve=>setTimeout(()=>resolve({data:{session:null},timedOut:true}),2500))
+    ]);
+    const user=sessionResult?.data?.session?.user;
+    if(user?.app_metadata?.role==='admin'){
+      document.getElementById('adminSessionEmail').textContent=user.email||'';
+      setVisibleView('admin');
+    }
+  }catch(e){
+    // Keep the admin login screen visible if the session check fails.
+    if(status) status.innerHTML='<div class="notice">Admin login is ready. Enter your BCT administrator credentials.</div>';
+  }
+}
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+
+
+
+async function bctAdminLogin(){
+  const status=document.getElementById('adminAuthStatus');
+  const btn=document.getElementById('adminLoginBtn');
+  if(!supabaseClient){
+    status.innerHTML='<div class="notice">Admin login cannot connect to Supabase. Please contact BCT support.</div>';
+    return;
+  }
+  const email=document.getElementById('adminEmail').value.trim().toLowerCase();
+  const password=document.getElementById('adminPassword').value;
+  if(!email||!password){
+    status.innerHTML='<div class="notice">Enter your BCT admin email and password.</div>';
+    return;
+  }
+  btn.disabled=true;
+  btn.textContent='Signing in…';
+  status.innerHTML='<div class="notice">Checking your BCT administrator account…</div>';
+  try{
+    // Clear any stale browser session first. This prevents an old contractor/user
+    // session from interfering with the administrator login on mobile Safari.
+    try{ await supabaseClient.auth.signOut({scope:'local'}); }catch(_e){}
+
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error) throw error;
+
+    // Ask Supabase for the authenticated user again instead of relying only on
+    // the sign-in response. This makes the admin-role check reliable after a
+    // password change or metadata update.
+    const {data:userData,error:userError}=await supabaseClient.auth.getUser();
+    if(userError) throw userError;
+    const user=userData?.user || data?.user;
+    const role=String(user?.app_metadata?.role||'').trim().toLowerCase();
+    if(!user){
+      throw new Error('Supabase did not return an authenticated user.');
+    }
+    if(role!=='admin'){
+      await supabaseClient.auth.signOut({scope:'local'});
+      status.innerHTML='<div class="notice">Your sign-in was accepted, but this account is not authorized as a BCT administrator.</div>';
+      return;
+    }
+    document.getElementById('adminPassword').value='';
+    document.getElementById('adminSessionEmail').textContent=user.email||email;
+    status.innerHTML='';
+    setVisibleView('admin');
+  }catch(error){
+    const msg=String(error?.message||error||'Unknown sign-in error');
+    let friendly=msg;
+    if(/invalid login credentials/i.test(msg)) friendly='Supabase rejected the email/password combination. The BCT Admin page is connected correctly, but the credentials did not match the Supabase account.';
+    else if(/email not confirmed/i.test(msg)) friendly='Supabase says this email has not been confirmed.';
+    else if(/failed to fetch|network|load failed/i.test(msg)) friendly='The browser could not reach Supabase. Check the internet connection and try again.';
+    status.innerHTML='<div class="notice"><b>Sign-in failed.</b> '+friendly+'</div>';
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Sign In to BCT Admin';
+  }
+}
+
+async function bctAdminLogout(){
+  if(supabaseClient)await supabaseClient.auth.signOut({scope:'local'});
+  document.getElementById('adminPassword').value='';
+  setVisibleView('home');
+}
+
+document.getElementById('adminLoginBtn').onclick=bctAdminLogin;
+document.getElementById('adminBackBtn').onclick=()=>setVisibleView('home');
+document.getElementById('adminLogoutBtn').onclick=bctAdminLogout;
+document.getElementById('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')bctAdminLogin();});
+document.getElementById('adminShowPassword').addEventListener('change',e=>{
+  document.getElementById('adminPassword').type=e.target.checked?'text':'password';
+});
+
+function customerStatusBadge(s){
+  const cls=s.includes('Completed')?'good':s.includes('Declined')?'bad':s.includes('Hold')?'warn':'info';
+  return `<span class="badge ${cls}">${s}</span>`;
+}
+function customerVerificationBadge(s){
+  if(s==='Verified')return `<span class="verified-customer">BCT VERIFIED CUSTOMER</span>`;
+  if(s==='Needs More Information')return `<span class="badge warn">More Information Needed</span>`;
+  if(s==='Rejected / Closed')return `<span class="badge bad">Verification Closed</span>`;
+  return `<span class="badge info">BCT Verification Pending</span>`;
+}
+
+const customerProjectForm=document.getElementById('customerProjectForm');
+function syncCustomerDateRequirements(){
+  const specific=customerProjectForm.elements.specificStart;
+  const deadline=customerProjectForm.elements.deadline;
+  specific.required=customerProjectForm.elements.startWindow.value==='Specific date';
+  deadline.required=customerProjectForm.elements.hasDeadline.value==='Yes';
+}
+customerProjectForm.elements.startWindow.addEventListener('change',syncCustomerDateRequirements);
+customerProjectForm.elements.hasDeadline.addEventListener('change',syncCustomerDateRequirements);
+syncCustomerDateRequirements();
+
+document.getElementById('customerProjectForm').onsubmit=async e=>{
+  e.preventDefault();
+  const form=e.target;
+  const err=document.getElementById('customerSubmitError');
+  const btn=document.getElementById('customerSubmitBtn');
+  const fail=(message,el)=>{err.innerHTML='<b>Please fix this item:</b> '+message;err.classList.remove('hidden');btn.disabled=false;btn.textContent='Submit Project Privately to BCT';if(el){el.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{try{el.focus({preventScroll:true})}catch(_){ }},250);}};
+  err.classList.add('hidden');
+  btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    if(!supabaseClient) return fail('The secure BCT connection is unavailable. Please refresh the page and try again.');
+    const first=document.getElementById('custFirst').value.trim();
+    const last=document.getElementById('custLast').value.trim();
+    const email=document.getElementById('custEmail').value.trim();
+    const phone=document.getElementById('custPhone').value.trim();
+    const p1=document.getElementById('custPassword').value;
+    const p2=document.getElementById('custPassword2').value;
+    if(!first)return fail('First Name is required.',document.getElementById('custFirst'));
+    if(!last)return fail('Last Name is required.',document.getElementById('custLast'));
+    if(!email)return fail('Email is required.',document.getElementById('custEmail'));
+    if(!phone)return fail('Mobile Phone is required.',document.getElementById('custPhone'));
+    if(!p1)return fail('Create Password is required.',document.getElementById('custPassword'));
+    if(p1!==p2)return fail('The passwords do not match.',document.getElementById('custPassword2'));
+    if(p1.length<7)return fail('Please use at least 7 characters.',document.getElementById('custPassword'));
+    if(!/\d/.test(p1))return fail('Add at least one number to your password.',document.getElementById('custPassword'));
+    if(!/[^A-Za-z0-9\s]/.test(p1))return fail('Add at least one special character to your password.',document.getElementById('custPassword'));
+    const required=['address','city','state','zip','description'];
+    for(const name of required){const el=form.elements[name];if(!String(el?.value||'').trim())return fail(`${el?.previousElementSibling?.textContent||name} is required.`,el);}
+    const zip=String(form.elements.zip.value||'').trim();
+    if(!/^\d{5}(?:-\d{4})?$/.test(zip))return fail('Enter a valid ZIP Code.',form.elements.zip);
+    if(form.elements.startWindow.value==='Specific date' && !form.elements.specificStart.value)return fail('Choose the Specific Start Date.',form.elements.specificStart);
+    if(form.elements.hasDeadline.value==='Yes' && !form.elements.deadline.value)return fail('Choose the Completion Deadline.',form.elements.deadline);
+    const services=[...form.querySelectorAll('input[name="service"]:checked')].map(el=>el.value);
+    if(!services.length)return fail('Select at least one service in Section 3 — What Work Do You Need?',form.querySelector('input[name="service"]'));
+    if(!document.getElementById('customerTruth').checked)return fail('Please certify that the project information is accurate.',document.getElementById('customerTruth'));
+    if(!document.getElementById('customerPrivacy').checked)return fail('Please acknowledge the BCT privacy/project information statement.',document.getElementById('customerPrivacy'));
+
+    const projectNumber='BCT-'+new Date().getFullYear()+'-'+crypto.randomUUID().replaceAll('-','').slice(0,8).toUpperCase();
+    const metadata={
+      bct_homeowner_submission:'true', project_number:projectNumber,
+      first_name:first,last_name:last,phone,
+      street_address:String(form.elements.address.value||'').trim(),
+      city:String(form.elements.city.value||'').trim(), state:String(form.elements.state.value||'').trim(), zip_code:zip,
+      property_type:form.elements.propertyType.value, property_owner_status:form.elements.ownerStatus.value,
+      services, project_type:form.elements.projectType.value,
+      description:String(form.elements.description.value||'').trim(),
+      has_budget:form.elements.budgetStatus.value==='Yes', budget_range:form.elements.budgetRange.value,
+      desired_start:form.elements.startWindow.value,
+      specific_start_date:form.elements.specificStart.value||'',
+      has_completion_deadline:form.elements.hasDeadline.value==='Yes', completion_deadline:form.elements.deadline.value||''
+    };
+    const {data:signupData,error:signupError}=await supabaseClient.auth.signUp({email,password:p1,options:{data:metadata}});
+    if(signupError) throw signupError;
+    if(!signupData?.user) throw new Error('BCT could not create the customer account.');
+
+    document.getElementById('customerSubmitResult').innerHTML=`<div class="notice"><b>Project submitted successfully.</b><br>Your BCT Project Number is <b>${projectNumber}</b>.<br>Status: BCT Review. Keep this number to check your project.${signupData.session?'':'<br><br><b>Account security:</b> Check your email for a confirmation message if one is required.'}</div>`;
+    form.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=true);
+    document.querySelectorAll('#custFirst,#custLast,#custEmail,#custPhone,#custPassword,#custPassword2').forEach(el=>el.disabled=true);
+    document.getElementById('customerSubmitResult').scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(ex){
+    console.error(ex);
+    const msg=String(ex?.message||'');
+    if(/already registered|already exists|user already/i.test(msg)) return fail('That email already has a BCT account. Please use the existing account or a different email for this test.',document.getElementById('custEmail'));
+    return fail('BCT could not submit the project: '+(msg||'Please try again.'));
+  }
+};
+
+document.getElementById('customerProjectLookupBtn').onclick=()=>{
+  const pid=document.getElementById('customerProjectLookup').value.trim().toUpperCase();
+  const p=db.customerProjects.find(x=>x.id===pid);
+  const el=document.getElementById('customerProjectLookupResult');
+  if(!p){el.innerHTML='<div class="notice">No BCT project found with that number on this device.</div>';return}
+  const c=db.customers.find(x=>x.id===p.customerId)||{};
+  el.innerHTML=`<div class="card project-card"><b>${p.id}</b><div class="project-meta">${customerStatusBadge(p.status)}${customerVerificationBadge(c.verificationStatus)}<span class="badge info">${(p.services||[]).join(', ')}</span></div><small>${p.city||''}, ${p.state||''} • Submitted ${new Date(p.created).toLocaleDateString()}</small><div style="margin-top:10px"><b>Current BCT Stage:</b> ${p.workflowStage||p.status}${p.assignedContractorName?`<br><b>Contractor assigned by BCT:</b> ${p.assignedContractorName}`:''}${p.biddingJobId?`<br><b>BCT Job Number:</b> ${p.biddingJobId}`:''}</div></div>`;
+};
+
+function renderCustomerProjectsAdmin(){
+  const el=document.getElementById('customerProjectAdminList');
+  const badge=document.getElementById('a-customer-projects');
+  if(badge)badge.textContent=`${db.customerProjects.length} Customer Project${db.customerProjects.length===1?'':'s'}`;
+  if(!el)return;
+  el.innerHTML=db.customerProjects.map(p=>{
+    const c=db.customers.find(x=>x.id===p.customerId)||{};
+    const address=[p.address,p.city,p.state,p.zip].filter(Boolean).join(', ');
+    const closed=['Completed','Declined by BCT'].includes(p.workflowStage);
+    const quality=p.workflowStage==='BCT Quality Review';
+    const schedule=p.workflowStage==='Contractor Assigned';
+    const qrFiles=(p.qualityReviewFiles||[]);
+    const qrPanel=quality?`<div class="quality-review-panel"><h3>BCT Quality Review — Required Before Completion</h3><p class="muted">BCT must document the review and choose Pass Quality Review or Needs Correction. The generic Advance Workflow button is disabled at this stage.</p><label>Quality Review Notes</label><textarea onchange="updateCustomerProject('${p.id}','qualityReviewNotes',this.value)" placeholder="Document workmanship, materials, cleanup, corrections, and inspection findings.">${p.qualityReviewNotes||''}</textarea><label>Completion / Quality Review Photos</label><div class="file-upload-ui"><input id="qualityFiles-${p.id}" type="file" multiple accept="image/*,.pdf"><label class="file-upload-button" for="qualityFiles-${p.id}">Choose Files</label><span class="file-upload-name" id="qualityFilesStatus-${p.id}">${qrFiles.length?qrFiles.length+' file(s) on review':'No files selected'}</span></div><label>Homeowner Completion Acknowledgment</label><select onchange="updateCustomerProject('${p.id}','homeownerSignoff',this.value)"><option value="Pending" ${(p.homeownerSignoff||'Pending')==='Pending'?'selected':''}>Pending</option><option value="Received" ${p.homeownerSignoff==='Received'?'selected':''}>Received</option><option value="Not Required" ${p.homeownerSignoff==='Not Required'?'selected':''}>Not Required by BCT</option></select><div class="quality-review-actions"><button type="button" class="secondary" onclick="saveQualityFiles('${p.id}')">Save Review Files</button><button type="button" class="danger" onclick="qualityReviewDecision('${p.id}','correction')">Needs Correction</button><button type="button" class="success" onclick="qualityReviewDecision('${p.id}','pass')">✓ Pass Quality Review & Complete</button></div>${p.correctionNote?`<div class="notice" style="margin-top:10px"><b>Correction Required:</b> ${p.correctionNote}</div>`:''}</div>`:'';
+    const schedulePanel=schedule?`<div class="quality-review-panel"><h3>Schedule Job</h3><p class="muted">A real schedule date is required before the job can move to Scheduled.</p><label>Scheduled Start Date</label><input type="date" value="${p.scheduledStartDate||''}" onchange="updateCustomerProject('${p.id}','scheduledStartDate',this.value)"></div>`:'';
+    const prepFields=!p.biddingJobId?`<div class="grid grid-3"><div><label>BCT Target Subcontract Amount</label><input type="number" min="1" value="${p.targetSubcontractAmount||''}" onchange="updateCustomerProject('${p.id}','targetSubcontractAmount',this.value)" placeholder="Required before bidding"></div><div><label>Desired Start Date</label><input type="date" value="${p.desiredStartDate||p.specificStart||''}" onchange="updateCustomerProject('${p.id}','desiredStartDate',this.value)"></div><div><label>Bid Deadline</label><input type="date" value="${p.bidDeadline||''}" onchange="updateCustomerProject('${p.id}','bidDeadline',this.value)" required></div></div>`:'';
+    return `<div class="card project-card"><div class="toolbar"><div><b>${p.id}</b> ${customerStatusBadge(p.status)}</div><small>${new Date(p.created).toLocaleString()}</small></div>
+      <h3>${(p.services||[]).join(' + ')||'Customer Project'}</h3>
+      <p><b>BCT-only customer:</b> ${c.first||''} ${c.last||''} • ${c.phone||''} • ${c.email||''}<br><b>Customer Verification:</b> ${customerVerificationBadge(c.verificationStatus)}<br><b>Property:</b> ${address}<br><b>Budget:</b> ${p.budgetRange||'Not sure'} • <b>Start:</b> ${p.startWindow||'Not specified'}</p>
+      <div class="verification-panel"><b>BCT Customer Verification</b><div class="admin-project-actions">${c.verificationStatus==='Verified'?'<button class="success" disabled>✓ Customer Verified</button>':c.verificationStatus==='Rejected / Closed'?'<button class="danger" disabled>Verification Closed</button>':`<button class="success" onclick="verifyCustomer('${c.id}','Verified')">✓ Verify Customer</button><button class="secondary" onclick="verifyCustomer('${c.id}','Needs More Information')">Needs More Information</button><button class="danger" onclick="verifyCustomer('${c.id}','Rejected / Closed')">Reject / Close</button>`}</div><small>Only BCT-verified customer projects can be released for contractor bidding.</small></div>
+      <p>${p.description||''}</p><small>${(p.files||[]).length} uploaded file name(s)</small>
+      <label>BCT Internal Notes</label><textarea ${closed?'disabled':''} onchange="updateCustomerProject('${p.id}','bctNotes',this.value)">${p.bctNotes||''}</textarea>
+      <label>Sanitized Contractor Scope (no customer contact information)</label><textarea ${p.biddingJobId||closed?'disabled':''} onchange="updateCustomerProject('${p.id}','contractorScope',this.value)" placeholder="Write the scope that approved contractors may see.">${p.contractorScope||''}</textarea>
+      ${prepFields}
+      <div class="workflow-panel" style="margin-top:14px;padding:14px;border:1px solid #334155;border-radius:12px">
+        <b>BCT Job Workflow</b><div class="project-meta" style="margin-top:8px"><span class="badge info">${p.workflowStage||'BCT Review'}</span>${p.biddingJobId?`<span class="badge good">${p.biddingJobId}</span>`:''}</div>
+        <label>Assigned BCT Contractor</label><select ${closed||p.assignedContractorId?'disabled':''} onchange="requestProjectContractorAssignment('${p.id}',this.value)"><option value="">Not assigned</option>${db.applications.filter(a=>a.status==='Approved BCT Subcontractor').map(a=>`<option value="${a.id}" ${p.assignedContractorId===a.id?'selected':''}>${a.businessName||a.legalName||a.id} — ${a.trade||''}</option>`).join('')}</select>
+        ${p.assignedContractorId?`<small>✓ Assigned and locked: ${p.assignedContractorName}</small>`:'<small>No contractor assigned yet.</small>'}
+        ${schedulePanel}
+        <div class="admin-project-actions" style="margin-top:10px">${closed?'<div class="notice"><b>✓ '+(p.workflowStage==='Completed'?'Job Completed':'Project Declined')+' — Workflow Locked</b></div>':quality?'<div class="notice"><b>Quality Review controls below must be completed before closing this job.</b></div>':`<button type="button" onclick="advanceProjectWorkflow('${p.id}')">Advance Workflow</button>`}</div>
+        ${qrPanel}
+        <div style="margin-top:10px"><b>Tracking History</b>${(p.statusHistory||[]).slice(0,12).map(h=>`<div><small>${new Date(h.at).toLocaleString()} — ${h.status}${h.note?' • '+h.note:''}</small></div>`).join('')||'<div><small>No workflow updates yet.</small></div>'}</div>
+      </div>
+      <div class="admin-project-actions">${closed?'<div class="notice"><b>✓ Completed Job — Administrative Actions Locked</b></div>':`
+        <button class="secondary" onclick="projectAction('${p.id}','Request More Information')">Request More Information</button>
+        <button class="secondary" onclick="projectAction('${p.id}','Site Visit Needed')">Site Visit Needed</button>
+        ${p.workflowStage==='Scope Ready'||p.biddingJobId?'<button type="button" disabled>✓ Scope Ready</button>':`<button type="button" onclick="projectAction('${p.id}','Scope Ready')">Mark Scope Ready</button>`}
+        ${p.biddingJobId?`<button type="button" class="success" disabled>✓ Sent to Contractor Bidding — ${p.biddingJobId}</button>`:`<button type="button" class="success" onclick="publishCustomerProject('${p.id}')">Send to Contractor Bidding</button>`}
+        <button type="button" class="secondary" onclick="holdCustomerProject('${p.id}')">Put On Hold</button><button class="danger" onclick="projectAction('${p.id}','Declined by BCT')">Decline</button>`}</div></div>`;
+  }).join('')||'<div class="muted">No homeowner projects submitted yet.</div>';
+}
+
+window.verifyCustomer=(customerId,status)=>{
+ const c=db.customers.find(x=>x.id===customerId);if(!c)return;
+ c.verificationStatus=status;c.verifiedAt=status==='Verified'?new Date().toISOString():'';
+ save();alert(status==='Verified'?'Customer is now BCT Verified.':'Customer verification status updated.');
+}
+window.updateCustomerProject=(pid,key,val)=>{const p=db.customerProjects.find(x=>x.id===pid);if(p){p[key]=val;localStorage.setItem(KEY,JSON.stringify(db));}}
+window.projectAction=(pid,status)=>{const p=db.customerProjects.find(x=>x.id===pid);if(p){p.status=status;p.workflowStage=status;p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status,at:new Date().toISOString(),note:'Updated by BCT'});save();}}
+window.holdCustomerProject=(pid)=>{
+  const p=db.customerProjects.find(x=>x.id===pid);if(!p)return;
+  if(!confirm('Put '+pid+' ON HOLD? This does not send the project to contractor bidding.'))return;
+  p.status='On Hold';p.workflowStage='On Hold';p.statusHistory=p.statusHistory||[];
+  p.statusHistory.unshift({status:'On Hold',at:new Date().toISOString(),note:'Put on hold by BCT'});save();
+}
+window.requestProjectContractorAssignment=(pid,contractorId)=>{
+  const p=db.customerProjects.find(x=>x.id===pid);if(!p||!contractorId)return;
+  const a=db.applications.find(x=>x.id===contractorId);if(!a)return;
+  if(!confirm('Assign '+(a.businessName||a.legalName||a.id)+' to '+(p.biddingJobId||p.id)+'? This assignment will be recorded and locked.')){renderCustomerProjectsAdmin();return;}
+  assignProjectContractor(pid,contractorId,true);
+}
+window.assignProjectContractor=(pid,contractorId,confirmed=false)=>{
+  const p=db.customerProjects.find(x=>x.id===pid);if(!p)return false;
+  const a=db.applications.find(x=>x.id===contractorId);if(!a)return false;
+  const activeOther=db.customerProjects.find(x=>x.id!==p.id&&x.assignedContractorId===a.id&&!['Completed','Declined by BCT'].includes(x.workflowStage));
+  if(activeOther){
+    const ok=confirm((a.businessName||a.legalName||a.id)+' already has active job '+(activeOther.biddingJobId||activeOther.id)+'. BCT policy allows a second contract only with explicit Admin approval. Approve and record this exception?');
+    if(!ok){renderCustomerProjectsAdmin();return false;}
+    p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Second Contract Override Approved',at:new Date().toISOString(),note:'BCT Admin approved exception while '+(activeOther.biddingJobId||activeOther.id)+' remains active'});
+  }
+  p.assignedContractorId=a.id;p.assignedContractorName=a.businessName||a.legalName||a.id;
+  p.status='Contractor Assigned';p.workflowStage='Contractor Assigned';p.statusHistory=p.statusHistory||[];
+  p.statusHistory.unshift({status:'Contractor Assigned',at:new Date().toISOString(),note:p.assignedContractorName});save();return true;
+}
+window.advanceProjectWorkflow=(pid)=>{
+  const p=db.customerProjects.find(x=>x.id===pid);if(!p)return;
+  const cur=p.workflowStage||'BCT Review';
+  if(cur==='BCT Quality Review'){alert('Quality Review cannot be bypassed. Use Pass Quality Review or Needs Correction.');return;}
+  if(cur==='Completed'){alert('This job is completed and locked.');return;}
+  if(cur==='Contractor Assigned'&&!p.scheduledStartDate){alert('Enter a Scheduled Start Date before moving this job to Scheduled.');return;}
+  const stages=['BCT Review','Scope Ready','Bidding','Contractor Assigned','Scheduled','In Progress','BCT Quality Review'];
+  let i=stages.indexOf(cur);if(i<0){alert('This stage must be handled with its dedicated controls.');return;}if(i>=stages.length-1)return;
+  const next=stages[i+1];p.workflowStage=next;p.status=next;p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:next,at:new Date().toISOString(),note:next==='Scheduled'?'Scheduled for '+p.scheduledStartDate:'Workflow advanced by BCT'});save();
+}
+window.saveQualityFiles=(pid)=>{
+  const p=db.customerProjects.find(x=>x.id===pid);if(!p)return;
+  const input=document.getElementById('qualityFiles-'+pid);const files=[...(input?.files||[])];
+  if(!files.length){alert('Choose one or more quality review files first.');return;}
+  p.qualityReviewFiles=p.qualityReviewFiles||[];const seen=new Set(p.qualityReviewFiles.map(x=>x.name+'|'+x.size));
+  files.forEach(f=>{const k=f.name+'|'+f.size;if(!seen.has(k)){p.qualityReviewFiles.push({name:f.name,size:f.size,addedAt:new Date().toISOString()});seen.add(k);}});save();
+}
+window.qualityReviewDecision=(pid,decision)=>{
+  const p=db.customerProjects.find(x=>x.id===pid);if(!p||p.workflowStage!=='BCT Quality Review')return;
+  if(decision==='correction'){
+    const note=prompt('Describe the correction required before this job can pass BCT Quality Review:');if(!note||!note.trim())return;
+    p.correctionNote=note.trim();p.workflowStage='In Progress';p.status='Correction Required';p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Correction Required',at:new Date().toISOString(),note:p.correctionNote});save();return;
+  }
+  if(!(p.qualityReviewNotes||'').trim()){alert('Enter BCT Quality Review notes before passing the job.');return;}
+  if(!(p.qualityReviewFiles||[]).length){alert('Add at least one completion/quality review file before passing the job.');return;}
+  if((p.homeownerSignoff||'Pending')==='Pending'){alert('Set Homeowner Completion Acknowledgment to Received or Not Required by BCT before completion.');return;}
+  if(!confirm('Pass BCT Quality Review and mark this job Completed? This will lock the workflow.'))return;
+  p.workflowStage='Completed';p.status='Completed';p.completedAt=new Date().toISOString();p.correctionNote='';p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Completed',at:p.completedAt,note:'BCT Quality Review passed'});save();
+}
+window.publishCustomerProject=(pid)=>{
+  const p=db.customerProjects.find(x=>x.id===pid);if(!p)return;
+  if(p.workflowStage==='On Hold'){alert('This project is On Hold. Mark Scope Ready before sending it to contractor bidding.');return;}
+  const c=db.customers.find(x=>x.id===p.customerId)||{};
+  if(c.verificationStatus!=='Verified'){alert('This project cannot be released for contractor bidding until BCT verifies the customer.');return}
+  if(!String(p.contractorScope||'').trim()){alert('Create the sanitized Contractor Scope before sending this project for bidding.');return}
+  if(!(Number(p.targetSubcontractAmount)>0)){alert('Enter the BCT Target Subcontract Amount before publishing this job.');return}
+  if(!p.bidDeadline){alert('Enter a Bid Deadline before publishing this job.');return}
+  if(p.biddingJobId){alert('This customer project has already been sent to contractor bidding.');return}
+  if(!confirm('Send '+pid+' to CONTRACTOR BIDDING? Only the sanitized contractor scope and city/state will be published.'))return;
+  const j={id:jobId(),created:new Date().toISOString(),bids:0,title:(p.services||[]).join(' + ')||'BCT Customer Project',trade:(p.services||[])[0]||'General Repairs',location:`${p.city||''}, ${p.state||''}`.replace(/^, |, $/g,''),budget:String(p.targetSubcontractAmount),scope:p.contractorScope,startDate:p.desiredStartDate||p.specificStart||'',bidDeadline:p.bidDeadline,sourceProjectId:p.id,verifiedCustomer:true,status:'Open'};
+  db.jobs.unshift(j);p.biddingJobId=j.id;p.status='Bidding';p.workflowStage='Bidding';p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Bidding',at:new Date().toISOString(),note:'Published as '+j.id});save();alert(`${p.id} was published to the private contractor job list as ${j.id}. Customer name, phone, email and exact street address were not copied into the contractor job.`);
+}
+
+document.getElementById('applicationForm').onsubmit=e=>{
+  e.preventDefault();
+  const photoInput=document.getElementById('workPhotos');
+  const photoCert=e.target.querySelector('[name="photoCert"]');
+  const photoNotes=e.target.querySelector('[name="photoNotes"]');
+  if((accumulatedFiles.workPhotos||[]).length && !photoCert.checked){alert('Please certify the work photos you uploaded.');photoCert.focus();return;}
+  if((accumulatedFiles.workPhotos||[]).length && !photoNotes.value.trim()){alert('Please describe the projects shown in your uploaded work photos.');photoNotes.focus();return;}
+  const f=new FormData(e.target);
+  const photos=(accumulatedFiles.workPhotos||[]).map(x=>x.name);
+  const app={id:id(),created:new Date().toISOString(),status:'Pending BCT Review',photos};
+  for(const [k,v] of f.entries()){app[k]=v}
+  app.location=[app.city,app.state].filter(Boolean).join(', ');
+  db.applications.unshift(app); accumulatedFiles.workPhotos=[]; save();
+  document.getElementById('applyMsg').innerHTML=`<div class="notice"><b>✓ Application Submitted</b><br>Your Application ID is <b>${app.id}</b>.<br>Status: Pending BCT Review.</div>`;
+  e.target.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=true);e.target.querySelectorAll('.card').forEach(card=>card.classList.add('hidden'));const appBtn=document.getElementById('applicationSubmitBtn');if(appBtn)appBtn.classList.add('hidden');
+};
+
+document.getElementById('checkStatus').onclick=()=>{
+  const val=document.getElementById('statusId').value.trim();
+  const a=db.applications.find(x=>x.id===val);
+  const el=document.getElementById('statusResult');
+  if(!a){el.innerHTML='<div class="notice">No application found with that ID.</div>';return}
+  const stages=['Pending BCT Review','Advanced to Background Check','Background Cleared - Documents Needed','Approved BCT Subcontractor'];
+  const docs=(a.documents||[]);
+  const docUpload=a.status==='Background Cleared - Documents Needed'?`<div class="card section"><h3>Required Contractor Documents</h3><p class="muted">Upload the documents BCT requested. BCT must review them before final approval.</p><label>Certificate of Insurance / W-9 / Other Requested Documents</label>${docs.length?'<div class="notice"><b>✓ Documents Submitted to BCT</b><br>Pending BCT review.</div>':`<div class="file-upload-ui"><input id="contractorDocs" type="file" multiple accept=".jpg,.jpeg,.png,.heic,.pdf"><label class="file-upload-button" for="contractorDocs" data-file-choose>Choose Files</label><span class="file-upload-name" id="contractorDocsStatus">No files selected</span></div><button type="button" style="margin-top:10px" onclick="uploadContractorDocs('${a.id}')">Submit Documents to BCT</button>`}<div class="section"><b>Documents on file:</b> ${docs.length?docs.map(d=>`<div><small>${d.name} — ${d.reviewStatus||'Pending BCT Review'}</small></div>`).join(''):'<small> None yet.</small>'}</div></div>`:'';
+  el.innerHTML=`<div class="card"><h3>${a.legalName}</h3><p>${statusBadge(a.status)}</p><p class="muted">${a.trade} • ${a.years} years experience</p><div class="grid grid-4">${stages.map((s,i)=>`<div class="stage ${a.status===s?'active':''}"><b>Stage ${i+1}</b><br><small>${s}</small></div>`).join('')}</div></div>${docUpload}`;
+
+};
+
+window.uploadContractorDocs=(appId)=>{
+  const a=db.applications.find(x=>x.id===appId); if(!a)return;
+  const input=document.getElementById('contractorDocs');
+  const files=[...(accumulatedFiles.contractorDocs||[])];
+  if((a.documents||[]).length){alert('Documents have already been submitted and are pending BCT review.');return;}
+  if(!files.length){alert('Choose at least one document first.');return;}
+  a.documents=a.documents||[];
+  files.forEach(file=>a.documents.push({name:file.name,uploadedAt:new Date().toISOString(),reviewStatus:'Pending BCT Review'}));
+  accumulatedFiles.contractorDocs=[];
+  save();
+  alert('Documents submitted to BCT for review.');
+  document.getElementById('checkStatus').click();
+};
+
+function nextStatus(a,action){
+  if(action==='advance') a.status='Advanced to Background Check';
+  if(action==='clear') a.status='Background Cleared - Documents Needed';
+  if(action==='approve') a.status='Approved BCT Subcontractor';
+  if(action==='reject') a.status='Rejected';
+  save();
+}
+function renderApps(){
+  const t=document.getElementById('appTable');
+  t.innerHTML=db.applications.map(a=>{
+    let actions='';
+    if(a.status==='Pending BCT Review')actions=`<button onclick="act('${a.id}','advance')">Advance</button> <button class="danger" onclick="act('${a.id}','reject')">Reject</button>`;
+    else if(a.status==='Advanced to Background Check')actions=`<button class="success" onclick="act('${a.id}','clear')">Background Clear</button> <button class="danger" onclick="act('${a.id}','reject')">Reject</button>`;
+    else if(a.status==='Background Cleared - Documents Needed'){
+      const docs=a.documents||[];
+      const docsUI=docs.length?docs.map((d,i)=>`<div style="margin-top:6px"><small>${d.name} — ${d.reviewStatus||'Pending BCT Review'}</small> ${d.reviewStatus!=='Approved'?`<button class="secondary" onclick="reviewContractorDoc('${a.id}',${i},'Approved')">Approve Doc</button>`:''}</div>`).join(''):'<div><small>No required documents submitted yet.</small></div>';
+      const ready=docs.length>0 && docs.every(d=>d.reviewStatus==='Approved');
+      actions=`${docsUI}<div style="margin-top:8px">${ready?`<button class="success" onclick="act('${a.id}','approve')">Final Approve</button>`:'<button class="secondary" disabled>Final Approve — Documents Pending</button>'}</div>`;
+    }
+    else actions='—';
+    return `<tr><td data-label="ID">${a.id}</td><td data-label="Applicant"><b>${a.legalName||''}</b><br><small>${a.businessName||''}</small><br><small>${(a.photos||[]).length} work files</small></td><td data-label="Trade">${a.trade||''}</td><td data-label="Status">${statusBadge(a.status)}</td><td data-label="Actions">${actions}</td></tr>`;
+  }).join('')||'<tr><td colspan="5" class="muted">No applications yet.</td></tr>';
+}
+window.reviewContractorDoc=(appId,index,status)=>{const a=db.applications.find(x=>x.id===appId);if(!a||!a.documents?.[index])return;a.documents[index].reviewStatus=status;a.documents[index].reviewedAt=new Date().toISOString();save();};
+window.act=(id,action)=>{const a=db.applications.find(x=>x.id===id);if(!a)return;if(action==='approve'){const docs=a.documents||[];if(!docs.length||!docs.every(d=>d.reviewStatus==='Approved')){alert('Required contractor documents must be submitted and approved before Final Approval.');return;}}nextStatus(a,action)}
+
+document.getElementById('jobForm').onsubmit=e=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const j={id:jobId(),created:new Date().toISOString(),bids:0};
+  for(const [k,v] of f.entries()){j[k]=v}
+  j.location=[j.city,j.jobState].filter(Boolean).join(', ');
+  db.jobs.unshift(j);save();e.target.reset();const jb=e.target.querySelector('button[type=submit]');if(jb){jb.textContent='✓ Job Published — '+j.id;jb.disabled=true;jb.classList.add('success');}alert('BCT job published as '+j.id+'. Refresh or reopen BCT Admin when you are ready to create another separate job.');
+}
+function jobCardHtml(j,closed){
+  const awarded=j.status==='Awarded';
+  const source=j.sourceProjectId?db.customerProjects.find(p=>p.id===j.sourceProjectId):null;
+  const completed=source?.workflowStage==='Completed';
+  const finalClosed=closed||awarded||completed;
+  const approved=db.applications.find(a=>a.status==='Approved BCT Subcontractor');
+  const existing=approved&&db.bids.find(b=>b.jobId===j.id&&b.appId===approved.id&&b.status!=='Rejected');
+  const action=finalClosed?`<span class="badge good">${completed?'Completed':'Bidding Closed'}</span>`:(existing?`<button class="success" disabled>✓ Bid Submitted — ${existing.status||'Pending Review'}</button>`:`<button onclick="demoBid('${j.id}')">Submit Bid</button>`);
+  return `<div class="card job"><div><div class="project-meta"><span class="badge good">${j.id}</span><span class="badge ${finalClosed?'good':'info'}">${completed?'Completed':awarded?'Awarded':j.trade}</span>${j.verifiedCustomer?'<span class="verified-customer">BCT VERIFIED CUSTOMER</span>':''}</div><h3>${j.id} — ${j.title}</h3><div class="muted">${j.location||''}</div><p>${j.scope||''}</p><small>Start: ${j.startDate||'TBD'} • Bid deadline: ${j.bidDeadline||'TBD'}</small></div><div class="right">${Number(j.budget)>0?`<div class="metric" style="font-size:22px">$${Number(j.budget).toLocaleString()}</div><small>target amount</small>`:'<small>BCT target not published</small>'}<br><br>${action}</div></div>`;
+}
+function renderJobs(){
+  const open=[],closed=[];
+  db.jobs.forEach(j=>{const p=j.sourceProjectId?db.customerProjects.find(x=>x.id===j.sourceProjectId):null;((j.status==='Awarded'||p?.workflowStage==='Completed')?closed:open).push(j)});
+  const el=document.getElementById('jobList');
+  el.innerHTML=open.map(j=>jobCardHtml(j,false)).join('')||'<div class="notice"><b>No jobs are currently open for bidding.</b></div>';
+  const sec=document.getElementById('closedJobsSection'),ce=document.getElementById('closedJobList');
+  if(sec&&ce){sec.classList.toggle('hidden',!closed.length);ce.innerHTML=closed.map(j=>jobCardHtml(j,true)).join('');}
+  applyBctLanguage(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
+}
+window.demoBid=(jid)=>{
+  const j=db.jobs.find(x=>x.id===jid);
+  if(j&&j.status==='Awarded'){alert('This job has already been awarded. Bidding is closed.');return}
+  const approved=db.applications.find(a=>a.status==='Approved BCT Subcontractor');
+  if(!approved){alert('Demo rule: no bid allowed until at least one subcontractor is approved.');return}
+  const existing=db.bids.find(b=>b.jobId===jid&&b.appId===approved.id&&b.status!=='Rejected');
+  if(existing){alert('A bid from this subcontractor has already been submitted for this job.');return}
+  const amount=prompt('Enter bid amount for '+approved.legalName+':');
+  if(!amount||Number(amount)<=0)return;
+  db.bids.push({id:bidId(),jobId:jid,appId:approved.id,amount:Number(amount),status:'Pending Review',created:new Date().toISOString()});
+  if(j)j.bids=(j.bids||0)+1;save();alert('Bid submitted.');
+}
+function renderBids(){
+  const t=document.getElementById('bidTable');
+  if(!t)return;
+  t.innerHTML=db.bids.map(b=>{
+    if(!b.status)b.status='Pending Review';
+    const j=db.jobs.find(x=>x.id===b.jobId)||{};
+    const a=db.applications.find(x=>x.id===b.appId)||{};
+    const date=b.created?new Date(b.created).toLocaleDateString():'—';
+    let actions='—';
+    if(b.status==='Pending Review')actions=`<button class="success" onclick="bidAct('${b.id||''}','${b.jobId}','${b.appId}','accept')">Accept Bid</button> <button class="danger" onclick="bidAct('${b.id||''}','${b.jobId}','${b.appId}','reject')">Reject Bid</button>`;
+    return `<tr><td data-label="Job"><span class="badge good">${j.id||b.jobId}</span><br><b>${j.title||b.jobId}</b><br><small>${j.location||''}</small></td><td data-label="Subcontractor"><b>${a.legalName||b.appId}</b><br><small>${a.businessName||''}</small></td><td data-label="Subcontractor Bid"><b>$${Number(b.amount||0).toLocaleString()}</b></td><td data-label="BCT Target">$${Number(j.budget||0).toLocaleString()}</td><td data-label="Status">${statusBadge(b.status)}</td><td data-label="Submitted">${date}</td><td data-label="Actions">${actions}</td></tr>`;
+  }).join('')||'<tr><td colspan="7" class="muted">No bids submitted yet.</td></tr>';
+}
+window.bidAct=(bidId,jobId,appId,action)=>{
+  let b=db.bids.find(x=>x.id===bidId);
+  if(!b)b=db.bids.find(x=>x.jobId===jobId&&x.appId===appId&&(!x.status||x.status==='Pending Review'));
+  if(!b)return;
+  const j=db.jobs.find(x=>x.id===b.jobId);
+  if(action==='accept'){
+    if(!confirm('Accept this bid and award the job? This will close bidding for this job.'))return;
+    b.status='Accepted / Awarded';
+    if(j){j.status='Awarded';j.awardedBidId=b.id||'';j.awardedAppId=b.appId;j.awardedAmount=b.amount;}
+    db.bids.forEach(x=>{if(x!==b&&x.jobId===b.jobId&&(!x.status||x.status==='Pending Review'))x.status='Not Selected';});
+    const source=j?.sourceProjectId?db.customerProjects.find(p=>p.id===j.sourceProjectId):null;
+    if(source&&!source.assignedContractorId){
+      const assigned=assignProjectContractor(source.id,b.appId,true);
+      if(!assigned){b.status='Pending Review';if(j){j.status='Open';j.awardedBidId='';j.awardedAppId='';j.awardedAmount='';}alert('The bid was not awarded because contractor assignment was not approved.');return;}
+      source.statusHistory=source.statusHistory||[];source.statusHistory.unshift({status:'Bid Awarded',at:new Date().toISOString(),note:'Winning bid $'+Number(b.amount||0).toLocaleString()+' automatically assigned to '+source.assignedContractorName});
+    }
+  }
+  if(action==='reject'){if(!confirm('Reject this bid?'))return;b.status='Rejected';}
+  save();
+}
+
+const seedDemoBtn=document.getElementById('seedDemo'); if(seedDemoBtn)seedDemoBtn.onclick=()=>{
+  if(!db.applications.length)db.applications.push({
+    id:'BCT-482731',legalName:'Marcus Johnson',businessName:'MJ Home Services',trade:'Siding',years:'8',
+    serviceArea:'Indianapolis / Carmel / Fishers',status:'Pending BCT Review',photos:['siding-before.jpg','siding-after.jpg'],
+    created:new Date().toISOString()
+  });
+  if(!db.jobs.length)db.jobs.push({
+    id:'JOB-2048',title:'Vinyl Siding Repair',trade:'Siding',location:'Indianapolis, IN',
+    budget:'1450',scope:'Re-lock loose siding and replace damaged pieces on two elevations.',
+    startDate:'',bidDeadline:'',bids:0,created:new Date().toISOString()
+  });
+  save();
+}
+
+function serviceCallId(){return uniqueCode('SVC-',6,db.serviceCalls)}
+const serviceCallForm=document.getElementById('serviceCallForm');
+if(serviceCallForm)serviceCallForm.onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const job=String(f.get('jobNumber')||'').trim().toUpperCase();if(!db.jobs.some(j=>j.id===job)){alert('Enter a valid existing BCT JOB number.');return;}const sc={id:serviceCallId(),jobNumber:job,type:f.get('type'),issue:f.get('issue'),status:'Open - BCT Service Review',created:new Date().toISOString()};db.serviceCalls.unshift(sc);save();e.target.reset();alert('Service call '+sc.id+' created and linked to '+job+'.');};
+function renderServiceCalls(){const el=document.getElementById('serviceCallList');if(!el)return;el.innerHTML=(db.serviceCalls||[]).map(sc=>`<div class="card"><div class="project-meta"><span class="badge good">${sc.id}</span><span class="badge info">${sc.jobNumber}</span><span class="badge warn">${sc.status}</span></div><b>${sc.type}</b><p>${sc.issue}</p><small>BCT service team review required before responsibility or charges are determined.</small></div>`).join('')||'<div class="muted">No service calls yet.</div>'; }
+function renderAll(){
+  const apps=db.applications, jobs=db.jobs, bids=db.bids;
+  document.getElementById('m-apps').textContent=apps.length;
+  document.getElementById('m-approved').textContent=apps.filter(a=>a.status==='Approved BCT Subcontractor').length;
+  document.getElementById('m-jobs').textContent=jobs.length;
+  document.getElementById('m-bids').textContent=bids.length;
+  document.getElementById('a-apps').textContent=apps.length;
+  document.getElementById('a-pending').textContent=apps.filter(a=>a.status==='Pending BCT Review').length;
+  document.getElementById('a-bg').textContent=apps.filter(a=>a.status.includes('Background')).length;
+  document.getElementById('a-approved').textContent=apps.filter(a=>a.status==='Approved BCT Subcontractor').length;
+  renderApps(); renderJobs(); renderBids(); renderCustomerProjectsAdmin(); renderServiceCalls();
+}
+renderAll();
+</script>
+
+<script>
+// BCT V46 launch cutover overlay. This intentionally replaces the remaining critical localStorage handlers
+// with authenticated Supabase RPC/Storage calls while preserving the existing page layout.
+(function(){
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtStatus=s=>String(s||'').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
+  let publicBoot=null, homeownerState=null, contractorState=null, adminState=null;
+  function safeName(name){return String(name||'file').replace(/[^A-Za-z0-9._-]+/g,'_').slice(-120)}
+  function canonicalNumber(prefix){const a=new Uint32Array(1);crypto.getRandomValues(a);return `${prefix}-${new Date().getFullYear()}-${String((a[0]%900000)+100000)}`}
+  function passwordPolicyError(password){if(String(password||'').length<7)return 'Use at least 7 characters.';if(!/\d/.test(password))return 'Add at least one number.';if(!/[^A-Za-z0-9\s]/.test(password))return 'Add at least one special character.';return ''}
+  function setupPasswordPair(first,second,status){const a=$(first),b=$(second),out=$(status);if(!a||!b||!out)return;const check=()=>{const policy=passwordPolicyError(a.value),matches=Boolean(a.value&&b.value&&a.value===b.value),message=policy||(!b.value?'Confirm the password.':(!matches?'Passwords do not match.':'✓ Passwords match and meet BCT requirements.'));out.textContent=message;out.className=`password-check ${!policy&&matches?'good':a.value&&b.value?'bad':''}`;a.setCustomValidity(policy);b.setCustomValidity(!policy&&b.value&&!matches?'Passwords do not match.':'');return !policy&&matches};a.addEventListener('input',check);b.addEventListener('input',check);check();}
+  function validMatchingPassword(password,confirmation){const error=passwordPolicyError(password);if(error)throw new Error(error);if(password!==confirmation)throw new Error('Passwords do not match.');}
+  async function rpc(name,args={}){const {data,error}=await supabaseClient.rpc(name,args);if(error)throw error;return data}
+  async function user(){const {data,error}=await supabaseClient.auth.getUser();if(error)throw error;return data.user}
+  function note(id,html,kind='notice'){const el=$(id);if(el)el.innerHTML=`<div class="${kind}">${html}</div>`}
+
+  async function loadPublic(){
+    publicBoot=await rpc('bct_frontend_public_bootstrap');
+    const services=publicBoot?.homeowner_form?.services||publicBoot?.services||[];
+    const customerGrid=document.querySelector('#customerProjectForm .check-grid');
+    if(customerGrid)customerGrid.innerHTML=services.map(s=>`<div class="check-tile"><label><input type="checkbox" name="service" value="${esc(s.code)}">${esc(s.label||s.display_name)}</label></div>`).join('');
+    const tradeSelects=[document.querySelector('#applicationForm select[name="trade"]'),document.querySelector('#jobForm select[name="trade"]')].filter(Boolean);
+    tradeSelects.forEach(sel=>sel.innerHTML='<option value="">Select BCT service</option>'+services.map(s=>`<option value="${esc(s.code)}">${esc(s.label||s.display_name)}</option>`).join(''));
+    const langs=publicBoot?.contractor_form?.languages||publicBoot?.languages||[];
+    const lbox=$('contractorLanguageOptions');
+    if(lbox)lbox.innerHTML=langs.map(l=>`<div class="check-tile"><label><input type="checkbox" name="spokenLanguage" value="${esc(l.code)}" ${l.code==='en'?'checked':''}>${esc(l.native_name||l.name)}</label></div>`).join('');
+    const config=publicBoot?.config||{};
+    const finance=$('bctFinancingLink');if(finance&&config.financing_customer_prequal_url){finance.href=config.financing_customer_prequal_url;finance.textContent=config.financing_link_label||'Check if you qualify'}
+    if($('customerProjectLookup'))$('customerProjectLookup').placeholder=config.project_number_example||'BCT-2026-123456';
+    if($('statusId'))$('statusId').placeholder=config.application_number_example||'APP-2026-123456';
+  }
+
+  async function uploadProjectFiles(project,files){
+    if(!files?.length)return 0; const u=await user(); let count=0;
+    for(const file of files){
+      const path=`${u.id}/${project.id}/${crypto.randomUUID()}-${safeName(file.name)}`;
+      const {error}=await supabaseClient.storage.from('bct-project-files').upload(path,file,{upsert:false,contentType:file.type||undefined});
+      if(error)throw error;
+      await rpc('bct_register_project_file',{p_project_id:project.id,p_storage_path:path,p_original_filename:file.name,p_mime_type:file.type||null,p_file_size:file.size});count++;
+    }
+    return count;
+  }
+  async function uploadContractorFiles(files,documentType='supporting_document'){
+    if(!files?.length)return 0; const u=await user(); const app=(contractorState?.application||[])[0]; if(!app)throw new Error('Contractor application not found.');let count=0;
     for(const file of files){const path=`${u.id}/${app.id}/${crypto.randomUUID()}-${safeName(file.name)}`;const {error}=await supabaseClient.storage.from('bct-contractor-documents').upload(path,file,{upsert:false,contentType:file.type||undefined});if(error)throw error;await rpc('bct_register_contractor_document',{p_document_type:documentType,p_storage_path:path,p_original_filename:file.name});count++}return count;
   }
 
