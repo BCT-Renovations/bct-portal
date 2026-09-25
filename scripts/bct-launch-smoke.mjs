@@ -25,6 +25,11 @@ scripts.forEach((script, index) => {
 const requiredMarkers = [
   ['homeowner portal sign in', 'bctHomeLoginBtn'],
   ['contractor portal sign in', 'bctContractorLoginBtn'],
+  ['contractor screening test', 'contractorScreeningTest'],
+  ['contractor screening pass score', 'BCT_SCREENING_PASS_SCORE'],
+  ['contractor screening lockout', 'locked for 14 days'],
+  ['contractor access lock message', 'Contractor access locked'],
+  ['admin screening controls', 'bctAdminScreeningAction'],
   ['admin protected dashboard', 'BCT Admin Dashboard'],
   ['forgot-password request form', 'passwordRequestForm'],
   ['two-box password reset form', 'passwordResetNew'],
@@ -61,6 +66,8 @@ assert(count(/Choose Files|Choose Documents|Choose Photos/gi) >= 4, 'Expected cl
 assert(!/service_role|SUPABASE_SERVICE_ROLE|sb_secret_/i.test(html), 'Public HTML must not expose Supabase service-role or secret keys.');
 assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable key.');
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
+assert(html.includes('screening_result:screeningResult'), 'Contractor application payload must include screening results.');
+assert(html.includes('contractorAccessMessage(app)'), 'Contractor jobs and bids must be gated by screening/admin approval.');
 assert(securitySql.includes('no_public_execute_on_admin_rpcs'), 'Supabase security smoke SQL must check public admin RPC execution.');
 assert(securitySql.includes('unexpected_security_definer_count_zero'), 'Supabase security smoke SQL must check unexpected SECURITY DEFINER functions.');
 
