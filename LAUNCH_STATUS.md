@@ -29,6 +29,7 @@ Last verified: 2026-09-25
 - Current source now hard-locks homeowner and contractor submission forms after a successful submit, blocks duplicate in-flight submits, and uses the custom single file-picker UI for authenticated homeowner and contractor document uploads.
 - Locale bundles no longer expose old prototype/test-account wording for the homeowner account and project-file storage copy.
 - Approved contractors now submit private bids with inline amount, start-date, duration, and notes fields instead of mobile-unfriendly prompt popups.
+- Homeowner and contractor authenticated file uploads now report choose/upload/success/failure status inline instead of using blocking popups.
 
 ## Remaining external gates
 
