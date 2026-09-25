@@ -30,6 +30,7 @@ Last verified: 2026-09-25
 - Locale bundles no longer expose old prototype/test-account wording for the homeowner account and project-file storage copy.
 - Approved contractors now submit private bids with inline amount, start-date, duration, and notes fields instead of mobile-unfriendly prompt popups.
 - Homeowner and contractor authenticated file uploads now report choose/upload/success/failure status inline instead of using blocking popups.
+- Live Supabase admin actions now report inline success/failure status and use in-page confirmation for bid awards, change-order approval, job approvals, launch refresh, job publishing, and service-call creation.
 
 ## Remaining external gates
 
