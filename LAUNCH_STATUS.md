@@ -28,6 +28,7 @@ Last verified: 2026-09-25
 - Live production HTML was checked for V46, Forgot Password, password rules, Roofing, and Job Health Dashboard controls.
 - Current source now hard-locks homeowner and contractor submission forms after a successful submit, blocks duplicate in-flight submits, and uses the custom single file-picker UI for authenticated homeowner and contractor document uploads.
 - Locale bundles no longer expose old prototype/test-account wording for the homeowner account and project-file storage copy.
+- Approved contractors now submit private bids with inline amount, start-date, duration, and notes fields instead of mobile-unfriendly prompt popups.
 
 ## Remaining external gates
 
