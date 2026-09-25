@@ -22,7 +22,8 @@ Last verified: 2026-09-25
 - Transient rollback smoke tests exercised scheduled jobs, weather, materials, change orders, approvals, milestones, financing, escrow, and job-health summaries.
 - `git diff --check` passes.
 - All four inline scripts in `index.html` parse successfully.
-- `node scripts/bct-launch-smoke.mjs` passes and verifies password recovery, duplicate-submit guards, multi-file upload UI, contractor bidding, admin actions, job health, financing, escrow, change orders, service calls, translation, and public-key safety markers.
+- `node scripts/bct-launch-smoke.mjs` passes and verifies password recovery, duplicate-submit guards, multi-file upload UI, contractor bidding, admin actions, job health, financing, escrow, change orders, service calls, translation, public-key safety markers, and the Supabase security smoke-check script.
+- `scripts/bct-supabase-security-smoke.sql` is available for Supabase SQL Editor/MCP execution against admin RPC grants, password-history access, storage policy breadth, and unexpected `SECURITY DEFINER` functions.
 - The current working tree is clean.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
 - Production deployment `dpl_4AuJC78D3bD3bbg1ntnjvGYJArp3` is READY on the existing V45 project.
