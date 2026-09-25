@@ -1,5 +1,5 @@
-Warning: truncated output (original token count: 56869)
-Total output lines: 1540
+Warning: truncated output (original token count: 57755)
+Total output lines: 1561
 
 <!DOCTYPE html>
 <html lang="en">
@@ -430,6 +430,17 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div class="card"><div id="a-approved" class="metric">0</div><small>Approved</small></div>
   </div>
 
+  <div class="card section" id="bctLaunchControlCenter">
+    <div class="toolbar"><div><h3>Launch Control Center</h3><p class="muted">Live readiness, security, notification delivery, policy status, and work that still needs BCT attention. Customer pilot remains closed until these checks are complete.</p></div><button type="button" class="secondary" id="refreshLaunchControlsBtn">Refresh Controls</button></div>
+    <div class="grid grid-4 section">
+      <div class="card"><div id="lc-ready" class="metric">—</div><small>Frontend Readiness</small></div>
+      <div class="card"><div id="lc-actions" class="metric">0</div><small>Open Action Items</small></div>
+      <div class="card"><div id="lc-email" class="metric">0</div><small>Email Failures</small></div>
+      <div class="card"><div id="lc-compliance" class="metric">0</div><small>Critical Compliance</small></div>
+    </div>
+    <div id="launchControlList" class="grid grid-2"></div>
+  </div>
+
   <div class="card section">
     <h3>Applicant Pipeline</h3>
     <div class="app-review-wrap"><table class="app-review-table">
@@ -468,40 +479,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div class="toolbar"><div><h3 id="jobManagementTitle">Manage BCT Job</h3><p id="jobManagementSub" class="muted"></p></div><button type="button" class="secondary" id="closeJobManagementBtn">Close</button></div>
     <div id="jobManagementStatus" class="notice hidden"></div>
     <div class="grid grid-2 section">
-      <form id="jobStatusForm" class="stage"><h3>Job Status</h3><label>Status</label><select name="status"><option value="open_for_bids">Open for bids</option><option value="bid_review">Bid review</option><option value="awarded">Awarded</option><option value="scheduled">Scheduled</option><option value="in_progress">In progress</option><option value="on_hold">On hold</option><option value="completed">Completed</option></select><button type="submit">Save Status</button></form>
-      <form id="jobScheduleForm" class="stage"><h3>Schedule</h3><label>Event Type</label><select name="eventType"><option>Site Visit</option><option>Start</option><option>Work Day</option><option>Inspection</option><option>Customer Meeting</option></select><label>Title</label><input name="title" required><label>Starts</label><input name="startsAt" type="datetime-local" required><label>Ends</label><input name="endsAt" type="datetime-local"><label>Notes</label><textarea name="notes"></textarea><button type="submit">Add Schedule Event</button></form>
-      <form id="jobWeatherForm" class="…36869 tokens truncated…String()
-  });
-  save();
-}
-
-function serviceCallId(){return uniqueCode('SVC-',6,db.serviceCalls)}
-const serviceCallForm=document.getElementById('serviceCallForm');
-if(serviceCallForm)serviceCallForm.onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const job=String(f.get('jobNumber')||'').trim().toUpperCase();if(!db.jobs.some(j=>j.id===job)){alert('Enter a valid existing BCT JOB number.');return;}const sc={id:serviceCallId(),jobNumber:job,type:f.get('type'),issue:f.get('issue'),status:'Open - BCT Service Review',created:new Date().toISOString()};db.serviceCalls.unshift(sc);save();e.target.reset();alert('Service call '+sc.id+' created and linked to '+job+'.');};
-function renderServiceCalls(){const el=document.getElementById('serviceCallList');if(!el)return;el.innerHTML=(db.serviceCalls||[]).map(sc=>`<div class="card"><div class="project-meta"><span class="badge good">${sc.id}</span><span class="badge info">${sc.jobNumber}</span><span class="badge warn">${sc.status}</span></div><b>${sc.type}</b><p>${sc.issue}</p><small>BCT service team review required before responsibility or charges are determined.</small></div>`).join('')||'<div class="muted">No service calls yet.</div>'; }
-function renderAll(){
-  const apps=db.applications, jobs=db.jobs, bids=db.bids;
-  document.getElementById('m-apps').textContent=apps.length;
-  document.getElementById('m-approved').textContent=apps.filter(a=>a.status==='Approved BCT Subcontractor').length;
-  document.getElementById('m-jobs').textContent=jobs.length;
-  document.getElementById('m-bids').textContent=bids.length;
-  document.getElementById('a-apps').textContent=apps.length;
-  document.getElementById('a-pending').textContent=apps.filter(a=>a.status==='Pending BCT Review').length;
-  document.getElementById('a-bg').textContent=apps.filter(a=>a.status.includes('Background')).length;
-  document.getElementById('a-approved').textContent=apps.filter(a=>a.status==='Approved BCT Subcontractor').length;
-  renderApps(); renderJobs(); renderBids(); renderCustomerProjectsAdmin(); renderServiceCalls();
-}
-renderAll();
-</script>
-
-<script>
-// BCT V46 launch cutover overlay. This intentionally replaces the remaining critical localStorage handlers
-// with authenticated Supabase RPC/Storage calls while preserving the existing page layout.
-(function(){
-  const $=id=>document.getElementById(id);
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const fmtStatus=s=>String(s||'').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
-  let publicBoot=null, homeownerState=null, contractorState=null, adminState=null;
+      <form id="jobStatusForm" class="stage"><h3>Job Status</h3><label>Status</label><select name="status"><option va…37755 tokens truncated…ull, homeownerState=null, contractorState=null, adminState=null;
   function safeName(name){return String(name||'file').replace(/[^A-Za-z0-9._-]+/g,'_').slice(-120)}
   function canonicalNumber(prefix){const a=new Uint32Array(1);crypto.getRandomValues(a);return `${prefix}-${new Date().getFullYear()}-${String((a[0]%900000)+100000)}`}
   async function rpc(name,args={}){const {data,error}=await supabaseClient.rpc(name,args);if(error)throw error;return data}
@@ -617,8 +595,18 @@ renderAll();
   $('jobApprovalForm').onsubmit=async e=>{e.preventDefault();try{const j=managedJobOrThrow(),f=managedFormData(e.target);await rpc('bct_admin_create_job_approval',{p_project_id:j.project_id,p_job_id:j.job_id,p_approval_type:f.get('type'),p_notes:f.get('notes')});e.target.reset();await manageSuccess('Approval request created.')}catch(x){alert(x.message||x)}};
   $('jobFinanceForm').onsubmit=async e=>{e.preventDefault();try{const j=managedJobOrThrow(),f=managedFormData(e.target);await rpc('bct_admin_set_financing',{p_project_id:j.project_id,p_status:f.get('status'),p_application_reference:f.get('reference')||null,p_approved_amount:Number(f.get('amount'))||null,p_customer_shared_approval:f.get('shared')==='on',p_notes:f.get('notes')||null});await manageSuccess('Financing record saved.')}catch(x){alert(x.message||x)}};
   $('jobEscrowForm').onsubmit=async e=>{e.preventDefault();try{const j=managedJobOrThrow(),f=managedFormData(e.target);await rpc('bct_admin_set_escrow',{p_project_id:j.project_id,p_status:f.get('status'),p_provider:f.get('provider')||null,p_external_reference:f.get('reference')||null,p_amount:Number(f.get('amount'))||null,p_homeowner_approved_release:f.get('homeownerRelease')==='on',p_bct_approved_release:f.get('bctRelease')==='on',p_notes:f.get('notes')||null});await manageSuccess('Escrow record saved.')}catch(x){alert(x.message||x)}};
+  const controlLine=(label,value,ok=false)=>`<div class="stage"><b>${esc(label)}</b><br><span class="badge ${ok?'good':Number(value)>0?'warn':'info'}">${esc(String(value===true?'Ready':value===false?'Needs review':value??'—'))}</span></div>`;
+  function renderLaunchControls(){
+    const readiness=adminState?.launch_readiness||{},queue=adminState?.action_queue||{},delivery=adminState?.notification_delivery||{},policies=adminState?.policy_readiness||{},controls=adminState?.launch_controls||[];
+    const openActions=['pending_job_approvals','pending_purchase_requests','open_tasks','feedback_followups','pending_customer_decisions','open_punch_items','open_cases','open_error_events'].reduce((n,k)=>n+(Number(queue[k])||0),0);
+    $('lc-ready').textContent=readiness.ready_for_frontend_integration?'Ready':'Review';$('lc-actions').textContent=openActions;$('lc-email').textContent=delivery.failed_email||0;$('lc-compliance').textContent=queue.critical_compliance_expirations||0;
+    const list=$('launchControlList');if(!list)return;
+    const incomplete=controls.filter(c=>!c.is_complete);
+    list.innerHTML=`<div class="card"><h3>Launch Gates</h3>${incomplete.length?incomplete.map(c=>`<div class="stage"><b>${esc(fmtStatus(c.control_key))}</b><br><span class="badge warn">Needs completion</span><br><small>${esc(c.notes||'')}</small></div>`).join(''):'<div class="notice backend-live">All recorded launch gates are complete.</div>'}</div><div class="card"><h3>Live Operations</h3><div class="grid grid-2">${controlLine('Pending Approvals',queue.pending_job_approvals||0)}${controlLine('Open Cases',queue.open_cases||0)}${controlLine('Critical Cases',queue.critical_cases||0)}${controlLine('Open Error Events',queue.open_error_events||0)}${controlLine('Queued Email',delivery.queued_email||0)}${controlLine('Failed Email',delivery.failed_email||0)}${controlLine('Policy Content',policies.legal_content_ready,'true'===String(policies.legal_content_ready))}${controlLine('Policy Translations',policies.translation_ready,'true'===String(policies.translation_ready))}</div><h3 class="section">Security & Data</h3><div class="grid grid-2">${controlLine('User Profile Gaps',readiness.domain_user_profile_gaps||0)}${controlLine('Translation Gaps',readiness.language_translation_gaps||0)}${controlLine('Orphan Projects',readiness.orphan_projects||0)}${controlLine('Orphan Jobs',readiness.orphan_jobs||0)}</div></div>`;
+  }
+  if($('refreshLaunchControlsBtn'))$('refreshLaunchControlsBtn').onclick=async()=>{try{await loadAdminState()}catch(e){alert(e.message||e)}};
   async function loadAdminState(){
-    try{adminState=await rpc('bct_frontend_admin_state');const m=adminState.metrics||{};if($('a-apps'))$('a-apps').textContent=m.applications||0;if($('a-pending'))$('a-pending').textContent=m.applications_pending||0;if($('a-bg'))$('a-bg').textContent=(adminState.applications||[]).filter(a=>['background_check','background_cleared_documents_needed'].includes(a.status)).length;if($('a-approved'))$('a-approved').textContent=m.contractors_active||0;renderAdminApps();renderAdminProjects();renderAdminBids();renderAdminServices();fillAdminProjects();await loadJobHealth()}catch(e){console.error(e);alert('BCT Admin backend load failed: '+(e.message||e))}
+    try{adminState=await rpc('bct_frontend_admin_state');const m=adminState.metrics||{};if($('a-apps'))$('a-apps').textContent=m.applications||0;if($('a-pending'))$('a-pending').textContent=m.applications_pending||0;if($('a-bg'))$('a-bg').textContent=(adminState.applications||[]).filter(a=>['background_check','background_cleared_documents_needed'].includes(a.status)).length;if($('a-approved'))$('a-approved').textContent=m.contractors_active||0;renderAdminApps();renderAdminProjects();renderAdminBids();renderAdminServices();fillAdminProjects();renderLaunchControls();await loadJobHealth()}catch(e){console.error(e);alert('BCT Admin backend load failed: '+(e.message||e))}
   }
   function renderAdminApps(){const t=$('appTable'),apps=adminState?.applications||[];if(!t)return;t.innerHTML=apps.length?apps.map(a=>{let actions='';if(a.status==='pending_review')actions=`<button onclick="bctAdminAppStatus('${a.id}','background_check')">Background Check</button> <button class="danger" onclick="bctAdminAppStatus('${a.id}','rejected')">Reject</button>`;else if(a.status==='background_check')actions=`<button class="success" onclick="bctAdminAppStatus('${a.id}','background_cleared_documents_needed')">Background Cleared</button> <button class="danger" onclick="bctAdminAppStatus('${a.id}','rejected')">Reject</button>`;else if(a.status==='background_cleared_documents_needed')actions=`<button class="success" onclick="bctAdminAppStatus('${a.id}','approved')">Final Approve</button>`;return `<tr><td data-label="ID">${esc(a.application_number)}</td><td data-label="Applicant"><b>${esc(a.legal_name)}</b><br><small>${esc(a.business_name||'')}</small></td><td data-label="Trade">${esc(a.primary_trade)}</td><td data-label="Status"><span class="badge info">${esc(fmtStatus(a.status))}</span></td><td data-label="Actions">${actions||'—'}</td></tr>`}).join(''):'<tr><td colspan="5" class="muted">No contractor applications yet.</td></tr>'}
   window.bctAdminAppStatus=async(id,status)=>{try{await rpc('bct_admin_set_application_status',{p_application_id:id,p_status:status});await loadAdminState()}catch(e){alert(e.message||e)}};
