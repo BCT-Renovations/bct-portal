@@ -1,5 +1,5 @@
-Warning: truncated output (original token count: 58781)
-Total output lines: 1602
+Warning: truncated output (original token count: 59365)
+Total output lines: 1611
 
 <!DOCTYPE html>
 <html lang="en">
@@ -136,6 +136,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 }
 
 .backend-live{border-color:#166534!important;background:#052e16!important}.backend-warn{border-color:#92400e!important;background:#451a03!important}.backend-chip{display:inline-block;padding:5px 9px;border-radius:999px;border:1px solid #166534;color:#bbf7d0;font-size:12px;font-weight:800}
+.password-rule{margin:8px 0;color:#cbd5e1;font-size:13px}.password-check{display:inline-block;margin-top:7px;font-size:13px;font-weight:800;color:#fde68a}.password-check.good{color:#bbf7d0}.password-check.bad{color:#fecaca}
 </style>
 </head>
 <body>
@@ -224,9 +225,10 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
       <div><label>Last Name</label><input id="custLast" autocomplete="family-name"></div>
       <div><label>Email</label><input id="custEmail" type="email" autocomplete="email"></div>
       <div><label>Mobile Phone</label><input id="custPhone" autocomplete="tel"></div>
-      <div><label>Create Password</label><input id="custPassword" type="password" autocomplete="new-password"></div>
-      <div><label>Confirm Password</label><input id="custPassword2" type="password" autocomplete="new-password"></div>
+      <div><label>Create Password</label><input id="custPassword" type="password" minlength="7" autocomplete="new-password"></div>
+      <div><label>Confirm Password</label><input id="custPassword2" type="password" minlength="7" autocomplete="new-password"></div>
     </div>
+    <div class="password-rule">Password must have at least 7 characters, one number, and one special character.</div><div id="custPasswordCheck" class="password-check">Enter and confirm a strong password.</div>
     <div class="privacy-note" style="margin-top:12px"><b><span>Privacy:</span></b> <span>Customer contact information is for BCT use and is not displayed in the contractor bidding view.</span></div>
   </div>
 
@@ -314,8 +316,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
         <div><label>Business / Crew Name</label><input name="businessName"></div>
         <div><label>Phone</label><input name="phone" required></div>
         <div><label>Email</label><input name="email" type="email" required autocomplete="email"></div>
-        <div><label>Create Password</label><input name="contractorPassword" type="password" minlength="6" required autocomplete="new-password"></div>
-        <div><label>Confirm Password</label><input name="contractorPassword2" type="password" minlength="6" required autocomplete="new-password"></div>
+        <div><label>Create Password</label><input name="contractorPassword" type="password" minlength="7" required autocomplete="new-password"></div>
+        <div><label>Confirm Password</label><input name="contractorPassword2" type="password" minlength="7" required autocomplete="new-password"></div>
         <div><label>City</label><input name="city" required autocomplete="address-level2"></div><div><label>State</label><select name="state" required autocomplete="address-level1"><option value="">Select state</option><option value="AL">Alabama (AL)</option><option value="AK">Alaska (AK)</option><option value="AZ">Arizona (AZ)</option><option value="AR">Arkansas (AR)</option><option value="CA">California (CA)</option><option value="CO">Colorado (CO)</option><option value="CT">Connecticut (CT)</option><option value="DE">Delaware (DE)</option><option value="FL">Florida (FL)</option><option value="GA">Georgia (GA)</option><option value="HI">Hawaii (HI)</option><option value="ID">Idaho (ID)</option><option value="IL">Illinois (IL)</option><option value="IN" selected>Indiana (IN)</option><option value="IA">Iowa (IA)</option><option value="KS">Kansas (KS)</option><option value="KY">Kentucky (KY)</option><option value="LA">Louisiana (LA)</option><option value="ME">Maine (ME)</option><option value="MD">Maryland (MD)</option><option value="MA">Massachusetts (MA)</option><option value="MI">Michigan (MI)</option><option value="MN">Minnesota (MN)</option><option value="MS">Mississippi (MS)</option><option value="MO">Missouri (MO)</option><option value="MT">Montana (MT)</option><option value="NE">Nebraska (NE)</option><option value="NV">Nevada (NV)</option><option value="NH">New Hampshire (NH)</option><option value="NJ">New Jersey (NJ)</option><option value="NM">New Mexico (NM)</option><option value="NY">New York (NY)</option><option value="NC">North Carolina (NC)</option><option value="ND">North Dakota (ND)</option><option value="OH">Ohio (OH)</option><option value="OK">Oklahoma (OK)</option><option value="OR">Oregon (OR)</option><option value="PA">Pennsylvania (PA)</option><option value="RI">Rhode Island (RI)</option><option value="SC">South Carolina (SC)</option><option value="SD">South Dakota (SD)</option><option value="TN">Tennessee (TN)</option><option value="TX">Texas (TX)</option><option value="UT">Utah (UT)</option><option value="VT">Vermont (VT)</option><option value="VA">Virginia (VA)</option><option value="WA">Washington (WA)</option><option value="WV">West Virginia (WV)</option><option value="WI">Wisconsin (WI)</option><option value="WY">Wyoming (WY)</option><option value="DC">District of Columbia (DC)</option></select></div>
         <div><label>Years Experience</label><input name="years" type="number" min="0" required></div>
         <div><label>Primary Trade</label>
@@ -326,6 +328,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
         <div><label>Service Area</label><input name="serviceArea" required></div>
         <div><label>Reliable Work Vehicle?</label><select name="vehicle"><option>Yes</option><option>No</option></select></div>
       </div>
+      <div class="password-rule">Password must have at least 7 characters, one number, and one special character.</div><div id="contractorPasswordCheck" class="password-check">Enter and confirm a strong password.</div>
       <label>Other Trades</label><input name="otherTrades">
       <label>Tools / Equipment Owned</label><textarea name="tools" required></textarea>
       <label>Most Recent Contractor / Employer</label><input name="employer1" required>
@@ -417,10 +420,11 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   <div class="admin-gate"><div class="card">
     <span class="badge info">Secure Password Reset</span>
     <h2>Set a New Password</h2>
-    <p class="muted">Use the secure reset link sent to your email, then create a new BCT password below. Your new password cannot match any of your last five recorded BCT passwords.</p>
+    <p class="muted">Use the secure reset link sent to your email, then create a new BCT password below. Your new password cannot match any of your last five recorded BCT passwords.</p><div class="password-rule">Password must have at least 7 characters, one number, and one special character.</div>
     <form id="passwordResetForm">
-      <label>New Password</label><input id="passwordResetNew" type="password" autocomplete="new-password" minlength="6" required>
-      <label>Confirm New Password</label><input id="passwordResetConfirm" type="password" autocomplete="new-password" minlength="6" required>
+      <label>New Password</label><input id="passwordResetNew" type="password" autocomplete="new-password" minlength="7" required>
+      <label>Confirm New Password</label><input id="passwordResetConfirm" type="password" autocomplete="new-password" minlength="7" required>
+      <div id="passwordResetCheck" class="password-check">Enter and confirm a strong password.</div>
       <div class="admin-gate-actions"><button type="submit">Save New Password</button><button type="button" class="secondary" data-view="home">Back to Home</button></div>
     </form>
     <div id="passwordResetStatus" class="section"></div>
@@ -466,26 +470,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
 
   <div class="card section">
-    <div class="toolbar"><div><h3>Homeowner Project Review</h3><p class="muted">Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.</p></div><span class="badge info" id="a-customer-projects">0 Customer Projects</span></div>
-    <div id="customerProjectAdminList" class="grid section"></div>
-  </div>
-
-  <div class="card section">
-    <h3>BCT Bid Review</h3>
-    <p class="muted">Review subcontractor bids and award or reject each submission.</p>
-    <div class="bid-review-wrap" style="overflow:auto"><table class="bid-review-table">
-      <thead><tr><th>Job</th><th>Subcontractor</th><th>Subcontractor Bid</th><th>BCT Target</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
-      <tbody id="bidTable"></tbody>
-    </table></div>
-  </div>
-
-  <div class="card section" id="jobHealthDashboard">
-    <div class="toolbar"><div><h3>Live Job Health Dashboard</h3><p class="muted">Every active BCT job: customer, contractor, job nu…38781 tokens truncated…me,p_mime_type:file.type||null,p_file_size:file.size});count++;
-    }
-    return count;
-  }
-  async function uploadContractorFiles(files,documentType='supporting_document'){
-    if(!files?.length)return 0; const u=await user(); const app=(contractorState?.application||[])[0]; if(!app)throw new Error('Contractor application not found.');let count=0;
+    <div class="toolbar"><div><h3>Homeowner Project Review</h3><p class="muted">Customer information is BCT-only. Contr…39365 tokens truncated…ror('Contractor application not found.');let count=0;
     for(const file of files){const path=`${u.id}/${app.id}/${crypto.randomUUID()}-${safeName(file.name)}`;const {error}=await supabaseClient.storage.from('bct-contractor-documents').upload(path,file,{upsert:false,contentType:file.type||undefined});if(error)throw error;await rpc('bct_register_contractor_document',{p_document_type:documentType,p_storage_path:path,p_original_filename:file.name});count++}return count;
   }
 
@@ -503,7 +488,9 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   async function resend(emailId,statusId){try{const email=$(emailId).value.trim();if(!email)throw new Error('Enter your email first.');const {error}=await supabaseClient.auth.resend({type:'signup',email});if(error)throw error;note(statusId,'Confirmation email requested. Please check your inbox and spam/junk folders.')}catch(e){note(statusId,esc(e.message||e))}}
   async function requestPasswordReset(emailId,statusId){try{const email=$(emailId)?.value.trim();if(!email)throw new Error('Enter the email address for this account first.');const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:`${window.location.origin}/#password-reset`});if(error)throw error;note(statusId,'<b>Reset link sent.</b> Check your email, including spam/junk. Open the link on this device to set a new password.')}catch(e){note(statusId,esc(e.message||e))}}
   function openPasswordReset(){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$('view-password-reset')?.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
-  const resetForm=$('passwordResetForm');if(resetForm)resetForm.onsubmit=async e=>{e.preventDefault();try{const p1=$('passwordResetNew').value,p2=$('passwordResetConfirm').value;if(p1.length<6)throw new Error('Use a password with at least 6 characters.');if(p1!==p2)throw new Error('The passwords do not match.');await rpc('bct_validate_password_not_recent',{p_password:p1});const {error}=await supabaseClient.auth.updateUser({password:p1});if(error)throw error;await rpc('bct_record_password_history',{p_password:p1});note('passwordResetStatus','<b>✓ Password updated.</b> Your password history was securely updated, and you can now sign in with the new password.');resetForm.reset();window.history.replaceState(null,'',window.location.pathname)}catch(e){note('passwordResetStatus',esc(e.message||e))}};
+  setupPasswordPair('custPassword','custPassword2','custPasswordCheck');setupPasswordPair('passwordResetNew','passwordResetConfirm','passwordResetCheck');
+  const contractorPassword1=document.querySelector('#applicationForm [name="contractorPassword"]'),contractorPassword2=document.querySelector('#applicationForm [name="contractorPassword2"]');if(contractorPassword1&&contractorPassword2){contractorPassword1.id='contractorPassword';contractorPassword2.id='contractorPassword2';setupPasswordPair('contractorPassword','contractorPassword2','contractorPasswordCheck');}
+  const resetForm=$('passwordResetForm');if(resetForm)resetForm.onsubmit=async e=>{e.preventDefault();try{const p1=$('passwordResetNew').value,p2=$('passwordResetConfirm').value;validMatchingPassword(p1,p2);await rpc('bct_validate_password_not_recent',{p_password:p1});const {error}=await supabaseClient.auth.updateUser({password:p1});if(error)throw error;await rpc('bct_record_password_history',{p_password:p1});note('passwordResetStatus','<b>✓ Password updated.</b> Your password history was securely updated, and you can now sign in with the new password.');resetForm.reset();window.history.replaceState(null,'',window.location.pathname)}catch(e){note('passwordResetStatus',esc(e.message||e))}};
   if($('bctHomeLoginBtn'))$('bctHomeLoginBtn').onclick=homeLogin;if($('bctHomeForgotBtn'))$('bctHomeForgotBtn').onclick=()=>requestPasswordReset('bctHomeEmail','bctHomeAuthStatus');if($('bctHomeLogoutBtn'))$('bctHomeLogoutBtn').onclick=homeLogout;if($('bctHomeResendBtn'))$('bctHomeResendBtn').onclick=()=>resend('bctHomeEmail','bctHomeAuthStatus');
 
   // Replace homeowner project lookup with real authenticated project lookup.
@@ -515,7 +502,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     e.preventDefault();const f=e.target,err=$('customerSubmitError'),btn=$('customerSubmitBtn');const fail=(m,el)=>{err.innerHTML='<b>Please fix this item:</b> '+esc(m);err.classList.remove('hidden');btn.disabled=false;btn.textContent='Submit Project Privately to BCT';el?.focus?.()};err.classList.add('hidden');btn.disabled=true;btn.textContent='Submitting…';
     try{
       const first=$('custFirst').value.trim(),last=$('custLast').value.trim(),email=$('custEmail').value.trim(),phone=$('custPhone').value.trim(),p1=$('custPassword').value,p2=$('custPassword2').value;
-      if(!first)return fail('First Name is required.',$('custFirst'));if(!last)return fail('Last Name is required.',$('custLast'));if(!email)return fail('Email is required.',$('custEmail'));if(!phone)return fail('Mobile Phone is required.',$('custPhone'));if(!p1||p1.length<6)return fail('Use a password with at least 6 characters.',$('custPassword'));if(p1!==p2)return fail('The passwords do not match.',$('custPassword2'));
+      if(!first)return fail('First Name is required.',$('custFirst'));if(!last)return fail('Last Name is required.',$('custLast'));if(!email)return fail('Email is required.',$('custEmail'));if(!phone)return fail('Mobile Phone is required.',$('custPhone'));try{validMatchingPassword(p1,p2)}catch(passwordError){return fail(passwordError.message,$('custPassword'))};
       for(const name of ['address','city','state','zip','description']){const el=f.elements[name];if(!String(el?.value||'').trim())return fail(`${name} is required.`,el)}
       const services=[...f.querySelectorAll('input[name="service"]:checked')].map(el=>el.value);if(!services.length)return fail('Select at least one BCT service.');if(!$('customerTruth').checked||!$('customerPrivacy').checked)return fail('Complete both certification checkboxes.');
       const projectNumber=canonicalNumber('BCT');
@@ -545,7 +532,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
   // Replace contractor pre-application with Supabase Auth + trigger submission.
   const appForm=$('applicationForm');
-  if(appForm)appForm.onsubmit=async e=>{e.preventDefault();const f=e.target,msg=$('applyMsg'),btn=$('applicationSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';try{const fd=new FormData(f),email=String(fd.get('email')||'').trim(),p1=String(fd.get('contractorPassword')||''),p2=String(fd.get('contractorPassword2')||'');if(p1.length<6)throw new Error('Use a password with at least 6 characters.');if(p1!==p2)throw new Error('The passwords do not match.');const refs=[];for(let i=1;i<=5;i++){const name=String(fd.get('ref'+i)||'').trim(),contact=String(fd.get('ref'+i+'contact')||'').trim();if(name&&contact)refs.push({name,contact})}if(refs.length<2)throw new Error('At least two professional references are required.');const langs=[...f.querySelectorAll('input[name="spokenLanguage"]:checked')].map(x=>x.value);if(!langs.length)langs.push($('bctLanguage')?.value||'en');const applicationNumber=canonicalNumber('APP');const photos=[...(window.bctAccumulatedFiles?.workPhotos||[])];const metadata={bct_contractor_submission:'true',application_number:applicationNumber,legal_name:String(fd.get('legalName')||'').trim(),business_name:String(fd.get('businessName')||'').trim(),phone:String(fd.get('phone')||'').trim(),city_state:[fd.get('city'),fd.get('state')].filter(Boolean).join(', '),years_experience:Number(fd.get('years')||0),primary_trade:String(fd.get('trade')||''),crew_size:Number(fd.get('crewSize')||1),service_area:String(fd.get('serviceArea')||'').trim(),reliable_vehicle:fd.get('vehicle')==='Yes',other_trades:String(fd.get('otherTrades')||'').trim(),tools_equipment:String(fd.get('tools')||'').trim(),recent_employer:String(fd.get('employer1')||'').trim(),dates_worked:String(fd.get('dates1')||'').trim(),reason_for_leaving:String(fd.get('reason')||'').trim(),work_performed:String(fd.get('duties1')||'').trim(),additional_work_history:String(fd.get('history2')||'').trim(),currently_insured:fd.get('insured')==='Yes',can_provide_coi:fd.get('coiAvailable')==='Yes',information_certified:fd.get('truth')==='on',photo_certified:!photos.length||fd.get('photoCert')==='on',references_authorized:fd.get('referenceAuth')==='on',background_acknowledged:fd.get('screeningAck')==='on',spoken_languages:langs,trade_capabilities:[String(fd.get('trade')||'')],references};try{await supabaseClient.auth.signOut({scope:'local'})}catch(_e){}const {data,error}=await supabaseClient.auth.signUp({email,password:p1,options:{data:metadata}});if(error)throw error;if(!data?.user)throw new Error('BCT could not create the contractor account.');let photoMsg='';if(data.session){await loadContractorState();if(photos.length){const n=await uploadContractorFiles(photos,'work_photo');photoMsg=`<br>${n} work photo${n===1?'':'s'} uploaded privately.`}}else if(photos.length){photoMsg='<br><b>Work photos:</b> Confirm your email, sign in under Applicant Status, then upload them as Work Photo.'}msg.innerHTML=`<div class="notice backend-live"><b>✓ Pre-Application Submitted</b><br>Your BCT Application Number is <b>${esc(applicationNumber)}</b>.<br>Status: Pending BCT Review.${data.session?'':'<br><b>Next:</b> Check your email and confirm your account.'}${photoMsg}</div>`;f.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=true)}catch(ex){msg.innerHTML=`<div class="notice"><b>Submission failed:</b> ${esc(ex.message||ex)}</div>`;btn.disabled=false;btn.textContent='Submit Pre-Application'}};
+  if(appForm)appForm.onsubmit=async e=>{e.preventDefault();const f=e.target,msg=$('applyMsg'),btn=$('applicationSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';try{const fd=new FormData(f),email=String(fd.get('email')||'').trim(),p1=String(fd.get('contractorPassword')||''),p2=String(fd.get('contractorPassword2')||'');validMatchingPassword(p1,p2);const refs=[];for(let i=1;i<=5;i++){const name=String(fd.get('ref'+i)||'').trim(),contact=String(fd.get('ref'+i+'contact')||'').trim();if(name&&contact)refs.push({name,contact})}if(refs.length<2)throw new Error('At least two professional references are required.');const langs=[...f.querySelectorAll('input[name="spokenLanguage"]:checked')].map(x=>x.value);if(!langs.length)langs.push($('bctLanguage')?.value||'en');const applicationNumber=canonicalNumber('APP');const photos=[...(window.bctAccumulatedFiles?.workPhotos||[])];const metadata={bct_contractor_submission:'true',application_number:applicationNumber,legal_name:String(fd.get('legalName')||'').trim(),business_name:String(fd.get('businessName')||'').trim(),phone:String(fd.get('phone')||'').trim(),city_state:[fd.get('city'),fd.get('state')].filter(Boolean).join(', '),years_experience:Number(fd.get('years')||0),primary_trade:String(fd.get('trade')||''),crew_size:Number(fd.get('crewSize')||1),service_area:String(fd.get('serviceArea')||'').trim(),reliable_vehicle:fd.get('vehicle')==='Yes',other_trades:String(fd.get('otherTrades')||'').trim(),tools_equipment:String(fd.get('tools')||'').trim(),recent_employer:String(fd.get('employer1')||'').trim(),dates_worked:String(fd.get('dates1')||'').trim(),reason_for_leaving:String(fd.get('reason')||'').trim(),work_performed:String(fd.get('duties1')||'').trim(),additional_work_history:String(fd.get('history2')||'').trim(),currently_insured:fd.get('insured')==='Yes',can_provide_coi:fd.get('coiAvailable')==='Yes',information_certified:fd.get('truth')==='on',photo_certified:!photos.length||fd.get('photoCert')==='on',references_authorized:fd.get('referenceAuth')==='on',background_acknowledged:fd.get('screeningAck')==='on',spoken_languages:langs,trade_capabilities:[String(fd.get('trade')||'')],references};try{await supabaseClient.auth.signOut({scope:'local'})}catch(_e){}const {data,error}=await supabaseClient.auth.signUp({email,password:p1,options:{data:metadata}});if(error)throw error;if(!data?.user)throw new Error('BCT could not create the contractor account.');let photoMsg='';if(data.session){await loadContractorState();if(photos.length){const n=await uploadContractorFiles(photos,'work_photo');photoMsg=`<br>${n} work photo${n===1?'':'s'} uploaded privately.`}}else if(photos.length){photoMsg='<br><b>Work photos:</b> Confirm your email, sign in under Applicant Status, then upload them as Work Photo.'}msg.innerHTML=`<div class="notice backend-live"><b>✓ Pre-Application Submitted</b><br>Your BCT Application Number is <b>${esc(applicationNumber)}</b>.<br>Status: Pending BCT Review.${data.session?'':'<br><b>Next:</b> Check your email and confirm your account.'}${photoMsg}</div>`;f.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=true)}catch(ex){msg.innerHTML=`<div class="notice"><b>Submission failed:</b> ${esc(ex.message||ex)}</div>`;btn.disabled=false;btn.textContent='Submit Pre-Application'}};
 
   // Real admin dashboard/data actions.
   let jobHealthState=null,activeManagedJob=null;
