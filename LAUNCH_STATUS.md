@@ -26,7 +26,7 @@ Last verified: 2026-09-25
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
 - Production deployment `dpl_4AuJC78D3bD3bbg1ntnjvGYJArp3` is READY on the existing V45 project.
 - Live production HTML was checked for V46, Forgot Password, password rules, Roofing, and Job Health Dashboard controls.
-- Current source now hard-locks homeowner and contractor submission forms after a successful submit, blocks duplicate in-flight submits, and uses the custom single file-picker UI for authenticated contractor document uploads.
+- Current source now hard-locks homeowner and contractor submission forms after a successful submit, blocks duplicate in-flight submits, and uses the custom single file-picker UI for authenticated homeowner and contractor document uploads.
 
 ## Remaining external gates
 
