@@ -27,6 +27,7 @@ Last verified: 2026-09-25
 - Production deployment `dpl_4AuJC78D3bD3bbg1ntnjvGYJArp3` is READY on the existing V45 project.
 - Live production HTML was checked for V46, Forgot Password, password rules, Roofing, and Job Health Dashboard controls.
 - Current source now hard-locks homeowner and contractor submission forms after a successful submit, blocks duplicate in-flight submits, and uses the custom single file-picker UI for authenticated homeowner and contractor document uploads.
+- Locale bundles no longer expose old prototype/test-account wording for the homeowner account and project-file storage copy.
 
 ## Remaining external gates
 
