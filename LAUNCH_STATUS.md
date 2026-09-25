@@ -31,6 +31,7 @@ Last verified: 2026-09-25
 - Approved contractors now submit private bids with inline amount, start-date, duration, and notes fields instead of mobile-unfriendly prompt popups.
 - Homeowner and contractor authenticated file uploads now report choose/upload/success/failure status inline instead of using blocking popups.
 - Live Supabase admin actions now report inline success/failure status and use in-page confirmation for bid awards, change-order approval, job approvals, launch refresh, job publishing, and service-call creation.
+- Homeowner and contractor sign-in/resend actions now guard against duplicate taps, show friendlier confirmation/authentication errors, and expired password-reset links land on the reset page with a clear recovery message.
 
 ## Remaining external gates
 
