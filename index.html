@@ -1547,7 +1547,11 @@ renderAll();
       for(const name of ['address','city','state','zip','description']){const el=f.elements[name];if(!String(el?.value||'').trim())return fail(`${name} is required.`,el)}
       const services=[...f.querySelectorAll('input[name="service"]:checked')].map(el=>el.value);if(!services.length)return fail('Select at least one BCT service.');if(!$('customerTruth').checked||!$('customerPrivacy').checked)return fail('Complete both certification checkboxes.');
       const projectPayload={street_address:f.elements.address.value.trim(),city:f.elements.city.value.trim(),state:f.elements.state.value.trim(),zip_code:f.elements.zip.value.trim(),property_type:f.elements.propertyType.value,property_owner_status:f.elements.ownerStatus.value,services,project_type:f.elements.projectType.value,description:f.elements.description.value.trim(),has_budget:f.elements.budgetStatus.value==='Yes',budget_range:f.elements.budgetRange.value,desired_start:f.elements.startWindow.value,specific_start_date:f.elements.specificStart.value||'',has_completion_deadline:f.elements.hasDeadline.value==='Yes',completion_deadline:f.elements.deadline.value||'',customer_certified:true,sharing_acknowledged:true};
-      const pendingFiles=[...($('customerFiles')?.files||[]),...(window.bctAccumulatedFiles?.customerFiles||[])];
+      // The file chooser moves each selection into the accumulated queue and clears the input.
+      // Include the live selection only if its change event has not fired yet.
+      const pendingFiles=[...(window.bctAccumulatedFiles?.customerFiles||[])];
+      const seenFiles=new Set(pendingFiles.map(file=>`${file.name}|${file.size}|${file.lastModified}`));
+      for(const file of $('customerFiles')?.files||[]){const key=`${file.name}|${file.size}|${file.lastModified}`;if(!seenFiles.has(key)){pendingFiles.push(file);seenFiles.add(key)}}
       let project=null,projectNumber='',needsEmailConfirmation=false;
       if(activeUser){project=await rpc('bct_submit_homeowner_project',{p_payload:projectPayload});await loadHomeownerState();projectNumber=project.project_number||'';}
       else{
