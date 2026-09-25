@@ -5,5 +5,13 @@
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "BCT Renovations homeowner, contractor, and admin project portal."
+  "description": "BCT Renovations homeowner, contractor, and admin project portal.",
+  "icons": [
+    {
+      "src": "/bct-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
