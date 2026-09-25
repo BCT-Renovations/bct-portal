@@ -1,0 +1,64 @@
+import fs from 'node:fs';
+
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
+function count(pattern) {
+  return [...html.matchAll(pattern)].length;
+}
+
+const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/gi)].map(match => match[1]);
+scripts.forEach((script, index) => {
+  try {
+    new Function(script);
+  } catch (error) {
+    throw new Error(`Inline script ${index + 1} failed to parse: ${error.message}`);
+  }
+});
+
+const requiredMarkers = [
+  ['homeowner portal sign in', 'bctHomeLoginBtn'],
+  ['contractor portal sign in', 'bctContractorLoginBtn'],
+  ['admin protected dashboard', 'BCT Admin Dashboard'],
+  ['forgot-password request form', 'passwordRequestForm'],
+  ['two-box password reset form', 'passwordResetNew'],
+  ['two-box password reset confirmation', 'passwordResetConfirm'],
+  ['password recovery event handler', 'PASSWORD_RECOVERY'],
+  ['expired reset link landing guard', 'Checking your secure reset link'],
+  ['duplicate submit lock helper', 'clearAndLockSubmission'],
+  ['homeowner duplicate submit guard', "f.dataset.submitted==='true'||f.dataset.pending==='true'"],
+  ['contractor duplicate submit guard', "f.dataset.submitted==='true'||f.dataset.pending==='true'"],
+  ['homeowner private uploads', 'bctUploadHomeFiles'],
+  ['contractor private uploads', 'bctContractorUploadDocs'],
+  ['inline contractor bid form', 'bctSubmitRealBid'],
+  ['admin action status banner', 'adminActionStatus'],
+  ['admin in-page confirmation helper', 'adminConfirmRun'],
+  ['admin bid award executor', 'executeAdminBidAward'],
+  ['job health dashboard', 'jobHealthDashboard'],
+  ['job financing workflow', 'jobFinanceForm'],
+  ['job escrow workflow', 'jobEscrowForm'],
+  ['change order workflow', 'jobChangeOrderForm'],
+  ['service call workflow', 'serviceCallForm'],
+  ['launch control center', 'bctLaunchControlCenter'],
+  ['translation bootstrap', 'BCT_STATIC_FORMS'],
+  ['public bootstrap RPC', 'bct_frontend_public_bootstrap'],
+  ['admin state RPC', 'bct_frontend_admin_state']
+];
+
+for (const [label, marker] of requiredMarkers) {
+  assert(html.includes(marker), `Missing ${label}: ${marker}`);
+}
+
+assert(count(/type="file"[^>]*multiple|multiple[^>]*type="file"/gi) >= 5, 'Expected at least five multi-file upload inputs.');
+assert(count(/class="file-upload-ui"/g) >= 5, 'Expected custom file upload UI wrappers for phone-friendly uploads.');
+assert(count(/Choose Files|Choose Documents|Choose Photos/gi) >= 4, 'Expected clean file chooser labels.');
+assert(!/service_role|SUPABASE_SERVICE_ROLE|sb_secret_/i.test(html), 'Public HTML must not expose Supabase service-role or secret keys.');
+assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable key.');
+assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
+
+console.log(`BCT launch smoke passed: ${scripts.length} inline scripts parsed and ${requiredMarkers.length} launch markers verified.`);
