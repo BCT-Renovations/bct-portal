@@ -1,5 +1,5 @@
-Warning: truncated output (original token count: 57755)
-Total output lines: 1561
+Warning: truncated output (original token count: 57976)
+Total output lines: 1583
 
 <!DOCTYPE html>
 <html lang="en">
@@ -479,17 +479,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div class="toolbar"><div><h3 id="jobManagementTitle">Manage BCT Job</h3><p id="jobManagementSub" class="muted"></p></div><button type="button" class="secondary" id="closeJobManagementBtn">Close</button></div>
     <div id="jobManagementStatus" class="notice hidden"></div>
     <div class="grid grid-2 section">
-      <form id="jobStatusForm" class="stage"><h3>Job Status</h3><label>Status</label><select name="status"><option va…37755 tokens truncated…ull, homeownerState=null, contractorState=null, adminState=null;
-  function safeName(name){return String(name||'file').replace(/[^A-Za-z0-9._-]+/g,'_').slice(-120)}
-  function canonicalNumber(prefix){const a=new Uint32Array(1);crypto.getRandomValues(a);return `${prefix}-${new Date().getFullYear()}-${String((a[0]%900000)+100000)}`}
-  async function rpc(name,args={}){const {data,error}=await supabaseClient.rpc(name,args);if(error)throw error;return data}
-  async function user(){const {data,error}=await supabaseClient.auth.getUser();if(error)throw error;return data.user}
-  function note(id,html,kind='notice'){const el=$(id);if(el)el.innerHTML=`<div class="${kind}">${html}</div>`}
-
-  async function loadPublic(){
-    publicBoot=await rpc('bct_frontend_public_bootstrap');
-    const services=publicBoot?.homeowner_form?.services||publicBoot?.services||[];
-    const customerGrid=document.querySelector('#customerProjectForm .check-grid');
+      <form id="jobStatusForm" class="stage"><h3>Job Status</h3><label>Status</label><select name="status"><option va…37976 tokens truncated…ocument.querySelector('#customerProjectForm .check-grid');
     if(customerGrid)customerGrid.innerHTML=services.map(s=>`<div class="check-tile"><label><input type="checkbox" name="service" value="${esc(s.code)}">${esc(s.label||s.display_name)}</label></div>`).join('');
     const tradeSelects=[document.querySelector('#applicationForm select[name="trade"]'),document.querySelector('#jobForm select[name="trade"]')].filter(Boolean);
     tradeSelects.forEach(sel=>sel.innerHTML='<option value="">Select BCT service</option>'+services.map(s=>`<option value="${esc(s.code)}">${esc(s.label||s.display_name)}</option>`).join(''));
@@ -632,6 +622,28 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   document.querySelectorAll('[data-view="jobs"]').forEach(btn=>btn.addEventListener('click',()=>setTimeout(()=>{if(contractorState)renderContractorJobs(contractorState.available_jobs||[])},0)));
   supabaseClient.auth.onAuthStateChange((_event,session)=>{setTimeout(async()=>{try{const u=session?.user;if(!u)return;if(u.app_metadata?.role==='admin')await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}},0)});
   loadPublic().then(async()=>{try{const u=await user();if(!u)return;if(u.app_metadata?.role==='admin')await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}}).catch(e=>console.error('BCT public bootstrap failed',e));
+})();
+</script>
+
+<script>
+/* Launch safety: navigation must keep working even if a non-critical portal script fails. */
+(function(){
+  function openFallbackView(name){
+    const targetName=name==='admin'?'admin-login':name;
+    document.querySelectorAll('.view').forEach(view=>view.classList.add('hidden'));
+    const target=document.getElementById('view-'+targetName);
+    if(target){target.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+  }
+  document.addEventListener('click',event=>{
+    const trigger=event.target.closest('[data-view]');
+    if(!trigger)return;
+    window.setTimeout(()=>{
+      const requested=trigger.dataset.view;
+      const expected=requested==='admin'?'admin-login':requested;
+      const view=document.getElementById('view-'+expected);
+      if(view&&view.classList.contains('hidden'))openFallbackView(requested);
+    },0);
+  });
 })();
 </script>
 
