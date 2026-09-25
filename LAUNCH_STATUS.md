@@ -35,6 +35,7 @@ Last verified: 2026-09-25
 - Live Supabase admin actions now report inline success/failure status and use in-page confirmation for bid awards, change-order approval, job approvals, launch refresh, job publishing, and service-call creation.
 - Homeowner and contractor sign-in/resend actions now guard against duplicate taps, show friendlier confirmation/authentication errors, and expired password-reset links land on the reset page with a clear recovery message.
 - Contractor pre-approval screening is now part of the pre-application flow with pass/fail scoring, two attempts, a 14-day retest lockout, admin screening controls, document checklist messaging, and a front-end hard gate that blocks jobs, bids, and assignments until screening is passed and BCT Admin approves.
+- BCT Admin now has a session activity audit panel that records launch-test admin actions for contractor screening, customer verification, project workflow, bid awards, job publishing, service-call creation, and job-management updates.
 
 ## Remaining external gates
 
