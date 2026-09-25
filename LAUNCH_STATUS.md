@@ -23,10 +23,12 @@ Last verified: 2026-09-25
 - `git diff --check` passes.
 - All four inline scripts in `index.html` parse successfully.
 - The current working tree is clean.
+- Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
+- Production deployment `dpl_4AuJC78D3bD3bbg1ntnjvGYJArp3` is READY on the existing V45 project.
+- Live production HTML was checked for V46, Forgot Password, password rules, Roofing, and Job Health Dashboard controls.
 
 ## Remaining external gates
 
-- Push local commits to `BCT-Renovations/bct-portal` and deploy the latest source to Vercel.
 - Run authenticated live-browser tests for homeowner, contractor, and admin workflows.
 - Test confirmation and password-reset email delivery with a real test mailbox.
 - Verify the notification worker with Resend and mark the provider launch control complete.
