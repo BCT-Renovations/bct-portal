@@ -71,10 +71,12 @@ Last verified: 2026-09-26
 - Contractor safety UI smoke coverage and the master V46 launch dry-run now verify the safety panel, completion RPC, acknowledgment/quiz gates, grace/hold boundaries, and new-work restriction behavior.
 - `index.html` inline scripts parse cleanly again after fixing a missing statement terminator in the BCT Admin safety-compliance renderer.
 - `node scripts/bct-phase1-privacy-communications-smoke.mjs` passes and verifies property-manager fields, multifamily validation markers, resident contact protection, assigned-contractor-only On My Way notices, BCT-activated communications, recording consent readiness, and Twilio disabled-by-default provider settings.
+- Resident names and personal phone numbers stay BCT-only, and only the approved assigned contractor may receive job-specific access instructions after BCT activates the job communication path.
+- `node scripts/bct-phase1-workflow-boundary-smoke.mjs` passes and verifies Phase 1 admin review controls, assignment/bid guards, change-order evidence, escrow release boundaries, closeout prerequisites, warranty/inspection creation guards, private upload limits, operational readiness, automation alerts, local/durable audit distinction, and privacy markers.
 - `20260926172000_optimize_property_communication_policies.sql` adds covering indexes for the new property/communication foreign keys and rewrites the property-manager RLS policies with initplan-friendly `auth.uid()` calls for Supabase performance-advisor cleanup.
 - `20260926173500_consolidate_project_property_manager_policies.sql` is applied and consolidates `bct_projects` homeowner/admin/property-manager SELECT, INSERT, and UPDATE rules into one policy per action while preserving the same access boundaries.
 - Supabase performance advisors no longer report unindexed foreign keys, auth-initplan warnings, or multiple-permissive-policy warnings for the new Phase 1 property/communication tables. Remaining performance notices are `unused_index` INFO findings expected on a launch-prep database with low traffic.
-- Full local `.mjs` smoke suite passes: AI estimating, automation health, contractor onboarding, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, role visibility, safety training, and submission lockout.
+- Full local `.mjs` smoke suite passes: AI estimating, automation health, contractor onboarding, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, Phase 1 workflow boundaries, role visibility, safety training, and submission lockout.
 
 ## Remaining external gates
 
