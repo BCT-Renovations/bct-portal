@@ -36,7 +36,7 @@ assert(html.trim().endsWith('</html>'), 'index.html must end with a closing </ht
 assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must inject the V46 command center/typeahead shell.');
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
 assert(/bct-portal-shell-v\d+-(?:command-center|homeowner-pages)/.test(serviceWorker), 'service worker cache version must stay bumped for V46 UI rollouts.');
-assert(serviceWorker.includes('bct-portal-shell-v6-homeowner-pages'), 'service worker cache version must include the homeowner-pages rollout.');
+assert(serviceWorker.includes('bct-portal-shell-v7-mobile-home-cleanup'), 'service worker cache version must include the mobile-home-cleanup rollout.');
 assert(serviceWorker.includes('/bct-homeowner-pages.js'), 'service worker must inject the paged homeowner portal controller.');
 
 try {
