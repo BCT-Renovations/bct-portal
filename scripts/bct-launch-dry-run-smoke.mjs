@@ -2,6 +2,8 @@ import fs from 'node:fs';
 
 const indexHtml = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const aiHtml = fs.readFileSync(new URL('../ai-estimating.html', import.meta.url), 'utf8');
+const dryRunChecklist = fs.readFileSync(new URL('../LAUNCH_DRY_RUN_CHECKLIST.md', import.meta.url), 'utf8');
+const paidServicesChecklist = fs.readFileSync(new URL('../PAID_SERVICES_CHECKLIST.md', import.meta.url), 'utf8');
 const aiCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260925202000_ai_estimating_core.sql', import.meta.url), 'utf8');
 const readinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 
@@ -69,6 +71,7 @@ assert(indexHtml.includes('renderAdminBids()'), 'Admin dashboard must render bid
 assert(indexHtml.includes('renderLaunchControls()'), 'Admin dashboard must render launch controls.');
 assert(indexHtml.includes('renderOperationalReadiness()'), 'Admin dashboard must render operational readiness.');
 assert(indexHtml.includes('loadJobHealth()'), 'Admin dashboard must load job health.');
+assert(indexHtml.includes('Manual Weather Log'), 'Weather workflow must be labeled as manual until an automatic provider is enabled.');
 assert(readinessSql.includes('bct_admin_notification_delivery_queue'), 'Operational readiness must inspect notification delivery coverage.');
 
 assert(aiHtml.includes('AI creates drafts only'), 'AI estimating page must state draft-only generation.');
@@ -87,6 +90,32 @@ const externalGateMarkers = [
 ];
 for (const marker of externalGateMarkers) {
   assert(readinessSql.includes(marker), `Operational readiness must keep external gate visible: ${marker}`);
+}
+
+const dryRunChecklistMarkers = [
+  'Homeowner Flow',
+  'Admin Review And Estimating',
+  'Job, Bid, And Assignment',
+  'Job Operations',
+  'Security And Launch Verification',
+  'AI never approves estimates'
+];
+for (const marker of dryRunChecklistMarkers) {
+  assert(dryRunChecklist.includes(marker), `Dry-run checklist must include: ${marker}`);
+}
+
+const paidServicesMarkers = [
+  'Supabase Pro',
+  'Supabase leaked-password protection',
+  'Supabase backups',
+  'Supabase PITR',
+  'Email sender',
+  'AI/API billing',
+  'Financing provider',
+  'Escrow provider'
+];
+for (const marker of paidServicesMarkers) {
+  assert(paidServicesChecklist.includes(marker), `Paid-services checklist must include: ${marker}`);
 }
 
 console.log(`BCT launch dry-run smoke passed: ${dryRunMarkers.length} production flow markers and AI/manual approval gates verified.`);
