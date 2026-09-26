@@ -43,6 +43,26 @@ alter table public.bct_safety_training_assignments enable row level security;
 alter table public.bct_contractor_workforce_holds enable row level security;
 alter table public.bct_safety_training_reminder_log enable row level security;
 
+drop policy if exists "Safety modules authenticated read" on public.bct_safety_training_modules;
+create policy "Safety modules authenticated read" on public.bct_safety_training_modules for select to authenticated using(active or public.is_bct_admin());
+create policy "Safety modules admin insert" on public.bct_safety_training_modules for insert to authenticated with check(public.is_bct_admin());
+create policy "Safety modules admin update" on public.bct_safety_training_modules for update to authenticated using(public.is_bct_admin()) with check(public.is_bct_admin());
+create policy "Safety modules admin delete" on public.bct_safety_training_modules for delete to authenticated using(public.is_bct_admin());
+create policy "Safety settings authenticated read" on public.bct_safety_training_settings for select to authenticated using(true);
+create policy "Safety settings admin insert" on public.bct_safety_training_settings for insert to authenticated with check(public.is_bct_admin());
+create policy "Safety settings admin update" on public.bct_safety_training_settings for update to authenticated using(public.is_bct_admin()) with check(public.is_bct_admin());
+create policy "Safety settings admin delete" on public.bct_safety_training_settings for delete to authenticated using(public.is_bct_admin());
+create policy "Safety assignments owner admin read" on public.bct_safety_training_assignments for select to authenticated using(public.is_bct_admin() or contractor_id=public.bct_current_contractor_id());
+create policy "Safety assignments admin insert" on public.bct_safety_training_assignments for insert to authenticated with check(public.is_bct_admin());
+create policy "Safety assignments admin update" on public.bct_safety_training_assignments for update to authenticated using(public.is_bct_admin()) with check(public.is_bct_admin());
+create policy "Safety assignments admin delete" on public.bct_safety_training_assignments for delete to authenticated using(public.is_bct_admin());
+create policy "Workforce holds owner admin read" on public.bct_contractor_workforce_holds for select to authenticated using(public.is_bct_admin() or contractor_id=public.bct_current_contractor_id());
+create policy "Workforce holds admin insert" on public.bct_contractor_workforce_holds for insert to authenticated with check(public.is_bct_admin());
+create policy "Workforce holds admin update" on public.bct_contractor_workforce_holds for update to authenticated using(public.is_bct_admin()) with check(public.is_bct_admin());
+create policy "Workforce holds admin delete" on public.bct_contractor_workforce_holds for delete to authenticated using(public.is_bct_admin());
+create policy "Safety reminder log admin read" on public.bct_safety_training_reminder_log for select to authenticated using(public.is_bct_admin());
+create policy "Safety reminder log admin insert" on public.bct_safety_training_reminder_log for insert to authenticated with check(public.is_bct_admin());
+
 grant select,insert,update,delete on public.bct_safety_training_modules to authenticated;
 grant select,insert,update,delete on public.bct_safety_training_settings to authenticated;
 grant select,insert,update,delete on public.bct_safety_training_assignments to authenticated;
