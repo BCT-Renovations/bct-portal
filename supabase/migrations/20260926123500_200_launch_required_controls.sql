@@ -1,0 +1,16 @@
+-- V46 200-control launch-critical expansion (101-300).
+-- Production migration: bct_200_launch_required_controls.
+-- Adds an auditable control catalog and Admin-only runner.
+-- Concrete exception checks include:
+-- assignment acceptance timeout; stale bid review; stale approvals; completion review;
+-- overdue punch list; required closeout items; invalid closed-project state;
+-- incomplete contract signatures; invalid signature consent; contractor document review;
+-- stale financing; escrow dual-approval integrity; lien waiver checkpoints;
+-- unread project communications; invalid project files/photos; manual-weather labeling guard;
+-- unresolved high-severity system errors; unresolved job-health alerts; estimate approval actor integrity.
+-- All 200 catalog controls are flag-only and cannot approve estimates, select contractors,
+-- release escrow/payments, make legal/e-sign decisions, or close a project.
+-- Production objects:
+-- public.bct_automation_control_catalog
+-- public.bct_admin_run_200_launch_checks()
+-- indexes on automation events/run status.
