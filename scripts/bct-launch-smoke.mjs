@@ -2,7 +2,7 @@ import fs from 'node:fs';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const securitySql = fs.readFileSync(new URL('./bct-supabase-security-smoke.sql', import.meta.url), 'utf8');
-const operationalReadinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925211500_add_operational_readiness_rpc.sql', import.meta.url), 'utf8');
+const operationalReadinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -78,8 +78,8 @@ assert(html.includes('contractorAccessMessage(app)'), 'Contractor jobs and bids 
 assert(securitySql.includes('no_public_execute_on_admin_rpcs'), 'Supabase security smoke SQL must check public admin RPC execution.');
 assert(securitySql.includes('unexpected_security_definer_count_zero'), 'Supabase security smoke SQL must check unexpected SECURITY DEFINER functions.');
 assert(operationalReadinessSql.includes('bct_admin_operational_readiness'), 'Operational readiness migration must create the admin readiness RPC.');
-assert(operationalReadinessSql.includes('bct_completion_signoffs'), 'Operational readiness must track completion sign-off coverage.');
-assert(operationalReadinessSql.includes('bct_disputes'), 'Operational readiness must track dispute-management coverage.');
+assert(operationalReadinessSql.includes('bct_completion_certificates'), 'Operational readiness must track completion sign-off coverage.');
+assert(operationalReadinessSql.includes('bct_cases'), 'Operational readiness must track dispute-management coverage.');
 assert(operationalReadinessSql.includes('requires_dashboard_verification'), 'Operational readiness must expose backup/security external verification gates.');
 
 console.log(`BCT launch smoke passed: ${scripts.length} inline scripts parsed and ${requiredMarkers.length} launch markers verified.`);
