@@ -7,6 +7,7 @@ const twilioSql = fs.readFileSync(new URL('../supabase/migrations/20260926165500
 const residentPrivacySql = fs.readFileSync(new URL('../supabase/migrations/20260926170000_harden_phase1_resident_contact_privacy.sql', import.meta.url), 'utf8');
 const managerAccessSql = fs.readFileSync(new URL('../supabase/migrations/20260926170500_property_manager_project_access.sql', import.meta.url), 'utf8');
 const optimizationSql = fs.readFileSync(new URL('../supabase/migrations/20260926172000_optimize_property_communication_policies.sql', import.meta.url), 'utf8');
+const consolidatedProjectPoliciesSql = fs.readFileSync(new URL('../supabase/migrations/20260926173500_consolidate_project_property_manager_policies.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -94,6 +95,20 @@ const optimizationMarkers = [
 
 for (const marker of optimizationMarkers) {
   assert(optimizationSql.includes(marker), `Missing property/communication advisor optimization: ${marker}`);
+}
+
+const consolidatedPolicyMarkers = [
+  ['drops separate property-manager insert policy', 'drop policy if exists "BCT projects property manager insert"'],
+  ['drops separate property-manager select policy', 'drop policy if exists "BCT projects property manager select"'],
+  ['drops separate property-manager update policy', 'drop policy if exists "BCT projects property manager update"'],
+  ['preserves admin access', 'public.is_bct_admin()'],
+  ['preserves homeowner ownership access', 'c.auth_user_id=(select auth.uid())'],
+  ['preserves active property-manager portfolio access', 'pa.auth_user_id=(select auth.uid())'],
+  ['keeps multifamily insert/update boundary', "project_market='multifamily'"]
+];
+
+for (const [label, marker] of consolidatedPolicyMarkers) {
+  assert(consolidatedProjectPoliciesSql.includes(marker), `Missing consolidated bct_projects policy guard: ${label}`);
 }
 
 console.log('BCT Phase 1 privacy/communications smoke passed: property-manager fields, resident privacy, assigned-contractor access, and Twilio-disabled readiness verified.');

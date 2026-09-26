@@ -21,7 +21,7 @@ Last verified: 2026-09-26
 
 ## Verification completed
 
-- Supabase migrations through `20260926010606` are applied to project `onpqykpikxbbypfvmtin`.
+- Supabase migrations through `20260926142803` plus Phase 1 property/communication optimization migrations are applied to project `onpqykpikxbbypfvmtin`.
 - Supabase project `onpqykpikxbbypfvmtin` is `ACTIVE_HEALTHY` on Postgres 17.6.1.
 - Transient rollback smoke tests exercised scheduled jobs, weather, materials, change orders, approvals, milestones, financing, escrow, and job-health summaries.
 - `git diff --check` passes.
@@ -70,6 +70,8 @@ Last verified: 2026-09-26
 - `index.html` inline scripts parse cleanly again after fixing a missing statement terminator in the BCT Admin safety-compliance renderer.
 - `node scripts/bct-phase1-privacy-communications-smoke.mjs` passes and verifies property-manager fields, multifamily validation markers, resident contact protection, assigned-contractor-only On My Way notices, BCT-activated communications, recording consent readiness, and Twilio disabled-by-default provider settings.
 - `20260926172000_optimize_property_communication_policies.sql` adds covering indexes for the new property/communication foreign keys and rewrites the property-manager RLS policies with initplan-friendly `auth.uid()` calls for Supabase performance-advisor cleanup.
+- `20260926173500_consolidate_project_property_manager_policies.sql` is applied and consolidates `bct_projects` homeowner/admin/property-manager SELECT, INSERT, and UPDATE rules into one policy per action while preserving the same access boundaries.
+- Supabase performance advisors no longer report unindexed foreign keys, auth-initplan warnings, or multiple-permissive-policy warnings for the new Phase 1 property/communication tables. Remaining performance notices are `unused_index` INFO findings expected on a launch-prep database with low traffic.
 - Full local `.mjs` smoke suite passes: automation health, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, role visibility, safety training, and submission lockout.
 
 ## Remaining external gates
