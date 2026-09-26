@@ -38,7 +38,7 @@ const checks=[
  ['history includes acknowledgment evidence',/acknowledged_at/i],
  ['history includes quiz evidence',/quiz_score/i]
 ,
- ['safety settings are BCT Admin-only',reminderSql.includes('Safety settings admin read')&&!reminderSql.includes('Safety settings authenticated read\" on')],
+ ['safety settings are BCT Admin-only',reminderSql.includes('create policy "Safety settings admin read"')&&!reminderSql.includes('create policy "Safety settings authenticated read"')],
  ['reminders honor configured reminder days',reminderSql.includes('s.reminder_days')&&reminderSql.includes('foreach d')],
  ['reminders stop when training program is paused',reminderSql.includes("enabled',false")],
  ['admin safety configuration is admin-only',configSql.includes("is_bct_admin()")&&configSql.includes("revoke all")],
@@ -48,7 +48,7 @@ const checks=[
 ];
 let failed=0;
 for(const [name,re] of checks){
- const ok=re.test(sql); console.log(`${ok?'PASS':'FAIL'}: ${name}`); if(!ok) failed++;
+ const ok=typeof re==='boolean'?re:re.test(sql); console.log(`${ok?'PASS':'FAIL'}: ${name}`); if(!ok) failed++;
 }
 if(failed) process.exit(1);
 console.log(`PASS: ${checks.length} safety-training launch assertions.`);

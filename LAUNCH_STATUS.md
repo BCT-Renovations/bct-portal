@@ -13,6 +13,7 @@ Last verified: 2026-09-26
 - New and reset passwords require at least seven characters, a number, a special character, and matching confirmation.
 - Password history rejects reuse of the last five recorded passwords.
 - Homeowner, contractor, and quality-review uploads support multiple files; project and contractor upload paths now enforce allowed extensions plus 10-file and 25 MB-per-file limits before private storage upload.
+- Homeowner project submission now captures Phase 1 commercial/apartment details: property/complex name, building number, unit/suite number, vacant/occupied status, BCT-private resident contact, and BCT-controlled access instructions.
 - Automatic project, application, job, service-call, and contract identifiers are backed by Supabase generators.
 - Roofing is present in the public service catalog with localized translations.
 - Launch-readiness and frontend-cutover gates report the current production-source deployment requirement truthfully.
@@ -66,6 +67,10 @@ Last verified: 2026-09-26
 - BCT Admin can place and clear separate contractor holds with a required reason when applying a hold; hold actions are audited.
 - Trade-specific safety assignment now matches either the contractor primary trade or any approved value in contractor trade_capabilities, while unique contractor/module/cycle protection prevents duplicate assignment.
 - Contractor safety UI smoke coverage and the master V46 launch dry-run now verify the safety panel, completion RPC, acknowledgment/quiz gates, grace/hold boundaries, and new-work restriction behavior.
+- `index.html` inline scripts parse cleanly again after fixing a missing statement terminator in the BCT Admin safety-compliance renderer.
+- `node scripts/bct-phase1-privacy-communications-smoke.mjs` passes and verifies property-manager fields, multifamily validation markers, resident contact protection, assigned-contractor-only On My Way notices, BCT-activated communications, recording consent readiness, and Twilio disabled-by-default provider settings.
+- `20260926172000_optimize_property_communication_policies.sql` adds covering indexes for the new property/communication foreign keys and rewrites the property-manager RLS policies with initplan-friendly `auth.uid()` calls for Supabase performance-advisor cleanup.
+- Full local `.mjs` smoke suite passes: automation health, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, role visibility, safety training, and submission lockout.
 
 ## Remaining external gates
 
