@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 const ui=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const reminderSql=fs.readFileSync(new URL('../supabase/migrations/20260926161000_safety_settings_privacy_and_reminder_schedule.sql',import.meta.url),'utf8');
 const configSql=fs.readFileSync(new URL('../supabase/migrations/20260926160500_admin_safety_configuration_state.sql',import.meta.url),'utf8');
 const files=[
  'supabase/migrations/20260926114500_contractor_safety_training_automation.sql',
@@ -37,6 +38,9 @@ const checks=[
  ['history includes acknowledgment evidence',/acknowledged_at/i],
  ['history includes quiz evidence',/quiz_score/i]
 ,
+ ['safety settings are BCT Admin-only',reminderSql.includes('Safety settings admin read')&&!reminderSql.includes('Safety settings authenticated read\" on')],
+ ['reminders honor configured reminder days',reminderSql.includes('s.reminder_days')&&reminderSql.includes('foreach d')],
+ ['reminders stop when training program is paused',reminderSql.includes("enabled',false")],
  ['admin safety configuration is admin-only',configSql.includes("is_bct_admin()")&&configSql.includes("revoke all")],
  ['admin can control safety cadence',ui.includes("adminSafetySettingsForm")&&ui.includes("bct_admin_upsert_safety_training_settings")],
  ['admin can create core and trade training modules',ui.includes("adminSafetyModuleForm")&&ui.includes("bct_admin_create_safety_training_module")],
