@@ -9,6 +9,7 @@ const weatherReadiness = fs.readFileSync(new URL('../WEATHER_PROVIDER_READINESS.
 const backupPlan = fs.readFileSync(new URL('../PRE_PRO_BACKUP_EXPORT_PLAN.md', import.meta.url), 'utf8');
 const auditReadiness = fs.readFileSync(new URL('../AUDIT_NOTIFICATION_READINESS.md', import.meta.url), 'utf8');
 const aiCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260925202000_ai_estimating_core.sql', import.meta.url), 'utf8');
+const aiEstimatingSmoke = fs.readFileSync(new URL('./bct-ai-estimating-smoke.mjs', import.meta.url), 'utf8');
 const readinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 const homeownerEstimateSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926104500_homeowner_safe_estimate_summary.sql', import.meta.url), 'utf8');
 const contractorJobSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926110500_contractor_safe_available_jobs.sql', import.meta.url), 'utf8');
@@ -108,6 +109,7 @@ assert(aiHtml.includes('review_required'), 'AI estimating page must expose BCT r
 assert(aiHtml.includes('Manual Approval Gate'), 'AI estimating page must expose manual approval gate.');
 assert(aiHtml.includes('AI cannot approve or release this estimate'), 'AI estimating page must prevent AI auto-approval.');
 assert(aiHtml.includes('approve_customer'), 'AI estimating page must use explicit customer-release action only after admin approval.');
+assert(aiEstimatingSmoke.includes('admin-only edge action mapping'), 'AI estimating smoke must verify admin-only edge action mapping.');
 assert(aiCoreSql.includes("status text not null default 'draft'"), 'AI estimate records must default to draft.');
 assert(aiCoreSql.includes("status in ('draft','pending_bct_review','approved','rejected')"), 'AI estimate status constraint must keep review states explicit.');
 assert(homeownerEstimateSafetySql.includes('bct_my_estimates_safe'), 'Homeowner estimate summaries must use a safe customer-facing RPC.');
@@ -168,6 +170,7 @@ const readinessDocMarkers = [
   [backupPlan, 'Auth users and role metadata', 'manual auth export coverage'],
   [backupPlan, 'Supabase Pro backups and PITR are not claimed active', 'backup/PITR accuracy'],
   [auditReadiness, 'Estimate creation/edit/review/approval', 'estimate audit coverage'],
+  [aiEstimatingSmoke, 'customer-safe estimate fields protected', 'AI customer-safe field smoke coverage'],
   [auditReadiness, 'durable backend audit history', 'durable audit caveat']
 ];
 for (const [source, marker, label] of readinessDocMarkers) {

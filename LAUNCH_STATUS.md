@@ -54,6 +54,7 @@ Last verified: 2026-09-26
 - Contractor pre-applications require exactly five complete professional references in the form and payload; Production Supabase verification confirms `bct_submit_contractor_application` rejects fewer than five or more than five complete professional references.
 - Contractor pre-applications now require explicit acknowledgment that BCT controls customer contact, private bidding, customer-facing pricing, assignments, required documents, and any second active job exception.
 - AI estimating now shows admin-side cost controls, limits draft generation per project/admin day on the client, and keeps the manual BCT review/release gates in place.
+- The deployed `bct-ai-estimate` Edge Function source is now captured in the repo with smoke coverage for JWT/auth presence, BCT-admin authorization, edit/recalculate actions, AI-run review, and the manual customer-release RPC boundary.
 - `PRE_PRO_BACKUP_EXPORT_PLAN.md` documents the manual export/backup checklist to use until Supabase Pro backups/PITR are enabled and verified.
 - `AUDIT_NOTIFICATION_READINESS.md` documents launch-critical audit/notification coverage and the remaining live-provider verification steps.
 - BCT Admin Launch Controls now show an owner action checklist for Supabase Pro/PITR, leaked-password protection, weather API provider/key, e-sign provider, live mailbox testing, and final business/legal policy approval.
@@ -73,7 +74,7 @@ Last verified: 2026-09-26
 - `20260926172000_optimize_property_communication_policies.sql` adds covering indexes for the new property/communication foreign keys and rewrites the property-manager RLS policies with initplan-friendly `auth.uid()` calls for Supabase performance-advisor cleanup.
 - `20260926173500_consolidate_project_property_manager_policies.sql` is applied and consolidates `bct_projects` homeowner/admin/property-manager SELECT, INSERT, and UPDATE rules into one policy per action while preserving the same access boundaries.
 - Supabase performance advisors no longer report unindexed foreign keys, auth-initplan warnings, or multiple-permissive-policy warnings for the new Phase 1 property/communication tables. Remaining performance notices are `unused_index` INFO findings expected on a launch-prep database with low traffic.
-- Full local `.mjs` smoke suite passes: automation health, contractor onboarding, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, role visibility, safety training, and submission lockout.
+- Full local `.mjs` smoke suite passes: AI estimating, automation health, contractor onboarding, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, role visibility, safety training, and submission lockout.
 
 ## Remaining external gates
 
