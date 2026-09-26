@@ -50,6 +50,8 @@ const requiredMarkers = [
   ['admin activity clear control', 'clearAdminActivityAuditBtn'],
   ['admin bid award executor', 'executeAdminBidAward'],
   ['job health dashboard', 'jobHealthDashboard'],
+  ['manual weather tracking label', 'Manual Weather Log'],
+  ['automatic weather provider caveat', 'Automatic weather-provider pulls are not enabled yet'],
   ['job financing workflow', 'jobFinanceForm'],
   ['job escrow workflow', 'jobEscrowForm'],
   ['change order workflow', 'jobChangeOrderForm'],
