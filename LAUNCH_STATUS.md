@@ -37,7 +37,7 @@ Last verified: 2026-09-26
 - `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor-safe available jobs, contractor job lockout, sanitized-scope wording, private bids, internal BCT target amount hiding, and AI release wording.
 - `scripts/bct-submission-lock-smoke.mjs` adds dedicated regression coverage for homeowner/contractor duplicate-submit blocking, in-flight pending state, error recovery, and hard lockout after a successful submission; equivalent assertions were rechecked against current GitHub `main` after creation.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment `dpl_3UrX7W4wJsfHYgdVexNxy63tNVUk` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `4c9664574740d3004ecd75754431d0df80646bd1`.
+- Production deployment verification continues on the existing V45/V46 project stream; current safety-dashboard commits are deploying from GitHub `main`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
 - Vercel runtime error clusters were checked again after the submission-lock smoke deployment; no production runtime errors were reported in the selected one-hour window.
 - Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
@@ -59,6 +59,13 @@ Last verified: 2026-09-26
 - BCT Admin now has an Operational Readiness panel backed by `bct_admin_operational_readiness`, showing whether completion sign-off, project documents, document expiration alerts, ratings, disputes, reporting, durable audit, messaging, notifications, security readiness, backup/PITR, leaked-password protection, live email, and policy/legal gates are covered before pilot launch.
 - `LAUNCH_DRY_RUN_CHECKLIST.md` now provides the full homeowner -> admin -> contractor -> job -> estimate -> approval -> completion dry-run path.
 - `PAID_SERVICES_CHECKLIST.md` now tracks Supabase Pro, leaked-password protection, backups/PITR, email sender, AI/API billing, Vercel/domain, financing provider, and escrow provider decisions.
+
+- Contractor recurring online safety training is now integrated into the contractor portal: assigned modules, due/grace dates, core/trade designation, training links, acknowledgment, quiz-score validation, completion submission, and workforce eligibility are visible without exposing BCT-only data.
+- Safety compliance restricts only new BCT opportunities when overdue; appropriate existing-job and training access remains available. A separate BCT Admin hold is preserved and cannot be cleared by contractor training completion.
+- BCT Admin now has a contractor safety-compliance dashboard showing active/eligible/restricted contractors, Admin holds, pending/overdue/completed training, next due date, and last completion.
+- BCT Admin can place and clear separate contractor holds with a required reason when applying a hold; hold actions are audited.
+- Trade-specific safety assignment now matches either the contractor primary trade or any approved value in contractor trade_capabilities, while unique contractor/module/cycle protection prevents duplicate assignment.
+- Contractor safety UI smoke coverage and the master V46 launch dry-run now verify the safety panel, completion RPC, acknowledgment/quiz gates, grace/hold boundaries, and new-work restriction behavior.
 
 ## Remaining external gates
 
