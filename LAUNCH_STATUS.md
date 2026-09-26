@@ -8,10 +8,11 @@ Last verified: 2026-09-26
 - Job lifecycle supports draft, open for bids, bid review, awarded, scheduled, in progress, on hold, completed, and closed.
 - Milestones, weather impact, materials/returns, change orders, approvals, financing, escrow, and attention indicators are integrated.
 - Weather tracking is verified as manual/admin-recorded job weather impact through `bct_weather_checks`, `bct_admin_record_weather`, `bct_admin_weather_checks`, and `bct_my_weather_checks`; automatic external weather-provider pulls are not enabled yet.
+- `WEATHER_PROVIDER_READINESS.md` now defines the automatic weather structure, required environment settings, and owner/provider decision needed before live automatic weather can be enabled.
 - Homeowner, contractor, and admin authentication controls include forgot-password and confirmation-email actions.
 - New and reset passwords require at least seven characters, a number, a special character, and matching confirmation.
 - Password history rejects reuse of the last five recorded passwords.
-- Homeowner, contractor, and quality-review uploads support multiple files.
+- Homeowner, contractor, and quality-review uploads support multiple files; project and contractor upload paths now enforce allowed extensions plus 10-file and 25 MB-per-file limits before private storage upload.
 - Automatic project, application, job, service-call, and contract identifiers are backed by Supabase generators.
 - Roofing is present in the public service catalog with localized translations.
 - Launch-readiness and frontend-cutover gates report the current production-source deployment requirement truthfully.
@@ -41,6 +42,10 @@ Last verified: 2026-09-26
 - Homeowner and contractor sign-in/resend actions now guard against duplicate taps, show friendlier confirmation/authentication errors, and expired password-reset links land on the reset page with a clear recovery message.
 - Contractor pre-approval screening is now part of the pre-application flow with pass/fail scoring, two attempts, a 14-day retest lockout, admin screening controls, document checklist messaging, and a front-end hard gate that blocks jobs, bids, and assignments until screening is passed and BCT Admin approves.
 - Contractor pre-applications now require explicit acknowledgment that BCT controls customer contact, private bidding, customer-facing pricing, assignments, required documents, and any second active job exception.
+- AI estimating now shows admin-side cost controls, limits draft generation per project/admin day on the client, and keeps the manual BCT review/release gates in place.
+- `PRE_PRO_BACKUP_EXPORT_PLAN.md` documents the manual export/backup checklist to use until Supabase Pro backups/PITR are enabled and verified.
+- `AUDIT_NOTIFICATION_READINESS.md` documents launch-critical audit/notification coverage and the remaining live-provider verification steps.
+- BCT Admin Launch Controls now show an owner action checklist for Supabase Pro/PITR, leaked-password protection, weather API provider/key, e-sign provider, live mailbox testing, and final business/legal policy approval.
 - BCT Admin now has a session activity audit panel that records launch-test admin actions for contractor screening, customer verification, project workflow, bid awards, job publishing, service-call creation, and job-management updates.
 - BCT Admin now has an Operational Readiness panel backed by `bct_admin_operational_readiness`, showing whether completion sign-off, project documents, document expiration alerts, ratings, disputes, reporting, durable audit, messaging, notifications, security readiness, backup/PITR, leaked-password protection, live email, and policy/legal gates are covered before pilot launch.
 - `LAUNCH_DRY_RUN_CHECKLIST.md` now provides the full homeowner -> admin -> contractor -> job -> estimate -> approval -> completion dry-run path.
@@ -61,6 +66,9 @@ Last verified: 2026-09-26
 - Test confirmation and password-reset email delivery with a real test mailbox.
 - Verify the notification worker with Resend and mark the provider launch control complete.
 - Decide whether automatic live weather API integration is required for the first public pilot. Current V46 weather tracking is manual/admin-recorded and visible in job health.
+- Choose a weather API provider and production key before enabling automatic live weather. Required production settings are documented in `WEATHER_PROVIDER_READINESS.md`.
+- Choose an e-sign provider before claiming legally binding e-signature automation. Current approval/completion flows remain manual/admin-controlled.
+- Follow `PRE_PRO_BACKUP_EXPORT_PLAN.md` for manual exports until Supabase Pro backups/PITR are verified.
 - Complete human policy/legal review before enabling the pilot.
 
 These remaining gates require authenticated external actions, dashboard settings, a live mailbox, or a business/legal decision. No credentials are stored in this repository.
