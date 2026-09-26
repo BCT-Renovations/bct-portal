@@ -31,7 +31,7 @@ Last verified: 2026-09-26
 - `20260926102000_revoke_public_admin_rpc_execute.sql` is applied and removes `PUBLIC` execute access from the remaining admin-only RPCs while preserving explicit `authenticated` execution for app/admin-role checks.
 - `scripts/bct-supabase-security-smoke.sql` now passes all four checks in Supabase: no broad homeowner storage ALL policy, no PUBLIC execute on admin RPCs, password-history direct access denied, and no unexpected BCT `SECURITY DEFINER` functions.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment `dpl_F6Rn9M3sNNSCBkM7vvEkrfgSDNrn` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `aec24b621d9460d0fef1dabc122918741e0374fb`.
+- Production deployment `dpl_J3AMzZmgUZMnVubtKtL2pXcmaEAS` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `54d6a80d24c1eebadac3c3b3cd8b6ee2b08f5178`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
 - Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
 - Supabase security advisors still report leaked-password protection disabled. This remains a real external launch blocker because it must be enabled in the Supabase Auth dashboard.
