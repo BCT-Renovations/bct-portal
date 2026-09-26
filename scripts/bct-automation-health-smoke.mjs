@@ -3,6 +3,8 @@ import fs from 'node:fs';
 const indexHtml=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const healthSql=fs.readFileSync(new URL('../supabase/migrations/20260926135500_admin_automation_health.sql',import.meta.url),'utf8');
 const boundarySql=fs.readFileSync(new URL('../supabase/migrations/20260926134500_launch_runner_execution_boundary.sql',import.meta.url),'utf8');
+const runner100Sql=fs.readFileSync(new URL('../supabase/migrations/20260926155200_reconcile_100_launch_runner.sql',import.meta.url),'utf8');
+const runner200Sql=fs.readFileSync(new URL('../supabase/migrations/20260926155500_reconcile_200_launch_runner.sql',import.meta.url),'utf8');
 const runner500Sql=fs.readFileSync(new URL('../supabase/migrations/20260926154500_reconcile_500_launch_runner.sql',import.meta.url),'utf8');
 const runner1000Sql=fs.readFileSync(new URL('../supabase/migrations/20260926155000_reconcile_1000_launch_runner.sql',import.meta.url),'utf8');
 const notificationSql=fs.readFileSync(new URL('../supabase/migrations/20260926143500_admin_notification_health.sql',import.meta.url),'utf8');
@@ -31,6 +33,13 @@ const checks=[
  ['500-control runner wired',indexHtml.includes("bct_admin_run_500_launch_validations")],
  ['1000-control runner wired',indexHtml.includes("bct_admin_run_1000_launch_requirements")],
  ['manual runner preserves human approval boundary',indexHtml.includes('cannot approve estimates')&&indexHtml.includes('release money')],
+ ['100 runner exact source preserved',runner100Sql.includes('bct_admin_run_launch_automations')&&runner100Sql.includes('checks_processed=100')],
+ ['100 runner checks stuck notifications',runner100Sql.includes('notification_stuck')],
+ ['100 runner preserves AI manual review',runner100Sql.includes('ai_estimate_pending_bct')],
+ ['200 runner exact source preserved',runner200Sql.includes('bct_admin_run_200_launch_checks')&&runner200Sql.includes('checks_processed=200')],
+ ['200 runner checks escrow dual approval',runner200Sql.includes('escrow_release_without_dual_approval')],
+ ['200 runner checks signature consent',runner200Sql.includes('signature_consent_invalid')],
+ ['200 runner checks role-safe weather labeling',runner200Sql.includes('weather_live_label_guard')],
  ['500 runner exact source preserved',runner500Sql.includes('bct_admin_run_500_launch_validations')&&runner500Sql.includes('checks_processed=500')],
  ['1000 runner exact source preserved',runner1000Sql.includes('bct_admin_run_1000_launch_requirements')&&runner1000Sql.includes('checks_processed=1000')],
  ['500 runner checks RLS',runner500Sql.includes('RLS disabled on BCT public table')],
