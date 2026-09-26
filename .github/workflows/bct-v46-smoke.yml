@@ -1,0 +1,60 @@
+name: BCT V46 Smoke Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Run V46 smoke suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Source integrity guard
+        run: node scripts/bct-source-integrity-smoke.mjs
+
+      - name: Launch smoke
+        run: node scripts/bct-launch-smoke.mjs
+
+      - name: Launch dry run smoke
+        run: node scripts/bct-launch-dry-run-smoke.mjs
+
+      - name: Role visibility smoke
+        run: node scripts/bct-role-visibility-smoke.mjs
+
+      - name: Submission lockout smoke
+        run: node scripts/bct-submission-lock-smoke.mjs
+
+      - name: AI estimating smoke
+        run: node scripts/bct-ai-estimating-smoke.mjs
+
+      - name: Contractor onboarding smoke
+        run: node scripts/bct-contractor-onboarding-smoke.mjs
+
+      - name: Contractor safety UI smoke
+        run: node scripts/bct-contractor-safety-ui-smoke.mjs
+
+      - name: Safety training smoke
+        run: node scripts/bct-safety-training-smoke.mjs
+
+      - name: Automation health smoke
+        run: node scripts/bct-automation-health-smoke.mjs
+
+      - name: Phase 1 privacy and communications smoke
+        run: node scripts/bct-phase1-privacy-communications-smoke.mjs
+
+      - name: Phase 1 workflow boundary smoke
+        run: node scripts/bct-phase1-workflow-boundary-smoke.mjs
