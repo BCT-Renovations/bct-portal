@@ -1,0 +1,14 @@
+-- V46 1000 unique launch requirements, controls 801-1800.
+-- Production migration: bct_1000_unique_launch_requirements.
+-- Exactly 1000 unique control keys were inserted and verified.
+-- Categories (100 each): identity/access, homeowner intake, contractor onboarding,
+-- estimating/scope, contracts/change orders, finance/escrow/cost,
+-- schedule/materials/weather, quality/safety/inspection,
+-- completion/warranty/disputes, observability/recovery/launch.
+-- Adds Admin-only bct_launch_requirement_evidence with RLS and
+-- bct_admin_run_1000_launch_requirements() using SECURITY INVOKER.
+-- Independent hard checks include RLS coverage, bid amount integrity,
+-- estimate total/approval integrity, pending change orders, escrow dual approval,
+-- late material orders, failed inspections, closeout prerequisites,
+-- and unresolved high-severity application errors.
+-- Human approval boundaries remain unchanged.
