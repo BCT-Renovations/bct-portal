@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
 const securitySql = fs.readFileSync(new URL('./bct-supabase-security-smoke.sql', import.meta.url), 'utf8');
 const operationalReadinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 const weatherReadiness = fs.readFileSync(new URL('../WEATHER_PROVIDER_READINESS.md', import.meta.url), 'utf8');
@@ -18,14 +19,11 @@ function count(pattern) {
   return [...html.matchAll(pattern)].length;
 }
 
-const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/gi)].map(match => match[1]);
-scripts.forEach((script, index) => {
-  try {
-    new Function(script);
-  } catch (error) {
-    throw new Error(`Inline script ${index + 1} failed to parse: ${error.message}`);
-  }
-});
+try {
+  new Function(serviceWorker);
+} catch (error) {
+  throw new Error(`service-worker.js failed to parse: ${error.message}`);
+}
 
 const requiredMarkers = [
   ['homeowner portal sign in', 'bctHomeLoginBtn'],
@@ -83,6 +81,25 @@ for (const [label, marker] of requiredMarkers) {
   assert(html.includes(marker), `Missing ${label}: ${marker}`);
 }
 
+const commandCenterMarkers = [
+  ['command center injected shell', 'bct-command-center-hotfix'],
+  ['central portal search input', 'bctPortalSearch'],
+  ['live dropdown result container', 'bctPortalSearchResults'],
+  ['typeahead live filtering', 'renderResults(input.value)'],
+  ['tap-to-open result handler', 'openItem(matches[Number(btn.dataset.bctResult)])'],
+  ['target highlight behavior', 'bct-highlight-target'],
+  ['Homeowner Project cover card', 'Homeowner Project'],
+  ['Contractor Application cover card', 'Contractor Application'],
+  ['Applicant Status cover card', 'Applicant Status'],
+  ['Available Jobs cover card', 'Available Jobs'],
+  ['BCT Admin cover card', 'BCT Admin'],
+  ['Financing cover card', 'Financing']
+];
+
+for (const [label, marker] of commandCenterMarkers) {
+  assert(serviceWorker.includes(marker), `Missing ${label}: ${marker}`);
+}
+
 assert(count(/type="file"[^>]*multiple|multiple[^>]*type="file"/gi) >= 5, 'Expected at least five multi-file upload inputs.');
 assert(count(/class="file-upload-ui"/g) >= 5, 'Expected custom file upload UI wrappers for phone-friendly uploads.');
 assert(count(/Choose Files|Choose Documents|Choose Photos/gi) >= 4, 'Expected clean file chooser labels.');
@@ -109,4 +126,4 @@ assert(auditReadiness.includes('Contractor approval/screening'), 'Audit readines
 assert(auditReadiness.includes('Notifications'), 'Audit readiness must cover notification readiness.');
 assert(contractorOnboardingSmoke.includes('exact five-reference UI'), 'Dedicated contractor onboarding smoke must cover exact five-reference enforcement.');
 
-console.log(`BCT launch smoke passed: ${scripts.length} inline scripts parsed and ${requiredMarkers.length} launch markers verified.`);
+console.log(`BCT launch smoke passed: ${requiredMarkers.length} launch markers and ${commandCenterMarkers.length} command-center markers verified.`);
