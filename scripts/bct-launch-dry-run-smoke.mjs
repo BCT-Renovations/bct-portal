@@ -4,6 +4,10 @@ const indexHtml = fs.readFileSync(new URL('../index.html', import.meta.url), 'ut
 const aiHtml = fs.readFileSync(new URL('../ai-estimating.html', import.meta.url), 'utf8');
 const dryRunChecklist = fs.readFileSync(new URL('../LAUNCH_DRY_RUN_CHECKLIST.md', import.meta.url), 'utf8');
 const paidServicesChecklist = fs.readFileSync(new URL('../PAID_SERVICES_CHECKLIST.md', import.meta.url), 'utf8');
+const launchStatus = fs.readFileSync(new URL('../LAUNCH_STATUS.md', import.meta.url), 'utf8');
+const weatherReadiness = fs.readFileSync(new URL('../WEATHER_PROVIDER_READINESS.md', import.meta.url), 'utf8');
+const backupPlan = fs.readFileSync(new URL('../PRE_PRO_BACKUP_EXPORT_PLAN.md', import.meta.url), 'utf8');
+const auditReadiness = fs.readFileSync(new URL('../AUDIT_NOTIFICATION_READINESS.md', import.meta.url), 'utf8');
 const aiCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260925202000_ai_estimating_core.sql', import.meta.url), 'utf8');
 const readinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 
@@ -73,9 +77,17 @@ assert(indexHtml.includes('renderLaunchControls()'), 'Admin dashboard must rende
 assert(indexHtml.includes('renderOperationalReadiness()'), 'Admin dashboard must render operational readiness.');
 assert(indexHtml.includes('loadJobHealth()'), 'Admin dashboard must load job health.');
 assert(indexHtml.includes('Manual Weather Log'), 'Weather workflow must be labeled as manual until an automatic provider is enabled.');
+assert(indexHtml.includes('Weather API provider/key'), 'Admin launch controls must show weather provider/key owner action.');
+assert(indexHtml.includes('E-sign provider'), 'Admin launch controls must show e-sign provider owner action.');
+assert(launchStatus.includes('PRE_PRO_BACKUP_EXPORT_PLAN.md'), 'Launch status must link the pre-Pro backup/export plan.');
+assert(indexHtml.includes('validateUploadFiles'), 'Launch app must validate uploads before private storage upload.');
 assert(readinessSql.includes('bct_admin_notification_delivery_queue'), 'Operational readiness must inspect notification delivery coverage.');
 
 assert(aiHtml.includes('AI creates drafts only'), 'AI estimating page must state draft-only generation.');
+assert(aiHtml.includes('AI_PROJECT_DRAFT_LIMIT'), 'AI estimating page must define project-level cost limits.');
+assert(aiHtml.includes('AI_DAILY_DRAFT_LIMIT'), 'AI estimating page must define daily cost limits.');
+assert(aiHtml.includes('AI Cost Controls'), 'AI estimating page must display admin-side cost controls.');
+assert(aiHtml.includes('enforceAiCostGuard'), 'AI estimating page must block over-limit draft generation before calling AI.');
 assert(aiHtml.includes('review_required'), 'AI estimating page must expose BCT review-required state.');
 assert(aiHtml.includes('Manual Approval Gate'), 'AI estimating page must expose manual approval gate.');
 assert(aiHtml.includes('AI cannot approve or release this estimate'), 'AI estimating page must prevent AI auto-approval.');
@@ -112,11 +124,25 @@ const paidServicesMarkers = [
   'Supabase PITR',
   'Email sender',
   'AI/API billing',
+  'Weather API provider',
+  'E-sign provider',
   'Financing provider',
   'Escrow provider'
 ];
 for (const marker of paidServicesMarkers) {
   assert(paidServicesChecklist.includes(marker), `Paid-services checklist must include: ${marker}`);
+}
+
+const readinessDocMarkers = [
+  [weatherReadiness, 'BCT_WEATHER_PROVIDER', 'weather provider env var'],
+  [weatherReadiness, 'Manual Weather Log', 'manual weather status'],
+  [backupPlan, 'Auth users and role metadata', 'manual auth export coverage'],
+  [backupPlan, 'Supabase Pro backups and PITR are not claimed active', 'backup/PITR accuracy'],
+  [auditReadiness, 'Estimate creation/edit/review/approval', 'estimate audit coverage'],
+  [auditReadiness, 'durable backend audit history', 'durable audit caveat']
+];
+for (const [source, marker, label] of readinessDocMarkers) {
+  assert(source.includes(marker), `Readiness docs must include ${label}: ${marker}`);
 }
 
 console.log(`BCT launch dry-run smoke passed: ${dryRunMarkers.length} production flow markers and AI/manual approval gates verified.`);
