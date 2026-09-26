@@ -11,6 +11,7 @@ const auditReadiness = fs.readFileSync(new URL('../AUDIT_NOTIFICATION_READINESS.
 const aiCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260925202000_ai_estimating_core.sql', import.meta.url), 'utf8');
 const readinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 const homeownerEstimateSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926104500_homeowner_safe_estimate_summary.sql', import.meta.url), 'utf8');
+const contractorJobSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926110500_contractor_safe_available_jobs.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -100,6 +101,12 @@ assert(homeownerEstimateSafetySql.includes('from public.bct_my_estimates_safe()'
 for (const field of ['internal_cost_subtotal', 'markup_percent', 'markup_amount', 'internal_notes', 'approved_by', 'created_by', 'ai_run_id']) {
   const safeFunction = homeownerEstimateSafetySql.match(/create or replace function public\.bct_my_estimates_safe\(\)[\s\S]*?\$\$;/i)?.[0] || '';
   assert(!safeFunction.includes(field), `Homeowner-safe estimate summaries must not expose ${field}.`);
+}
+assert(contractorJobSafetySql.includes('bct_my_available_jobs_safe'), 'Contractor available jobs must use a safe contractor-facing RPC.');
+assert(contractorJobSafetySql.includes('from public.bct_my_available_jobs_safe()'), 'Contractor state must call the safe available-jobs RPC.');
+for (const field of ['target_subcontract_amount', 'project_id']) {
+  const safeJobsFunction = contractorJobSafetySql.match(/create or replace function public\.bct_my_available_jobs_safe\(\)[\s\S]*?\$\$;/i)?.[0] || '';
+  assert(!safeJobsFunction.includes(field), `Contractor-safe available jobs must not expose ${field}.`);
 }
 
 const externalGateMarkers = [
