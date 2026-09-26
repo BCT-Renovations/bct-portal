@@ -1,0 +1,7 @@
+-- BCT AI estimating completion migration (production applied 2026-09-25)
+-- Adds BCT-only internal costs, editable customer pricing, server-side recalculation,
+-- explicit manual approval, and a customer-safe line-item feed.
+-- Source of truth is the applied Supabase migration:
+-- complete_ai_estimate_admin_edit_approval_customer_safe
+-- plus upgrade_ai_generation_detailed_costs.
+-- IMPORTANT: AI generation remains draft/review_required and never calls customer approval.
