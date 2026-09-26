@@ -13,6 +13,7 @@ const readinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212
 const homeownerEstimateSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926104500_homeowner_safe_estimate_summary.sql', import.meta.url), 'utf8');
 const contractorJobSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926110500_contractor_safe_available_jobs.sql', import.meta.url), 'utf8');
 const safetyTrainingSmoke = fs.readFileSync(new URL('./bct-safety-training-smoke.mjs', import.meta.url), 'utf8');
+const contractorSafetyUiSmoke = fs.readFileSync(new URL('./bct-contractor-safety-ui-smoke.mjs', import.meta.url), 'utf8');
 const safetyCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260926114500_contractor_safety_training_automation.sql', import.meta.url), 'utf8');
 const safetyAdminSql = fs.readFileSync(new URL('../supabase/migrations/20260926115500_safety_training_admin_automation.sql', import.meta.url), 'utf8');
 const automation100Sql = fs.readFileSync(new URL('../supabase/migrations/20260926122000_launch_automation_engine_100.sql', import.meta.url), 'utf8');
@@ -177,7 +178,10 @@ const currentLaunchMarkers = [
   [automation200Sql, 'controls 101-300', '200-control source record'],
   [validation500Sql, 'controls 301-800', '500-validation source record'],
   [requirements1000Sql, 'controls 801-1800', '1000-requirement source record'],
-  [safetyTrainingSmoke, 'PASS:', 'safety smoke assertions']
+  [safetyTrainingSmoke, 'PASS:', 'safety smoke assertions'],
+  [contractorSafetyUiSmoke, 'bct_complete_my_safety_training', 'contractor safety-training UI completion flow'],
+  [indexHtml, 'bctSafetyTrainingPanel', 'contractor safety-training panel'],
+  [indexHtml, 'Existing assigned-job access remains available', 'workforce restriction boundary']
 ];
 for (const [source, marker, label] of currentLaunchMarkers) {
   assert(source.includes(marker), `Current V46 launch source must include ${label}: ${marker}`);
