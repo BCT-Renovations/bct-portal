@@ -6,6 +6,7 @@ const operationalReadinessSql = fs.readFileSync(new URL('../supabase/migrations/
 const weatherReadiness = fs.readFileSync(new URL('../WEATHER_PROVIDER_READINESS.md', import.meta.url), 'utf8');
 const backupPlan = fs.readFileSync(new URL('../PRE_PRO_BACKUP_EXPORT_PLAN.md', import.meta.url), 'utf8');
 const auditReadiness = fs.readFileSync(new URL('../AUDIT_NOTIFICATION_READINESS.md', import.meta.url), 'utf8');
+const contractorOnboardingSmoke = fs.readFileSync(new URL('./bct-contractor-onboarding-smoke.mjs', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -33,6 +34,8 @@ const requiredMarkers = [
   ['contractor screening pass score', 'BCT_SCREENING_PASS_SCORE'],
   ['contractor screening lockout', 'locked for 14 days'],
   ['contractor launch rules acknowledgment', 'contractorRulesAck'],
+  ['contractor reference #5 field', 'Professional Reference #5'],
+  ['contractor reference #5 contact field', 'Reference #5 Contact'],
   ['contractor access lock message', 'Contractor access locked'],
   ['admin screening controls', 'bctAdminScreeningAction'],
   ['admin protected dashboard', 'BCT Admin Dashboard'],
@@ -91,6 +94,7 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
 assert(html.includes('screening_result:screeningResult'), 'Contractor application payload must include screening results.');
 assert(html.includes('contractor_rules_acknowledged'), 'Contractor application payload must include rules acknowledgment.');
+assert(html.includes("refs.length!==5"), 'Contractor application payload must require exactly five professional references.');
 assert(html.includes('contractorAccessMessage(app)'), 'Contractor jobs and bids must be gated by screening/admin approval.');
 assert(securitySql.includes('no_public_execute_on_admin_rpcs'), 'Supabase security smoke SQL must check public admin RPC execution.');
 assert(securitySql.includes('unexpected_security_definer_count_zero'), 'Supabase security smoke SQL must check unexpected SECURITY DEFINER functions.');
@@ -103,5 +107,6 @@ assert(weatherReadiness.includes('Automatic weather-provider pulls are not enabl
 assert(backupPlan.includes('Supabase Pro backups and PITR are not claimed active'), 'Pre-Pro backup plan must avoid claiming Pro backups are active.');
 assert(auditReadiness.includes('Contractor approval/screening'), 'Audit readiness must cover contractor approval.');
 assert(auditReadiness.includes('Notifications'), 'Audit readiness must cover notification readiness.');
+assert(contractorOnboardingSmoke.includes('exact five-reference UI'), 'Dedicated contractor onboarding smoke must cover exact five-reference enforcement.');
 
 console.log(`BCT launch smoke passed: ${scripts.length} inline scripts parsed and ${requiredMarkers.length} launch markers verified.`);

@@ -51,6 +51,7 @@ Last verified: 2026-09-26
 - Live Supabase admin actions now report inline success/failure status and use in-page confirmation for bid awards, change-order approval, job approvals, launch refresh, job publishing, and service-call creation.
 - Homeowner and contractor sign-in/resend actions now guard against duplicate taps, show friendlier confirmation/authentication errors, and expired password-reset links land on the reset page with a clear recovery message.
 - Contractor pre-approval screening is now part of the pre-application flow with pass/fail scoring, two attempts, a 14-day retest lockout, admin screening controls, document checklist messaging, and a front-end hard gate that blocks jobs, bids, and assignments until screening is passed and BCT Admin approves.
+- Contractor pre-applications require exactly five complete professional references in the form and payload; Production Supabase verification confirms `bct_submit_contractor_application` rejects fewer than five or more than five complete professional references.
 - Contractor pre-applications now require explicit acknowledgment that BCT controls customer contact, private bidding, customer-facing pricing, assignments, required documents, and any second active job exception.
 - AI estimating now shows admin-side cost controls, limits draft generation per project/admin day on the client, and keeps the manual BCT review/release gates in place.
 - `PRE_PRO_BACKUP_EXPORT_PLAN.md` documents the manual export/backup checklist to use until Supabase Pro backups/PITR are enabled and verified.
@@ -72,7 +73,7 @@ Last verified: 2026-09-26
 - `20260926172000_optimize_property_communication_policies.sql` adds covering indexes for the new property/communication foreign keys and rewrites the property-manager RLS policies with initplan-friendly `auth.uid()` calls for Supabase performance-advisor cleanup.
 - `20260926173500_consolidate_project_property_manager_policies.sql` is applied and consolidates `bct_projects` homeowner/admin/property-manager SELECT, INSERT, and UPDATE rules into one policy per action while preserving the same access boundaries.
 - Supabase performance advisors no longer report unindexed foreign keys, auth-initplan warnings, or multiple-permissive-policy warnings for the new Phase 1 property/communication tables. Remaining performance notices are `unused_index` INFO findings expected on a launch-prep database with low traffic.
-- Full local `.mjs` smoke suite passes: automation health, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, role visibility, safety training, and submission lockout.
+- Full local `.mjs` smoke suite passes: automation health, contractor onboarding, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, role visibility, safety training, and submission lockout.
 
 ## Remaining external gates
 

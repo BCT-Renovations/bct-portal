@@ -14,6 +14,7 @@ const homeownerEstimateSafetySql = fs.readFileSync(new URL('../supabase/migratio
 const contractorJobSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926110500_contractor_safe_available_jobs.sql', import.meta.url), 'utf8');
 const safetyTrainingSmoke = fs.readFileSync(new URL('./bct-safety-training-smoke.mjs', import.meta.url), 'utf8');
 const contractorSafetyUiSmoke = fs.readFileSync(new URL('./bct-contractor-safety-ui-smoke.mjs', import.meta.url), 'utf8');
+const contractorOnboardingSmoke = fs.readFileSync(new URL('./bct-contractor-onboarding-smoke.mjs', import.meta.url), 'utf8');
 const safetyCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260926114500_contractor_safety_training_automation.sql', import.meta.url), 'utf8');
 const safetyAdminSql = fs.readFileSync(new URL('../supabase/migrations/20260926115500_safety_training_admin_automation.sql', import.meta.url), 'utf8');
 const automation100Sql = fs.readFileSync(new URL('../supabase/migrations/20260926122000_launch_automation_engine_100.sql', import.meta.url), 'utf8');
@@ -58,6 +59,7 @@ const dryRunMarkers = [
   ['contractor application RPC', 'bct_submit_contractor_application'],
   ['contractor bid RPC', 'bct_submit_bid'],
   ['contractor rules acknowledgment', 'contractorRulesAck'],
+  ['contractor exact five-reference validation', 'refs.length!==5'],
   ['contractor access gate', 'contractorAccessMessage(app)'],
   ['contractor screening lockout', 'Screening failed twice. Retesting is locked for 14 days.'],
   ['admin state RPC', 'bct_frontend_admin_state'],
@@ -184,6 +186,7 @@ const currentLaunchMarkers = [
   [requirements1000Sql, 'controls 801-1800', '1000-requirement source record'],
   [safetyTrainingSmoke, 'PASS:', 'safety smoke assertions'],
   [contractorSafetyUiSmoke, 'bct_complete_my_safety_training', 'contractor safety-training UI completion flow'],
+  [contractorOnboardingSmoke, 'exact five-reference UI', 'contractor exact five-reference onboarding smoke'],
   [indexHtml, 'bctSafetyTrainingPanel', 'contractor safety-training panel'],
   [indexHtml, 'Existing assigned-job access remains available', 'workforce restriction boundary'],
   [automationHealthSql, "'runs_failed'", 'automation failure visibility'],
