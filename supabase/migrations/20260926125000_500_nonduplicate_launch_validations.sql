@@ -1,0 +1,13 @@
+-- V46 non-duplicate launch validation expansion.
+-- Production migration: bct_500_nonduplicate_launch_validations.
+-- Adds 500 unique controls numbered 301-800 across:
+-- database security, role/privacy, workflow integrity, contractor compliance,
+-- financial integrity, documents/communications, field operations,
+-- closeout/warranty, resilience/monitoring, and launch acceptance.
+-- Adds Admin-only bct_launch_validation_results and
+-- bct_admin_run_500_launch_validations() using SECURITY INVOKER.
+-- Critical validations explicitly test RLS coverage, anonymous sensitive-data grants,
+-- estimate approval actor integrity, escrow dual-approval integrity,
+-- unresolved high-severity errors, critical job-health states, and closeout prerequisites.
+-- These are validation-only controls: no estimate approval, contractor selection,
+-- money release, legal/e-sign decision, or final closeout is automated.
