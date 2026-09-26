@@ -269,8 +269,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
     <div class="card section">
       <h3>4 — Photos, Video & Documents</h3>
-      <label>Upload Project Files</label><div class="file-upload-ui"><input id="customerFiles" type="file" multiple accept=".jpg,.jpeg,.png,.heic,.pdf,.mov,.mp4"><label class="file-upload-button" for="customerFiles" data-file-choose>Choose Files</label><span class="file-upload-name" data-file-name="customerFiles">No files selected</span></div>
-      <p class="muted">Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.</p>
+      <label>Upload Project Files</label><div class="file-upload-ui"><input id="customerFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4"><label class="file-upload-button" for="customerFiles" data-file-choose>Choose Files</label><span class="file-upload-name" data-file-name="customerFiles">No files selected</span></div>
+      <p class="muted">Up to 10 files, 25 MB each. Allowed: JPG, PNG, WEBP, HEIC/HEIF, PDF, MOV, and MP4. Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.</p>
     </div>
 
     <div class="card section">
@@ -347,7 +347,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
         <div><label>Professional Reference #5</label><input name="ref5" required></div>
         <div><label>Reference #5 Contact</label><input name="ref5contact" required></div>
       </div>
-      <label>Previous Work Photos</label><div class="file-upload-ui"><input id="workPhotos" type="file" multiple accept="image/*"><label class="file-upload-button" for="workPhotos" data-file-choose>Choose Photos</label><span class="file-upload-name" data-file-name="workPhotos">No photos selected — you can add photos more than once</span></div>
+      <label>Previous Work Photos</label><div class="file-upload-ui"><input id="workPhotos" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif"><label class="file-upload-button" for="workPhotos" data-file-choose>Choose Photos</label><span class="file-upload-name" data-file-name="workPhotos">No photos selected — you can add photos more than once</span></div>
+      <p class="muted">Up to 10 image files, 25 MB each. Allowed: JPG, PNG, WEBP, and HEIC/HEIF.</p>
       <label>Describe the Projects in Your Photos</label><textarea name="photoNotes" placeholder="Required only when work photos are uploaded."></textarea>
       <div class="grid grid-2">
         <div><label>Currently Insured?</label><select name="insured"><option>Yes</option><option>No</option></select></div>
@@ -980,12 +981,56 @@ db.applications=db.applications||[];db.jobs=db.jobs||[];db.bids=db.bids||[];db.c
 db.customerProjects.forEach(p=>{p.workflowStage=p.workflowStage||p.status||'BCT Review';p.statusHistory=p.statusHistory||[{status:p.status||'Existing Project',at:p.created||new Date().toISOString(),note:'Existing project migrated to workflow'}];p.assignedContractorId=p.assignedContractorId||'';p.assignedContractorName=p.assignedContractorName||'';});
 const accumulatedFiles={customerFiles:[],workPhotos:[],contractorDocs:[]};
 window.bctAccumulatedFiles=accumulatedFiles;
+const BCT_UPLOAD_LIMITS={
+  maxFiles:10,
+  maxFileSizeBytes:25*1024*1024,
+  projectAllowedExtensions:['jpg','jpeg','png','webp','heic','heif','pdf','mov','mp4'],
+  contractorPhotoAllowedExtensions:['jpg','jpeg','png','webp','heic','heif'],
+  contractorDocumentAllowedExtensions:['jpg','jpeg','png','webp','heic','heif','pdf']
+};
+function bctUploadKind(input){
+  const id=input?.id||'';
+  if(id==='workPhotos')return 'contractorPhoto';
+  if(id==='contractorDocs'||id==='bctContractorDocFiles')return 'contractorDocument';
+  return 'project';
+}
+function bctUploadAllowedExtensions(kind){
+  if(kind==='contractorPhoto')return BCT_UPLOAD_LIMITS.contractorPhotoAllowedExtensions;
+  if(kind==='contractorDocument')return BCT_UPLOAD_LIMITS.contractorDocumentAllowedExtensions;
+  return BCT_UPLOAD_LIMITS.projectAllowedExtensions;
+}
+function bctFileExtension(file){
+  const name=String(file?.name||'').toLowerCase();
+  const parts=name.split('.');
+  return parts.length>1?parts.pop():'';
+}
+function bctUploadLimitSummary(kind='project'){
+  const list=bctUploadAllowedExtensions(kind).map(x=>x.toUpperCase()).join(', ');
+  return `Up to ${BCT_UPLOAD_LIMITS.maxFiles} files, 25 MB each. Allowed: ${list}.`;
+}
+function validateUploadFiles(files,kind='project'){
+  const arr=[...(files||[])],allowed=bctUploadAllowedExtensions(kind),max=BCT_UPLOAD_LIMITS.maxFileSizeBytes;
+  if(arr.length>BCT_UPLOAD_LIMITS.maxFiles)throw new Error(`Upload limit is ${BCT_UPLOAD_LIMITS.maxFiles} files at a time.`);
+  for(const file of arr){
+    const ext=bctFileExtension(file);
+    if(!allowed.includes(ext))throw new Error(`${file.name} is not an allowed file type. ${bctUploadLimitSummary(kind)}`);
+    if(Number(file.size||0)>max)throw new Error(`${file.name} is larger than 25 MB. ${bctUploadLimitSummary(kind)}`);
+  }
+  return arr;
+}
 function addAccumulatedFiles(input){
   const key=input.id;if(!accumulatedFiles[key])accumulatedFiles[key]=[];
-  const seen=new Set(accumulatedFiles[key].map(f=>f.name+'|'+f.size+'|'+f.lastModified));
-  [...(input.files||[])].forEach(f=>{const k=f.name+'|'+f.size+'|'+f.lastModified;if(!seen.has(k)){accumulatedFiles[key].push(f);seen.add(k);}});
   const st=document.querySelector(`[data-file-name="${key}"]`)||document.getElementById(key+'Status');
-  const n=accumulatedFiles[key].length;if(st)st.textContent=n?(n===1?'1 file selected — tap Choose Files again to add more':n+' files selected — tap Choose Files again to add more'):'No files selected';
+  try{
+    const kind=bctUploadKind(input),incoming=validateUploadFiles(input.files,kind),seen=new Set(accumulatedFiles[key].map(f=>f.name+'|'+f.size+'|'+f.lastModified));
+    const next=[...accumulatedFiles[key]];
+    incoming.forEach(f=>{const k=f.name+'|'+f.size+'|'+f.lastModified;if(!seen.has(k)){next.push(f);seen.add(k);}});
+    validateUploadFiles(next,kind);
+    accumulatedFiles[key]=next;
+    const n=accumulatedFiles[key].length;if(st)st.textContent=n?(n===1?'1 file selected — tap Choose Files again to add more':n+' files selected — tap Choose Files again to add more'):'No files selected';
+  }catch(e){
+    if(st)st.textContent=`Upload blocked: ${e.message||e}`;
+  }
   input.value='';
 }
 function uniqueCode(prefix,digits,collection){let code;do{code=prefix+Math.floor(10**(digits-1)+Math.random()*9*10**(digits-1));}while(collection.some(x=>x.id===code));return code;}
@@ -1540,6 +1585,7 @@ renderAll();
   }
 
   async function uploadProjectFiles(project,files){
+    files=validateUploadFiles(files,'project');
     if(!files?.length)return 0; const u=await user(); let count=0;
     for(const file of files){
       const path=`${u.id}/${project.id}/${crypto.randomUUID()}-${safeName(file.name)}`;
@@ -1550,6 +1596,7 @@ renderAll();
     return count;
   }
   async function uploadContractorFiles(files,documentType='supporting_document'){
+    files=validateUploadFiles(files,documentType==='work_photo'?'contractorPhoto':'contractorDocument');
     if(!files?.length)return 0; const u=await user(); const app=(contractorState?.application||[])[0]; if(!app)throw new Error('Contractor application not found.');let count=0;
     for(const file of files){const path=`${u.id}/${app.id}/${crypto.randomUUID()}-${safeName(file.name)}`;const {error}=await supabaseClient.storage.from('bct-contractor-documents').upload(path,file,{upsert:false,contentType:file.type||undefined});if(error)throw error;await rpc('bct_register_contractor_document',{p_document_type:documentType,p_storage_path:path,p_original_filename:file.name});count++}return count;
   }
@@ -1557,8 +1604,8 @@ renderAll();
   async function loadHomeownerState(){
     homeownerState=await rpc('bct_frontend_homeowner_state');
     const projects=homeownerState?.projects||[];
-    const c=$('bctHomeProjects');if(c)c.innerHTML=projects.length?projects.map(p=>`<div class="card project-card backend-live"><div class="toolbar"><b>${esc(p.project_number)}</b><span class="backend-chip">${esc(fmtStatus(p.workflow_status))}</span></div><div class="project-meta"><span class="badge info">Verification: ${esc(fmtStatus(p.verification_status))}</span></div><p>${esc((p.services||[]).join(', '))}</p><p>${esc(p.description||'')}</p><label>Add Private Project Files</label><div class="file-upload-ui"><input type="file" id="homeFiles-${p.id}" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4"><label class="file-upload-button" for="homeFiles-${p.id}">Choose Files</label><span class="file-upload-name" id="homeFilesStatus-${p.id}">No files selected</span></div><button type="button" style="margin-top:8px" onclick="bctUploadHomeFiles('${p.id}')">Upload Files</button></div>`).join(''):'<div class="notice">No homeowner projects were found for this account.</div>';
-    projects.forEach(p=>{const input=$(`homeFiles-${p.id}`),status=$(`homeFilesStatus-${p.id}`);input?.addEventListener('change',()=>{const n=input.files?.length||0;if(status)status.textContent=n?(n===1?'1 file selected':`${n} files selected`):'No files selected'})});
+    const c=$('bctHomeProjects');if(c)c.innerHTML=projects.length?projects.map(p=>`<div class="card project-card backend-live"><div class="toolbar"><b>${esc(p.project_number)}</b><span class="backend-chip">${esc(fmtStatus(p.workflow_status))}</span></div><div class="project-meta"><span class="badge info">Verification: ${esc(fmtStatus(p.verification_status))}</span></div><p>${esc((p.services||[]).join(', '))}</p><p>${esc(p.description||'')}</p><label>Add Private Project Files</label><div class="file-upload-ui"><input type="file" id="homeFiles-${p.id}" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4"><label class="file-upload-button" for="homeFiles-${p.id}">Choose Files</label><span class="file-upload-name" id="homeFilesStatus-${p.id}">No files selected</span></div><small class="muted">${bctUploadLimitSummary('project')}</small><button type="button" style="margin-top:8px" onclick="bctUploadHomeFiles('${p.id}')">Upload Files</button></div>`).join(''):'<div class="notice">No homeowner projects were found for this account.</div>';
+    projects.forEach(p=>{const input=$(`homeFiles-${p.id}`),status=$(`homeFilesStatus-${p.id}`);input?.addEventListener('change',()=>{try{validateUploadFiles(input.files,'project');const n=input.files?.length||0;if(status)status.textContent=n?(n===1?'1 file selected':`${n} files selected`):'No files selected'}catch(e){if(status)status.textContent=`Upload blocked: ${e.message||e}`;input.value=''}})});
     note('bctHomeAuthStatus',`✓ Signed in. ${projects.length} BCT project${projects.length===1?'':'s'} loaded.`);
     return homeownerState;
   }
@@ -1636,7 +1683,7 @@ renderAll();
     if(app&&$('statusId'))$('statusId').value=app.application_number;
     renderContractorDocs();renderContractorJobs();return contractorState;
   }
-  function renderContractorDocs(){const el=$('bctContractorDocsPanel'),app=(contractorState?.application||[])[0];if(!el)return;if(!app){el.innerHTML='';return}const docs=contractorState?.documents||[],access=contractorAccessMessage(app),screen=contractorScreeningPassed(app);el.innerHTML=`<div class="card backend-live"><b>${esc(app.application_number)}</b> — ${esc(fmtStatus(app.status))}<p class="muted">${esc(app.legal_name)} • ${esc(app.primary_trade)}</p><div class="section"><span class="badge ${screen?'good':'warn'}">${screen?'Screening Passed':'Screening / Admin Review Required'}</span>${access?`<div class="notice section">${esc(access)}</div>`:''}</div><div class="section"><b>Document Checklist</b>${documentChecklist(docs)}</div><label>Document Type</label><select id="bctContractorDocType"><option value="certificate_of_insurance">Certificate of Insurance</option><option value="w9">W-9</option><option value="work_photo">Work Photo</option><option value="supporting_document">Other Supporting Document</option></select><label>Upload Contractor Documents</label><div class="file-upload-ui"><input id="bctContractorDocFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"><label class="file-upload-button" for="bctContractorDocFiles">Choose Documents</label><span class="file-upload-name" id="bctContractorDocFilesStatus">No files selected</span></div><button type="button" id="bctContractorUploadDocs" style="margin-top:8px">Upload Documents Privately</button><div id="bctContractorUploadStatus" class="section"></div><div class="section"><b>Documents on file:</b>${docs.length?docs.map(d=>`<div><small>${esc(d.original_filename||d.document_type)} — ${esc(fmtStatus(d.review_status))}</small></div>`).join(''):'<div><small>None yet.</small></div>'}</div></div>`;const docInput=$('bctContractorDocFiles'),docStatus=$('bctContractorDocFilesStatus'),uploadStatus=$('bctContractorUploadStatus'),uploadButton=$('bctContractorUploadDocs');docInput?.addEventListener('change',()=>{const n=docInput.files?.length||0;if(docStatus)docStatus.textContent=n?(n===1?'1 file selected':`${n} files selected`):'No files selected'});uploadButton.onclick=async()=>{try{const files=[...(docInput.files||[])];if(!files.length){if(uploadStatus)uploadStatus.innerHTML='<div class="notice">Choose one or more files first.</div>';return}uploadButton.disabled=true;uploadButton.textContent='Uploading…';const n=await uploadContractorFiles(files,$('bctContractorDocType').value);await loadContractorState();const refreshedStatus=$('bctContractorUploadStatus');if(refreshedStatus)refreshedStatus.innerHTML=`<div class="notice backend-live"><b>✓ ${n} document${n===1?'':'s'} uploaded to BCT.</b></div>`}catch(e){if(uploadStatus)uploadStatus.innerHTML=`<div class="notice"><b>Upload failed:</b> ${esc(e.message||e)}</div>`;else alert(e.message||e);uploadButton.disabled=false;uploadButton.textContent='Upload Documents Privately'}}}
+  function renderContractorDocs(){const el=$('bctContractorDocsPanel'),app=(contractorState?.application||[])[0];if(!el)return;if(!app){el.innerHTML='';return}const docs=contractorState?.documents||[],access=contractorAccessMessage(app),screen=contractorScreeningPassed(app);el.innerHTML=`<div class="card backend-live"><b>${esc(app.application_number)}</b> — ${esc(fmtStatus(app.status))}<p class="muted">${esc(app.legal_name)} • ${esc(app.primary_trade)}</p><div class="section"><span class="badge ${screen?'good':'warn'}">${screen?'Screening Passed':'Screening / Admin Review Required'}</span>${access?`<div class="notice section">${esc(access)}</div>`:''}</div><div class="section"><b>Document Checklist</b>${documentChecklist(docs)}</div><label>Document Type</label><select id="bctContractorDocType"><option value="certificate_of_insurance">Certificate of Insurance</option><option value="w9">W-9</option><option value="work_photo">Work Photo</option><option value="supporting_document">Other Supporting Document</option></select><label>Upload Contractor Documents</label><div class="file-upload-ui"><input id="bctContractorDocFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"><label class="file-upload-button" for="bctContractorDocFiles">Choose Documents</label><span class="file-upload-name" id="bctContractorDocFilesStatus">No files selected</span></div><small class="muted">${bctUploadLimitSummary('contractorDocument')}</small><button type="button" id="bctContractorUploadDocs" style="margin-top:8px">Upload Documents Privately</button><div id="bctContractorUploadStatus" class="section"></div><div class="section"><b>Documents on file:</b>${docs.length?docs.map(d=>`<div><small>${esc(d.original_filename||d.document_type)} — ${esc(fmtStatus(d.review_status))}</small></div>`).join(''):'<div><small>None yet.</small></div>'}</div></div>`;const docInput=$('bctContractorDocFiles'),docStatus=$('bctContractorDocFilesStatus'),uploadStatus=$('bctContractorUploadStatus'),uploadButton=$('bctContractorUploadDocs');docInput?.addEventListener('change',()=>{try{const kind=$('bctContractorDocType')?.value==='work_photo'?'contractorPhoto':'contractorDocument';validateUploadFiles(docInput.files,kind);const n=docInput.files?.length||0;if(docStatus)docStatus.textContent=n?(n===1?'1 file selected':`${n} files selected`):'No files selected'}catch(e){if(docStatus)docStatus.textContent=`Upload blocked: ${e.message||e}`;docInput.value=''}});uploadButton.onclick=async()=>{try{const files=[...(docInput.files||[])];if(!files.length){if(uploadStatus)uploadStatus.innerHTML='<div class="notice">Choose one or more files first.</div>';return}uploadButton.disabled=true;uploadButton.textContent='Uploading…';const n=await uploadContractorFiles(files,$('bctContractorDocType').value);await loadContractorState();const refreshedStatus=$('bctContractorUploadStatus');if(refreshedStatus)refreshedStatus.innerHTML=`<div class="notice backend-live"><b>✓ ${n} document${n===1?'':'s'} uploaded to BCT.</b></div>`}catch(e){if(uploadStatus)uploadStatus.innerHTML=`<div class="notice"><b>Upload failed:</b> ${esc(e.message||e)}</div>`;else alert(e.message||e);uploadButton.disabled=false;uploadButton.textContent='Upload Documents Privately'}}}
   function renderContractorJobs(){const el=$('jobList');if(!el)return;const app=(contractorState?.application||[])[0],lockMessage=contractorAccessMessage(app);if(lockMessage){el.innerHTML=`<div class="notice"><b>Contractor access locked.</b> ${esc(lockMessage)}</div>`;note('bctJobsAuthStatus','Jobs and bids are locked until screening is passed and BCT Admin approves the application.');return}const jobs=contractorState?.available_jobs||[],bids=contractorState?.bids||[];el.innerHTML=jobs.length?jobs.map(j=>{const bid=bids.find(b=>b.job_id===j.id&&b.status!=='withdrawn'),safeId=String(j.id).replace(/[^A-Za-z0-9_-]/g,'_');const bidForm=`<div class="stage" style="margin-top:12px"><h3>Submit Private Bid</h3><label>Bid Amount</label><input id="bidAmount-${safeId}" type="number" min="1" step="0.01" placeholder="Enter your price"><div class="grid grid-2"><div><label>Proposed Start Date</label><input id="bidStart-${safeId}" type="date"></div><div><label>Estimated Duration</label><input id="bidDuration-${safeId}" placeholder="Example: 3 days"></div></div><label>Notes to BCT</label><textarea id="bidNotes-${safeId}" placeholder="Materials, schedule limits, crew notes, or questions for BCT"></textarea><button type="button" id="bidSubmit-${safeId}" onclick="bctSubmitRealBid('${esc(j.id)}','${esc(j.job_number)}','${safeId}')">Submit Bid Privately to BCT</button><div id="bidStatus-${safeId}" class="section"></div></div>`;return `<div class="card job backend-live"><div><span class="badge good">${esc(j.job_number)}</span><h3>${esc(j.title)}</h3><div class="muted">${esc(j.public_location||'')}</div><p>${esc(j.sanitized_scope||'')}</p><small>Required language: ${esc(j.required_language||'Any')} • Bid deadline: ${j.bid_deadline?new Date(j.bid_deadline).toLocaleString():'TBD'}</small>${bid?'':bidForm}</div><div class="right">${j.target_subcontract_amount!=null?`<div class="metric" style="font-size:22px">$${Number(j.target_subcontract_amount).toLocaleString()}</div>`:''}<br>${bid?`<span class="badge info">Bid ${esc(fmtStatus(bid.status))}: $${Number(bid.bid_amount).toLocaleString()}</span>`:'<small>Your bid is private. Other contractors cannot see it.</small>'}</div></div>`}).join(''):'<div class="notice">No BCT jobs currently match your approved trades and language.</div>';note('bctJobsAuthStatus',`✓ ${jobs.length} matched job${jobs.length===1?'':'s'} loaded.`)}
   window.bctSubmitRealBid=async(jobId,jobNumber,safeId)=>{const amountEl=$(`bidAmount-${safeId}`),startEl=$(`bidStart-${safeId}`),durationEl=$(`bidDuration-${safeId}`),notesEl=$(`bidNotes-${safeId}`),statusEl=$(`bidStatus-${safeId}`),button=$(`bidSubmit-${safeId}`);try{const app=(contractorState?.application||[])[0],lockMessage=contractorAccessMessage(app);if(lockMessage)throw new Error(lockMessage);const amount=Number(amountEl?.value||0);if(!amount||amount<=0){if(statusEl)statusEl.innerHTML='<div class="notice">Enter a bid amount greater than $0.</div>';amountEl?.focus?.();return}if(button){button.disabled=true;button.textContent='Submitting…'}await rpc('bct_submit_bid',{p_job_id:jobId,p_bid_amount:amount,p_proposed_start_date:startEl?.value||null,p_estimated_duration:durationEl?.value.trim()||null,p_notes:notesEl?.value.trim()||null});if(statusEl)statusEl.innerHTML='<div class="notice backend-live"><b>✓ Bid submitted privately to BCT.</b> Other contractors cannot see it.</div>';await loadContractorState()}catch(e){if(statusEl)statusEl.innerHTML=`<div class="notice"><b>Bid failed:</b> ${esc(e.message||e)}</div>`;else alert(e.message||e);if(button){button.disabled=false;button.textContent='Submit Bid Privately to BCT'}}};
   async function contractorLogin(){const btn=$('bctContractorLoginBtn');await withBusyButton(btn,'Signing in...',async()=>{try{const email=$('bctContractorEmail').value.trim(),password=$('bctContractorPassword').value;if(!email||!password)throw new Error('Enter your email and password.');note('bctContractorAuthStatus','Checking your BCT contractor account...','notice backend-live');const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;await loadContractorState()}catch(e){note('bctContractorAuthStatus',`<b>Sign-in failed:</b> ${esc(authFriendly(e))}`)}})}
@@ -1746,11 +1793,19 @@ renderAll();
   }
   function renderLaunchControls(){
     const readiness=adminState?.launch_readiness||{},queue=adminState?.action_queue||{},delivery=adminState?.notification_delivery||{},policies=adminState?.policy_readiness||{},controls=adminState?.launch_controls||[];
+    const ownerActions=[
+      {label:'Supabase Pro backups/PITR',status:'Blocked - owner billing upgrade required',notes:'Manual export checklist remains active until Pro backups and point-in-time recovery are verified.'},
+      {label:'Leaked-password protection',status:'Blocked - Supabase Pro required',notes:'Enable in Supabase Auth after the Pro upgrade, then rerun security advisors.'},
+      {label:'Weather API provider/key',status:'Pending owner provider choice',notes:'Manual Weather Log stays active. Automatic live weather by job location/schedule stays disabled until a provider and API key are configured.'},
+      {label:'E-sign provider',status:'Pending owner/provider choice',notes:'Completion sign-off and customer approval remain manual/admin-controlled until a legal e-sign provider is selected.'},
+      {label:'Email reset live mailbox test',status:'Deferred owner mailbox verification',notes:'Password-reset UI is present; final live delivery test waits for the real mailbox check.'},
+      {label:'Business/legal policy approval',status:'Pending owner/legal decision',notes:'Terms, privacy, escrow, financing, contractor rules, completion sign-off, ratings, and disputes need final approval before public launch.'}
+    ];
     const openActions=['pending_job_approvals','pending_purchase_requests','open_tasks','feedback_followups','pending_customer_decisions','open_punch_items','open_cases','open_error_events'].reduce((n,k)=>n+(Number(queue[k])||0),0);
     $('lc-ready').textContent=readiness.ready_for_frontend_integration?'Ready':'Review';$('lc-actions').textContent=openActions;$('lc-email').textContent=delivery.failed_email||0;$('lc-compliance').textContent=queue.critical_compliance_expirations||0;
     const list=$('launchControlList');if(!list)return;
     const incomplete=controls.filter(c=>!c.is_complete);
-    list.innerHTML=`<div class="card"><h3>Launch Gates</h3>${incomplete.length?incomplete.map(c=>`<div class="stage"><b>${esc(fmtStatus(c.control_key))}</b><br><span class="badge warn">Needs completion</span><br><small>${esc(c.notes||'')}</small></div>`).join(''):'<div class="notice backend-live">All recorded launch gates are complete.</div>'}</div><div class="card"><h3>Live Operations</h3><div class="grid grid-2">${controlLine('Pending Approvals',queue.pending_job_approvals||0)}${controlLine('Open Cases',queue.open_cases||0)}${controlLine('Critical Cases',queue.critical_cases||0)}${controlLine('Open Error Events',queue.open_error_events||0)}${controlLine('Queued Email',delivery.queued_email||0)}${controlLine('Failed Email',delivery.failed_email||0)}${controlLine('Policy Content',policies.legal_content_ready,'true'===String(policies.legal_content_ready))}${controlLine('Policy Translations',policies.translation_ready,'true'===String(policies.translation_ready))}</div><h3 class="section">Security & Data</h3><div class="grid grid-2">${controlLine('User Profile Gaps',readiness.domain_user_profile_gaps||0)}${controlLine('Translation Gaps',readiness.language_translation_gaps||0)}${controlLine('Orphan Projects',readiness.orphan_projects||0)}${controlLine('Orphan Jobs',readiness.orphan_jobs||0)}</div></div>`;
+    list.innerHTML=`<div class="card"><h3>Launch Gates</h3>${incomplete.length?incomplete.map(c=>`<div class="stage"><b>${esc(fmtStatus(c.control_key))}</b><br><span class="badge warn">Needs completion</span><br><small>${esc(c.notes||'')}</small></div>`).join(''):'<div class="notice backend-live">All recorded launch gates are complete.</div>'}</div><div class="card"><h3>Live Operations</h3><div class="grid grid-2">${controlLine('Pending Approvals',queue.pending_job_approvals||0)}${controlLine('Open Cases',queue.open_cases||0)}${controlLine('Critical Cases',queue.critical_cases||0)}${controlLine('Open Error Events',queue.open_error_events||0)}${controlLine('Queued Email',delivery.queued_email||0)}${controlLine('Failed Email',delivery.failed_email||0)}${controlLine('Policy Content',policies.legal_content_ready,'true'===String(policies.legal_content_ready))}${controlLine('Policy Translations',policies.translation_ready,'true'===String(policies.translation_ready))}</div><h3 class="section">Security & Data</h3><div class="grid grid-2">${controlLine('User Profile Gaps',readiness.domain_user_profile_gaps||0)}${controlLine('Translation Gaps',readiness.language_translation_gaps||0)}${controlLine('Orphan Projects',readiness.orphan_projects||0)}${controlLine('Orphan Jobs',readiness.orphan_jobs||0)}</div></div><div class="card"><h3>Owner Action Checklist</h3>${ownerActions.map(a=>`<div class="stage"><b>${esc(a.label)}</b><br><span class="badge warn">${esc(a.status)}</span><br><small>${esc(a.notes)}</small></div>`).join('')}</div>`;
   }
   if($('refreshLaunchControlsBtn'))$('refreshLaunchControlsBtn').onclick=async()=>{try{adminSuccess('Refreshing launch controls...');await loadAdminState();adminSuccess('Launch controls refreshed.');adminAuditEvent('Launch controls refreshed','Admin refreshed live readiness and action queues.')}catch(e){adminError(e,'adminActionStatus','Launch controls refresh failed')}};
   if($('refreshOperationalReadinessBtn'))$('refreshOperationalReadinessBtn').onclick=async()=>{try{adminSuccess('Refreshing operational readiness...');await loadOperationalReadiness();adminSuccess('Operational readiness refreshed.');adminAuditEvent('Operational readiness refreshed','Admin reviewed final pilot workflow coverage.')}catch(e){adminError(e,'adminActionStatus','Operational readiness refresh failed')}};
