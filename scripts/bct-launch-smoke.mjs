@@ -92,7 +92,14 @@ const commandCenterMarkers = [
   ['Applicant Status cover card', 'Applicant Status'],
   ['Available Jobs cover card', 'Available Jobs'],
   ['BCT Admin cover card', 'BCT Admin'],
-  ['Financing cover card', 'Financing']
+  ['Financing cover card', 'Financing'],
+  ['per-view section index shell', 'bct-view-section-index'],
+  ['per-view section index renderer', 'renderSectionIndex'],
+  ['per-view section jump chips', 'data-bct-section-jump'],
+  ['starts-with ranking scorer', 'itemScore(item,q)'],
+  ['change-order search item', 'Change Orders'],
+  ['escrow search item', 'Escrow Release'],
+  ['safety training search item', 'Safety Training']
 ];
 
 for (const [label, marker] of commandCenterMarkers) {
