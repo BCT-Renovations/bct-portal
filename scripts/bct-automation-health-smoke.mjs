@@ -19,7 +19,14 @@ const checks=[
  ['admin UI labels automation health',indexHtml.includes('Automation Health')],
  ['admin UI shows failed runs',indexHtml.includes("controlLine('Failed Runs'")],
  ['admin UI shows scheduler',indexHtml.includes("controlLine('Scheduler'")],
- ['admin UI avoids fake run time',indexHtml.includes('No recorded run yet')]
+ ['admin UI avoids fake run time',indexHtml.includes('No recorded run yet')],
+ ['manual launch checks button exists',indexHtml.includes('id="runLaunchChecksBtn"')],
+ ['manual launch runner exists',indexHtml.includes('runAdminLaunchChecks')],
+ ['100-control runner wired',indexHtml.includes("bct_admin_run_launch_automations")],
+ ['200-control runner wired',indexHtml.includes("bct_admin_run_200_launch_checks")],
+ ['500-control runner wired',indexHtml.includes("bct_admin_run_500_launch_validations")],
+ ['1000-control runner wired',indexHtml.includes("bct_admin_run_1000_launch_requirements")],
+ ['manual runner preserves human approval boundary',indexHtml.includes('cannot approve estimates')&&indexHtml.includes('release money')]
 ];
 const failed=checks.filter(([,ok])=>!ok);
 for(const [name,ok] of checks) console.log(`${ok?'PASS':'FAIL'}: ${name}`);
