@@ -1,4 +1,4 @@
-const CACHE_NAME='bct-portal-shell-v4-command-center-typeahead';
+const CACHE_NAME='bct-portal-shell-v5-command-center-section-index';
 const APP_SHELL=['/','/index.html','/manifest.webmanifest'];
 
 const ADMIN_LOGIN_HOTFIX=`
@@ -7,7 +7,7 @@ const ADMIN_LOGIN_HOTFIX=`
   const SUPABASE_URL='https://onpqykpikxbbypfvmtin.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_JToQ3bPaJql-xHq-iyM0bg_Fweenyfh';
   const $=id=>document.getElementById(id);
-  const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const esc=s=>String(s??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));
   const status=(html,kind='notice')=>{const el=$('adminAuthStatus');if(el)el.innerHTML='<div class="'+kind+'">'+html+'</div>';};
   const friendly=e=>{const msg=String(e?.message||e||'Unknown authentication error');if(/invalid login credentials/i.test(msg))return 'The email or password did not match a BCT admin account.';if(/email not confirmed/i.test(msg))return 'This email is not confirmed yet. Use Forgot Password or resend confirmation, then check inbox and spam.';if(/failed to fetch|network|load failed/i.test(msg))return 'The browser could not reach the BCT login server. Check connection and try again.';return msg;};
   const showView=id=>{document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(id)?.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});};
@@ -62,19 +62,21 @@ const ADMIN_LOGIN_HOTFIX=`
 const COMMAND_CENTER_HOTFIX=`
 <style id="bct-command-center-style">
 .bct-command-center{margin:18px 0 22px;padding:22px;border:1px solid #075985;border-radius:22px;background:linear-gradient(135deg,rgba(8,47,73,.98),rgba(15,23,42,.98));box-shadow:0 18px 50px rgba(0,0,0,.28)}
-.bct-command-center h2{font-size:clamp(30px,6vw,52px);line-height:1;margin:.1em 0}.bct-command-center p{max-width:850px}.bct-command-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.bct-command-card{border:1px solid #334155;border-radius:16px;background:#0b1220;color:#f8fafc;text-align:left;padding:16px;min-height:95px;cursor:pointer}.bct-command-card:hover,.bct-command-card:focus{outline:2px solid #38bdf8;background:#082f49}.bct-command-card b{display:block;font-size:18px;margin-bottom:4px}.bct-command-card span{display:block;color:#cbd5e1;font-size:13px;line-height:1.35}.bct-portal-search-wrap{position:relative;margin-top:16px}.bct-portal-search{font-size:18px;padding:15px 16px;border:2px solid #0ea5e9;background:#020617}.bct-portal-results{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:60;max-height:330px;overflow:auto;border:1px solid #075985;border-radius:14px;background:#020617;box-shadow:0 18px 40px rgba(0,0,0,.42)}.bct-portal-result{display:flex;justify-content:space-between;gap:12px;width:100%;padding:13px 14px;text-align:left;border:0;border-bottom:1px solid #1e293b;border-radius:0;background:#020617;color:#f8fafc}.bct-portal-result:hover,.bct-portal-result:focus{background:#082f49;outline:none}.bct-portal-result small{color:#94a3b8}.bct-portal-no-results{padding:13px 14px;color:#fca5a5}.bct-highlight-target{animation:bctPulse 2.4s ease;border-color:#38bdf8!important;box-shadow:0 0 0 3px rgba(56,189,248,.35)}@keyframes bctPulse{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0)}35%{box-shadow:0 0 0 8px rgba(56,189,248,.35)}}@media(max-width:820px){.bct-command-grid{grid-template-columns:1fr}.bct-command-center{padding:16px}.bct-portal-results{position:static;margin-top:8px;max-height:280px}.bct-command-card{min-height:auto}}
+.bct-command-center h2{font-size:clamp(30px,6vw,52px);line-height:1;margin:.1em 0}.bct-command-center p{max-width:850px}.bct-command-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.bct-command-card{border:1px solid #334155;border-radius:16px;background:#0b1220;color:#f8fafc;text-align:left;padding:16px;min-height:95px;cursor:pointer}.bct-command-card:hover,.bct-command-card:focus{outline:2px solid #38bdf8;background:#082f49}.bct-command-card b{display:block;font-size:18px;margin-bottom:4px}.bct-command-card span{display:block;color:#cbd5e1;font-size:13px;line-height:1.35}.bct-portal-search-wrap{position:relative;margin-top:16px}.bct-portal-search{font-size:18px;padding:15px 16px;border:2px solid #0ea5e9;background:#020617}.bct-portal-results{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:60;max-height:330px;overflow:auto;border:1px solid #075985;border-radius:14px;background:#020617;box-shadow:0 18px 40px rgba(0,0,0,.42)}.bct-portal-result{display:flex;justify-content:space-between;gap:12px;width:100%;padding:13px 14px;text-align:left;border:0;border-bottom:1px solid #1e293b;border-radius:0;background:#020617;color:#f8fafc}.bct-portal-result:hover,.bct-portal-result:focus{background:#082f49;outline:none}.bct-portal-result small{color:#94a3b8}.bct-portal-no-results{padding:13px 14px;color:#fca5a5}.bct-view-section-index{margin:0 0 14px;padding:14px;border:1px solid #334155;border-radius:16px;background:#0b1220}.bct-view-section-index strong{display:block;margin-bottom:8px}.bct-section-chip-row{display:flex;gap:8px;flex-wrap:wrap}.bct-section-chip{border:1px solid #334155;border-radius:999px;background:#111827;color:#f8fafc;padding:8px 11px;font-size:13px}.bct-section-chip:hover,.bct-section-chip:focus{outline:2px solid #38bdf8;background:#082f49}.bct-highlight-target{animation:bctPulse 2.4s ease;border-color:#38bdf8!important;box-shadow:0 0 0 3px rgba(56,189,248,.35)}@keyframes bctPulse{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0)}35%{box-shadow:0 0 0 8px rgba(56,189,248,.35)}}@media(max-width:820px){.bct-command-grid{grid-template-columns:1fr}.bct-command-center{padding:16px}.bct-portal-results{position:static;margin-top:8px;max-height:280px}.bct-command-card{min-height:auto}.bct-section-chip{width:100%;text-align:left}}
 </style>
 <script id="bct-command-center-hotfix">
 (()=>{
   if(window.__bctCommandCenterLoaded)return;window.__bctCommandCenterLoaded=true;
   const $=id=>document.getElementById(id);
-  const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const esc=s=>String(s??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));
   const viewMap={home:'view-home',customer:'view-customer',apply:'view-apply',status:'view-status',jobs:'view-jobs',admin:'view-admin-login'};
+  const stopWords=new Set(['language','name','email','phone','address','city','state','zip','yes','no','notes','description','status','type']);
   function showViewByKey(key){
     const target=viewMap[key]||key;
     document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
     const el=$(target);if(el){el.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});} 
     document.querySelectorAll('[data-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===key));
+    renderSectionIndex(target);
   }
   function highlight(el){if(!el)return;el.classList.remove('bct-highlight-target');void el.offsetWidth;el.classList.add('bct-highlight-target');setTimeout(()=>el.classList.remove('bct-highlight-target'),2600)}
   function visibleLabel(el){return String(el?.innerText||el?.textContent||'').replace(/\s+/g,' ').trim()}
@@ -93,12 +95,21 @@ const COMMAND_CENTER_HOTFIX=`
     {label:'BCT Service Calls',group:'Admin',view:'admin',hint:'Manage service calls'},
     {label:'BCT Jobs',group:'Admin',view:'admin',hint:'Manage assigned jobs'},
     {label:'Payment Escrow Financing',group:'Admin',view:'admin',hint:'Track payment, escrow and financing'},
-    {label:'Property Manager Commercial Apartment',group:'Property Manager',view:'customer',hint:'Commercial, building and unit fields'}
+    {label:'Property Manager Commercial Apartment',group:'Property Manager',view:'customer',hint:'Commercial, building and unit fields'},
+    {label:'Change Orders',group:'Project Controls',view:'admin',hint:'Open change-order review area'},
+    {label:'Escrow Release',group:'Project Controls',view:'admin',hint:'Open escrow and payment release controls'},
+    {label:'Safety Training',group:'Contractor',view:'apply',hint:'Open safety screening and training area'},
+    {label:'Project Photos and Documents',group:'Uploads',view:'customer',hint:'Open customer file upload area'}
   ];
+  function itemScore(item,q){
+    const label=item.label.toLowerCase();const group=item.group.toLowerCase();const hay=(item.label+' '+item.group+' '+(item.hint||'')).toLowerCase();
+    if(label===q)return 0;if(label.startsWith(q))return 1;if(group.startsWith(q))return 2;if(label.split(/\s+/).some(w=>w.startsWith(q)))return 3;if(hay.includes(q))return 4;return 99;
+  }
   function scanItems(){
     const found=[];
-    document.querySelectorAll('main h2, main h3, main .toolbar h3, main .card h3, main label').forEach((el,i)=>{
+    document.querySelectorAll('main h2, main h3, main .toolbar h3, main .card h3, main .stage h3, main label').forEach((el,i)=>{
       const label=visibleLabel(el);if(!label||label.length<3||label.length>95)return;
+      if(stopWords.has(label.toLowerCase()))return;
       const section=el.closest('section');
       const viewId=section?.id||'view-home';
       if(!el.id)el.id='bct-search-target-'+i;
@@ -113,6 +124,7 @@ const COMMAND_CENTER_HOTFIX=`
     if(item.view&&item.view.startsWith('view-')){
       document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
       $(item.view)?.classList.remove('hidden');
+      renderSectionIndex(item.view);
     }else showViewByKey(item.view||'home');
     const target=item.selector?document.querySelector(item.selector):null;
     setTimeout(()=>{
@@ -125,10 +137,20 @@ const COMMAND_CENTER_HOTFIX=`
     const box=$('bctPortalSearchResults');if(!box)return;
     const q=String(query||'').trim().toLowerCase();
     if(!q){box.innerHTML='';return;}
-    const matches=scanItems().filter(item=>(item.label+' '+item.group+' '+(item.hint||'')).toLowerCase().includes(q)).slice(0,12);
+    const matches=scanItems().filter(item=>itemScore(item,q)<99).sort((a,b)=>itemScore(a,q)-itemScore(b,q)||a.label.localeCompare(b.label)).slice(0,14);
     if(!matches.length){box.innerHTML='<div class="bct-portal-no-results">No matching section found.</div>';return;}
     box.innerHTML=matches.map((item,idx)=>'<button type="button" class="bct-portal-result" data-bct-result="'+idx+'"><span><b>'+esc(item.label)+'</b><small>'+esc(item.hint||item.group)+'</small></span><small>'+esc(item.group)+'</small></button>').join('');
     box.querySelectorAll('[data-bct-result]').forEach(btn=>btn.addEventListener('click',()=>openItem(matches[Number(btn.dataset.bctResult)])));
+  }
+  function renderSectionIndex(viewId){
+    const view=$(viewId);if(!view)return;
+    const old=view.querySelector('.bct-view-section-index');if(old)old.remove();
+    if(viewId==='view-home')return;
+    const local=scanItems().filter(item=>item.view===viewId&&item.selector).slice(0,10);
+    if(local.length<2)return;
+    const nav=document.createElement('div');nav.className='bct-view-section-index';nav.innerHTML='<strong>Jump inside this page</strong><div class="bct-section-chip-row">'+local.map((item,idx)=>'<button type="button" class="bct-section-chip" data-bct-section-jump="'+idx+'">'+esc(item.label)+'</button>').join('')+'</div>';
+    view.insertBefore(nav,view.firstChild);
+    nav.querySelectorAll('[data-bct-section-jump]').forEach(btn=>btn.addEventListener('click',()=>openItem(local[Number(btn.dataset.bctSectionJump)])));
   }
   function installCommandCenter(){
     const home=$('view-home');if(!home||$('bctCommandCenter'))return;
@@ -137,7 +159,9 @@ const COMMAND_CENTER_HOTFIX=`
     home.insertBefore(panel,home.firstChild);
     panel.querySelectorAll('[data-bct-open]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.bctOpen;if(key==='financing')openItem({view:'home',selector:'#bctFinancingCard',label:'Financing'});else showViewByKey(key);}));
     const input=$('bctPortalSearch');if(input){input.addEventListener('input',()=>renderResults(input.value));input.addEventListener('keydown',e=>{if(e.key==='Escape'){input.value='';renderResults('');}})}
+    renderSectionIndex(Array.from(document.querySelectorAll('.view')).find(v=>!v.classList.contains('hidden'))?.id||'view-home');
   }
+  document.addEventListener('click',ev=>{const nav=ev.target.closest?.('[data-view]');if(nav?.dataset?.view){setTimeout(()=>renderSectionIndex(viewMap[nav.dataset.view]||'view-'+nav.dataset.view),120);}});
   document.addEventListener('DOMContentLoaded',installCommandCenter);
   installCommandCenter();
 })();
