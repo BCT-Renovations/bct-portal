@@ -46,6 +46,8 @@ const requiredMarkers = [
   ['homeowner estimate page', 'Estimate & Contract'],
   ['homeowner final walkthrough page', 'Final Walkthrough / Completion'],
   ['homeowner tab controller', 'showCustomerPage'],
+  ['home translation override guard', 'BCT_HOME_TRANSLATION_OVERRIDES'],
+  ['Spanish home translation refresh', 'Iniciar o revisar un proyecto'],
   ['admin command center', 'bctCommandCenter'],
   ['admin command search', 'bctCommandSearch'],
   ['admin command navigation', 'data-admin-jump="adminHomeownerProjects"'],

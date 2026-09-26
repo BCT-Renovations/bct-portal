@@ -934,6 +934,48 @@ Object.assign(BCT_STATIC_FORMS.ru,{
   "Your private customer account and project are securely created through BCT’s Supabase authentication and database.":"Ваша личная учетная запись клиента и проект безопасно создаются с помощью аутентификации Supabase и защищенной базы данных.",
   "Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.":"После подтверждения учетной записи и входа файлы проекта хранятся в частном облачном хранилище BCT."
 });
+const BCT_HOME_TRANSLATION_OVERRIDES={
+  es:{
+    "home.hero_title":"BCT Renovations administra su proyecto desde la solicitud hasta la finalización.",
+    "home.hero_description":"Dígale a BCT lo que necesita, suba fotos del proyecto y siga el trabajo desde un portal privado. BCT revisa el alcance, coordina contratistas aprobados, administra las actualizaciones y confirma la finalización antes del cierre.",
+    "home.project_button":"Iniciar o revisar un proyecto"
+  },
+  fr:{
+    "home.hero_title":"BCT Renovations gère votre projet de la demande jusqu'à la fin.",
+    "home.hero_description":"Dites à BCT ce dont vous avez besoin, téléversez des photos du projet et suivez les travaux dans un portail privé. BCT examine l'étendue des travaux, coordonne les entrepreneurs approuvés, gère les mises à jour et confirme l'achèvement avant la clôture.",
+    "home.project_button":"Démarrer ou suivre un projet"
+  },
+  ht:{
+    "home.hero_title":"BCT Renovations jere pwojè ou depi demann lan jouk li fini.",
+    "home.hero_description":"Di BCT sa ou bezwen, telechaje foto pwojè a, epi swiv travay la nan yon pòtal prive. BCT revize travay la, kowòdone kontraktè apwouve yo, jere mizajou yo, epi konfime fini anvan fèmen dosye a.",
+    "home.project_button":"Kòmanse oswa swiv yon pwojè"
+  },
+  pt:{
+    "home.hero_title":"A BCT Renovations gerencia seu projeto da solicitação até a conclusão.",
+    "home.hero_description":"Diga à BCT o que você precisa, envie fotos do projeto e acompanhe o trabalho em um portal privado. A BCT revisa o escopo, coordena contratados aprovados, gerencia atualizações e confirma a conclusão antes do encerramento.",
+    "home.project_button":"Iniciar ou acompanhar um projeto"
+  },
+  vi:{
+    "home.hero_title":"BCT Renovations quản lý dự án của bạn từ lúc yêu cầu đến khi hoàn tất.",
+    "home.hero_description":"Cho BCT biết bạn cần gì, tải ảnh dự án lên và theo dõi công việc trong một cổng riêng tư. BCT xem xét phạm vi, điều phối nhà thầu đã được phê duyệt, quản lý cập nhật và xác nhận hoàn tất trước khi đóng dự án.",
+    "home.project_button":"Bắt đầu hoặc theo dõi dự án"
+  },
+  zh:{
+    "home.hero_title":"BCT Renovations 从申请到完工全程管理您的项目。",
+    "home.hero_description":"告诉 BCT 您需要什么，上传项目照片，并在私人门户中跟踪施工进度。BCT 会审核范围、协调获批承包商、管理更新，并在结项前确认完工。",
+    "home.project_button":"开始或跟踪项目"
+  },
+  ar:{
+    "home.hero_title":"تدير BCT Renovations مشروعك من الطلب حتى الإنجاز.",
+    "home.hero_description":"أخبر BCT بما تحتاجه، وارفع صور المشروع، وتابع العمل من خلال بوابة خاصة. تراجع BCT نطاق العمل، وتنسق مع المقاولين المعتمدين، وتدير التحديثات، وتؤكد الإنجاز قبل الإغلاق.",
+    "home.project_button":"ابدأ أو تابع مشروعًا"
+  },
+  ru:{
+    "home.hero_title":"BCT Renovations управляет вашим проектом от заявки до завершения.",
+    "home.hero_description":"Сообщите BCT, что вам нужно, загрузите фотографии проекта и отслеживайте работу в личном портале. BCT проверяет объем работ, координирует утвержденных подрядчиков, управляет обновлениями и подтверждает завершение перед закрытием.",
+    "home.project_button":"Начать или отследить проект"
+  }
+};
 
 const BCT_STATIC_PLACEHOLDERS={
 fr:{"Example: APP-2026-123456":"Exemple : APP-2026-123456","Example: BCT-2026-123456":"Exemple : BCT-2026-123456"},
@@ -1030,6 +1072,7 @@ async function applyBctLanguage(languageCode){
         if(BCT_LOCAL_TRANSLATIONS[language]?.[key]) translated=BCT_LOCAL_TRANSLATIONS[language][key];
         console.warn('BCT translation fallback used for',key,e);
       }
+      if(BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) translated=BCT_HOME_TRANSLATION_OVERRIDES[language][key];
     }
     node.textContent=translated;
   }));
