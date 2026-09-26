@@ -1,0 +1,6 @@
+-- Expand trade-specific safety assignment beyond primary_trade.
+-- Production migration: bct_safety_trade_capabilities_assignment.
+-- bct_admin_assign_due_safety_training() assigns active core modules to every
+-- active contractor and active trade modules when the module trade matches
+-- either primary_trade or any entry in trade_capabilities[].
+-- Existing unique contractor/module/cycle protection keeps assignment idempotent.
