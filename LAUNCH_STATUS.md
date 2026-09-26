@@ -35,9 +35,11 @@ Last verified: 2026-09-26
 - Supabase verification confirms `bct_my_available_jobs_safe()` omits BCT target amount/internal project ID and `bct_frontend_contractor_state()` now calls the safe available-jobs RPC.
 - `scripts/bct-supabase-security-smoke.sql` now passes all four checks in Supabase: no broad homeowner storage ALL policy, no PUBLIC execute on admin RPCs, password-history direct access denied, and no unexpected BCT `SECURITY DEFINER` functions.
 - `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor-safe available jobs, contractor job lockout, sanitized-scope wording, private bids, internal BCT target amount hiding, and AI release wording.
+- `scripts/bct-submission-lock-smoke.mjs` adds dedicated regression coverage for homeowner/contractor duplicate-submit blocking, in-flight pending state, error recovery, and hard lockout after a successful submission; equivalent assertions were rechecked against current GitHub `main` after creation.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment `dpl_6CqdsypNPRiei7iUNRm5eQFm8GKY` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `fb6ff4137398cee266f814a0a7069f011985215a`.
+- Production deployment `dpl_3UrX7W4wJsfHYgdVexNxy63tNVUk` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `4c9664574740d3004ecd75754431d0df80646bd1`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
+- Vercel runtime error clusters were checked again after the submission-lock smoke deployment; no production runtime errors were reported in the selected one-hour window.
 - Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
 - Supabase security advisors still report leaked-password protection disabled. This remains a real external launch blocker because it must be enabled in the Supabase Auth dashboard.
 - Supabase security advisors still warn that authenticated users can execute `bct_validate_password_not_recent` and `bct_record_password_history`. These are intentional password-reset RPCs: they require `auth.uid()`, enforce password policy/history, and direct table access to `bct_password_history` is denied to `anon` and `authenticated`; the security smoke confirms no unexpected `SECURITY DEFINER` functions remain.
