@@ -67,7 +67,7 @@ Use this checklist on the newest V46 production deployment only. Do not switch p
 
 - Run `node scripts/bct-launch-smoke.mjs`.
 - Run `node scripts/bct-launch-dry-run-smoke.mjs`.
-- Run `node scripts/bct-role-visibility-smoke.mjs`.
+- Run `node scripts/bct-role-visibility-smoke.mjs\nnode scripts/bct-automation-health-smoke.mjs`.
 - Run `node scripts/bct-submission-lock-smoke.mjs` to verify duplicate-submit blocking, pending-state recovery, and hard lockout after success.
 - Run `scripts/bct-supabase-security-smoke.sql` through Supabase SQL execution.
 - Check Supabase security advisors.
