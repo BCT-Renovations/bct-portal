@@ -1,7 +1,10 @@
 import fs from 'node:fs';
 const files=[
  'supabase/migrations/20260926114500_contractor_safety_training_automation.sql',
- 'supabase/migrations/20260926115500_safety_training_admin_automation.sql'
+ 'supabase/migrations/20260926115500_safety_training_admin_automation.sql',
+ 'supabase/migrations/20260926140500_safety_training_assignment_snapshots.sql',
+ 'supabase/migrations/20260926153000_safety_completion_invoker_and_hold_guard.sql',
+ 'supabase/migrations/20260926153500_admin_permanent_safety_training_history.sql'
 ];
 const sql=files.map(p=>fs.readFileSync(p,'utf8')).join('\n');
 const checks=[
@@ -24,7 +27,13 @@ const checks=[
  ['audit completion',/safety_training_assignment[^\n]*completed/i],
  ['RLS enabled',/enable row level security/i],
  ['anonymous access revoked',/revoke all[^;]*from anon/i],
- ['foreign-key indexes',/idx_safety_assignments_module_id/i]
+ ['foreign-key indexes',/idx_safety_assignments_module_id/i],
+ ['immutable assignment snapshots',/module_title_snapshot/i],
+ ['completion uses caller privileges',/security invoker/i],
+ ['completion preserves admin hold',/admin_hold[^\n]*false/i],
+ ['permanent admin history RPC',/bct_admin_safety_training_history/i],
+ ['history includes acknowledgment evidence',/acknowledged_at/i],
+ ['history includes quiz evidence',/quiz_score/i]
 ];
 let failed=0;
 for(const [name,re] of checks){
