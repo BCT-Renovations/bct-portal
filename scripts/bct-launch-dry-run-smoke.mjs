@@ -41,6 +41,7 @@ const dryRunMarkers = [
   ['contractor login flow', 'bctContractorLoginBtn'],
   ['contractor application RPC', 'bct_submit_contractor_application'],
   ['contractor bid RPC', 'bct_submit_bid'],
+  ['contractor rules acknowledgment', 'contractorRulesAck'],
   ['contractor access gate', 'contractorAccessMessage(app)'],
   ['contractor screening lockout', 'Screening failed twice. Retesting is locked for 14 days.'],
   ['admin state RPC', 'bct_frontend_admin_state'],
