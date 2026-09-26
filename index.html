@@ -996,6 +996,7 @@ window.bctAccumulatedFiles=accumulatedFiles;
 const BCT_UPLOAD_LIMITS={
   maxFiles:10,
   maxFileSizeBytes:25*1024*1024,
+  maxVideoSizeBytes:100*1024*1024,
   projectAllowedExtensions:['jpg','jpeg','png','webp','heic','heif','pdf','mov','mp4'],
   contractorPhotoAllowedExtensions:['jpg','jpeg','png','webp','heic','heif'],
   contractorDocumentAllowedExtensions:['jpg','jpeg','png','webp','heic','heif','pdf']
@@ -1018,15 +1019,16 @@ function bctFileExtension(file){
 }
 function bctUploadLimitSummary(kind='project'){
   const list=bctUploadAllowedExtensions(kind).map(x=>x.toUpperCase()).join(', ');
-  return `Up to ${BCT_UPLOAD_LIMITS.maxFiles} files, 25 MB each. Allowed: ${list}.`;
+  return kind==='project'?`Up to ${BCT_UPLOAD_LIMITS.maxFiles} files at a time. Photos/PDFs: 25 MB each. MP4/MOV videos: 100 MB each. Allowed: ${list}.`:`Up to ${BCT_UPLOAD_LIMITS.maxFiles} files, 25 MB each. Allowed: ${list}.`;
 }
 function validateUploadFiles(files,kind='project'){
-  const arr=[...(files||[])],allowed=bctUploadAllowedExtensions(kind),max=BCT_UPLOAD_LIMITS.maxFileSizeBytes;
+  const arr=[...(files||[])],allowed=bctUploadAllowedExtensions(kind);
   if(arr.length>BCT_UPLOAD_LIMITS.maxFiles)throw new Error(`Upload limit is ${BCT_UPLOAD_LIMITS.maxFiles} files at a time.`);
   for(const file of arr){
     const ext=bctFileExtension(file);
     if(!allowed.includes(ext))throw new Error(`${file.name} is not an allowed file type. ${bctUploadLimitSummary(kind)}`);
-    if(Number(file.size||0)>max)throw new Error(`${file.name} is larger than 25 MB. ${bctUploadLimitSummary(kind)}`);
+    const video=kind==='project'&&['mov','mp4'].includes(ext),max=video?BCT_UPLOAD_LIMITS.maxVideoSizeBytes:BCT_UPLOAD_LIMITS.maxFileSizeBytes;
+    if(Number(file.size||0)>max)throw new Error(`${file.name} is larger than ${video?'100':'25'} MB. ${bctUploadLimitSummary(kind)}`);
   }
   return arr;
 }
