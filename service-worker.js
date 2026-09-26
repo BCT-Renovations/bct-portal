@@ -1,5 +1,5 @@
-const CACHE_NAME='bct-portal-shell-v5-command-center-section-index';
-const APP_SHELL=['/','/index.html','/manifest.webmanifest'];
+const CACHE_NAME='bct-portal-shell-v6-homeowner-pages';
+const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-icon.svg','/bct-homeowner-pages.js'];
 
 const ADMIN_LOGIN_HOTFIX=`
 <script id="bct-admin-login-hotfix">
@@ -167,11 +167,14 @@ const COMMAND_CENTER_HOTFIX=`
 })();
 </script>`;
 
+const HOMEOWNER_PAGES_SCRIPT='<script src="/bct-homeowner-pages.js" defer><\/script>';
+
 function injectPortalShell(html){
   if(typeof html!=='string')return html;
   let output=html;
   if(!output.includes('bct-admin-login-hotfix'))output=output.replace('</body>',ADMIN_LOGIN_HOTFIX+'\n</body>');
   if(!output.includes('bct-command-center-hotfix'))output=output.replace('</body>',COMMAND_CENTER_HOTFIX+'\n</body>');
+  if(!output.includes('/bct-homeowner-pages.js'))output=output.replace('</body>',HOMEOWNER_PAGES_SCRIPT+'\n</body>');
   return output;
 }
 
