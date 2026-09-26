@@ -1,0 +1,3 @@
+insert into public.bct_estimate_rate_cards(service_code,unit,default_quantity,low_unit_cost,high_unit_cost,notes,active,version)
+select 'roofing','sq_ft',1000,5,15,'Starter BCT roofing range; admin must verify tear-off, decking, underlayment, flashing, pitch, access, permits, disposal and material selection.',true,1
+where not exists(select 1 from public.bct_estimate_rate_cards where service_code='roofing' and active);
