@@ -29,7 +29,10 @@ Last verified: 2026-09-26
 - `node scripts/bct-launch-dry-run-smoke.mjs` passes and verifies that the V46 launch dry-run path is bound to production Supabase RPCs for homeowner, contractor, admin, bidding, job health, financing, escrow, change orders, approvals, notifications, and operational readiness; it also verifies AI estimating remains draft/review-required with an explicit manual approval gate.
 - `scripts/bct-supabase-security-smoke.sql` is available for Supabase SQL Editor/MCP execution against admin RPC grants, password-history access, storage policy breadth, and unexpected `SECURITY DEFINER` functions.
 - `20260926102000_revoke_public_admin_rpc_execute.sql` is applied and removes `PUBLIC` execute access from the remaining admin-only RPCs while preserving explicit `authenticated` execution for app/admin-role checks.
+- `20260926104500_homeowner_safe_estimate_summary.sql` is applied and rewires homeowner state to `bct_my_estimates_safe()`, excluding BCT-only internal cost, markup, internal notes, approver, creator, and AI-run metadata from homeowner estimate summaries.
+- Supabase verification confirms `bct_my_estimates_safe()` omits internal estimate fields and `bct_frontend_homeowner_state()` now calls the safe estimate summary RPC.
 - `scripts/bct-supabase-security-smoke.sql` now passes all four checks in Supabase: no broad homeowner storage ALL policy, no PUBLIC execute on admin RPCs, password-history direct access denied, and no unexpected BCT `SECURITY DEFINER` functions.
+- `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor job lockout, sanitized-scope wording, private bids, and AI release wording.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
 - Production deployment `dpl_J3AMzZmgUZMnVubtKtL2pXcmaEAS` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `54d6a80d24c1eebadac3c3b3cd8b6ee2b08f5178`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
