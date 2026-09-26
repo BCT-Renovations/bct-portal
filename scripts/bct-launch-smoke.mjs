@@ -2,6 +2,7 @@ import fs from 'node:fs';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
+const homeownerPages = fs.readFileSync(new URL('../bct-homeowner-pages.js', import.meta.url), 'utf8');
 const securitySql = fs.readFileSync(new URL('./bct-supabase-security-smoke.sql', import.meta.url), 'utf8');
 const operationalReadinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 const weatherReadiness = fs.readFileSync(new URL('../WEATHER_PROVIDER_READINESS.md', import.meta.url), 'utf8');
@@ -106,6 +107,23 @@ for (const [label, marker] of commandCenterMarkers) {
   assert(serviceWorker.includes(marker), `Missing ${label}: ${marker}`);
 }
 
+const homeownerPageMarkers = [
+  ['homeowner dashboard shell', 'bctHomeownerDashboard'],
+  ['project overview page', 'Project Overview'],
+  ['project details page', 'Project Details'],
+  ['photos and files page', 'Photos & Files'],
+  ['estimate and contract page', 'Estimate & Contract'],
+  ['financing and payments page', 'Financing & Payments'],
+  ['schedule and progress page', 'Schedule & Progress'],
+  ['messages page', 'Messages'],
+  ['final walkthrough page', 'Final Walkthrough & Completion'],
+  ['homeowner detail subpage controller', 'openSub'],
+  ['BCT brand icon', '/bct-icon.svg']
+];
+for (const [label, marker] of homeownerPageMarkers) {
+  assert(homeownerPages.includes(marker), `Missing ${label}: ${marker}`);
+}
+
 assert(count(/type="file"[^>]*multiple|multiple[^>]*type="file"/gi) >= 5, 'Expected at least five multi-file upload inputs.');
 assert(count(/class="file-upload-ui"/g) >= 5, 'Expected custom file upload UI wrappers for phone-friendly uploads.');
 assert(count(/Choose Files|Choose Documents|Choose Photos/gi) >= 4, 'Expected clean file chooser labels.');
@@ -131,4 +149,4 @@ assert(auditReadiness.includes('Contractor approval/screening'), 'Audit readines
 assert(auditReadiness.includes('Notifications'), 'Audit readiness must cover notification readiness.');
 assert(contractorOnboardingSmoke.includes('exact five-reference UI'), 'Dedicated contractor onboarding smoke must cover exact five-reference enforcement.');
 
-console.log(`BCT launch smoke passed: ${requiredMarkers.length} launch markers and ${commandCenterMarkers.length} command-center markers verified.`);
+console.log(`BCT launch smoke passed: ${requiredMarkers.length} launch markers, ${commandCenterMarkers.length} command-center markers, and ${homeownerPageMarkers.length} homeowner-page markers verified.`);
