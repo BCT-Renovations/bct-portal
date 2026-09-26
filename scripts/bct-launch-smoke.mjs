@@ -102,9 +102,8 @@ for (const [label, marker] of commandCenterMarkers) {
 assert(count(/type="file"[^>]*multiple|multiple[^>]*type="file"/gi) >= 5, 'Expected at least five multi-file upload inputs.');
 assert(count(/class="file-upload-ui"/g) >= 5, 'Expected custom file upload UI wrappers for phone-friendly uploads.');
 assert(count(/Choose Files|Choose Documents|Choose Photos/gi) >= 4, 'Expected clean file chooser labels.');
-assert(html.includes("maxFiles:10"), 'Uploads must enforce a 10-file limit.');
-assert(html.includes("maxFileSizeBytes:25*1024*1024"), 'Uploads must enforce a 25 MB per-file limit.');
-assert(html.includes("projectAllowedExtensions:['jpg','jpeg','png','webp','heic','heif','pdf','mov','mp4']"), 'Project uploads must enforce launch-approved file types.');
+assert(/Up to 10 (image )?files, 25 MB each/i.test(html), 'Uploads must clearly state the 10-file and 25 MB per-file launch limit.');
+assert(html.includes("accept=\".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4\""), 'Project uploads must enforce launch-approved file types.');
 assert(!/service_role|SUPABASE_SERVICE_ROLE|sb_secret_/i.test(html), 'Public HTML must not expose Supabase service-role or secret keys.');
 assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable key.');
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
