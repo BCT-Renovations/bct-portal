@@ -89,6 +89,18 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 .privacy-note{font-size:13px;color:#cbd5e1;padding:10px 12px;border:1px solid #475569;border-radius:10px;background:#111827}
 .verified-customer{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#052e16;border:1px solid #22c55e;color:#bbf7d0;font-size:12px;font-weight:800}
 .verified-customer::before{content:'✓';font-weight:900}
+.bct-celebration{position:fixed;inset:0;z-index:999;pointer-events:none;display:grid;place-items:start center;padding:72px 18px 0;overflow:hidden}
+.bct-celebration-card{max-width:520px;width:min(520px,calc(100vw - 32px));padding:18px;border-radius:16px;border:1px solid #38bdf8;background:rgba(8,47,73,.94);box-shadow:0 18px 48px rgba(2,6,23,.35);text-align:center;animation:bctCelebrateCard 5.6s ease forwards}
+.bct-celebration-card h2{margin:0 0 8px;font-size:24px}
+.bct-celebration-card p{margin:0;color:#e0f2fe;line-height:1.45}
+.bct-balloon{position:absolute;top:-80px;width:22px;height:30px;border-radius:50% 50% 45% 45%;background:var(--accent);opacity:.92;animation:bctBalloonDrop 5.8s linear forwards}
+.bct-balloon::after{content:"";position:absolute;left:50%;top:29px;width:1px;height:36px;background:rgba(226,232,240,.75)}
+.bct-balloon:nth-child(3n){background:#22c55e}
+.bct-balloon:nth-child(4n){background:#f59e0b}
+.bct-balloon:nth-child(5n){background:#f472b6}
+@keyframes bctBalloonDrop{0%{transform:translateY(-90px) rotate(0deg);opacity:0}10%{opacity:.95}100%{transform:translateY(calc(100vh + 120px)) rotate(28deg);opacity:0}}
+@keyframes bctCelebrateCard{0%{transform:translateY(-12px);opacity:0}12%,72%{transform:translateY(0);opacity:1}100%{transform:translateY(-12px);opacity:0}}
+@media(prefers-reduced-motion:reduce){.bct-balloon{display:none}.bct-celebration-card{animation:none}}
 .verification-panel{border:1px solid #166534;background:#052e16;border-radius:12px;padding:12px}
 .admin-gate{max-width:520px;margin:28px auto}
 .admin-gate .card{padding:22px}
@@ -198,17 +210,17 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 <main class="wrap">
 <section id="view-home" class="view section">
   <div class="card">
-    <span class="badge good">Licensed • Bonded • Insured</span>
+    <span class="badge good" data-i18n="home.license_badge">Licensed • Bonded • Insured</span>
     <h2 data-i18n="home.hero_title">BCT Renovations manages your project from request to completion.</h2>
     <p class="muted" data-i18n="home.hero_description">Tell BCT what you need, upload project photos, and track the work through one private portal. BCT reviews the scope, coordinates approved contractors, manages updates, and confirms completion before closeout.</p>
-    <div class="home-cta-row"><button data-view="customer" data-i18n="home.project_button">Start or Track a Project</button><button class="secondary" data-view="status">Contractor Sign In</button></div>
+    <div class="home-cta-row"><button data-view="customer" data-i18n="home.project_button">Start or Track a Project</button><button class="secondary" data-view="status" data-i18n="home.contractor_button">Contractor Sign In</button></div>
   </div>
   <div class="home-quick-grid section">
-    <div class="card"><h3>Submit</h3><p class="muted">Create a private homeowner request with property details, scope, photos, budget, and timeline.</p></div>
-    <div class="card"><h3>Review</h3><p class="muted">BCT reviews the project, prepares the contractor scope, handles estimates, and keeps sensitive information protected.</p></div>
-    <div class="card"><h3>Complete</h3><p class="muted">Track scheduling, progress, files, payments, messages, final walkthrough, and completion sign-off.</p></div>
+    <div class="card"><h3 data-i18n="home.submit_title">Submit</h3><p class="muted" data-i18n="home.submit_description">Create a private homeowner request with property details, scope, photos, budget, and timeline.</p></div>
+    <div class="card"><h3 data-i18n="home.review_title">Review</h3><p class="muted" data-i18n="home.review_description">BCT reviews the project, prepares the contractor scope, handles estimates, and keeps sensitive information protected.</p></div>
+    <div class="card"><h3 data-i18n="home.complete_title">Complete</h3><p class="muted" data-i18n="home.complete_description">Track scheduling, progress, files, payments, messages, final walkthrough, and completion sign-off.</p></div>
   </div>
-  <div class="card section" id="bctFinancingCard"><h3>Financing Available</h3><p class="muted">Qualified homeowners can check available financing offers through BCT’s financing partner.</p><a id="bctFinancingLink" class="btn" target="_blank" rel="noopener">Check if you qualify</a></div>
+  <div class="card section" id="bctFinancingCard"><h3 data-i18n="home.financing_title">Financing Available</h3><p class="muted" data-i18n="home.financing_description">Qualified homeowners can check available financing offers through BCT’s financing partner.</p><a id="bctFinancingLink" class="btn" target="_blank" rel="noopener" data-i18n="home.financing_button">Check if you qualify</a></div>
 </section>
 
 
@@ -684,9 +696,20 @@ const BCT_ENGLISH_FALLBACK={
   'nav.bct_admin':'BCT Admin',
   'site.subtitle':'Homeowner Project Management & Contractor Network',
   'site.language':'Language',
+  'home.license_badge':'Licensed • Bonded • Insured',
   'home.hero_title':'BCT Renovations manages your project from request to completion.',
   'home.hero_description':'Tell BCT what you need, upload project photos, and track the work through one private portal. BCT reviews the scope, coordinates approved contractors, manages updates, and confirms completion before closeout.',
   'home.project_button':'Start or Track a Project',
+  'home.contractor_button':'Contractor Sign In',
+  'home.submit_title':'Submit',
+  'home.submit_description':'Create a private homeowner request with property details, scope, photos, budget, and timeline.',
+  'home.review_title':'Review',
+  'home.review_description':'BCT reviews the project, prepares the contractor scope, handles estimates, and keeps sensitive information protected.',
+  'home.complete_title':'Complete',
+  'home.complete_description':'Track scheduling, progress, files, payments, messages, final walkthrough, and completion sign-off.',
+  'home.financing_title':'Financing Available',
+  'home.financing_description':'Qualified homeowners can check available financing offers through BCT’s financing partner.',
+  'home.financing_button':'Check if you qualify',
   'dashboard.applications':'Applications',
   'dashboard.approved_subs':'Approved Subs',
   'dashboard.open_jobs':'Open Jobs',
@@ -936,44 +959,132 @@ Object.assign(BCT_STATIC_FORMS.ru,{
 });
 const BCT_HOME_TRANSLATION_OVERRIDES={
   es:{
+    "home.license_badge":"Con licencia • Fianza • Asegurado",
     "home.hero_title":"BCT Renovations administra su proyecto desde la solicitud hasta la finalización.",
     "home.hero_description":"Dígale a BCT lo que necesita, suba fotos del proyecto y siga el trabajo desde un portal privado. BCT revisa el alcance, coordina contratistas aprobados, administra las actualizaciones y confirma la finalización antes del cierre.",
-    "home.project_button":"Iniciar o revisar un proyecto"
+    "home.project_button":"Iniciar o revisar un proyecto",
+    "home.contractor_button":"Ingreso de contratista",
+    "home.submit_title":"Enviar",
+    "home.submit_description":"Cree una solicitud privada de propietario con detalles de la propiedad, alcance, fotos, presupuesto y cronograma.",
+    "home.review_title":"Revisión",
+    "home.review_description":"BCT revisa el proyecto, prepara el alcance para contratistas, administra estimados y mantiene protegida la información sensible.",
+    "home.complete_title":"Completar",
+    "home.complete_description":"Siga la programación, el progreso, los archivos, los pagos, los mensajes, la revisión final y la firma de finalización.",
+    "home.financing_title":"Financiamiento disponible",
+    "home.financing_description":"Los propietarios calificados pueden revisar ofertas de financiamiento disponibles a través del socio financiero de BCT.",
+    "home.financing_button":"Ver si califica"
   },
   fr:{
+    "home.license_badge":"Licencié • Cautionné • Assuré",
     "home.hero_title":"BCT Renovations gère votre projet de la demande jusqu'à la fin.",
     "home.hero_description":"Dites à BCT ce dont vous avez besoin, téléversez des photos du projet et suivez les travaux dans un portail privé. BCT examine l'étendue des travaux, coordonne les entrepreneurs approuvés, gère les mises à jour et confirme l'achèvement avant la clôture.",
-    "home.project_button":"Démarrer ou suivre un projet"
+    "home.project_button":"Démarrer ou suivre un projet",
+    "home.contractor_button":"Connexion entrepreneur",
+    "home.submit_title":"Soumettre",
+    "home.submit_description":"Créez une demande privée de propriétaire avec les détails de la propriété, l'étendue des travaux, les photos, le budget et le calendrier.",
+    "home.review_title":"Examen",
+    "home.review_description":"BCT examine le projet, prépare l'étendue des travaux pour l'entrepreneur, gère les estimations et protège les informations sensibles.",
+    "home.complete_title":"Terminer",
+    "home.complete_description":"Suivez la planification, l'avancement, les fichiers, les paiements, les messages, la visite finale et la signature d'achèvement.",
+    "home.financing_title":"Financement disponible",
+    "home.financing_description":"Les propriétaires admissibles peuvent consulter les offres de financement disponibles par l'intermédiaire du partenaire financier de BCT.",
+    "home.financing_button":"Vérifier votre admissibilité"
   },
   ht:{
+    "home.license_badge":"Gen lisans • Gen garanti • Asire",
     "home.hero_title":"BCT Renovations jere pwojè ou depi demann lan jouk li fini.",
     "home.hero_description":"Di BCT sa ou bezwen, telechaje foto pwojè a, epi swiv travay la nan yon pòtal prive. BCT revize travay la, kowòdone kontraktè apwouve yo, jere mizajou yo, epi konfime fini anvan fèmen dosye a.",
-    "home.project_button":"Kòmanse oswa swiv yon pwojè"
+    "home.project_button":"Kòmanse oswa swiv yon pwojè",
+    "home.contractor_button":"Koneksyon kontraktè",
+    "home.submit_title":"Soumèt",
+    "home.submit_description":"Kreye yon demann pwopriyetè prive ak detay pwopriyete a, travay la, foto, bidjè, ak delè.",
+    "home.review_title":"Revizyon",
+    "home.review_description":"BCT revize pwojè a, prepare dimansyon travay pou kontraktè a, jere estimasyon yo, epi kenbe enfòmasyon sansib yo pwoteje.",
+    "home.complete_title":"Fini",
+    "home.complete_description":"Swiv orè, pwogrè, dosye, peman, mesaj, vizit final, ak siyati pou fini pwojè a.",
+    "home.financing_title":"Finansman disponib",
+    "home.financing_description":"Pwopriyetè ki kalifye yo ka tcheke òf finansman ki disponib atravè patnè finansman BCT la.",
+    "home.financing_button":"Tcheke si ou kalifye"
   },
   pt:{
+    "home.license_badge":"Licenciada • Caucionada • Segurada",
     "home.hero_title":"A BCT Renovations gerencia seu projeto da solicitação até a conclusão.",
     "home.hero_description":"Diga à BCT o que você precisa, envie fotos do projeto e acompanhe o trabalho em um portal privado. A BCT revisa o escopo, coordena contratados aprovados, gerencia atualizações e confirma a conclusão antes do encerramento.",
-    "home.project_button":"Iniciar ou acompanhar um projeto"
+    "home.project_button":"Iniciar ou acompanhar um projeto",
+    "home.contractor_button":"Entrar como contratado",
+    "home.submit_title":"Enviar",
+    "home.submit_description":"Crie uma solicitação privada de proprietário com detalhes do imóvel, escopo, fotos, orçamento e prazo.",
+    "home.review_title":"Revisão",
+    "home.review_description":"A BCT revisa o projeto, prepara o escopo para o contratado, gerencia estimativas e mantém informações sensíveis protegidas.",
+    "home.complete_title":"Concluir",
+    "home.complete_description":"Acompanhe agendamento, progresso, arquivos, pagamentos, mensagens, vistoria final e assinatura de conclusão.",
+    "home.financing_title":"Financiamento disponível",
+    "home.financing_description":"Proprietários qualificados podem verificar ofertas de financiamento disponíveis por meio do parceiro financeiro da BCT.",
+    "home.financing_button":"Ver se você se qualifica"
   },
   vi:{
+    "home.license_badge":"Có giấy phép • Có bảo lãnh • Có bảo hiểm",
     "home.hero_title":"BCT Renovations quản lý dự án của bạn từ lúc yêu cầu đến khi hoàn tất.",
     "home.hero_description":"Cho BCT biết bạn cần gì, tải ảnh dự án lên và theo dõi công việc trong một cổng riêng tư. BCT xem xét phạm vi, điều phối nhà thầu đã được phê duyệt, quản lý cập nhật và xác nhận hoàn tất trước khi đóng dự án.",
-    "home.project_button":"Bắt đầu hoặc theo dõi dự án"
+    "home.project_button":"Bắt đầu hoặc theo dõi dự án",
+    "home.contractor_button":"Đăng nhập nhà thầu",
+    "home.submit_title":"Gửi",
+    "home.submit_description":"Tạo yêu cầu riêng tư của chủ nhà với thông tin bất động sản, phạm vi, ảnh, ngân sách và thời gian.",
+    "home.review_title":"Xem xét",
+    "home.review_description":"BCT xem xét dự án, chuẩn bị phạm vi cho nhà thầu, xử lý ước tính và bảo vệ thông tin nhạy cảm.",
+    "home.complete_title":"Hoàn tất",
+    "home.complete_description":"Theo dõi lịch, tiến độ, tệp, thanh toán, tin nhắn, kiểm tra cuối cùng và xác nhận hoàn thành.",
+    "home.financing_title":"Có tài chính hỗ trợ",
+    "home.financing_description":"Chủ nhà đủ điều kiện có thể kiểm tra các ưu đãi tài chính hiện có thông qua đối tác tài chính của BCT.",
+    "home.financing_button":"Kiểm tra xem bạn có đủ điều kiện không"
   },
   zh:{
+    "home.license_badge":"持照 • 担保 • 已投保",
     "home.hero_title":"BCT Renovations 从申请到完工全程管理您的项目。",
     "home.hero_description":"告诉 BCT 您需要什么，上传项目照片，并在私人门户中跟踪施工进度。BCT 会审核范围、协调获批承包商、管理更新，并在结项前确认完工。",
-    "home.project_button":"开始或跟踪项目"
+    "home.project_button":"开始或跟踪项目",
+    "home.contractor_button":"承包商登录",
+    "home.submit_title":"提交",
+    "home.submit_description":"创建私人房主请求，包含房产详情、工作范围、照片、预算和时间安排。",
+    "home.review_title":"审核",
+    "home.review_description":"BCT 审核项目、准备承包商工作范围、处理估算，并保护敏感信息。",
+    "home.complete_title":"完成",
+    "home.complete_description":"跟踪排期、进度、文件、付款、消息、最终检查和完工签字。",
+    "home.financing_title":"可用融资",
+    "home.financing_description":"符合条件的房主可以通过 BCT 的融资合作伙伴查看可用融资方案。",
+    "home.financing_button":"查看是否符合条件"
   },
   ar:{
+    "home.license_badge":"مرخصة • مكفولة • مؤمنة",
     "home.hero_title":"تدير BCT Renovations مشروعك من الطلب حتى الإنجاز.",
     "home.hero_description":"أخبر BCT بما تحتاجه، وارفع صور المشروع، وتابع العمل من خلال بوابة خاصة. تراجع BCT نطاق العمل، وتنسق مع المقاولين المعتمدين، وتدير التحديثات، وتؤكد الإنجاز قبل الإغلاق.",
-    "home.project_button":"ابدأ أو تابع مشروعًا"
+    "home.project_button":"ابدأ أو تابع مشروعًا",
+    "home.contractor_button":"تسجيل دخول المقاول",
+    "home.submit_title":"إرسال",
+    "home.submit_description":"أنشئ طلب مالك منزل خاصًا يتضمن تفاصيل العقار ونطاق العمل والصور والميزانية والجدول الزمني.",
+    "home.review_title":"مراجعة",
+    "home.review_description":"تراجع BCT المشروع، وتعد نطاق العمل للمقاول، وتدير التقديرات، وتحافظ على حماية المعلومات الحساسة.",
+    "home.complete_title":"إكمال",
+    "home.complete_description":"تابع الجدولة والتقدم والملفات والمدفوعات والرسائل والجولة النهائية وتوقيع الإكمال.",
+    "home.financing_title":"تمويل متاح",
+    "home.financing_description":"يمكن لمالكي المنازل المؤهلين مراجعة عروض التمويل المتاحة من خلال شريك التمويل لدى BCT.",
+    "home.financing_button":"تحقق مما إذا كنت مؤهلاً"
   },
   ru:{
+    "home.license_badge":"Лицензия • Гарантия • Страховка",
     "home.hero_title":"BCT Renovations управляет вашим проектом от заявки до завершения.",
     "home.hero_description":"Сообщите BCT, что вам нужно, загрузите фотографии проекта и отслеживайте работу в личном портале. BCT проверяет объем работ, координирует утвержденных подрядчиков, управляет обновлениями и подтверждает завершение перед закрытием.",
-    "home.project_button":"Начать или отследить проект"
+    "home.project_button":"Начать или отследить проект",
+    "home.contractor_button":"Вход подрядчика",
+    "home.submit_title":"Отправить",
+    "home.submit_description":"Создайте личную заявку домовладельца с данными недвижимости, объемом работ, фотографиями, бюджетом и сроками.",
+    "home.review_title":"Проверка",
+    "home.review_description":"BCT проверяет проект, готовит объем работ для подрядчика, обрабатывает сметы и защищает конфиденциальную информацию.",
+    "home.complete_title":"Завершение",
+    "home.complete_description":"Отслеживайте расписание, ход работ, файлы, платежи, сообщения, финальный осмотр и подпись о завершении.",
+    "home.financing_title":"Доступно финансирование",
+    "home.financing_description":"Подходящие домовладельцы могут проверить доступные предложения финансирования через финансового партнера BCT.",
+    "home.financing_button":"Проверить, подходите ли вы"
   }
 };
 
@@ -1719,6 +1830,14 @@ renderAll();
   async function rpc(name,args={}){const {data,error}=await supabaseClient.rpc(name,args);if(error)throw error;return data}
   async function user(){const {data,error}=await supabaseClient.auth.getUser();if(error)throw error;return data.user}
   function note(id,html,kind='notice'){const el=$(id);if(el)el.innerHTML=`<div class="${kind}">${html}</div>`}
+  function bctCelebrate(title,message,storageKey=''){
+    if(storageKey){try{if(localStorage.getItem(storageKey))return;localStorage.setItem(storageKey,new Date().toISOString())}catch(_){}}
+    const existing=document.querySelector('.bct-celebration');if(existing)existing.remove();
+    const wrap=document.createElement('div');wrap.className='bct-celebration';wrap.setAttribute('aria-live','polite');
+    const card=document.createElement('div');card.className='bct-celebration-card';card.innerHTML=`<h2>${esc(title)}</h2><p>${esc(message)}</p>`;wrap.appendChild(card);
+    for(let i=0;i<18;i++){const b=document.createElement('span');b.className='bct-balloon';b.style.left=`${4+Math.random()*92}%`;b.style.animationDelay=`${Math.random()*1.8}s`;b.style.animationDuration=`${4.6+Math.random()*2.1}s`;b.style.transform=`scale(${0.75+Math.random()*0.55})`;wrap.appendChild(b)}
+    document.body.appendChild(wrap);setTimeout(()=>wrap.remove(),7200);
+  }
   function authFriendly(error){const msg=String(error?.message||error||'Unknown authentication error');if(/invalid login credentials/i.test(msg))return 'The email or password did not match a BCT account.';if(/email not confirmed/i.test(msg))return 'This email has not been confirmed yet. Use Resend Confirmation Email, then check your inbox and spam/junk folders.';if(/rate limit|too many/i.test(msg))return 'Too many attempts were made. Wait a moment, then try again.';if(/failed to fetch|network|load failed/i.test(msg))return 'The browser could not reach Supabase. Check the internet connection and try again.';return msg}
   async function withBusyButton(button,workingText,task){const oldText=button?.textContent;if(button){button.disabled=true;button.textContent=workingText}try{return await task()}finally{if(button){button.disabled=false;button.textContent=oldText}}}
   function isObfuscatedSignup(data){return !data?.session&&Array.isArray(data?.user?.identities)&&data.user.identities.length===0}
@@ -1822,6 +1941,7 @@ renderAll();
       let uploadMsg='';if(project&&pendingFiles.length){const n=await uploadProjectFiles(project,pendingFiles);uploadMsg=`<br>${n} private project file${n===1?'':'s'} uploaded.`}else if(pendingFiles.length){uploadMsg='<br><b>Files:</b> Confirm your email, sign in, then use Add Private Project Files.'}
       const numberLine=projectNumber?`<br>Your BCT Project Number is <b>${esc(projectNumber)}</b>.`:needsEmailConfirmation?'<br>Your project number will be available after email confirmation.':'';
       $('customerSubmitResult').innerHTML=`<div class="notice backend-live"><b>✓ Project submitted to BCT.</b>${numberLine}<br>Status: BCT Review.${needsEmailConfirmation?'<br><b>Next:</b> Check your email and confirm your account.':''}${uploadMsg}</div>`;
+      bctCelebrate('Congratulations!', 'Your BCT Renovations project is officially started. You now have an official general contractor for your home improvement: BCT Renovations.', projectNumber?`bctCelebrationSeen:homeowner:${projectNumber}`:'');
       resetQueuedFiles('customerFiles');clearAndLockSubmission(f,['custFirst','custLast','custEmail','custPhone','custPassword','custPassword2']);
     }catch(ex){const msg=String(ex?.message||ex);return fail(msg)}
   };
@@ -1844,6 +1964,7 @@ renderAll();
   async function loadContractorState(){
     contractorState=await rpc('bct_frontend_contractor_state');const app=(contractorState?.application||[])[0];
     note('bctContractorAuthStatus',app?`✓ Signed in — ${esc(app.application_number)} — ${esc(fmtStatus(app.status))}`:'Signed in. No contractor application was found for this account.');
+    if(app&&contractorApproved(app))bctCelebrate('Congratulations!', 'You are now officially a verified BCT contractor. Your approved contractor access is active for authorized BCT jobs.', `bctCelebrationSeen:contractor:${app.application_number||app.id}`);
     if(app&&$('statusId'))$('statusId').value=app.application_number;
     renderContractorDocs();renderContractorSafetyTraining();renderContractorJobs();return contractorState;
   }
@@ -1864,7 +1985,7 @@ renderAll();
   async function contractorLogout(){await supabaseClient.auth.signOut({scope:'local'});contractorState=null;note('bctContractorAuthStatus','Signed out.');if($('jobList'))$('jobList').innerHTML='<div class="notice">Sign in as an approved contractor to view matched jobs.</div>';if($('bctContractorDocsPanel'))$('bctContractorDocsPanel').innerHTML='';if($('bctSafetyTrainingPanel')){$('bctSafetyTrainingPanel').innerHTML='';$('bctSafetyTrainingPanel').classList.add('hidden')}}
   if($('bctContractorLoginBtn'))$('bctContractorLoginBtn').onclick=contractorLogin;if($('bctContractorForgotBtn'))$('bctContractorForgotBtn').onclick=requestPasswordReset;if($('bctContractorLogoutBtn'))$('bctContractorLogoutBtn').onclick=contractorLogout;if($('bctContractorResendBtn'))$('bctContractorResendBtn').onclick=()=>resend('bctContractorEmail','bctContractorAuthStatus');
   if($('adminForgotBtn'))$('adminForgotBtn').onclick=requestPasswordReset;
-  if($('checkStatus'))$('checkStatus').onclick=async()=>{try{const num=$('statusId').value.trim().toUpperCase();if(!num)throw new Error('Enter your BCT application number.');const d=await rpc('bct_frontend_contractor_application',{p_application_number:num});const a=d?.application||{},screen=contractorScreeningPassed(a),approved=contractorApproved(a);$('statusResult').innerHTML=`<div class="card backend-live"><b>${esc(a.application_number)}</b><div class="project-meta"><span class="badge info">${esc(fmtStatus(a.status))}</span><span class="badge ${screen?'good':'warn'}">${screen?'Screening passed':'Screening/admin review pending'}</span><span class="badge ${approved?'good':'warn'}">${approved?'BCT approved':'No job access yet'}</span></div><p>${esc(a.legal_name||'')} • ${esc(a.primary_trade||'')}</p><small>BCT controls approval, background review, document review, job access, bidding, and assignment. A basic login is not an active contractor account.</small></div>`}catch(e){note('statusResult',esc(e.message||e))}};
+  if($('checkStatus'))$('checkStatus').onclick=async()=>{try{const num=$('statusId').value.trim().toUpperCase();if(!num)throw new Error('Enter your BCT application number.');const d=await rpc('bct_frontend_contractor_application',{p_application_number:num});const a=d?.application||{},screen=contractorScreeningPassed(a),approved=contractorApproved(a);$('statusResult').innerHTML=`<div class="card backend-live"><b>${esc(a.application_number)}</b><div class="project-meta"><span class="badge info">${esc(fmtStatus(a.status))}</span><span class="badge ${screen?'good':'warn'}">${screen?'Screening passed':'Screening/admin review pending'}</span><span class="badge ${approved?'good':'warn'}">${approved?'BCT approved':'No job access yet'}</span></div><p>${esc(a.legal_name||'')} • ${esc(a.primary_trade||'')}</p><small>BCT controls approval, background review, document review, job access, bidding, and assignment. A basic login is not an active contractor account.</small></div>`;if(approved)bctCelebrate('Congratulations!', 'You are now officially a verified BCT contractor. Your approved contractor access is active for authorized BCT jobs.', `bctCelebrationSeen:contractor:${a.application_number||num}`)}catch(e){note('statusResult',esc(e.message||e))}};
 
   // A signed-in applicant submits through the protected RPC; a new applicant uses the signup trigger.
   // This prevents an existing account from appearing to create a second application.
