@@ -2,6 +2,7 @@ import fs from 'node:fs';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
+const homeownerPages = fs.readFileSync(new URL('../bct-homeowner-pages.js', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -34,13 +35,20 @@ assert(html.trim().endsWith('</html>'), 'index.html must end with a closing </ht
 
 assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must inject the V46 command center/typeahead shell.');
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
-assert(/bct-portal-shell-v\d+-command-center/.test(serviceWorker), 'service worker cache version must stay bumped for command-center rollouts.');
-assert(serviceWorker.includes('bct-portal-shell-v5-command-center-section-index'), 'service worker cache version must include the section-index rollout.');
+assert(/bct-portal-shell-v\d+-(?:command-center|homeowner-pages)/.test(serviceWorker), 'service worker cache version must stay bumped for V46 UI rollouts.');
+assert(serviceWorker.includes('bct-portal-shell-v6-homeowner-pages'), 'service worker cache version must include the homeowner-pages rollout.');
+assert(serviceWorker.includes('/bct-homeowner-pages.js'), 'service worker must inject the paged homeowner portal controller.');
 
 try {
   new Function(serviceWorker);
 } catch (error) {
   throw new Error(`service-worker.js failed to parse: ${error.message}`);
+}
+
+try {
+  new Function(homeownerPages);
+} catch (error) {
+  throw new Error(`bct-homeowner-pages.js failed to parse: ${error.message}`);
 }
 
 console.log('BCT source integrity smoke passed.');
