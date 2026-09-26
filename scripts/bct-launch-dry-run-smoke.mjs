@@ -12,6 +12,13 @@ const aiCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260925202000
 const readinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
 const homeownerEstimateSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926104500_homeowner_safe_estimate_summary.sql', import.meta.url), 'utf8');
 const contractorJobSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926110500_contractor_safe_available_jobs.sql', import.meta.url), 'utf8');
+const safetyTrainingSmoke = fs.readFileSync(new URL('./bct-safety-training-smoke.mjs', import.meta.url), 'utf8');
+const safetyCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260926114500_contractor_safety_training_automation.sql', import.meta.url), 'utf8');
+const safetyAdminSql = fs.readFileSync(new URL('../supabase/migrations/20260926115500_safety_training_admin_automation.sql', import.meta.url), 'utf8');
+const automation100Sql = fs.readFileSync(new URL('../supabase/migrations/20260926122000_launch_automation_engine_100.sql', import.meta.url), 'utf8');
+const automation200Sql = fs.readFileSync(new URL('../supabase/migrations/20260926123500_200_launch_required_controls.sql', import.meta.url), 'utf8');
+const validation500Sql = fs.readFileSync(new URL('../supabase/migrations/20260926125000_500_nonduplicate_launch_validations.sql', import.meta.url), 'utf8');
+const requirements1000Sql = fs.readFileSync(new URL('../supabase/migrations/20260926131000_1000_unique_launch_requirements.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -158,6 +165,22 @@ const readinessDocMarkers = [
 ];
 for (const [source, marker, label] of readinessDocMarkers) {
   assert(source.includes(marker), `Readiness docs must include ${label}: ${marker}`);
+}
+
+
+const currentLaunchMarkers = [
+  [safetyCoreSql, 'bct_safety_training_assignments', 'safety training assignments'],
+  [safetyCoreSql, 'bct_contractor_workforce_eligible', 'contractor workforce eligibility'],
+  [safetyAdminSql, 'bct_admin_process_safety_training_reminders', 'safety reminder routing'],
+  [safetyAdminSql, 'bct_admin_set_contractor_hold', 'separate admin workforce hold'],
+  [automation100Sql, 'bct_automation_runs', 'automation run history'],
+  [automation200Sql, 'controls 101-300', '200-control source record'],
+  [validation500Sql, 'controls 301-800', '500-validation source record'],
+  [requirements1000Sql, 'controls 801-1800', '1000-requirement source record'],
+  [safetyTrainingSmoke, 'PASS:', 'safety smoke assertions']
+];
+for (const [source, marker, label] of currentLaunchMarkers) {
+  assert(source.includes(marker), `Current V46 launch source must include ${label}: ${marker}`);
 }
 
 console.log(`BCT launch dry-run smoke passed: ${dryRunMarkers.length} production flow markers and AI/manual approval gates verified.`);
