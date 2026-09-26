@@ -18,7 +18,8 @@ Last verified: 2026-09-26
 
 ## Verification completed
 
-- Supabase migrations through `20260925095442` are applied to project `onpqykpikxbbypfvmtin`.
+- Supabase migrations through `20260926010606` are applied to project `onpqykpikxbbypfvmtin`.
+- Supabase project `onpqykpikxbbypfvmtin` is `ACTIVE_HEALTHY` on Postgres 17.6.1.
 - Transient rollback smoke tests exercised scheduled jobs, weather, materials, change orders, approvals, milestones, financing, escrow, and job-health summaries.
 - `git diff --check` passes.
 - All four inline scripts in `index.html` parse successfully.
@@ -26,9 +27,11 @@ Last verified: 2026-09-26
 - `node scripts/bct-launch-dry-run-smoke.mjs` passes and verifies that the V46 launch dry-run path is bound to production Supabase RPCs for homeowner, contractor, admin, bidding, job health, financing, escrow, change orders, approvals, notifications, and operational readiness; it also verifies AI estimating remains draft/review-required with an explicit manual approval gate.
 - `scripts/bct-supabase-security-smoke.sql` is available for Supabase SQL Editor/MCP execution against admin RPC grants, password-history access, storage policy breadth, and unexpected `SECURITY DEFINER` functions.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment `dpl_5zJpf8FnwVxnnpXA5ZTGLgvydwQX` is READY on the existing V45/V46 project stream.
+- Production deployment `dpl_5ByFUmwso187JATU4zkSwYeiz6fH` is READY on the existing V45/V46 project stream.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
-- Supabase project `onpqykpikxbbypfvmtin` is `ACTIVE_HEALTHY`; operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
+- Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
+- Supabase security advisors still report leaked-password protection disabled. This remains a real external launch blocker because it must be enabled in the Supabase Auth dashboard.
+- Supabase security advisors still warn that authenticated users can execute `bct_validate_password_not_recent` and `bct_record_password_history`. These are intentional password-reset RPCs: they require `auth.uid()`, enforce password policy/history, and direct table access to `bct_password_history` is denied to `anon` and `authenticated`.
 - Current source now hard-locks homeowner and contractor submission forms after a successful submit, blocks duplicate in-flight submits, and uses the custom single file-picker UI for authenticated homeowner and contractor document uploads.
 - Locale bundles no longer expose old prototype/test-account wording for the homeowner account and project-file storage copy.
 - Approved contractors now submit private bids with inline amount, start-date, duration, and notes fields instead of mobile-unfriendly prompt popups.
@@ -41,10 +44,18 @@ Last verified: 2026-09-26
 
 ## Remaining external gates
 
+- Enable Supabase leaked-password protection.
+  - Dashboard path: Supabase project `onpqykpikxbbypfvmtin` > Authentication > Auth settings / Password security.
+  - Turn on leaked-password protection / prevent leaked passwords.
+  - Save the setting, then rerun Supabase security advisors.
+- Verify Supabase backups and PITR.
+  - Dashboard path for backups: Supabase project `onpqykpikxbbypfvmtin` > Database > Backups.
+  - Confirm a current restorable backup exists.
+  - Dashboard path for PITR: Database > Backups > Point in Time settings.
+  - Confirm whether PITR is enabled or document the retention/launch decision before public pilot.
 - Run authenticated live-browser tests for homeowner, contractor, and admin workflows with real test accounts.
 - Test confirmation and password-reset email delivery with a real test mailbox.
 - Verify the notification worker with Resend and mark the provider launch control complete.
-- Verify Supabase backups/PITR and enable leaked-password protection.
 - Complete human policy/legal review before enabling the pilot.
 
 These remaining gates require authenticated external actions, dashboard settings, a live mailbox, or a business/legal decision. No credentials are stored in this repository.
