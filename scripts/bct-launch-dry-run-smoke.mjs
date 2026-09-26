@@ -20,6 +20,8 @@ const automation100Sql = fs.readFileSync(new URL('../supabase/migrations/2026092
 const automation200Sql = fs.readFileSync(new URL('../supabase/migrations/20260926123500_200_launch_required_controls.sql', import.meta.url), 'utf8');
 const validation500Sql = fs.readFileSync(new URL('../supabase/migrations/20260926125000_500_nonduplicate_launch_validations.sql', import.meta.url), 'utf8');
 const requirements1000Sql = fs.readFileSync(new URL('../supabase/migrations/20260926131000_1000_unique_launch_requirements.sql', import.meta.url), 'utf8');
+const automationHealthSql = fs.readFileSync(new URL('../supabase/migrations/20260926135500_admin_automation_health.sql', import.meta.url), 'utf8');
+const launchRunnerBoundarySql = fs.readFileSync(new URL('../supabase/migrations/20260926134500_launch_runner_execution_boundary.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -71,6 +73,8 @@ const dryRunMarkers = [
   ['approval RPC', 'bct_admin_create_job_approval'],
   ['service-call RPC', 'bct_admin_create_service_call'],
   ['operational readiness RPC', 'bct_admin_operational_readiness'],
+  ['automation health RPC', 'bct_frontend_admin_automation_health'],
+  ['automation health dashboard', 'Automation Health'],
   ['local demo data disabled after overlay', "localStorage.removeItem('bctPortalDataV1')"]
 ];
 
@@ -181,7 +185,11 @@ const currentLaunchMarkers = [
   [safetyTrainingSmoke, 'PASS:', 'safety smoke assertions'],
   [contractorSafetyUiSmoke, 'bct_complete_my_safety_training', 'contractor safety-training UI completion flow'],
   [indexHtml, 'bctSafetyTrainingPanel', 'contractor safety-training panel'],
-  [indexHtml, 'Existing assigned-job access remains available', 'workforce restriction boundary']
+  [indexHtml, 'Existing assigned-job access remains available', 'workforce restriction boundary'],
+  [automationHealthSql, "'runs_failed'", 'automation failure visibility'],
+  [automationHealthSql, "'scheduler'", 'automation scheduler truthfulness'],
+  [launchRunnerBoundarySql, 'revoke all on function public.bct_admin_run_launch_automations() from public, anon', 'launch runner anonymous execution revocation'],
+  [launchRunnerBoundarySql, 'grant execute on function public.bct_admin_run_1000_launch_requirements() to authenticated', 'launch runner authenticated execution boundary']
 ];
 for (const [source, marker, label] of currentLaunchMarkers) {
   assert(source.includes(marker), `Current V46 launch source must include ${label}: ${marker}`);
