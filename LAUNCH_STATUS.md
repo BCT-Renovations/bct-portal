@@ -7,6 +7,7 @@ Last verified: 2026-09-26
 - Job Health Dashboard and admin project-operations bundle are wired to Supabase.
 - Job lifecycle supports draft, open for bids, bid review, awarded, scheduled, in progress, on hold, completed, and closed.
 - Milestones, weather impact, materials/returns, change orders, approvals, financing, escrow, and attention indicators are integrated.
+- Weather tracking is verified as manual/admin-recorded job weather impact through `bct_weather_checks`, `bct_admin_record_weather`, `bct_admin_weather_checks`, and `bct_my_weather_checks`; automatic external weather-provider pulls are not enabled yet.
 - Homeowner, contractor, and admin authentication controls include forgot-password and confirmation-email actions.
 - New and reset passwords require at least seven characters, a number, a special character, and matching confirmation.
 - Password history rejects reuse of the last five recorded passwords.
@@ -27,7 +28,7 @@ Last verified: 2026-09-26
 - `node scripts/bct-launch-dry-run-smoke.mjs` passes and verifies that the V46 launch dry-run path is bound to production Supabase RPCs for homeowner, contractor, admin, bidding, job health, financing, escrow, change orders, approvals, notifications, and operational readiness; it also verifies AI estimating remains draft/review-required with an explicit manual approval gate.
 - `scripts/bct-supabase-security-smoke.sql` is available for Supabase SQL Editor/MCP execution against admin RPC grants, password-history access, storage policy breadth, and unexpected `SECURITY DEFINER` functions.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment `dpl_5ByFUmwso187JATU4zkSwYeiz6fH` is READY on the existing V45/V46 project stream.
+- Production deployment `dpl_GT2FHA6TqxfQTSdW8PvCtaeGxLRr` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `aa9952e29d069a847386f451f67fe869d3b733d1`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
 - Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
 - Supabase security advisors still report leaked-password protection disabled. This remains a real external launch blocker because it must be enabled in the Supabase Auth dashboard.
@@ -41,6 +42,8 @@ Last verified: 2026-09-26
 - Contractor pre-approval screening is now part of the pre-application flow with pass/fail scoring, two attempts, a 14-day retest lockout, admin screening controls, document checklist messaging, and a front-end hard gate that blocks jobs, bids, and assignments until screening is passed and BCT Admin approves.
 - BCT Admin now has a session activity audit panel that records launch-test admin actions for contractor screening, customer verification, project workflow, bid awards, job publishing, service-call creation, and job-management updates.
 - BCT Admin now has an Operational Readiness panel backed by `bct_admin_operational_readiness`, showing whether completion sign-off, project documents, document expiration alerts, ratings, disputes, reporting, durable audit, messaging, notifications, security readiness, backup/PITR, leaked-password protection, live email, and policy/legal gates are covered before pilot launch.
+- `LAUNCH_DRY_RUN_CHECKLIST.md` now provides the full homeowner -> admin -> contractor -> job -> estimate -> approval -> completion dry-run path.
+- `PAID_SERVICES_CHECKLIST.md` now tracks Supabase Pro, leaked-password protection, backups/PITR, email sender, AI/API billing, Vercel/domain, financing provider, and escrow provider decisions.
 
 ## Remaining external gates
 
@@ -56,6 +59,7 @@ Last verified: 2026-09-26
 - Run authenticated live-browser tests for homeowner, contractor, and admin workflows with real test accounts.
 - Test confirmation and password-reset email delivery with a real test mailbox.
 - Verify the notification worker with Resend and mark the provider launch control complete.
+- Decide whether automatic live weather API integration is required for the first public pilot. Current V46 weather tracking is manual/admin-recorded and visible in job health.
 - Complete human policy/legal review before enabling the pilot.
 
 These remaining gates require authenticated external actions, dashboard settings, a live mailbox, or a business/legal decision. No credentials are stored in this repository.
