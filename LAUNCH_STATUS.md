@@ -36,7 +36,7 @@ Last verified: 2026-09-26
 - `scripts/bct-supabase-security-smoke.sql` now passes all four checks in Supabase: no broad homeowner storage ALL policy, no PUBLIC execute on admin RPCs, password-history direct access denied, and no unexpected BCT `SECURITY DEFINER` functions.
 - `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor-safe available jobs, contractor job lockout, sanitized-scope wording, private bids, internal BCT target amount hiding, and AI release wording.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment `dpl_DMdzR8gMm3Dtfosmft8btdoL53La` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `d0d8bc7911db4c8942c0ee7982dc91aefa55b9de`.
+- Production deployment `dpl_6CqdsypNPRiei7iUNRm5eQFm8GKY` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `fb6ff4137398cee266f814a0a7069f011985215a`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
 - Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
 - Supabase security advisors still report leaked-password protection disabled. This remains a real external launch blocker because it must be enabled in the Supabase Auth dashboard.
