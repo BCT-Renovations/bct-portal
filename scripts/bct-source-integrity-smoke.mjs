@@ -34,7 +34,8 @@ assert(html.trim().endsWith('</html>'), 'index.html must end with a closing </ht
 
 assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must inject the V46 command center/typeahead shell.');
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
-assert(serviceWorker.includes('bct-portal-shell-v4-command-center-typeahead'), 'service worker cache version must be bumped for command-center rollout.');
+assert(/bct-portal-shell-v\d+-command-center/.test(serviceWorker), 'service worker cache version must stay bumped for command-center rollouts.');
+assert(serviceWorker.includes('bct-portal-shell-v5-command-center-section-index'), 'service worker cache version must include the section-index rollout.');
 
 try {
   new Function(serviceWorker);
