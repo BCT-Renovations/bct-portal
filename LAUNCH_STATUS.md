@@ -1,6 +1,6 @@
 # BCT Renovations Launch Status
 
-Last verified: 2026-09-25
+Last verified: 2026-09-26
 
 ## Completed in the current build
 
@@ -23,11 +23,12 @@ Last verified: 2026-09-25
 - `git diff --check` passes.
 - All four inline scripts in `index.html` parse successfully.
 - `node scripts/bct-launch-smoke.mjs` passes and verifies password recovery, duplicate-submit guards, multi-file upload UI, contractor bidding, admin actions, job health, financing, escrow, change orders, service calls, translation, public-key safety markers, the Operational Readiness dashboard, and the Supabase security smoke-check script.
+- `node scripts/bct-launch-dry-run-smoke.mjs` passes and verifies that the V46 launch dry-run path is bound to production Supabase RPCs for homeowner, contractor, admin, bidding, job health, financing, escrow, change orders, approvals, notifications, and operational readiness; it also verifies AI estimating remains draft/review-required with an explicit manual approval gate.
 - `scripts/bct-supabase-security-smoke.sql` is available for Supabase SQL Editor/MCP execution against admin RPC grants, password-history access, storage policy breadth, and unexpected `SECURITY DEFINER` functions.
-- The current working tree is clean.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment `dpl_4AuJC78D3bD3bbg1ntnjvGYJArp3` is READY on the existing V45 project.
-- Live production HTML was checked for V46, Forgot Password, password rules, Roofing, and Job Health Dashboard controls.
+- Production deployment `dpl_5zJpf8FnwVxnnpXA5ZTGLgvydwQX` is READY on the existing V45/V46 project stream.
+- Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
+- Supabase project `onpqykpikxbbypfvmtin` is `ACTIVE_HEALTHY`; operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
 - Current source now hard-locks homeowner and contractor submission forms after a successful submit, blocks duplicate in-flight submits, and uses the custom single file-picker UI for authenticated homeowner and contractor document uploads.
 - Locale bundles no longer expose old prototype/test-account wording for the homeowner account and project-file storage copy.
 - Approved contractors now submit private bids with inline amount, start-date, duration, and notes fields instead of mobile-unfriendly prompt popups.
@@ -40,10 +41,10 @@ Last verified: 2026-09-25
 
 ## Remaining external gates
 
-- Run authenticated live-browser tests for homeowner, contractor, and admin workflows.
+- Run authenticated live-browser tests for homeowner, contractor, and admin workflows with real test accounts.
 - Test confirmation and password-reset email delivery with a real test mailbox.
 - Verify the notification worker with Resend and mark the provider launch control complete.
 - Verify Supabase backups/PITR and enable leaked-password protection.
 - Complete human policy/legal review before enabling the pilot.
 
-These remaining gates require authenticated external actions or a business/legal decision. The current Work Mode automatic-approval usage limit has prevented GitHub push, Vercel deploy, browser-auth, and dashboard-auth actions; no credentials are stored in this repository.
+These remaining gates require authenticated external actions, dashboard settings, a live mailbox, or a business/legal decision. No credentials are stored in this repository.
