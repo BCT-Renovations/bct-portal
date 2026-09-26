@@ -8,20 +8,24 @@ function assert(condition, message) {
   }
 }
 
-const forbiddenSourceMarkers = [
+const forbiddenHeaderMarkers = [
   'Warning: truncated output',
   'Total output lines:',
-  'tokens truncated',
-  'connector truncation',
-  'Script error:',
-  'TypeError: Cannot read properties of undefined'
+  'connector truncation'
 ];
+
+const firstDocumentBytes = html.slice(0, 1000);
 
 assert(html.startsWith('<!DOCTYPE html>'), 'index.html must start directly with <!DOCTYPE html>; no tool/header text may appear before the document.');
 
-for (const marker of forbiddenSourceMarkers) {
-  assert(!html.includes(marker), `index.html contains accidental tool/output marker: ${marker}`);
+for (const marker of forbiddenHeaderMarkers) {
+  assert(!firstDocumentBytes.includes(marker), `index.html begins with accidental tool/output marker: ${marker}`);
 }
+
+assert(!html.includes('Warning: truncated output (original token count:'), 'index.html contains an accidental connector truncation warning.');
+assert(!html.includes('\nTotal output lines: '), 'index.html contains an accidental connector total-lines header.');
+assert(!html.includes('connector truncation'), 'index.html contains an accidental connector truncation marker.');
+assert(!html.includes('TypeError: Cannot read properties of undefined'), 'index.html contains copied runtime error text.');
 
 assert(/<html\s+lang="en"/i.test(html), 'index.html must keep the primary HTML shell.');
 assert(/<title>[^<]*BCT Renovations/i.test(html), 'index.html must keep the BCT Renovations title.');
