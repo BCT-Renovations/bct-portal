@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+const ui=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const configSql=fs.readFileSync(new URL('../supabase/migrations/20260926160500_admin_safety_configuration_state.sql',import.meta.url),'utf8');
 const files=[
  'supabase/migrations/20260926114500_contractor_safety_training_automation.sql',
  'supabase/migrations/20260926115500_safety_training_admin_automation.sql',
@@ -34,6 +36,11 @@ const checks=[
  ['permanent admin history RPC',/bct_admin_safety_training_history/i],
  ['history includes acknowledgment evidence',/acknowledged_at/i],
  ['history includes quiz evidence',/quiz_score/i]
+,
+ ['admin safety configuration is admin-only',configSql.includes("is_bct_admin()")&&configSql.includes("revoke all")],
+ ['admin can control safety cadence',ui.includes("adminSafetySettingsForm")&&ui.includes("bct_admin_upsert_safety_training_settings")],
+ ['admin can create core and trade training modules',ui.includes("adminSafetyModuleForm")&&ui.includes("bct_admin_create_safety_training_module")],
+ ['admin safety module creation is audited',ui.includes("Safety training module created")&&ui.includes("adminAuditEvent")]
 ];
 let failed=0;
 for(const [name,re] of checks){
