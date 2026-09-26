@@ -15,3 +15,6 @@ begin
 end $f$;
 revoke all on function public.bct_admin_notification_health() from public,anon;
 grant execute on function public.bct_admin_notification_health() to authenticated;
+
+-- Performance reconciliation: this index duplicated bct_notifications_unread_recipient_idx.
+drop index if exists public.bct_notifications_recipient_unread_idx;
