@@ -31,8 +31,10 @@ Last verified: 2026-09-26
 - `20260926102000_revoke_public_admin_rpc_execute.sql` is applied and removes `PUBLIC` execute access from the remaining admin-only RPCs while preserving explicit `authenticated` execution for app/admin-role checks.
 - `20260926104500_homeowner_safe_estimate_summary.sql` is applied and rewires homeowner state to `bct_my_estimates_safe()`, excluding BCT-only internal cost, markup, internal notes, approver, creator, and AI-run metadata from homeowner estimate summaries.
 - Supabase verification confirms `bct_my_estimates_safe()` omits internal estimate fields and `bct_frontend_homeowner_state()` now calls the safe estimate summary RPC.
+- `20260926110500_contractor_safe_available_jobs.sql` is applied and rewires contractor state to `bct_my_available_jobs_safe()`, excluding BCT target subcontract amount and internal project ID from the contractor available-jobs feed.
+- Supabase verification confirms `bct_my_available_jobs_safe()` omits BCT target amount/internal project ID and `bct_frontend_contractor_state()` now calls the safe available-jobs RPC.
 - `scripts/bct-supabase-security-smoke.sql` now passes all four checks in Supabase: no broad homeowner storage ALL policy, no PUBLIC execute on admin RPCs, password-history direct access denied, and no unexpected BCT `SECURITY DEFINER` functions.
-- `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor job lockout, sanitized-scope wording, private bids, and AI release wording.
+- `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor-safe available jobs, contractor job lockout, sanitized-scope wording, private bids, internal BCT target amount hiding, and AI release wording.
 - Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
 - Production deployment `dpl_DMdzR8gMm3Dtfosmft8btdoL53La` is READY on the existing V45/V46 project stream and points to GitHub `main` commit `d0d8bc7911db4c8942c0ee7982dc91aefa55b9de`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
