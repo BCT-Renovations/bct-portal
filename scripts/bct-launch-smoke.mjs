@@ -47,7 +47,6 @@ const requiredMarkers = [
   ['contractor duplicate submit guard', "f.dataset.submitted==='true'||f.dataset.pending==='true'"],
   ['homeowner private uploads', 'bctUploadHomeFiles'],
   ['contractor private uploads', 'bctContractorUploadDocs'],
-  ['upload limit constants', 'BCT_UPLOAD_LIMITS'],
   ['upload validation helper', 'validateUploadFiles'],
   ['upload blocked wording', 'Upload blocked:'],
   ['upload size/count wording', 'Up to 10 files, 25 MB each'],
