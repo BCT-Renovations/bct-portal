@@ -8,6 +8,8 @@ Use this checklist on the newest V46 production deployment only. Do not switch p
 - Confirm Vercel production deployment is `READY` on the existing V45/V46 project stream.
 - Confirm Supabase project `onpqykpikxbbypfvmtin` is `ACTIVE_HEALTHY`.
 - Confirm Supabase Pro-only items are either completed or explicitly marked blocked: leaked-password protection, daily backups, and PITR/retention decision.
+- Confirm `PRE_PRO_BACKUP_EXPORT_PLAN.md` has been followed for a manual export if Supabase Pro backups/PITR are still blocked.
+- Confirm automatic weather remains disabled unless `BCT_WEATHER_PROVIDER`, `BCT_WEATHER_API_KEY`, and `BCT_WEATHER_ENABLED=true` have been configured and approved.
 - Confirm email/password-reset testing is scheduled with a real mailbox before public launch.
 
 ## Homeowner Flow
@@ -27,6 +29,7 @@ Use this checklist on the newest V46 production deployment only. Do not switch p
 - Set customer verification status.
 - Move the project workflow through site visit/scope-ready style states.
 - Generate an AI estimate draft from the project.
+- Confirm the AI Cost Controls notice is visible before generation.
 - Confirm the AI estimate remains draft/review-required and is not customer-visible.
 - Edit scope, assumptions, material lines, labor lines, other costs, customer line prices, discount, markup/profit, and internal notes.
 - Recalculate totals.
