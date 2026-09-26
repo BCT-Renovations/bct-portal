@@ -84,3 +84,14 @@ Use this checklist on the newest V46 production deployment only. Do not switch p
 - Internal pricing and BCT notes remain admin-only.
 - Supabase Pro-only blockers are cleared or documented as blocked by billing decision.
 - Vercel production is `READY` and serving the newest GitHub `main` commit.
+
+
+## Safety Training And Automation
+- [ ] Run `node scripts/bct-safety-training-smoke.mjs` and require all assertions to pass.
+- [ ] Confirm overdue safety training blocks only new BCT work, not required training or existing-job safety access.
+- [ ] Confirm completing verified training restores safety eligibility without clearing a separate BCT Admin hold.
+- [ ] Confirm safety reminders are deduplicated and overdue/grace states remain visible.
+- [ ] Confirm Admin exemptions require a reason and preserve audit history.
+- [ ] Confirm V46 automation runs preserve Succeeded / Needs Attention / Failed outcomes.
+- [ ] Confirm automation controls never approve estimates, select contractors, release money, make legal/e-sign decisions, or close jobs.
+- [ ] Confirm the current migration source covers controls 101-1800 without reusing prior control numbers.
