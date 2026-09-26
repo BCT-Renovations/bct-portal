@@ -10,6 +10,7 @@ const backupPlan = fs.readFileSync(new URL('../PRE_PRO_BACKUP_EXPORT_PLAN.md', i
 const auditReadiness = fs.readFileSync(new URL('../AUDIT_NOTIFICATION_READINESS.md', import.meta.url), 'utf8');
 const aiCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260925202000_ai_estimating_core.sql', import.meta.url), 'utf8');
 const readinessSql = fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql', import.meta.url), 'utf8');
+const homeownerEstimateSafetySql = fs.readFileSync(new URL('../supabase/migrations/20260926104500_homeowner_safe_estimate_summary.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -94,6 +95,12 @@ assert(aiHtml.includes('AI cannot approve or release this estimate'), 'AI estima
 assert(aiHtml.includes('approve_customer'), 'AI estimating page must use explicit customer-release action only after admin approval.');
 assert(aiCoreSql.includes("status text not null default 'draft'"), 'AI estimate records must default to draft.');
 assert(aiCoreSql.includes("status in ('draft','pending_bct_review','approved','rejected')"), 'AI estimate status constraint must keep review states explicit.');
+assert(homeownerEstimateSafetySql.includes('bct_my_estimates_safe'), 'Homeowner estimate summaries must use a safe customer-facing RPC.');
+assert(homeownerEstimateSafetySql.includes('from public.bct_my_estimates_safe()'), 'Homeowner state must call the safe estimate summary RPC.');
+for (const field of ['internal_cost_subtotal', 'markup_percent', 'markup_amount', 'internal_notes', 'approved_by', 'created_by', 'ai_run_id']) {
+  const safeFunction = homeownerEstimateSafetySql.match(/create or replace function public\.bct_my_estimates_safe\(\)[\s\S]*?\$\$;/i)?.[0] || '';
+  assert(!safeFunction.includes(field), `Homeowner-safe estimate summaries must not expose ${field}.`);
+}
 
 const externalGateMarkers = [
   'Supabase backups/PITR verified',
@@ -111,7 +118,8 @@ const dryRunChecklistMarkers = [
   'Job, Bid, And Assignment',
   'Job Operations',
   'Security And Launch Verification',
-  'AI never approves estimates'
+  'AI never approves estimates',
+  'node scripts/bct-role-visibility-smoke.mjs'
 ];
 for (const marker of dryRunChecklistMarkers) {
   assert(dryRunChecklist.includes(marker), `Dry-run checklist must include: ${marker}`);
