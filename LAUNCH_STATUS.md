@@ -37,8 +37,8 @@ Last verified: 2026-09-26
 - `scripts/bct-supabase-security-smoke.sql` now passes all four checks in Supabase: no broad homeowner storage ALL policy, no PUBLIC execute on admin RPCs, password-history direct access denied, and no unexpected BCT `SECURITY DEFINER` functions.
 - `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor-safe available jobs, contractor job lockout, sanitized-scope wording, private bids, internal BCT target amount hiding, and AI release wording.
 - `scripts/bct-submission-lock-smoke.mjs` adds dedicated regression coverage for homeowner/contractor duplicate-submit blocking, in-flight pending state, error recovery, and hard lockout after a successful submission; equivalent assertions were rechecked against current GitHub `main` after creation.
-- Latest frontend source and launch-critical migration files are synchronized to GitHub `main`.
-- Production deployment verification continues on the existing V45/V46 project stream; current safety-dashboard commits are deploying from GitHub `main`.
+- Latest frontend source, launch-critical migration files, and smoke coverage are synchronized to GitHub `main` through commit `e5fe65fa403c19155862caf9b454f4c8b1853a6e`.
+- Production deployment verification continues on the existing V45/V46 project stream. The latest Vercel production deployment inspected is `READY` at commit `858ecfb480280704936b9f24f50cd1011d6bf0bc`; newer GitHub commits after that point are migration/docs/test coverage only and do not change the shipped `index.html` app bundle. The connected Vercel deployment-create endpoint is unavailable in this session, and the local workspace has no installed Vercel CLI/link state.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
 - Vercel runtime error clusters were checked again after the submission-lock smoke deployment; no production runtime errors were reported in the selected one-hour window.
 - Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
