@@ -117,12 +117,22 @@ const requiredMarkers = [
   ['operational readiness renderer', 'renderOperationalReadiness'],
   ['translation bootstrap', 'BCT_STATIC_FORMS'],
   ['public bootstrap RPC', 'bct_frontend_public_bootstrap'],
-  ['admin state RPC', 'bct_frontend_admin_state']
+  ['admin state RPC', 'bct_frontend_admin_state'],
+  ['balanced intake paging', 'BCT V46 BALANCED INTAKE'],
+  ['balanced homeowner intake state', 'bct-home-balanced-v46'],
+  ['balanced pre-application state', 'bct-preapp-balanced-v46'],
+  ['compact intake navigation label', "progress.textContent='Step '"]
 ];
 
 for (const [label, marker] of requiredMarkers) {
   assert(html.includes(marker), `Missing ${label}: ${marker}`);
 }
+
+
+assert(!html.includes('bct-preapp-step-v46'), 'Legacy 22-page pre-application paging key must be removed.');
+assert(!html.includes('bct-home-project-step-v46b'), 'Legacy micro-page homeowner paging key must be removed.');
+assert(html.includes("questions.slice(i,i+4)"), 'Contractor screening should be grouped into compact sets instead of one question per page.');
+assert(html.includes("fields<=7"), 'Homeowner intake should preserve reasonably grouped short sections.');
 
 assert(count(/type="file"[^>]*multiple|multiple[^>]*type="file"/gi) >= 5, 'Expected at least five multi-file upload inputs.');
 assert(count(/class="file-upload-ui"/g) >= 5, 'Expected custom file upload UI wrappers for phone-friendly uploads.');
