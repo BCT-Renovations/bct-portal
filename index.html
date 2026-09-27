@@ -323,6 +323,11 @@ body:not(.bct-authenticated) header .brand{margin-bottom:10px}
 .bct-entry-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
 .bct-entry-actions button{min-height:52px;font-weight:800}
 body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset){display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #view-home,
+body.bct-entry-contractor:not(.bct-authenticated) #view-home,
+body.bct-entry-admin:not(.bct-authenticated) #view-home{display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #view-customer{display:block!important}
+body.bct-entry-contractor:not(.bct-authenticated) #view-status{display:block!important}
 @media(max-width:700px){.bct-entry-actions{grid-template-columns:1fr}}
 
 
@@ -344,9 +349,8 @@ body:not(.bct-authenticated) header .brand-slogan{color:var(--bct-teal-deep)!imp
 }
 
 /* BCT V46 PRE-DEPLOY FIX BATCH — portal visibility, stronger branding, admin contrast */
-:root{--bct-gold:#b8860b}
-body:not(.bct-authenticated) header .brand{gap:0!important}
-body:not(.bct-authenticated) header .brand-slogan{font-weight:800!important;color:var(--bct-gold)!important;text-shadow:0 1px 0 rgba(255,255,255,.7),0 0 1px rgba(70,50,0,.25)!important;margin-top:-10px!important;line-height:1.05!important}
+body:not(.bct-authenticated) header .brand{gap:0!important;margin-bottom:2px!important}
+body:not(.bct-authenticated) header .brand-slogan{font-weight:800!important;color:var(--bct-teal-deep)!important;text-shadow:0 1px 0 rgba(255,255,255,.55)!important;margin-top:-24px!important;line-height:1!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer,
 body.bct-entry-contractor:not(.bct-authenticated) #view-status,
 body.bct-entry-admin:not(.bct-authenticated) #view-admin-login{display:block!important}
@@ -357,10 +361,10 @@ body.bct-entry-admin:not(.bct-authenticated) #view-admin-login{display:block!imp
 #view-admin-login .privacy-note{background:#f4f8f6!important;color:#294944!important;border-color:#9ab7b2!important}
 
 /* BCT V46 SIGNED-OUT LOGO BANNER SCALE LOCK */
-body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:8px}
+body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:0!important}
 body:not(.bct-authenticated) header .brand-logo{width:min(92vw,520px)!important;height:auto!important;max-width:520px!important;max-height:none!important;border-radius:0!important;display:block}
 body:not(.bct-authenticated) header .brand h1{font-size:clamp(1.5rem,5vw,2.1rem);margin:0}
-body:not(.bct-authenticated) header .brand-slogan{font-size:clamp(28px,8vw,46px);color:var(--bct-teal);margin-top:4px}
+body:not(.bct-authenticated) header .brand-slogan{font-size:clamp(28px,8vw,46px);color:var(--bct-teal-deep)!important;margin-top:-24px!important;font-weight:800!important}
 body:not(.bct-authenticated) header .bct-auth-only-header-copy{display:none!important}
 body:not(.bct-authenticated) header nav{display:none!important}
 body:not(.bct-authenticated) header .wrap>div[style*="max-width:220px"]{margin-left:auto!important;margin-right:auto!important;text-align:center}
