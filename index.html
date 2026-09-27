@@ -2147,11 +2147,13 @@ async function bctAdminLogin(){
 async function bctAdminLogout(){
   if(supabaseClient)await supabaseClient.auth.signOut({scope:'local'});
   document.getElementById('adminPassword').value='';
+  document.body.classList.remove('bct-entry-admin','bct-entry-client','bct-entry-contractor');
   setVisibleView('home');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 document.getElementById('adminLoginBtn').onclick=bctAdminLogin;
-document.getElementById('adminBackBtn').onclick=()=>setVisibleView('home');
+document.getElementById('adminBackBtn').onclick=()=>{document.body.classList.remove('bct-entry-admin','bct-entry-client','bct-entry-contractor');setVisibleView('home');window.scrollTo({top:0,behavior:'smooth'});};
 document.getElementById('adminLogoutBtn').onclick=bctAdminLogout;
 document.getElementById('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')bctAdminLogin();});
 document.getElementById('adminShowPassword').addEventListener('change',e=>{
