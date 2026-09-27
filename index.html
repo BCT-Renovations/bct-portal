@@ -192,6 +192,49 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   .portal-tabs button,.command-results button{white-space:normal;line-height:1.25}
   main.wrap{padding-bottom:96px}
 }
+
+/* BCT V46 COMPACT COLOR SYSTEM — locked layout correction */
+:root{
+ --bct-card-teal:#e1f1f0;--bct-card-blue:#e8f1fb;--bct-card-green:#e8f5ec;
+ --bct-card-amber:#fff3dc;--bct-card-red:#fdebea;--bct-card-neutral:#eef2f2;
+}
+.section{margin:12px 0}
+.card{padding:13px;border-radius:13px;background:var(--bct-card-neutral)}
+.card:nth-of-type(5n+1){background:var(--bct-card-teal)}
+.card:nth-of-type(5n+2){background:var(--bct-card-blue)}
+.card:nth-of-type(5n+3){background:var(--bct-card-green)}
+.card:nth-of-type(5n+4){background:var(--bct-card-amber)}
+.card:nth-of-type(5n){background:var(--bct-card-neutral)}
+.stage{padding:10px;background:var(--bct-card-blue)}
+.notice{background:var(--bct-card-blue)}
+.privacy-note{background:var(--bct-card-teal)}
+.check-tile{background:var(--bct-card-neutral)}
+.home-action-card:nth-child(1){background:var(--bct-card-teal)}
+.home-action-card:nth-child(2){background:var(--bct-card-blue)}
+.home-action-card:nth-child(3){background:var(--bct-card-green)}
+.home-action-card:nth-child(4){background:var(--bct-card-amber)}
+.backend-live{background:var(--bct-card-green)!important;color:var(--text)!important;border-color:#a9d7b7!important}
+.backend-warn{background:var(--bct-card-amber)!important;color:var(--text)!important;border-color:#e9c57f!important}
+.verification-panel,.admin-session-bar{background:var(--bct-card-green);color:var(--text);border-color:#a9d7b7}
+.quality-review-panel{background:var(--bct-card-blue);color:var(--text);border-color:#9fc4e8}
+.quality-review-panel textarea{background:#fff;color:var(--text)}
+.badge.good{background:var(--bct-card-green);color:#14532d;border-color:#86c79a}
+.badge.warn{background:var(--bct-card-amber);color:#78350f;border-color:#ddb468}
+.badge.bad{background:var(--bct-card-red);color:#7f1d1d;border-color:#e8aaa6}
+.badge.info{background:var(--bct-card-blue);color:#174b78;border-color:#9fc4e8}
+.grid{gap:10px}.home-panel{gap:8px}.home-quick-grid{gap:8px;margin-top:8px}
+.portal-tabs{position:sticky;top:94px;z-index:7;background:rgba(245,247,247,.96);padding:7px;border-radius:12px;margin:9px 0}
+.portal-page.active,[data-admin-page-panel].active{max-width:100%}
+.portal-page.active>.card,[data-admin-page-panel].active>.card{margin-bottom:10px}
+main.wrap{padding-top:12px}
+h2{font-size:clamp(20px,2.3vw,28px)} h3{font-size:clamp(16px,1.8vw,21px)}
+p{line-height:1.42}
+@media(max-width:820px){
+ .wrap{padding:10px}.section{margin:9px 0}.card{padding:11px}.stage{padding:9px}
+ .portal-tabs{top:78px;grid-template-columns:repeat(2,minmax(0,1fr));max-height:42vh;overflow:auto}
+ textarea{min-height:72px}
+}
+
 </style>
 </head>
 <body>\n<a class="bct-skip-link" href="#bctMain">Skip to main content</a>
