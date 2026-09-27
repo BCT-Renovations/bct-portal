@@ -68,6 +68,7 @@ const requiredMarkers = [
   ['admin command center', 'bctCommandCenter'],
   ['admin command search', 'bctCommandSearch'],
   ['admin command navigation', 'data-admin-jump="adminHomeownerProjects"'],
+  ['narrow mobile portal tab stacking', '@media(max-width:460px)'],
   ['admin dashboard page tabs', 'data-admin-page-tab="projects"'],
   ['admin projects page translation key', 'data-i18n="admin.page_projects"'],
   ['Spanish admin projects page translation', 'Proyectos y estimados'],
