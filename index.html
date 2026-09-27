@@ -358,19 +358,13 @@ body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):n
 
 <main class="wrap" id="bctMain" tabindex="-1">
 <section id="view-home" class="view section">
-  <div class="card home-panel">
-    <span class="badge good" data-i18n="home.license_badge">Licensed • Bonded • Insured</span>
-    <h2 data-i18n="home.hero_title">BCT Renovations manages your project from request to completion.</h2>
-    <p class="muted" data-i18n="home.hero_description">Start a private request, sign in, check contractor status, review available BCT jobs, or open Admin tools from one clean dashboard.</p>
-    <div class="bct-entry-actions" id="bctEntryActions"><button type="button" data-entry-login="client">Client Login</button><button type="button" data-entry-login="contractor">Contractor Login</button><button type="button" data-entry-login="admin">BCT Admin Login</button></div>
+  <div class="card home-panel" id="bctSignedOutEntry">
+    <div class="bct-entry-actions" id="bctEntryActions">
+      <button type="button" data-entry-login="client">Client Login</button>
+      <button type="button" data-entry-login="contractor">Contractor Login</button>
+      <button type="button" data-entry-login="admin">BCT Admin Login</button>
+    </div>
   </div>
-  <div class="home-quick-grid section">
-    <button type="button" class="home-action-card" data-view="customer" data-customer-page-target="details"><h3 data-i18n="home.submit_title">Submit</h3><p class="muted" data-i18n="home.submit_description">Open the private homeowner request.</p></button>
-    <button type="button" class="home-action-card" data-view="customer" data-customer-page-target="estimate"><h3 data-i18n="home.review_title">Review</h3><p class="muted" data-i18n="home.review_description">See estimate and contract review.</p></button>
-    <button type="button" class="home-action-card" data-view="customer" data-customer-page-target="completion"><h3 data-i18n="home.complete_title">Complete</h3><p class="muted" data-i18n="home.complete_description">Open final walkthrough and closeout.</p></button>
-    <button type="button" class="home-action-card" data-view="customer" data-customer-page-target="payments"><h3 data-i18n="home.financing_title">Financing Available</h3><p class="muted" data-i18n="home.financing_description">Open financing and payment options.</p></button>
-  </div>
-  <div class="card section hidden" id="bctFinancingCard"><h3 data-i18n="home.financing_title">Financing Available</h3><p class="muted" data-i18n="home.financing_description">Qualified clients can check available financing offers through BCT’s financing partner.</p><a id="bctFinancingLink" class="btn" target="_blank" rel="noopener" data-i18n="home.financing_button">Check if you qualify</a></div>
 </section>
 
 
