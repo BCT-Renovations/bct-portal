@@ -34,8 +34,9 @@ assert(/<title>[^<]*BCT Renovations/i.test(html), 'index.html must keep the BCT 
 assert(html.trim().endsWith('</html>'), 'index.html must end with a closing </html> tag.');
 
 assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must inject the V46 command center/typeahead shell.');
+assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must force the clean signed-out entry screen.');
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
-assert(/bct-portal-shell-v\d+-(?:command-center|homeowner-pages)/.test(serviceWorker), 'service worker cache version must stay bumped for V46 UI rollouts.');
+assert(/bct-portal-shell-v\d+-(?:command-center|homeowner-pages|clean-signin)/.test(serviceWorker), 'service worker cache version must stay bumped for V46 UI rollouts.');
 assert(serviceWorker.includes('bct-portal-shell-v7-mobile-home-cleanup'), 'service worker cache version must include the mobile-home-cleanup rollout.');
 assert(serviceWorker.includes('/bct-homeowner-pages.js'), 'service worker must inject the paged homeowner portal controller.');
 
