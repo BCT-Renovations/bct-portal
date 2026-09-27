@@ -189,7 +189,7 @@ assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-log
 
 const signedOutHome=(html.match(/<section id="view-home"[\s\S]*?<section id="view-customer"/)||[''])[0];
 assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all three role logins.');
-assert(signedOutHome.includes('Client Email Sign In')&&signedOutHome.includes('Contractor Email Sign In')&&signedOutHome.includes('BCT Admin Email Sign In'), 'Signed-out entry must label all three actions as email sign-ins.');
+assert(signedOutHome.includes('>Client</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the three current V46 role actions.');
 assert(count(/data-entry-login="/g) === 3, 'Signed-out V46 must expose only the three role login buttons.');
 assert(!signedOutHome.includes('home-action-card'), 'Signed-out entry must not contain extra workflow cards.');
 assert(!signedOutHome.includes('home-quick-grid'), 'Old signed-out quick dashboard must not exist in entry DOM.');
