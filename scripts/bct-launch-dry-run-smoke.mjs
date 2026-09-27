@@ -101,12 +101,12 @@ assert(indexHtml.includes('validateUploadFiles'), 'Launch app must validate uplo
 assert(readinessSql.includes('bct_admin_notification_delivery_queue'), 'Operational readiness must inspect notification delivery coverage.');
 
 const currentProductionMarkers = [
-  [launchStatus, 'a1f64217286aa331b4d8821af57c2e4b2ae5b3d0', 'launch status current GitHub commit'],
+  [launchStatus, 'eede8f9b62df22064f4a714b6fbedecb33b65ae6', 'launch status verified page-suite GitHub commit'],
   [launchStatus, 'bct_secure_admin_v45_email_field_fixed', 'launch status current Vercel project'],
   [launchStatus, 'bctsecureadminv45emailfieldfixed.vercel.app', 'launch status current production URL'],
-  [launchStatus, 'dpl_9F53DDCPLcVjug4MWZTf3RmKNBAY', 'launch status current Vercel deployment'],
+  [launchStatus, 'dpl_9Y5D7fz8Bjp6kb7bx84tBDzA96hR', 'launch status current Vercel deployment'],
   [launchStatus, 'Do not use `https://bct-portal.vercel.app` for V46 verification', 'launch status stale-project warning'],
-  [dryRunChecklist, 'a1f64217286aa331b4d8821af57c2e4b2ae5b3d0', 'dry-run checklist current GitHub commit'],
+  [dryRunChecklist, 'eede8f9b62df22064f4a714b6fbedecb33b65ae6', 'dry-run checklist verified page-suite GitHub commit'],
   [dryRunChecklist, 'bct_secure_admin_v45_email_field_fixed', 'dry-run checklist current Vercel project'],
   [dryRunChecklist, 'bctsecureadminv45emailfieldfixed.vercel.app', 'dry-run checklist current production URL'],
   [dryRunChecklist, 'Do not verify V46 against `https://bct-portal.vercel.app`', 'dry-run checklist stale-project warning']
