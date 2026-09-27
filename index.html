@@ -1934,6 +1934,29 @@ function updateFileUploadUI(language){
 document.querySelectorAll('.file-upload-ui input[type=file]').forEach(input=>input.addEventListener('change',()=>addAccumulatedFiles(input)));
 document.addEventListener('change',e=>{if(e.target&&e.target.id==='contractorDocs')addAccumulatedFiles(e.target);});
 
+
+const BCT_COMMON_UI_TRANSLATIONS={
+ es:{'Sign In':'Iniciar sesión','Forgot Password?':'¿Olvidó su contraseña?','Back to Home':'Volver al inicio','Sign Out':'Cerrar sesión','Resend Confirmation Email':'Reenviar correo de confirmación','Submit Project Privately to BCT':'Enviar proyecto de forma privada a BCT','Submit Pre-Application':'Enviar pre-solicitud','Go to Contractor Sign In':'Ir al inicio de sesión del contratista','Send Reset Link':'Enviar enlace de restablecimiento','Cancel':'Cancelar','Save New Password':'Guardar nueva contraseña','Email':'Correo electrónico','Password':'Contraseña','First Name':'Nombre','Last Name':'Apellido','Mobile Phone':'Teléfono móvil','Create Password':'Crear contraseña','Confirm Password':'Confirmar contraseña','Street Address':'Dirección','City':'Ciudad','State':'Estado','ZIP Code':'Código postal'},
+ fr:{'Sign In':'Se connecter','Forgot Password?':'Mot de passe oublié ?','Back to Home':'Retour à l’accueil','Sign Out':'Se déconnecter','Resend Confirmation Email':'Renvoyer l’e-mail de confirmation','Submit Project Privately to BCT':'Envoyer le projet en privé à BCT','Submit Pre-Application':'Envoyer la pré-candidature','Go to Contractor Sign In':'Aller à la connexion entrepreneur','Send Reset Link':'Envoyer le lien de réinitialisation','Cancel':'Annuler','Save New Password':'Enregistrer le nouveau mot de passe','Email':'E-mail','Password':'Mot de passe','First Name':'Prénom','Last Name':'Nom','Mobile Phone':'Téléphone portable','Create Password':'Créer un mot de passe','Confirm Password':'Confirmer le mot de passe','Street Address':'Adresse','City':'Ville','State':'État','ZIP Code':'Code postal'},
+ ht:{'Sign In':'Konekte','Forgot Password?':'Ou bliye modpas?','Back to Home':'Retounen lakay','Sign Out':'Dekonekte','Resend Confirmation Email':'Revoye imèl konfimasyon','Submit Project Privately to BCT':'Soumèt pwojè a an prive bay BCT','Submit Pre-Application':'Soumèt pre-aplikasyon','Go to Contractor Sign In':'Ale nan koneksyon kontraktè','Send Reset Link':'Voye lyen pou reset','Cancel':'Anile','Save New Password':'Sove nouvo modpas','Email':'Imèl','Password':'Modpas','First Name':'Prenon','Last Name':'Siyati','Mobile Phone':'Telefòn mobil','Create Password':'Kreye modpas','Confirm Password':'Konfime modpas','Street Address':'Adrès','City':'Vil','State':'Eta','ZIP Code':'Kòd postal'},
+ pt:{'Sign In':'Entrar','Forgot Password?':'Esqueceu a senha?','Back to Home':'Voltar ao início','Sign Out':'Sair','Resend Confirmation Email':'Reenviar e-mail de confirmação','Submit Project Privately to BCT':'Enviar projeto em privado para a BCT','Submit Pre-Application':'Enviar pré-candidatura','Go to Contractor Sign In':'Ir para login do empreiteiro','Send Reset Link':'Enviar link de redefinição','Cancel':'Cancelar','Save New Password':'Salvar nova senha','Email':'E-mail','Password':'Senha','First Name':'Nome','Last Name':'Sobrenome','Mobile Phone':'Celular','Create Password':'Criar senha','Confirm Password':'Confirmar senha','Street Address':'Endereço','City':'Cidade','State':'Estado','ZIP Code':'CEP'},
+ vi:{'Sign In':'Đăng nhập','Forgot Password?':'Quên mật khẩu?','Back to Home':'Về trang chủ','Sign Out':'Đăng xuất','Resend Confirmation Email':'Gửi lại email xác nhận','Submit Project Privately to BCT':'Gửi dự án riêng tư cho BCT','Submit Pre-Application':'Gửi đơn sơ bộ','Go to Contractor Sign In':'Đến đăng nhập nhà thầu','Send Reset Link':'Gửi liên kết đặt lại','Cancel':'Hủy','Save New Password':'Lưu mật khẩu mới','Email':'Email','Password':'Mật khẩu','First Name':'Tên','Last Name':'Họ','Mobile Phone':'Điện thoại di động','Create Password':'Tạo mật khẩu','Confirm Password':'Xác nhận mật khẩu','Street Address':'Địa chỉ','City':'Thành phố','State':'Tiểu bang','ZIP Code':'Mã ZIP'},
+ zh:{'Sign In':'登录','Forgot Password?':'忘记密码？','Back to Home':'返回主页','Sign Out':'退出登录','Resend Confirmation Email':'重新发送确认邮件','Submit Project Privately to BCT':'私密提交项目给 BCT','Submit Pre-Application':'提交预申请','Go to Contractor Sign In':'前往承包商登录','Send Reset Link':'发送重置链接','Cancel':'取消','Save New Password':'保存新密码','Email':'电子邮件','Password':'密码','First Name':'名字','Last Name':'姓氏','Mobile Phone':'手机','Create Password':'创建密码','Confirm Password':'确认密码','Street Address':'街道地址','City':'城市','State':'州','ZIP Code':'邮政编码'},
+ ar:{'Sign In':'تسجيل الدخول','Forgot Password?':'هل نسيت كلمة المرور؟','Back to Home':'العودة إلى الرئيسية','Sign Out':'تسجيل الخروج','Resend Confirmation Email':'إعادة إرسال بريد التأكيد','Submit Project Privately to BCT':'إرسال المشروع بشكل خاص إلى BCT','Submit Pre-Application':'إرسال الطلب المبدئي','Go to Contractor Sign In':'الانتقال إلى تسجيل دخول المقاول','Send Reset Link':'إرسال رابط إعادة التعيين','Cancel':'إلغاء','Save New Password':'حفظ كلمة المرور الجديدة','Email':'البريد الإلكتروني','Password':'كلمة المرور','First Name':'الاسم الأول','Last Name':'اسم العائلة','Mobile Phone':'الهاتف المحمول','Create Password':'إنشاء كلمة مرور','Confirm Password':'تأكيد كلمة المرور','Street Address':'العنوان','City':'المدينة','State':'الولاية','ZIP Code':'الرمز البريدي'},
+ ru:{'Sign In':'Войти','Forgot Password?':'Забыли пароль?','Back to Home':'На главную','Sign Out':'Выйти','Resend Confirmation Email':'Повторно отправить письмо подтверждения','Submit Project Privately to BCT':'Отправить проект в BCT конфиденциально','Submit Pre-Application':'Отправить предварительную заявку','Go to Contractor Sign In':'Перейти ко входу подрядчика','Send Reset Link':'Отправить ссылку для сброса','Cancel':'Отмена','Save New Password':'Сохранить новый пароль','Email':'Эл. почта','Password':'Пароль','First Name':'Имя','Last Name':'Фамилия','Mobile Phone':'Мобильный телефон','Create Password':'Создать пароль','Confirm Password':'Подтвердить пароль','Street Address':'Адрес','City':'Город','State':'Штат','ZIP Code':'Почтовый индекс'}
+};
+const BCT_ORIGINAL_UI_TEXT=new WeakMap();
+function applyCommonPortalLanguage(language){
+ const dict=BCT_COMMON_UI_TRANSLATIONS[language]||{};
+ document.querySelectorAll('button,label').forEach(el=>{
+   if(el.matches('[data-i18n],[data-login-language-label],[data-login-signin-heading],[data-entry-login]')) return;
+   if(!BCT_ORIGINAL_UI_TEXT.has(el)) BCT_ORIGINAL_UI_TEXT.set(el,el.textContent.trim());
+   const original=BCT_ORIGINAL_UI_TEXT.get(el);
+   if(language==='en') el.textContent=original;
+   else if(dict[original]) el.textContent=dict[original];
+ });
+}
+
 async function applyBctLanguage(languageCode){
   const language=languageCode||'en';
   localStorage.setItem(BCT_LANGUAGE_KEY,language);
@@ -1972,6 +1995,7 @@ async function applyBctLanguage(languageCode){
     node.setAttribute('placeholder',translated);
   }));
   applyStaticLanguage(language);
+  applyCommonPortalLanguage(language);
   updateFileUploadUI(language);
 }
 function bctText(key){
