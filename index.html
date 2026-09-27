@@ -326,6 +326,23 @@ body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):n
 @media(max-width:700px){.bct-entry-actions{grid-template-columns:1fr}}
 
 
+/* BCT V46 BRAND HEADER REFINEMENT — 2026-09-27 */
+header{background:#e8f5ec}
+header .brand{justify-content:center;text-align:center}
+header .brand>div:last-child{display:flex;flex-direction:column;align-items:center;width:100%}
+header .brand h1{display:none!important}
+header .brand-slogan{width:100%;text-align:center;color:var(--bct-teal-deep);font-weight:700;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+header .brand-logo{background:#e8f5ec;mix-blend-mode:multiply}
+body:not(.bct-authenticated) header{background:#e8f5ec}
+body:not(.bct-authenticated) header .wrap{background:#e8f5ec}
+body:not(.bct-authenticated) header .brand{background:#e8f5ec;width:100%}
+body:not(.bct-authenticated) header .brand-logo{background:#e8f5ec!important}
+body:not(.bct-authenticated) header .brand-slogan{color:var(--bct-teal-deep)!important;font-weight:700!important;text-align:center!important;width:100%;margin:4px auto 0!important}
+@media(max-width:820px){
+  header .brand{align-items:center}
+  header .brand>div:last-child{min-width:0;flex:1;align-items:center}
+}
+
 /* BCT V46 SIGNED-OUT LOGO BANNER SCALE LOCK */
 body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:8px}
 body:not(.bct-authenticated) header .brand-logo{width:min(92vw,520px)!important;height:auto!important;max-width:520px!important;max-height:none!important;border-radius:0!important;display:block}
