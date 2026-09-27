@@ -306,7 +306,7 @@ nav button:nth-child(6){background:#123f45}
 
 
 /* BCT V46 AUTH-ONLY ENTRY SHELL */
-body:not(.bct-authenticated) header nav,body:not(.bct-authenticated) header #bctLanguage{display:none!important}
+body:not(.bct-authenticated) header nav{display:none!important}
 body:not(.bct-authenticated) #view-home .home-panel>p,
 body:not(.bct-authenticated) #view-home .home-quick-grid,
 body:not(.bct-authenticated) #bctFinancingCard{display:none!important}
@@ -2898,7 +2898,7 @@ renderAll();
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
  let entryIntent=null;
  function setAuthShell(session){document.body.classList.toggle('bct-authenticated',!!session?.user);}
- async function sessionNow(){try{const r=await window.bctSupabase?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
+ async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
    const s=await sessionNow();setAuthShell(s);
@@ -2916,7 +2916,7 @@ renderAll();
  };
  const style=document.createElement('style');style.textContent='body:not(.bct-authenticated) .bct-signedout-hidden{display:none!important}';document.head.appendChild(style);
  sessionNow().then(setAuthShell);
- try{window.bctSupabase?.auth?.onAuthStateChange?.((_event,session)=>{setAuthShell(session);if(!session&&protectedViews.has((document.querySelector('.view:not(.hidden)')?.id||'').replace('view-','')))setVisibleView('home');});}catch(e){}
+ try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{setAuthShell(session);if(!session&&protectedViews.has((document.querySelector('.view:not(.hidden)')?.id||'').replace('view-','')))setVisibleView('home');});}catch(e){}
 })();
 </script>
 
