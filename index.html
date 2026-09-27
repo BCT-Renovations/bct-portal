@@ -443,8 +443,8 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
 /* BCT V46 LANGUAGE-AWARE BRAND SLOGAN */
 .bct-dynamic-brand{width:100%;display:flex;flex-direction:column;align-items:center;background:#e8f5ec}
 .bct-logo-crop{width:min(100vw,630px);overflow:hidden;background:#e8f5ec;line-height:0}
-.bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;clip-path:inset(0 0 16% 0);margin-bottom:-10%!important}
-.bct-dynamic-slogan{font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.55rem,5.6vw,2.65rem);font-weight:600;font-style:italic;line-height:1.05;color:#004b57;text-align:center;padding:0 12px 10px;max-width:95vw}
+.bct-logo-crop{aspect-ratio:828/405!important;position:relative!important}\n.bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;clip-path:none!important;margin:0!important;transform:none!important}\n.bct-logo-crop::after{content:"";position:absolute;left:0;right:0;bottom:0;height:23%;background:#e8f5ec;z-index:2;pointer-events:none}
+.bct-dynamic-slogan{position:relative;z-index:3;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.55rem,5.6vw,2.65rem);font-weight:600;font-style:italic;line-height:1.05;color:#004b57;text-align:center;padding:0 12px 10px;max-width:95vw;margin-top:-7%}
 @media(max-width:480px){.bct-logo-crop{width:100%}.bct-dynamic-slogan{margin-top:-2px}}
 
 </style>
