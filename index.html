@@ -229,40 +229,40 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 <section id="view-customer" class="view section hidden">
   <div class="customer-hero">
     <div class="card">
-      <span class="badge info">BCT Homeowner Portal</span>
-      <h2>Tell BCT About Your Project</h2>
-      <p class="muted">Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.</p>
-      <div class="stepbar"><span class="active">Dashboard</span><span>Details</span><span>Files</span><span>Estimate</span><span>Payments</span><span>Progress</span><span>Completion</span></div>
+      <span class="badge info" data-i18n="homeowner.portal_badge">BCT Homeowner Portal</span>
+      <h2 data-i18n="homeowner.tell_title">Tell BCT About Your Project</h2>
+      <p class="muted" data-i18n="homeowner.tell_description">Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.</p>
+      <div class="stepbar"><span class="active" data-i18n="homeowner.step_dashboard">Dashboard</span><span data-i18n="homeowner.step_details">Details</span><span data-i18n="homeowner.step_files">Files</span><span data-i18n="homeowner.step_estimate">Estimate</span><span data-i18n="homeowner.step_payments">Payments</span><span data-i18n="homeowner.step_progress">Progress</span><span data-i18n="homeowner.step_completion">Completion</span></div>
     </div>
     <div class="card">
-      <h3>Already submitted?</h3>
-      <p class="muted">Use your project number to check the current BCT status.</p>
-      <label>Project Number</label><input id="customerProjectLookup" placeholder="Example: BCT-2026-123456">
-      <button id="customerProjectLookupBtn" style="margin-top:10px">Check Project</button>
+      <h3 data-i18n="homeowner.already_submitted">Already submitted?</h3>
+      <p class="muted" data-i18n="homeowner.lookup_description">Use your project number to check the current BCT status.</p>
+      <label data-i18n="homeowner.project_number">Project Number</label><input id="customerProjectLookup" placeholder="Example: BCT-2026-123456">
+      <button id="customerProjectLookupBtn" style="margin-top:10px" data-i18n="homeowner.check_project">Check Project</button>
       <div id="customerProjectLookupResult" class="section"></div>
     </div>
   </div>
 
   <div class="portal-tabs" aria-label="Homeowner portal pages">
-    <button type="button" class="active" data-customer-page="overview">Project Overview</button>
-    <button type="button" data-customer-page="details">Project Details</button>
-    <button type="button" data-customer-page="files">Photos & Files</button>
-    <button type="button" data-customer-page="estimate">Estimate & Contract</button>
-    <button type="button" data-customer-page="payments">Financing & Payments</button>
-    <button type="button" data-customer-page="progress">Schedule & Progress</button>
-    <button type="button" data-customer-page="messages">Messages</button>
-    <button type="button" data-customer-page="completion">Final Walkthrough</button>
+    <button type="button" class="active" data-customer-page="overview" data-i18n="homeowner.tab_overview">Project Overview</button>
+    <button type="button" data-customer-page="details" data-i18n="homeowner.tab_details">Project Details</button>
+    <button type="button" data-customer-page="files" data-i18n="homeowner.tab_files">Photos & Files</button>
+    <button type="button" data-customer-page="estimate" data-i18n="homeowner.tab_estimate">Estimate & Contract</button>
+    <button type="button" data-customer-page="payments" data-i18n="homeowner.tab_payments">Financing & Payments</button>
+    <button type="button" data-customer-page="progress" data-i18n="homeowner.tab_progress">Schedule & Progress</button>
+    <button type="button" data-customer-page="messages" data-i18n="homeowner.tab_messages">Messages</button>
+    <button type="button" data-customer-page="completion" data-i18n="homeowner.tab_completion">Final Walkthrough</button>
   </div>
 
   <div class="card section portal-page active" data-customer-page-panel="overview" id="bctHomeownerLoginCard">
-    <h3>Returning Homeowner — Sign In</h3>
-    <p class="muted">Sign in to see your real BCT project status and upload private project files.</p>
+    <h3 data-i18n="homeowner.returning_title">Returning Homeowner — Sign In</h3>
+    <p class="muted" data-i18n="homeowner.returning_description">Sign in to see your real BCT project status and upload private project files.</p>
     <div class="grid grid-2"><div><label>Email</label><input id="bctHomeEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctHomePassword" type="password" autocomplete="current-password"></div></div>
     <div class="admin-project-actions"><button type="button" id="bctHomeLoginBtn">Sign In</button><button type="button" class="secondary" id="bctHomeForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctHomeLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctHomeResendBtn">Resend Confirmation Email</button></div>
     <div id="bctHomeAuthStatus" class="section"></div>
     <div class="mini-list">
-      <div class="stage"><b>Next step:</b> New homeowners should open Project Details and complete the private request.</div>
-      <div class="stage"><b>Submitted projects:</b> Returning homeowners can sign in here and use each tab to review status, files, estimates, payments, progress, messages, and completion.</div>
+      <div class="stage" data-i18n="homeowner.next_step_note">Next step: New homeowners should open Project Details and complete the private request.</div>
+      <div class="stage" data-i18n="homeowner.submitted_note">Submitted projects: Returning homeowners can sign in here and use each tab to review status, files, estimates, payments, progress, messages, and completion.</div>
     </div>
     <div id="bctHomeProjects" class="grid section"></div>
   </div>
@@ -363,11 +363,11 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
       <div id="customerSubmitResult" class="section"></div>
     </div>
   </form>
-  <div class="card section portal-page" data-customer-page-panel="estimate"><h3>Estimate & Contract</h3><p class="muted">Customer-facing estimates and contracts appear here after BCT Admin reviews and approves them. AI-assisted estimates remain draft-only until BCT manually approves release.</p><div class="notice">Sign in to view approved estimates, contract status, required signatures, and BCT notes.</div></div>
-  <div class="card section portal-page" data-customer-page-panel="payments"><h3>Financing & Payments</h3><p class="muted">Track financing status, escrow/payment milestones, and homeowner release approvals after BCT connects them to the project.</p><a id="bctHomeownerFinancingLink" class="btn" target="_blank" rel="noopener">Check if you qualify</a></div>
-  <div class="card section portal-page" data-customer-page-panel="progress"><h3>Schedule & Progress</h3><p class="muted">Schedule events, work progress, weather notes, materials, change orders, approvals, and job health updates appear here for signed-in homeowners.</p><div class="notice">BCT controls assignment and only authorized contractors receive job access instructions.</div></div>
-  <div class="card section portal-page" data-customer-page-panel="messages"><h3>Messages</h3><p class="muted">Use this page for BCT-mediated project communication. Contractor contact stays controlled by BCT to protect homeowner, resident, and job-access information.</p><div class="notice">Sign in to view or send project messages.</div></div>
-  <div class="card section portal-page" data-customer-page-panel="completion"><h3>Final Walkthrough / Completion</h3><p class="muted">Final walkthrough notes, BCT quality review, completion photos, homeowner sign-off, and closeout records appear here when the job reaches completion.</p><div class="notice">BCT Quality Review and required approvals must be complete before closeout.</div></div>
+  <div class="card section portal-page" data-customer-page-panel="estimate"><h3 data-i18n="homeowner.estimate_title">Estimate & Contract</h3><p class="muted" data-i18n="homeowner.estimate_description">Customer-facing estimates and contracts appear here after BCT Admin reviews and approves them. AI-assisted estimates remain draft-only until BCT manually approves release.</p><div class="notice" data-i18n="homeowner.estimate_notice">Sign in to view approved estimates, contract status, required signatures, and BCT notes.</div></div>
+  <div class="card section portal-page" data-customer-page-panel="payments"><h3 data-i18n="homeowner.payments_title">Financing & Payments</h3><p class="muted" data-i18n="homeowner.payments_description">Track financing status, escrow/payment milestones, and homeowner release approvals after BCT connects them to the project.</p><a id="bctHomeownerFinancingLink" class="btn" target="_blank" rel="noopener" data-i18n="homeowner.financing_button">Check if you qualify</a></div>
+  <div class="card section portal-page" data-customer-page-panel="progress"><h3 data-i18n="homeowner.progress_title">Schedule & Progress</h3><p class="muted" data-i18n="homeowner.progress_description">Schedule events, work progress, weather notes, materials, change orders, approvals, and job health updates appear here for signed-in homeowners.</p><div class="notice" data-i18n="homeowner.progress_notice">BCT controls assignment and only authorized contractors receive job access instructions.</div></div>
+  <div class="card section portal-page" data-customer-page-panel="messages"><h3 data-i18n="homeowner.messages_title">Messages</h3><p class="muted" data-i18n="homeowner.messages_description">Use this page for BCT-mediated project communication. Contractor contact stays controlled by BCT to protect homeowner, resident, and job-access information.</p><div class="notice" data-i18n="homeowner.messages_notice">Sign in to view or send project messages.</div></div>
+  <div class="card section portal-page" data-customer-page-panel="completion"><h3 data-i18n="homeowner.completion_title">Final Walkthrough / Completion</h3><p class="muted" data-i18n="homeowner.completion_description">Final walkthrough notes, BCT quality review, completion photos, homeowner sign-off, and closeout records appear here when the job reaches completion.</p><div class="notice" data-i18n="homeowner.completion_notice">BCT Quality Review and required approvals must be complete before closeout.</div></div>
 </section>
 
 <section id="view-apply" class="view section hidden">
@@ -752,6 +752,55 @@ const BCT_ENGLISH_FALLBACK={
   'home.financing_title':'Financing Available',
   'home.financing_description':'Qualified homeowners can check available financing offers through BCT’s financing partner.',
   'home.financing_button':'Check if you qualify',
+  'homeowner.portal_badge':'BCT Homeowner Portal',
+  'homeowner.tell_title':'Tell BCT About Your Project',
+  'homeowner.tell_description':'Submit your project privately to BCT Renovations. BCT stays between the homeowner and the contractor network and controls what project information is released for bidding.',
+  'homeowner.step_dashboard':'Dashboard',
+  'homeowner.step_details':'Details',
+  'homeowner.step_files':'Files',
+  'homeowner.step_estimate':'Estimate',
+  'homeowner.step_payments':'Payments',
+  'homeowner.step_progress':'Progress',
+  'homeowner.step_completion':'Completion',
+  'homeowner.already_submitted':'Already submitted?',
+  'homeowner.lookup_description':'Use your project number to check the current BCT status.',
+  'homeowner.project_number':'Project Number',
+  'homeowner.check_project':'Check Project',
+  'homeowner.tab_overview':'Project Overview',
+  'homeowner.tab_details':'Project Details',
+  'homeowner.tab_files':'Photos & Files',
+  'homeowner.tab_estimate':'Estimate & Contract',
+  'homeowner.tab_payments':'Financing & Payments',
+  'homeowner.tab_progress':'Schedule & Progress',
+  'homeowner.tab_messages':'Messages',
+  'homeowner.tab_completion':'Final Walkthrough',
+  'homeowner.returning_title':'Returning Homeowner — Sign In',
+  'homeowner.returning_description':'Sign in to see your real BCT project status and upload private project files.',
+  'homeowner.next_step_note':'Next step: New homeowners should open Project Details and complete the private request.',
+  'homeowner.submitted_note':'Submitted projects: Returning homeowners can sign in here and use each tab to review status, files, estimates, payments, progress, messages, and completion.',
+  'homeowner.estimate_title':'Estimate & Contract',
+  'homeowner.estimate_description':'Customer-facing estimates and contracts appear here after BCT Admin reviews and approves them. AI-assisted estimates remain draft-only until BCT manually approves release.',
+  'homeowner.estimate_notice':'Sign in to view approved estimates, contract status, required signatures, and BCT notes.',
+  'homeowner.payments_title':'Financing & Payments',
+  'homeowner.payments_description':'Track financing status, escrow/payment milestones, and homeowner release approvals after BCT connects them to the project.',
+  'homeowner.financing_button':'Check if you qualify',
+  'homeowner.progress_title':'Schedule & Progress',
+  'homeowner.progress_description':'Schedule events, work progress, weather notes, materials, change orders, approvals, and job health updates appear here for signed-in homeowners.',
+  'homeowner.progress_notice':'BCT controls assignment and only authorized contractors receive job access instructions.',
+  'homeowner.messages_title':'Messages',
+  'homeowner.messages_description':'Use this page for BCT-mediated project communication. Contractor contact stays controlled by BCT to protect homeowner, resident, and job-access information.',
+  'homeowner.messages_notice':'Sign in to view or send project messages.',
+  'homeowner.completion_title':'Final Walkthrough / Completion',
+  'homeowner.completion_description':'Final walkthrough notes, BCT quality review, completion photos, homeowner sign-off, and closeout records appear here when the job reaches completion.',
+  'homeowner.completion_notice':'BCT Quality Review and required approvals must be complete before closeout.',
+  'homeowner.dynamic_verification':'Verification',
+  'homeowner.dynamic_project':'Project',
+  'homeowner.dynamic_payments':'Payments',
+  'homeowner.dynamic_add_files':'Add Private Project Files',
+  'homeowner.dynamic_choose_files':'Choose Files',
+  'homeowner.dynamic_no_files':'No files selected',
+  'homeowner.dynamic_upload_files':'Upload Files',
+  'homeowner.dynamic_no_projects':'No homeowner projects were found for this account.',
   'dashboard.applications':'Applications',
   'dashboard.approved_subs':'Approved Subs',
   'dashboard.open_jobs':'Open Jobs',
@@ -1045,6 +1094,231 @@ const BCT_PAGE_TRANSLATION_PATCHES={
   }
 };
 Object.entries(BCT_PAGE_TRANSLATION_PATCHES).forEach(([language,translations])=>{
+  BCT_LOCAL_TRANSLATIONS[language]=Object.assign(BCT_LOCAL_TRANSLATIONS[language]||{},translations);
+});
+const BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES={
+  es:{
+    "homeowner.portal_badge":"Portal del propietario BCT",
+    "homeowner.tell_title":"Cuéntele a BCT sobre su proyecto",
+    "homeowner.tell_description":"Envíe su proyecto de forma privada a BCT Renovations. BCT se mantiene entre el propietario y la red de contratistas y controla qué información se comparte para recibir ofertas.",
+    "homeowner.step_dashboard":"Panel",
+    "homeowner.step_details":"Detalles",
+    "homeowner.step_files":"Archivos",
+    "homeowner.step_estimate":"Estimado",
+    "homeowner.step_payments":"Pagos",
+    "homeowner.step_progress":"Progreso",
+    "homeowner.step_completion":"Finalización",
+    "homeowner.already_submitted":"¿Ya lo envió?",
+    "homeowner.lookup_description":"Use su número de proyecto para revisar el estado actual de BCT.",
+    "homeowner.project_number":"Número de proyecto",
+    "homeowner.check_project":"Revisar proyecto",
+    "homeowner.tab_overview":"Resumen del proyecto",
+    "homeowner.tab_details":"Detalles del proyecto",
+    "homeowner.tab_files":"Fotos y archivos",
+    "homeowner.tab_estimate":"Estimado y contrato",
+    "homeowner.tab_payments":"Financiamiento y pagos",
+    "homeowner.tab_progress":"Calendario y progreso",
+    "homeowner.tab_messages":"Mensajes",
+    "homeowner.tab_completion":"Revisión final",
+    "homeowner.returning_title":"Propietario registrado — Iniciar sesión",
+    "homeowner.returning_description":"Inicie sesión para ver el estado real de su proyecto BCT y subir archivos privados.",
+    "homeowner.next_step_note":"Siguiente paso: Los nuevos propietarios deben abrir Detalles del proyecto y completar la solicitud privada.",
+    "homeowner.submitted_note":"Proyectos enviados: Los propietarios registrados pueden iniciar sesión aquí y usar cada pestaña para revisar estado, archivos, estimados, pagos, progreso, mensajes y finalización.",
+    "homeowner.estimate_title":"Estimado y contrato",
+    "homeowner.estimate_description":"Los estimados y contratos para clientes aparecen aquí después de que BCT Admin los revise y apruebe. Los estimados asistidos por IA siguen siendo borradores hasta que BCT aprueba su publicación manualmente.",
+    "homeowner.estimate_notice":"Inicie sesión para ver estimados aprobados, estado del contrato, firmas requeridas y notas de BCT.",
+    "homeowner.payments_title":"Financiamiento y pagos",
+    "homeowner.payments_description":"Revise el estado del financiamiento, hitos de depósito/pago y aprobaciones del propietario después de que BCT los conecte al proyecto.",
+    "homeowner.financing_button":"Ver si califica",
+    "homeowner.progress_title":"Calendario y progreso",
+    "homeowner.progress_description":"Eventos de calendario, progreso del trabajo, clima, materiales, órdenes de cambio, aprobaciones y salud del trabajo aparecen aquí para propietarios conectados.",
+    "homeowner.progress_notice":"BCT controla la asignación y solo los contratistas autorizados reciben instrucciones de acceso al trabajo.",
+    "homeowner.messages_title":"Mensajes",
+    "homeowner.messages_description":"Use esta página para comunicación del proyecto mediada por BCT. El contacto del contratista permanece controlado por BCT para proteger la información del propietario, residente y acceso al trabajo.",
+    "homeowner.messages_notice":"Inicie sesión para ver o enviar mensajes del proyecto.",
+    "homeowner.completion_title":"Revisión final / Finalización",
+    "homeowner.completion_description":"Las notas de revisión final, revisión de calidad de BCT, fotos de finalización, firma del propietario y registros de cierre aparecen aquí cuando el trabajo llega a finalización.",
+    "homeowner.completion_notice":"La Revisión de Calidad de BCT y las aprobaciones requeridas deben completarse antes del cierre.",
+    "homeowner.dynamic_verification":"Verificación",
+    "homeowner.dynamic_project":"Proyecto",
+    "homeowner.dynamic_payments":"Pagos",
+    "homeowner.dynamic_add_files":"Agregar archivos privados del proyecto",
+    "homeowner.dynamic_choose_files":"Elegir archivos",
+    "homeowner.dynamic_no_files":"No hay archivos seleccionados",
+    "homeowner.dynamic_upload_files":"Subir archivos",
+    "homeowner.dynamic_no_projects":"No se encontraron proyectos de propietario para esta cuenta."
+  },
+  fr:{
+    "homeowner.portal_badge":"Portail propriétaire BCT",
+    "homeowner.tell_title":"Parlez à BCT de votre projet",
+    "homeowner.tell_description":"Soumettez votre projet en privé à BCT Renovations. BCT reste entre le propriétaire et le réseau d'entrepreneurs et contrôle les informations partagées pour les soumissions.",
+    "homeowner.step_dashboard":"Tableau",
+    "homeowner.step_details":"Détails",
+    "homeowner.step_files":"Fichiers",
+    "homeowner.step_estimate":"Estimation",
+    "homeowner.step_payments":"Paiements",
+    "homeowner.step_progress":"Progression",
+    "homeowner.step_completion":"Achèvement",
+    "homeowner.already_submitted":"Déjà soumis ?",
+    "homeowner.lookup_description":"Utilisez votre numéro de projet pour vérifier le statut BCT actuel.",
+    "homeowner.project_number":"Numéro de projet",
+    "homeowner.check_project":"Vérifier le projet",
+    "homeowner.tab_overview":"Aperçu du projet",
+    "homeowner.tab_details":"Détails du projet",
+    "homeowner.tab_files":"Photos et fichiers",
+    "homeowner.tab_estimate":"Estimation et contrat",
+    "homeowner.tab_payments":"Financement et paiements",
+    "homeowner.tab_progress":"Calendrier et progression",
+    "homeowner.tab_messages":"Messages",
+    "homeowner.tab_completion":"Visite finale",
+    "homeowner.returning_title":"Propriétaire inscrit — Connexion",
+    "homeowner.returning_description":"Connectez-vous pour voir le vrai statut de votre projet BCT et téléverser des fichiers privés.",
+    "homeowner.next_step_note":"Prochaine étape : les nouveaux propriétaires doivent ouvrir Détails du projet et compléter la demande privée.",
+    "homeowner.submitted_note":"Projets soumis : les propriétaires inscrits peuvent se connecter ici et utiliser chaque onglet pour revoir le statut, les fichiers, les estimations, les paiements, la progression, les messages et l'achèvement.",
+    "homeowner.estimate_title":"Estimation et contrat",
+    "homeowner.estimate_description":"Les estimations et contrats destinés au client apparaissent ici après examen et approbation par BCT Admin. Les estimations assistées par IA restent des brouillons jusqu'à l'approbation manuelle de BCT.",
+    "homeowner.estimate_notice":"Connectez-vous pour voir les estimations approuvées, le statut du contrat, les signatures requises et les notes BCT.",
+    "homeowner.payments_title":"Financement et paiements",
+    "homeowner.payments_description":"Suivez le financement, les jalons de dépôt/paiement et les approbations du propriétaire après leur connexion au projet par BCT.",
+    "homeowner.financing_button":"Vérifier votre admissibilité",
+    "homeowner.progress_title":"Calendrier et progression",
+    "homeowner.progress_description":"Les événements, progrès, météo, matériaux, ordres de changement, approbations et santé du travail apparaissent ici pour les propriétaires connectés.",
+    "homeowner.progress_notice":"BCT contrôle l'affectation et seuls les entrepreneurs autorisés reçoivent les instructions d'accès au travail.",
+    "homeowner.messages_title":"Messages",
+    "homeowner.messages_description":"Utilisez cette page pour les communications de projet médiées par BCT. Le contact avec l'entrepreneur reste contrôlé par BCT pour protéger les informations du propriétaire, résident et accès au travail.",
+    "homeowner.messages_notice":"Connectez-vous pour voir ou envoyer des messages de projet.",
+    "homeowner.completion_title":"Visite finale / Achèvement",
+    "homeowner.completion_description":"Les notes de visite finale, l'examen qualité BCT, les photos d'achèvement, la signature du propriétaire et les dossiers de clôture apparaissent ici à la fin du travail.",
+    "homeowner.completion_notice":"L'examen qualité BCT et les approbations requises doivent être terminés avant la clôture.",
+    "homeowner.dynamic_verification":"Vérification",
+    "homeowner.dynamic_project":"Projet",
+    "homeowner.dynamic_payments":"Paiements",
+    "homeowner.dynamic_add_files":"Ajouter des fichiers privés du projet",
+    "homeowner.dynamic_choose_files":"Choisir des fichiers",
+    "homeowner.dynamic_no_files":"Aucun fichier sélectionné",
+    "homeowner.dynamic_upload_files":"Téléverser les fichiers",
+    "homeowner.dynamic_no_projects":"Aucun projet propriétaire n'a été trouvé pour ce compte."
+  },
+  ht:{
+    "homeowner.portal_badge":"Pòtal pwopriyetè BCT",
+    "homeowner.tell_title":"Pale BCT sou pwojè ou",
+    "homeowner.tell_description":"Soumèt pwojè ou an prive bay BCT Renovations. BCT rete ant pwopriyetè a ak rezo kontraktè a epi li kontwole enfòmasyon ki pataje pou òf.",
+    "homeowner.step_dashboard":"Tablo",
+    "homeowner.step_details":"Detay",
+    "homeowner.step_files":"Fichye",
+    "homeowner.step_estimate":"Estimasyon",
+    "homeowner.step_payments":"Peman",
+    "homeowner.step_progress":"Pwogrè",
+    "homeowner.step_completion":"Fini",
+    "homeowner.already_submitted":"Ou deja soumèt?",
+    "homeowner.lookup_description":"Sèvi ak nimewo pwojè ou pou tcheke estati BCT aktyèl la.",
+    "homeowner.project_number":"Nimewo pwojè",
+    "homeowner.check_project":"Tcheke pwojè",
+    "homeowner.tab_overview":"Rezime pwojè",
+    "homeowner.tab_details":"Detay pwojè",
+    "homeowner.tab_files":"Foto ak fichye",
+    "homeowner.tab_estimate":"Estimasyon ak kontra",
+    "homeowner.tab_payments":"Finansman ak peman",
+    "homeowner.tab_progress":"Orè ak pwogrè",
+    "homeowner.tab_messages":"Mesaj",
+    "homeowner.tab_completion":"Revizyon final",
+    "homeowner.returning_title":"Pwopriyetè ki retounen — Konekte",
+    "homeowner.returning_description":"Konekte pou wè estati reyèl pwojè BCT ou epi telechaje fichye prive.",
+    "homeowner.next_step_note":"Pwochen etap: Nouvo pwopriyetè yo dwe ouvri Detay pwojè epi ranpli demann prive a.",
+    "homeowner.submitted_note":"Pwojè soumèt: Pwopriyetè ki retounen yo ka konekte isit la epi itilize chak onglet pou revize estati, fichye, estimasyon, peman, pwogrè, mesaj, ak fini.",
+    "homeowner.estimate_title":"Estimasyon ak kontra",
+    "homeowner.estimate_description":"Estimasyon ak kontra kliyan yo parèt isit la apre BCT Admin revize epi apwouve yo. Estimasyon ak asistans IA rete kòm bouyon jiskaske BCT apwouve piblikasyon manyèlman.",
+    "homeowner.estimate_notice":"Konekte pou wè estimasyon apwouve, estati kontra, siyati obligatwa, ak nòt BCT.",
+    "homeowner.payments_title":"Finansman ak peman",
+    "homeowner.payments_description":"Swiv estati finansman, etap depo/peman, ak apwobasyon pwopriyetè apre BCT konekte yo ak pwojè a.",
+    "homeowner.financing_button":"Tcheke si ou kalifye",
+    "homeowner.progress_title":"Orè ak pwogrè",
+    "homeowner.progress_description":"Evènman orè, pwogrè travay, nòt meteyo, materyèl, chanjman, apwobasyon, ak sante travay parèt isit la pou pwopriyetè ki konekte.",
+    "homeowner.progress_notice":"BCT kontwole asiyasyon epi se sèlman kontraktè otorize ki resevwa enstriksyon aksè travay.",
+    "homeowner.messages_title":"Mesaj",
+    "homeowner.messages_description":"Sèvi ak paj sa a pou kominikasyon pwojè BCT medyatè. Kontak kontraktè rete anba kontwòl BCT pou pwoteje enfòmasyon pwopriyetè, rezidan, ak aksè travay.",
+    "homeowner.messages_notice":"Konekte pou wè oswa voye mesaj pwojè.",
+    "homeowner.completion_title":"Revizyon final / Fini",
+    "homeowner.completion_description":"Nòt revizyon final, revizyon kalite BCT, foto fini, siyati pwopriyetè, ak dosye fèmen parèt isit la lè travay la rive fini.",
+    "homeowner.completion_notice":"Revizyon Kalite BCT ak apwobasyon obligatwa yo dwe fini anvan fèmen dosye a.",
+    "homeowner.dynamic_verification":"Verifikasyon",
+    "homeowner.dynamic_project":"Pwojè",
+    "homeowner.dynamic_payments":"Peman",
+    "homeowner.dynamic_add_files":"Ajoute fichye pwojè prive",
+    "homeowner.dynamic_choose_files":"Chwazi fichye",
+    "homeowner.dynamic_no_files":"Pa gen fichye chwazi",
+    "homeowner.dynamic_upload_files":"Telechaje fichye",
+    "homeowner.dynamic_no_projects":"Pa gen pwojè pwopriyetè yo jwenn pou kont sa a."
+  },
+  pt:{
+    "homeowner.portal_badge":"Portal do proprietário BCT",
+    "homeowner.tell_title":"Conte à BCT sobre seu projeto",
+    "homeowner.tell_description":"Envie seu projeto de forma privada à BCT Renovations. A BCT fica entre o proprietário e a rede de contratados e controla quais informações são compartilhadas para propostas.",
+    "homeowner.step_dashboard":"Painel",
+    "homeowner.step_details":"Detalhes",
+    "homeowner.step_files":"Arquivos",
+    "homeowner.step_estimate":"Estimativa",
+    "homeowner.step_payments":"Pagamentos",
+    "homeowner.step_progress":"Progresso",
+    "homeowner.step_completion":"Conclusão",
+    "homeowner.already_submitted":"Já enviou?",
+    "homeowner.lookup_description":"Use o número do projeto para verificar o status atual da BCT.",
+    "homeowner.project_number":"Número do projeto",
+    "homeowner.check_project":"Verificar projeto",
+    "homeowner.tab_overview":"Visão geral do projeto",
+    "homeowner.tab_details":"Detalhes do projeto",
+    "homeowner.tab_files":"Fotos e arquivos",
+    "homeowner.tab_estimate":"Estimativa e contrato",
+    "homeowner.tab_payments":"Financiamento e pagamentos",
+    "homeowner.tab_progress":"Cronograma e progresso",
+    "homeowner.tab_messages":"Mensagens",
+    "homeowner.tab_completion":"Vistoria final",
+    "homeowner.returning_title":"Proprietário cadastrado — Entrar",
+    "homeowner.returning_description":"Entre para ver o status real do seu projeto BCT e enviar arquivos privados.",
+    "homeowner.next_step_note":"Próximo passo: novos proprietários devem abrir Detalhes do projeto e preencher a solicitação privada.",
+    "homeowner.submitted_note":"Projetos enviados: proprietários cadastrados podem entrar aqui e usar cada aba para revisar status, arquivos, estimativas, pagamentos, progresso, mensagens e conclusão.",
+    "homeowner.estimate_title":"Estimativa e contrato",
+    "homeowner.estimate_description":"Estimativas e contratos para clientes aparecem aqui depois que a Administração BCT revisa e aprova. Estimativas com IA permanecem como rascunho até aprovação manual da BCT.",
+    "homeowner.estimate_notice":"Entre para ver estimativas aprovadas, status do contrato, assinaturas necessárias e notas da BCT.",
+    "homeowner.payments_title":"Financiamento e pagamentos",
+    "homeowner.payments_description":"Acompanhe status do financiamento, marcos de caução/pagamento e aprovações do proprietário depois que a BCT os conectar ao projeto.",
+    "homeowner.financing_button":"Ver se você se qualifica",
+    "homeowner.progress_title":"Cronograma e progresso",
+    "homeowner.progress_description":"Eventos, progresso do trabalho, clima, materiais, ordens de mudança, aprovações e saúde do trabalho aparecem aqui para proprietários conectados.",
+    "homeowner.progress_notice":"A BCT controla a atribuição e somente contratados autorizados recebem instruções de acesso ao trabalho.",
+    "homeowner.messages_title":"Mensagens",
+    "homeowner.messages_description":"Use esta página para comunicação do projeto mediada pela BCT. O contato com contratados permanece controlado pela BCT para proteger informações do proprietário, residente e acesso ao trabalho.",
+    "homeowner.messages_notice":"Entre para ver ou enviar mensagens do projeto.",
+    "homeowner.completion_title":"Vistoria final / Conclusão",
+    "homeowner.completion_description":"Notas da vistoria final, revisão de qualidade BCT, fotos de conclusão, assinatura do proprietário e registros de encerramento aparecem aqui quando o trabalho chega à conclusão.",
+    "homeowner.completion_notice":"A Revisão de Qualidade BCT e as aprovações necessárias devem estar completas antes do encerramento.",
+    "homeowner.dynamic_verification":"Verificação",
+    "homeowner.dynamic_project":"Projeto",
+    "homeowner.dynamic_payments":"Pagamentos",
+    "homeowner.dynamic_add_files":"Adicionar arquivos privados do projeto",
+    "homeowner.dynamic_choose_files":"Escolher arquivos",
+    "homeowner.dynamic_no_files":"Nenhum arquivo selecionado",
+    "homeowner.dynamic_upload_files":"Enviar arquivos",
+    "homeowner.dynamic_no_projects":"Nenhum projeto de proprietário foi encontrado para esta conta."
+  }
+};
+BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.vi={};
+BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.zh={};
+BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.ar={};
+BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.ru={};
+Object.assign(BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.vi,{
+  "homeowner.portal_badge":"Cổng chủ nhà BCT","homeowner.tell_title":"Cho BCT biết về dự án của bạn","homeowner.tab_overview":"Tổng quan dự án","homeowner.tab_details":"Chi tiết dự án","homeowner.tab_files":"Ảnh và tệp","homeowner.tab_estimate":"Báo giá và hợp đồng","homeowner.tab_payments":"Tài chính và thanh toán","homeowner.tab_progress":"Lịch trình và tiến độ","homeowner.tab_messages":"Tin nhắn","homeowner.tab_completion":"Kiểm tra cuối","homeowner.returning_title":"Chủ nhà quay lại — Đăng nhập","homeowner.estimate_title":"Báo giá và hợp đồng","homeowner.payments_title":"Tài chính và thanh toán","homeowner.progress_title":"Lịch trình và tiến độ","homeowner.messages_title":"Tin nhắn","homeowner.completion_title":"Kiểm tra cuối / Hoàn thành","homeowner.financing_button":"Kiểm tra bạn có đủ điều kiện không","homeowner.dynamic_verification":"Xác minh","homeowner.dynamic_project":"Dự án","homeowner.dynamic_payments":"Thanh toán","homeowner.dynamic_add_files":"Thêm tệp dự án riêng","homeowner.dynamic_choose_files":"Chọn tệp","homeowner.dynamic_no_files":"Chưa chọn tệp","homeowner.dynamic_upload_files":"Tải tệp lên","homeowner.dynamic_no_projects":"Không tìm thấy dự án chủ nhà nào cho tài khoản này."
+});
+Object.assign(BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.zh,{
+  "homeowner.portal_badge":"BCT 房主门户","homeowner.tell_title":"告诉 BCT 您的项目","homeowner.tab_overview":"项目概览","homeowner.tab_details":"项目详情","homeowner.tab_files":"照片和文件","homeowner.tab_estimate":"估价和合同","homeowner.tab_payments":"融资和付款","homeowner.tab_progress":"日程和进度","homeowner.tab_messages":"消息","homeowner.tab_completion":"最终验收","homeowner.returning_title":"返回的房主 — 登录","homeowner.estimate_title":"估价和合同","homeowner.payments_title":"融资和付款","homeowner.progress_title":"日程和进度","homeowner.messages_title":"消息","homeowner.completion_title":"最终验收 / 完成","homeowner.financing_button":"查看您是否符合资格","homeowner.dynamic_verification":"验证","homeowner.dynamic_project":"项目","homeowner.dynamic_payments":"付款","homeowner.dynamic_add_files":"添加私人项目文件","homeowner.dynamic_choose_files":"选择文件","homeowner.dynamic_no_files":"未选择文件","homeowner.dynamic_upload_files":"上传文件","homeowner.dynamic_no_projects":"未找到此账户的房主项目。"
+});
+Object.assign(BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.ar,{
+  "homeowner.portal_badge":"بوابة مالك المنزل BCT","homeowner.tell_title":"أخبر BCT عن مشروعك","homeowner.tab_overview":"نظرة عامة على المشروع","homeowner.tab_details":"تفاصيل المشروع","homeowner.tab_files":"الصور والملفات","homeowner.tab_estimate":"التقدير والعقد","homeowner.tab_payments":"التمويل والمدفوعات","homeowner.tab_progress":"الجدول والتقدم","homeowner.tab_messages":"الرسائل","homeowner.tab_completion":"المراجعة النهائية","homeowner.returning_title":"مالك منزل عائد — تسجيل الدخول","homeowner.estimate_title":"التقدير والعقد","homeowner.payments_title":"التمويل والمدفوعات","homeowner.progress_title":"الجدول والتقدم","homeowner.messages_title":"الرسائل","homeowner.completion_title":"المراجعة النهائية / الإكمال","homeowner.financing_button":"تحقق من أهليتك","homeowner.dynamic_verification":"التحقق","homeowner.dynamic_project":"المشروع","homeowner.dynamic_payments":"المدفوعات","homeowner.dynamic_add_files":"إضافة ملفات مشروع خاصة","homeowner.dynamic_choose_files":"اختيار الملفات","homeowner.dynamic_no_files":"لم يتم اختيار ملفات","homeowner.dynamic_upload_files":"رفع الملفات","homeowner.dynamic_no_projects":"لم يتم العثور على مشاريع مالك منزل لهذا الحساب."
+});
+Object.assign(BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES.ru,{
+  "homeowner.portal_badge":"Портал домовладельца BCT","homeowner.tell_title":"Расскажите BCT о вашем проекте","homeowner.tab_overview":"Обзор проекта","homeowner.tab_details":"Детали проекта","homeowner.tab_files":"Фото и файлы","homeowner.tab_estimate":"Смета и договор","homeowner.tab_payments":"Финансирование и платежи","homeowner.tab_progress":"График и прогресс","homeowner.tab_messages":"Сообщения","homeowner.tab_completion":"Финальная проверка","homeowner.returning_title":"Вернувшийся домовладелец — вход","homeowner.estimate_title":"Смета и договор","homeowner.payments_title":"Финансирование и платежи","homeowner.progress_title":"График и прогресс","homeowner.messages_title":"Сообщения","homeowner.completion_title":"Финальная проверка / Завершение","homeowner.financing_button":"Проверить право на участие","homeowner.dynamic_verification":"Проверка","homeowner.dynamic_project":"Проект","homeowner.dynamic_payments":"Платежи","homeowner.dynamic_add_files":"Добавить приватные файлы проекта","homeowner.dynamic_choose_files":"Выбрать файлы","homeowner.dynamic_no_files":"Файлы не выбраны","homeowner.dynamic_upload_files":"Загрузить файлы","homeowner.dynamic_no_projects":"Для этой учетной записи проекты домовладельца не найдены."
+});
+Object.entries(BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES).forEach(([language,translations])=>{
   BCT_LOCAL_TRANSLATIONS[language]=Object.assign(BCT_LOCAL_TRANSLATIONS[language]||{},translations);
 });
 async function fetchBctTranslation(key,language){
@@ -1417,6 +1691,12 @@ async function applyBctLanguage(languageCode){
   }));
   applyStaticLanguage(language);
   updateFileUploadUI(language);
+}
+function bctText(key){
+  const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
+  if(language!=='en' && BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) return BCT_HOME_TRANSLATION_OVERRIDES[language][key];
+  if(language!=='en' && BCT_LOCAL_TRANSLATIONS[language]?.[key]) return BCT_LOCAL_TRANSLATIONS[language][key];
+  return BCT_ENGLISH_FALLBACK[key]||key;
 }
 const bctLanguageSelector=document.getElementById('bctLanguage');
 if(bctLanguageSelector){
@@ -2111,7 +2391,7 @@ renderAll();
   async function loadHomeownerState(){
     homeownerState=await rpc('bct_frontend_homeowner_state');
     const projects=homeownerState?.projects||[];
-    const c=$('bctHomeProjects');if(c)c.innerHTML=projects.length?projects.map(p=>`<div class="card project-card backend-live"><div class="toolbar"><b>${esc(p.project_number)}</b><span class="backend-chip">${esc(fmtStatus(p.workflow_status))}</span></div><div class="project-meta"><span class="badge info">Verification: ${esc(fmtStatus(p.verification_status))}</span><span class="badge info">${esc((p.services||[]).join(', ')||'Project')}</span></div><p>${esc(p.description||'')}</p><div class="admin-project-actions"><button type="button" class="secondary" onclick="showCustomerPage('files')">Photos & Files</button><button type="button" class="secondary" onclick="showCustomerPage('estimate')">Estimate & Contract</button><button type="button" class="secondary" onclick="showCustomerPage('payments')">Payments</button><button type="button" class="secondary" onclick="showCustomerPage('progress')">Schedule & Progress</button><button type="button" class="secondary" onclick="showCustomerPage('completion')">Final Walkthrough</button></div><label>Add Private Project Files</label><div class="file-upload-ui"><input type="file" id="homeFiles-${p.id}" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4"><label class="file-upload-button" for="homeFiles-${p.id}">Choose Files</label><span class="file-upload-name" id="homeFilesStatus-${p.id}">No files selected</span></div><small class="muted">${bctUploadLimitSummary('project')}</small><button type="button" style="margin-top:8px" onclick="bctUploadHomeFiles('${p.id}')">Upload Files</button></div>`).join(''):'<div class="notice">No homeowner projects were found for this account.</div>';
+    const c=$('bctHomeProjects');if(c)c.innerHTML=projects.length?projects.map(p=>`<div class="card project-card backend-live"><div class="toolbar"><b>${esc(p.project_number)}</b><span class="backend-chip">${esc(fmtStatus(p.workflow_status))}</span></div><div class="project-meta"><span class="badge info">${esc(bctText('homeowner.dynamic_verification'))}: ${esc(fmtStatus(p.verification_status))}</span><span class="badge info">${esc((p.services||[]).join(', ')||bctText('homeowner.dynamic_project'))}</span></div><p>${esc(p.description||'')}</p><div class="admin-project-actions"><button type="button" class="secondary" onclick="showCustomerPage('files')">${esc(bctText('homeowner.tab_files'))}</button><button type="button" class="secondary" onclick="showCustomerPage('estimate')">${esc(bctText('homeowner.tab_estimate'))}</button><button type="button" class="secondary" onclick="showCustomerPage('payments')">${esc(bctText('homeowner.dynamic_payments'))}</button><button type="button" class="secondary" onclick="showCustomerPage('progress')">${esc(bctText('homeowner.tab_progress'))}</button><button type="button" class="secondary" onclick="showCustomerPage('completion')">${esc(bctText('homeowner.tab_completion'))}</button></div><label>${esc(bctText('homeowner.dynamic_add_files'))}</label><div class="file-upload-ui"><input type="file" id="homeFiles-${p.id}" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4"><label class="file-upload-button" for="homeFiles-${p.id}">${esc(bctText('homeowner.dynamic_choose_files'))}</label><span class="file-upload-name" id="homeFilesStatus-${p.id}">${esc(bctText('homeowner.dynamic_no_files'))}</span></div><small class="muted">${bctUploadLimitSummary('project')}</small><button type="button" style="margin-top:8px" onclick="bctUploadHomeFiles('${p.id}')">${esc(bctText('homeowner.dynamic_upload_files'))}</button></div>`).join(''):`<div class="notice">${esc(bctText('homeowner.dynamic_no_projects'))}</div>`;
     projects.forEach(p=>{const input=$(`homeFiles-${p.id}`),status=$(`homeFilesStatus-${p.id}`);input?.addEventListener('change',()=>{try{validateUploadFiles(input.files,'project');const n=input.files?.length||0;if(status)status.textContent=n?(n===1?'1 file selected':`${n} files selected`):'No files selected'}catch(e){if(status)status.textContent=`Upload blocked: ${e.message||e}`;input.value=''}})});
     note('bctHomeAuthStatus',`✓ Signed in. ${projects.length} BCT project${projects.length===1?'':'s'} loaded.`);
     return homeownerState;
