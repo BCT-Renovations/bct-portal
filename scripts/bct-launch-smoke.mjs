@@ -185,4 +185,11 @@ assert(html.includes("body:not(.bct-authenticated) header small.muted{display:no
 assert(html.includes("body:not(.bct-authenticated) #view-home .home-panel>h2"), 'Signed-out V46 must hide project marketing heading.');
 assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-login="contractor"')&&html.includes('data-entry-login="admin"'), 'Signed-out V46 must expose exactly the three role login entry actions.');
 
+
+const signedOutHome=(html.match(/<section id="view-home"[\s\S]*?<section id="view-customer"/)||[''])[0];
+assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all three role logins.');
+assert(!signedOutHome.includes('home-quick-grid'), 'Old signed-out quick dashboard must not exist in entry DOM.');
+assert(!signedOutHome.includes('bctFinancingCard'), 'Financing card must not exist on signed-out entry DOM.');
+assert(!signedOutHome.includes('home.hero_title')&&!signedOutHome.includes('home.hero_description'), 'Signed-out entry must not contain project marketing content.');
+
 console.log(`BCT launch smoke passed: ${scripts.length} inline scripts parsed and ${requiredMarkers.length} launch markers verified.`);
