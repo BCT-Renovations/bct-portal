@@ -1957,31 +1957,36 @@ function applyCommonPortalLanguage(language){
  });
 }
 
+let BCT_LANGUAGE_REQUEST_ID=0;
 async function applyBctLanguage(languageCode){
   const language=languageCode||'en';
+  const requestId=++BCT_LANGUAGE_REQUEST_ID;
   localStorage.setItem(BCT_LANGUAGE_KEY,language);
   document.documentElement.lang=language;
   document.documentElement.dir=language==='ar'?'rtl':'ltr';
   const selector=document.getElementById('bctLanguage');
+  const loginSelector=document.getElementById('bctLoginLanguage');
   if(selector) selector.value=language;
+  if(loginSelector) loginSelector.value=language;
   syncLoginLanguageUI(language);
+
   const nodes=[...document.querySelectorAll('[data-i18n]')];
   await Promise.all(nodes.map(async node=>{
     const key=node.dataset.i18n;
     let translated=BCT_ENGLISH_FALLBACK[key]||key;
     if(language!=='en'){
+      const local=BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]||BCT_LOCAL_TRANSLATIONS[language]?.[key];
+      if(local) translated=local;
       try{
         const data=await fetchBctTranslation(key,language);
         if(typeof data==='string' && data && data!==key) translated=data;
-        else if(BCT_LOCAL_TRANSLATIONS[language]?.[key]) translated=BCT_LOCAL_TRANSLATIONS[language][key];
-      }catch(e){
-        if(BCT_LOCAL_TRANSLATIONS[language]?.[key]) translated=BCT_LOCAL_TRANSLATIONS[language][key];
-        console.warn('BCT translation fallback used for',key,e);
-      }
+      }catch(e){ console.warn('BCT translation fallback used for',key,e); }
       if(BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) translated=BCT_HOME_TRANSLATION_OVERRIDES[language][key];
     }
-    node.textContent=translated;
+    if(requestId===BCT_LANGUAGE_REQUEST_ID && localStorage.getItem(BCT_LANGUAGE_KEY)===language) node.textContent=translated;
   }));
+  if(requestId!==BCT_LANGUAGE_REQUEST_ID || localStorage.getItem(BCT_LANGUAGE_KEY)!==language) return;
+
   const placeholderNodes=[...document.querySelectorAll('[data-i18n-placeholder]')];
   await Promise.all(placeholderNodes.map(async node=>{
     const key=node.dataset.i18nPlaceholder;
@@ -1992,11 +1997,16 @@ async function applyBctLanguage(languageCode){
         if(typeof data==='string' && data && data!==key) translated=data;
       }catch(e){ console.warn('BCT placeholder translation fallback used for',key,e); }
     }
-    node.setAttribute('placeholder',translated);
+    if(requestId===BCT_LANGUAGE_REQUEST_ID && localStorage.getItem(BCT_LANGUAGE_KEY)===language) node.setAttribute('placeholder',translated);
   }));
+  if(requestId!==BCT_LANGUAGE_REQUEST_ID || localStorage.getItem(BCT_LANGUAGE_KEY)!==language) return;
+
   applyStaticLanguage(language);
   applyCommonPortalLanguage(language);
   updateFileUploadUI(language);
+  syncLoginLanguageUI(language);
+  if(selector) selector.value=language;
+  if(loginSelector) loginSelector.value=language;
 }
 function bctText(key){
   const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
