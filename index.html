@@ -295,6 +295,15 @@ nav button:nth-child(6){background:#123f45}
  #view-customer .check-grid,#view-apply .check-grid{grid-template-columns:1fr 1fr}
 }
 
+
+/* BCT V46 BALANCED PAGE SIZE */
+#view-apply .bct-form-step,#view-customer .bct-form-step{max-width:900px}
+#view-apply .bct-form-step .grid,#view-customer .bct-form-step .grid{gap:8px}
+#view-apply .bct-form-step{min-height:0}
+#view-apply .bct-step-controls,#view-customer .bct-step-controls{max-width:900px;margin:8px auto}
+@media(max-width:820px){#view-apply .bct-form-step .grid,#view-customer .bct-form-step .grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){#view-apply .bct-form-step .grid,#view-customer .bct-form-step .grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>\n<a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -2806,12 +2815,10 @@ renderAll();
 
 
 <script>
-/* BCT V46 SHORT FORM PAGING */
+/* BCT V46 BALANCED INTAKE — compact, low-friction, no 22-page over-splitting */
 (function(){
- function setupPagedFlow(form,selector,key){
-   if(!form)return;
-   const blocks=[...form.querySelectorAll(selector)];
-   if(blocks.length<2)return;
+ function setupPagedFlow(form,blocks,key){
+   if(!form||blocks.length<2)return;
    blocks.forEach((b,i)=>{b.classList.add('bct-form-step');b.dataset.bctStep=String(i);});
    let step=Math.max(0,Math.min(Number(sessionStorage.getItem(key)||0),blocks.length-1));
    const controls=document.createElement('div');controls.className='bct-step-controls';
@@ -2822,37 +2829,52 @@ renderAll();
      step=Math.max(0,Math.min(n,blocks.length-1));sessionStorage.setItem(key,String(step));
      blocks.forEach((b,i)=>b.classList.toggle('bct-step-active',i===step));
      back.disabled=step===0;next.textContent=step===blocks.length-1?'Review & Submit':'Continue';
-     progress.textContent='Page '+(step+1)+' of '+blocks.length;
+     progress.textContent='Step '+(step+1)+' of '+blocks.length;
      blocks[step].scrollIntoView({behavior:'smooth',block:'start'});
    }
    next.addEventListener('click',()=>{
      if(step===blocks.length-1){const submit=form.querySelector('[type="submit"]');if(submit)submit.click();return;}
-     const fields=[...blocks[step].querySelectorAll('input,select,textarea')].filter(x=>!x.disabled);
-     const bad=fields.find(x=>!x.checkValidity());if(bad){bad.reportValidity();bad.focus();return;}show(step+1);
+     const required=[...blocks[step].querySelectorAll('input,select,textarea')].filter(x=>!x.disabled&&x.required&&x.offsetParent!==null);
+     const bad=required.find(x=>!x.checkValidity());if(bad){bad.reportValidity();bad.focus();return;}show(step+1);
    });
    back.addEventListener('click',()=>show(step-1));show(step);
  }
+ function wrapRange(nodes,name){
+   if(!nodes.length)return null;const w=document.createElement('div');w.className=name;nodes[0].before(w);nodes.forEach(n=>w.appendChild(n));return w;
+ }
  const pre=document.getElementById('applicationForm');
  if(pre){
-   const kids=[...pre.children];
-   let groups=[],cur=[],weight=0;
-   const cost=el=>Math.max(1,el.querySelectorAll('input,select,textarea').length + Math.ceil((el.textContent||'').trim().length/180));
-   kids.forEach(el=>{const w=cost(el);if(cur.length&&(weight+w>2||el.matches('hr,.stage'))){groups.push(cur);cur=[];weight=0;}if(el.matches('.stage')&&el.querySelectorAll('input,select,textarea').length>2){[...el.children].forEach(child=>groups.push([child]));return;}cur.push(el);weight+=w;if(el.matches('hr,.stage')||weight>=2){groups.push(cur);cur=[];weight=0;}});if(cur.length)groups.push(cur);
-   groups.forEach(g=>{const w=document.createElement('div');w.className='bct-pre-step';g[0].before(w);g.forEach(x=>w.appendChild(x));});
-   setupPagedFlow(pre,':scope > .bct-pre-step','bct-preapp-step-v46');
+   const kids=[...pre.children],steps=[],take=(a,b)=>wrapRange(kids.slice(a,b),'bct-pre-step');
+   const grid=kids.find(x=>x.classList&&x.classList.contains('grid'));
+   if(grid){
+     const cells=[...grid.children];
+     const groups=[[0,6],[6,12],[12,cells.length]];
+     groups.forEach(([a,b])=>{if(a<cells.length){const w=document.createElement('div');w.className='bct-pre-step card';const g=document.createElement('div');g.className='grid grid-2';cells.slice(a,b).forEach(x=>g.appendChild(x));w.appendChild(g);grid.before(w);steps.push(w);}});
+     grid.remove();
+   }
+   const remaining=[...pre.children].filter(x=>!x.classList.contains('bct-pre-step'));
+   let bucket=[];
+   remaining.forEach(el=>{
+     const isScreen=el.id==='contractorScreeningTest';
+     if(isScreen){if(bucket.length){const w=wrapRange(bucket.splice(0),'bct-pre-step card');steps.push(w);}const questions=[...el.querySelectorAll('.grid > div')];const intro=[...el.children].filter(x=>!x.classList.contains('grid')&&x.id!=='contractorScreeningStatus');for(let i=0;i<questions.length;i+=4){const w=document.createElement('div');w.className='bct-pre-step card';if(i===0)intro.slice(0,2).forEach(x=>w.appendChild(x));const g=document.createElement('div');g.className='grid grid-2';questions.slice(i,i+4).forEach(x=>g.appendChild(x));w.appendChild(g);if(i+4>=questions.length){const s=el.querySelector('#contractorScreeningStatus');if(s)w.appendChild(s);}el.before(w);steps.push(w);}el.remove();return;}
+     bucket.push(el);
+     const fields=bucket.reduce((n,x)=>n+x.querySelectorAll('input,select,textarea').length,0);
+     if(fields>=5||el.tagName==='HR'){const w=wrapRange(bucket.splice(0),'bct-pre-step card');steps.push(w);}
+   });
+   if(bucket.length){const w=wrapRange(bucket,'bct-pre-step card');steps.push(w);}
+   setupPagedFlow(pre,steps,'bct-preapp-balanced-v46');
  }
  const home=document.getElementById('customerProjectForm');
  if(home){
-   [...home.querySelectorAll(':scope > .portal-page[data-customer-page-panel="details"], :scope > .portal-page[data-customer-page-panel="files"]')].forEach(block=>{
-     const fields=[...block.querySelectorAll('input,select,textarea')];
-     if(fields.length<=3)return;
-     const children=[...block.children],title=children.shift(),parts=[],current=[];
-     let count=0;
-     children.forEach(el=>{const n=el.querySelectorAll('input,select,textarea').length;if(current.length&&count+n>3){parts.push(current.splice(0));count=0;}current.push(el);count+=n;});
-     if(current.length)parts.push(current);
-     if(parts.length>1){parts.forEach((part,i)=>{const page=document.createElement('div');page.className='portal-page bct-home-micro';page.dataset.customerPagePanel=block.dataset.customerPagePanel;if(title){const h=title.cloneNode(true);if(i>0)h.textContent=h.textContent+' — Continued';page.appendChild(h);}part.forEach(x=>page.appendChild(x));block.before(page);});block.remove();}
+   const source=[...home.querySelectorAll(':scope > .portal-page[data-customer-page-panel="details"], :scope > .portal-page[data-customer-page-panel="files"]')],steps=[];
+   source.forEach(block=>{
+     const fields=block.querySelectorAll('input,select,textarea').length;
+     if(fields<=7){steps.push(block);return;}
+     const children=[...block.children],title=children.shift(),parts=[];let cur=[],count=0;
+     children.forEach(el=>{const n=el.querySelectorAll('input,select,textarea').length;if(cur.length&&count+n>7){parts.push(cur);cur=[];count=0;}cur.push(el);count+=n;});if(cur.length)parts.push(cur);
+     parts.forEach((part,i)=>{const page=document.createElement('div');page.className='card section portal-page';page.dataset.customerPagePanel=block.dataset.customerPagePanel;if(title){const h=title.cloneNode(true);if(i)h.textContent=h.textContent+' — Continued';page.appendChild(h);}part.forEach(x=>page.appendChild(x));block.before(page);steps.push(page);});block.remove();
    });
-   setupPagedFlow(home,':scope > .portal-page[data-customer-page-panel="details"], :scope > .portal-page[data-customer-page-panel="files"]','bct-home-project-step-v46b');
+   setupPagedFlow(home,steps,'bct-home-balanced-v46');
  }
 })();
 </script>
