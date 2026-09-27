@@ -45,9 +45,6 @@ const requiredMarkers = [
   ['locked BCT teal brand token', '--bct-teal:#0f5f63'],
   ['locked BCT light app background', '--bg:#f5f7f7'],
   ['locked BCT secondary blue token', '--bct-blue:#2563a6'],
-  ['public home start button', 'Start or Track a Project'],
-  ['home control panel action cards', 'class="home-action-card"'],
-  ['home card target navigation', 'data-customer-page-target="payments"'],
   ['homeowner portal tabs', 'data-customer-page="overview"'],
   ['homeowner portal tab translation key', 'data-i18n="homeowner.tab_details"'],
   ['homeowner page translation bundle', 'BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES'],
@@ -65,14 +62,14 @@ const requiredMarkers = [
   ['home translation override guard', 'BCT_HOME_TRANSLATION_OVERRIDES'],
   ['Spanish home translation refresh', 'Iniciar o revisar un proyecto'],
   ['Spanish home license badge translation', 'Con licencia • Fianza • Asegurado'],
-  ['home contractor CTA translation key', 'data-i18n="home.contractor_button"'],
-  ['home submit card translation key', 'data-i18n="home.submit_description"'],
-  ['home financing card translation key', 'data-i18n="home.financing_description"'],
   ['non-blocking celebration layer', 'bct-celebration'],
   ['homeowner general contractor celebration', 'official general contractor for your home improvement'],
   ['contractor verified celebration', 'officially a verified BCT contractor'],
   ['admin command center', 'bctCommandCenter'],
   ['admin command search', 'bctCommandSearch'],
+  ['admin command no-match state', 'bctCommandEmpty'],
+  ['command dropdown hidden state', 'command-results[hidden]'],
+  ['command jump highlight', 'bct-jump-highlight'],
   ['admin command navigation', 'data-admin-jump="adminHomeownerProjects"'],
   ['narrow mobile portal tab stacking', '@media(max-width:460px)'],
   ['admin dashboard page tabs', 'data-admin-page-tab="projects"'],
@@ -143,6 +140,10 @@ for (const page of ['launch', 'contractors', 'projects', 'bids', 'jobs', 'servic
   assert(html.includes(`data-admin-page-panel="${page}"`), `Admin dashboard must include ${page} page panel.`);
 }
 assert(count(/data-admin-page="/g) >= 8, 'Admin command center buttons must carry page targets for click-through navigation.');
+assert(!html.includes('bctPublicCommandCenter'), 'Signed-out V46 must not show the larger public command center.');
+assert(!html.includes('data-public-action='), 'Signed-out V46 must not show public workflow cards before login.');
+assert(html.includes('const match=!!q&&hay.includes(q)'), 'Admin command search must hide static results until the user types.');
+assert(html.includes('results.hidden=!q'), 'Admin command search must hide the dropdown when empty.');
 assert(html.includes('[data-admin-page-panel]{display:none}'), 'Admin page panels must be hidden until their page is selected.');
 assert(html.includes("maxFiles:10"), 'Uploads must enforce a 10-file limit.');
 assert(html.includes("maxFileSizeBytes:25*1024*1024"), 'Uploads must enforce a 25 MB per-file limit.');
@@ -152,7 +153,7 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
 assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v4"), 'Service worker cache version must refresh after the official logo replacement.');
+assert(serviceWorker.includes("bct-portal-shell-v8-command-center"), 'Service worker cache version must refresh after the official logo replacement.');
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
@@ -188,6 +189,8 @@ assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-log
 
 const signedOutHome=(html.match(/<section id="view-home"[\s\S]*?<section id="view-customer"/)||[''])[0];
 assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all three role logins.');
+assert(count(/data-entry-login="/g) === 3, 'Signed-out V46 must expose only the three role login buttons.');
+assert(!signedOutHome.includes('home-action-card'), 'Signed-out entry must not contain extra workflow cards.');
 assert(!signedOutHome.includes('home-quick-grid'), 'Old signed-out quick dashboard must not exist in entry DOM.');
 assert(!signedOutHome.includes('bctFinancingCard'), 'Financing card must not exist on signed-out entry DOM.');
 assert(!signedOutHome.includes('home.hero_title')&&!signedOutHome.includes('home.hero_description'), 'Signed-out entry must not contain project marketing content.');
