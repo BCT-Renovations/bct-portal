@@ -5,7 +5,7 @@
 // bct-slogan-hotfix forces phones to load the official BCT slogan under the logo.
 // bct-brand-header-hotfix refreshes the centered slogan and continuous green logo header.
 // bct-portal-entry-hotfix forces installed/mobile clients to load repaired Contractor and Client portal entry rendering.
-const CACHE_NAME='bct-portal-shell-v13-portal-entry-fix';
+const CACHE_NAME='bct-portal-shell-v14-iphone-entry-fix';
 const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png','/bct-homeowner-pages.js'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([
