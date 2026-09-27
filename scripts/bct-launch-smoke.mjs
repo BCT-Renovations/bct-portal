@@ -179,4 +179,10 @@ assert(html.includes("supabaseClient?.auth?.onAuthStateChange?.("), 'V46 auth sh
 assert(!html.includes("window.bctSupabase?.auth"), 'V46 auth shell must not reference nonexistent bctSupabase global.');
 assert(!html.includes("header #bctLanguage{display:none!important}"), 'Language selector must remain available on the signed-out entry screen.');
 
+
+assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
+assert(html.includes("body:not(.bct-authenticated) header small.muted{display:none!important}"), 'Signed-out V46 must hide Launch Cutover label.');
+assert(html.includes("body:not(.bct-authenticated) #view-home .home-panel>h2"), 'Signed-out V46 must hide project marketing heading.');
+assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-login="contractor"')&&html.includes('data-entry-login="admin"'), 'Signed-out V46 must expose exactly the three role login entry actions.');
+
 console.log(`BCT launch smoke passed: ${scripts.length} inline scripts parsed and ${requiredMarkers.length} launch markers verified.`);
