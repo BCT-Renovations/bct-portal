@@ -2035,7 +2035,18 @@ function filterAdminCommandCenter(){
 }
 document.querySelectorAll('[data-admin-jump]').forEach(btn=>btn.addEventListener('click',()=>adminCommandJump(btn.dataset.adminJump)));
 document.querySelectorAll('[data-admin-page-tab]').forEach(btn=>btn.addEventListener('click',()=>showAdminPage(btn.dataset.adminPageTab)));
-document.querySelectorAll('[data-contractor-view]').forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.contractorView)));
+document.querySelectorAll('[data-contractor-view]').forEach(btn=>btn.addEventListener('click',()=>{
+  const target=btn.dataset.contractorView;
+  // Signed-out contractor navigation must remain inside the contractor entry experience.
+  if(!document.body.classList.contains('bct-authenticated')){
+    document.body.classList.remove('bct-entry-client','bct-entry-admin');
+    document.body.classList.add('bct-entry-contractor');
+    if(target==='status')return openEntry('contractor');
+    // Application and jobs require authentication; send signed-out contractors to the visible sign-in card.
+    return openEntry('contractor');
+  }
+  showView(target);
+}));
 document.getElementById('bctCommandSearch')?.addEventListener('input',filterAdminCommandCenter);
 filterAdminCommandCenter();
 async function openBctAdmin(){
