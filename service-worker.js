@@ -1,5 +1,7 @@
-const CACHE_NAME='bct-portal-shell-v5';
-const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png'];
+// bct-admin-login-hotfix; previous rollout marker: bct-portal-shell-v7-mobile-home-cleanup
+// bct-command-center-hotfix keeps the V46 public/admin typeahead shell fresh on phones.
+const CACHE_NAME='bct-portal-shell-v8-command-center';
+const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png','/bct-homeowner-pages.js'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([
   caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('bct-portal-shell-')&&key!==CACHE_NAME).map(key=>caches.delete(key)))),
