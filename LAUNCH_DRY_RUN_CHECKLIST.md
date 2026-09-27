@@ -5,10 +5,10 @@ Use this checklist on the newest V46 production deployment only. Do not switch p
 Current V46 production source:
 
 - GitHub source: `BCT-Renovations/bct-portal` on `main`.
-- Verified commit: `a1f64217286aa331b4d8821af57c2e4b2ae5b3d0`.
+- Verified page-suite commit: `eede8f9b62df22064f4a714b6fbedecb33b65ae6`.
 - Vercel project: `bct_secure_admin_v45_email_field_fixed`.
 - Production URL: `https://bctsecureadminv45emailfieldfixed.vercel.app`.
-- Latest verified deployment: `dpl_9F53DDCPLcVjug4MWZTf3RmKNBAY`.
+- Latest verified deployment: `dpl_9Y5D7fz8Bjp6kb7bx84tBDzA96hR`.
 - Do not verify V46 against `https://bct-portal.vercel.app`; that is a stale older project stream.
 
 ## Preflight
