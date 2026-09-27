@@ -2043,14 +2043,8 @@ document.querySelectorAll('[data-admin-jump]').forEach(btn=>btn.addEventListener
 document.querySelectorAll('[data-admin-page-tab]').forEach(btn=>btn.addEventListener('click',()=>showAdminPage(btn.dataset.adminPageTab)));
 document.querySelectorAll('[data-contractor-view]').forEach(btn=>btn.addEventListener('click',()=>{
   const target=btn.dataset.contractorView;
-  // Signed-out contractor navigation must remain inside the contractor entry experience.
-  if(!document.body.classList.contains('bct-authenticated')){
-    document.body.classList.remove('bct-entry-client','bct-entry-admin');
-    document.body.classList.add('bct-entry-contractor');
-    if(target==='status')return openEntry('contractor');
-    // Application and jobs require authentication; send signed-out contractors to the visible sign-in card.
-    return openEntry('contractor');
-  }
+  // Route through the public navigation wrapper. It performs the session check and opens
+  // the contractor sign-in experience for signed-out users without relying on a private-scope function.
   showView(target);
 }));
 document.getElementById('bctCommandSearch')?.addEventListener('input',filterAdminCommandCenter);
