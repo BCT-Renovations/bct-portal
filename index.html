@@ -3028,10 +3028,18 @@ renderAll();
    requestAnimationFrame(()=>card?.scrollIntoView({block:'start'}));
  }
  document.querySelectorAll('[data-entry-login]').forEach(b=>b.addEventListener('click',()=>openEntry(b.dataset.entryLogin)));
+ window.addEventListener('popstate',()=>{
+   const name=(location.hash||'#home').slice(1);
+   if(name==='home'){
+     entryIntent=null;
+     document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');
+     sessionNow().then(setAuthShell);
+   }
+ });
  const adminLogin=document.getElementById('view-admin-login');
  if(adminLogin&&!document.getElementById('bctAdminBackHome')){
    const back=document.createElement('button');back.type='button';back.id='bctAdminBackHome';back.className='secondary';back.textContent='← Back to BCT Home';
-   back.addEventListener('click',()=>{document.body.classList.remove('bct-entry-admin');setVisibleView('home');});
+   back.addEventListener('click',()=>{entryIntent=null;document.body.classList.remove('bct-entry-admin','bct-entry-client','bct-entry-contractor');setVisibleView('home');window.scrollTo({top:0,behavior:'smooth'});});
    adminLogin.querySelector('.admin-gate .card')?.prepend(back);
  }
  const original=window.showView;
