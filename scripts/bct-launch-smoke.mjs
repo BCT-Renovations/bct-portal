@@ -7,6 +7,7 @@ const weatherReadiness = fs.readFileSync(new URL('../WEATHER_PROVIDER_READINESS.
 const backupPlan = fs.readFileSync(new URL('../PRE_PRO_BACKUP_EXPORT_PLAN.md', import.meta.url), 'utf8');
 const auditReadiness = fs.readFileSync(new URL('../AUDIT_NOTIFICATION_READINESS.md', import.meta.url), 'utf8');
 const contractorOnboardingSmoke = fs.readFileSync(new URL('./bct-contractor-onboarding-smoke.mjs', import.meta.url), 'utf8');
+const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -40,8 +41,10 @@ const requiredMarkers = [
   ['contractor access lock message', 'Contractor access locked'],
   ['admin screening controls', 'bctAdminScreeningAction'],
   ['admin protected dashboard', 'BCT Admin Dashboard'],
-  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-icon.svg"'],
+  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-logo-master.png"'],
   ['public home start button', 'Start or Track a Project'],
+  ['home control panel action cards', 'class="home-action-card"'],
+  ['home card target navigation', 'data-customer-page-target="payments"'],
   ['homeowner portal tabs', 'data-customer-page="overview"'],
   ['homeowner portal tab translation key', 'data-i18n="homeowner.tab_details"'],
   ['homeowner page translation bundle', 'BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES'],
@@ -134,6 +137,9 @@ assert(html.includes("projectAllowedExtensions:['jpg','jpeg','png','webp','heic'
 assert(!/service_role|SUPABASE_SERVICE_ROLE|sb_secret_/i.test(html), 'Public HTML must not expose Supabase service-role or secret keys.');
 assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable key.');
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
+assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
+assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
+assert(serviceWorker.includes("bct-portal-shell-v3"), 'Service worker cache version must refresh after the logo replacement.');
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
