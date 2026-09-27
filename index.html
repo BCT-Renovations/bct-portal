@@ -3011,7 +3011,16 @@ renderAll();
  };
  const style=document.createElement('style');style.textContent='body:not(.bct-authenticated) .bct-signedout-hidden{display:none!important}';document.head.appendChild(style);
  sessionNow().then(setAuthShell);
- try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{setAuthShell(session);if(!session&&protectedViews.has((document.querySelector('.view:not(.hidden)')?.id||'').replace('view-','')))setVisibleView('home');});}catch(e){}
+ try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{
+   setAuthShell(session);
+   if(session){entryIntent=null;return;}
+   const current=(document.querySelector('.view:not(.hidden)')?.id||'').replace('view-','');
+   // A signed-out user who deliberately opened Client, Contractor, or Admin must stay on that login portal.
+   if(entryIntent==='contractor'&&current!=='status')return openEntry('contractor');
+   if(entryIntent==='client'&&current!=='customer')return openEntry('client');
+   if(entryIntent==='admin'&&current!=='admin-login')return openEntry('admin');
+   if(!entryIntent&&protectedViews.has(current))setVisibleView('home');
+ });}catch(e){}
 })();
 </script>
 
