@@ -2982,7 +2982,8 @@ renderAll();
 (function(){
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
  let entryIntent=null;
- function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);if(session?.user)document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');}
+ function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
+ function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);if(session?.user){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
