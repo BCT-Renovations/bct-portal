@@ -178,7 +178,11 @@ assert(contractorOnboardingSmoke.includes('exact five-reference UI'), 'Dedicated
 assert(html.includes("supabaseClient?.auth?.getSession?.()"), 'V46 auth shell uses live Supabase client.');
 assert(html.includes("supabaseClient?.auth?.onAuthStateChange?.("), 'V46 auth shell listens to live auth changes.');
 assert(!html.includes("window.bctSupabase?.auth"), 'V46 auth shell must not reference nonexistent bctSupabase global.');
-assert(html.includes('body:not(.bct-authenticated) header .wrap>div:has(#bctLanguage){display:none!important}'), 'Signed-out V46 must hide the language selector so only the logo/name and three email sign-ins show.');
+assert(html.includes('body:not(.bct-authenticated) header .wrap>div:has(#bctLanguage){display:none!important}'), 'Signed-out V46 must hide the duplicate header language selector because the login-first language selector is shown.');
+assert(html.includes('id="bctLoginLanguage"'), 'Signed-out V46 must expose the login-first language selector.');
+assert(html.includes('data-bct-slogan'), 'Signed-out V46 must expose the live language-aware BCT slogan.');
+assert(html.includes('BCT_BRAND_SLOGANS'), 'V46 must include localized BCT brand slogans.');
+assert(html.includes('syncBrandSlogan'), 'V46 must synchronize the BCT slogan when language changes.');
 
 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
