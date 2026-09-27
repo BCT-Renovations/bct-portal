@@ -172,6 +172,10 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   .command-results{display:grid;grid-template-columns:1fr 1fr}
   .command-results button{width:100%}
 }
+@media(max-width:460px){
+  .portal-tabs,.command-results{grid-template-columns:1fr}
+  .portal-tabs button,.command-results button{white-space:normal;line-height:1.25}
+}
 </style>
 </head>
 <body>
