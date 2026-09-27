@@ -41,9 +41,7 @@ const requiredMarkers = [
   ['contractor access lock message', 'Contractor access locked'],
   ['admin screening controls', 'bctAdminScreeningAction'],
   ['admin protected dashboard', 'BCT Admin Dashboard'],
-  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-logo-master.png"'],
-  ['official BCT slogan in app shell', '“Your General Contractor”'],
-  ['cursive BCT slogan styling', 'class="brand-slogan"'],
+  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46"'],
   ['locked BCT teal brand token', '--bct-teal:#0f5f63'],
   ['locked BCT light app background', '--bg:#f5f7f7'],
   ['locked BCT secondary blue token', '--bct-blue:#2563a6'],
@@ -155,7 +153,7 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
 assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v11-slogan"), 'Service worker cache version must refresh after the official slogan update.');
+assert(serviceWorker.includes("bct-portal-shell-v15-official-logo-refresh"), 'Service worker cache version must refresh after the official logo cache refresh.');
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');

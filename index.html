@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BCT Renovations" />
-<link rel="apple-touch-icon" href="/bct-logo-master.png" />
+<link rel="apple-touch-icon" href="/bct-logo-master.png?v=official-bct-logo-v46" />
 <link rel="manifest" href="/manifest.webmanifest" />
 <!-- V28: comprehensive French UI sweep -->
 <!-- BCT V32: full translation sweep for vi/zh/ar/ru -->
@@ -24,7 +24,6 @@ header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-
 .wrap{max-width:1180px;margin:auto;padding:18px}
 .brand{display:flex;gap:14px;align-items:center}
 .brand-logo{width:68px;height:68px;border-radius:12px;background:transparent;object-fit:contain;padding:0;flex:0 0 auto}
-.brand-slogan{margin-top:0;font-family:Arial,Helvetica,sans-serif;font-size:clamp(22px,3.1vw,34px);font-weight:900;line-height:1;color:var(--bct-teal-deep);letter-spacing:.02em}
 h1,h2,h3{margin:.2em 0}
 small,.muted{color:var(--muted)}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
@@ -340,13 +339,11 @@ header{background:#e8f5ec}
 header .brand{justify-content:center;text-align:center}
 header .brand>div:last-child{display:flex;flex-direction:column;align-items:center;width:100%}
 header .brand h1{display:none!important}
-header .brand-slogan{width:100%;text-align:center;color:var(--bct-teal-deep);font-weight:700;text-shadow:0 1px 0 rgba(255,255,255,.35)}
 header .brand-logo{background:#e8f5ec;mix-blend-mode:multiply}
 body:not(.bct-authenticated) header{background:#e8f5ec}
 body:not(.bct-authenticated) header .wrap{background:#e8f5ec}
 body:not(.bct-authenticated) header .brand{background:#e8f5ec;width:100%}
 body:not(.bct-authenticated) header .brand-logo{background:#e8f5ec!important}
-body:not(.bct-authenticated) header .brand-slogan{color:var(--bct-teal-deep)!important;font-weight:700!important;text-align:center!important;width:100%;margin:4px auto 0!important}
 @media(max-width:820px){
   header .brand{align-items:center}
   header .brand>div:last-child{min-width:0;flex:1;align-items:center}
@@ -354,7 +351,6 @@ body:not(.bct-authenticated) header .brand-slogan{color:var(--bct-teal-deep)!imp
 
 /* BCT V46 PRE-DEPLOY FIX BATCH — portal visibility, stronger branding, admin contrast */
 body:not(.bct-authenticated) header .brand{gap:0!important;margin-bottom:2px!important}
-body:not(.bct-authenticated) header .brand-slogan{font-weight:800!important;color:var(--bct-teal-deep)!important;text-shadow:0 1px 0 rgba(255,255,255,.55)!important;margin-top:-24px!important;line-height:1!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer,
 body.bct-entry-contractor:not(.bct-authenticated) #view-status,
 body.bct-entry-admin:not(.bct-authenticated) #view-admin-login{display:block!important}
@@ -367,8 +363,7 @@ body.bct-entry-admin:not(.bct-authenticated) #view-admin-login{display:block!imp
 /* BCT V46 SIGNED-OUT LOGO BANNER SCALE LOCK */
 body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:0!important}
 body:not(.bct-authenticated) header .brand-logo{width:min(92vw,520px)!important;height:auto!important;max-width:520px!important;max-height:none!important;border-radius:0!important;display:block}
-body:not(.bct-authenticated) header .brand h1{font-size:clamp(1.5rem,5vw,2.1rem);margin:0}
-body:not(.bct-authenticated) header .brand-slogan{font-size:clamp(28px,8vw,46px);color:var(--bct-teal-deep)!important;margin-top:-24px!important;font-weight:800!important}
+body:not(.bct-authenticated) header .brand h1{display:none!important}
 body:not(.bct-authenticated) header .bct-auth-only-header-copy{display:none!important}
 body:not(.bct-authenticated) header nav{display:none!important}
 body:not(.bct-authenticated) header .wrap>div[style*="max-width:220px"]{margin-left:auto!important;margin-right:auto!important;text-align:center}
@@ -379,8 +374,7 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:54px;font-size:1
 @media(max-width:480px){
   body:not(.bct-authenticated) header{position:relative!important}
   body:not(.bct-authenticated) header .wrap{padding:8px 10px 10px}
-  body:not(.bct-authenticated) header .brand-logo{width:min(86vw,360px)!important;max-width:360px!important}
-  body:not(.bct-authenticated) header .brand-slogan{font-size:clamp(24px,7vw,32px)!important;margin-top:-10px!important;line-height:1.05!important}
+  body:not(.bct-authenticated) header .brand-logo{width:clamp(260px,76vw,520px)!important;height:auto!important;max-width:520px!important;max-height:none!important;border-radius:0!important}
   body:not(.bct-authenticated) #bctSignedOutEntry{display:block!important;margin:10px auto!important;padding:14px!important;min-height:0!important}
   body:not(.bct-authenticated) #bctEntryActions{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
   body:not(.bct-authenticated) #bctEntryActions button{display:block!important;width:100%!important;min-height:52px!important}
@@ -393,7 +387,7 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:54px;font-size:1
 <header>
   <div class="wrap">
     <div class="brand">
-      <img class="brand-logo" src="/bct-logo-master.png" alt="BCT Renovations logo">
+      <img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo">
       <div>
         <h1>BCT Renovations, LLC</h1>
         
