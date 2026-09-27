@@ -1,4 +1,4 @@
-const CACHE_NAME='bct-portal-shell-v4';
+const CACHE_NAME='bct-portal-shell-v5';
 const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([
