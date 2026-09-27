@@ -2989,7 +2989,7 @@ renderAll();
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
  let entryIntent=null;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
- function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);if(session?.user){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}}
+ function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);if(session?.user){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
@@ -3044,7 +3044,7 @@ renderAll();
  sessionNow().then(setAuthShell);
  try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{
    setAuthShell(session);
-   if(session){entryIntent=null;return;}
+   if(session){const intent=entryIntent;entryIntent=null;if(intent==='contractor'){setVisibleView('status');requestAnimationFrame(()=>document.getElementById('bctContractorAuthStatus')?.scrollIntoView({block:'start'}));}else if(intent==='client'){setVisibleView('customer');showCustomerPage('overview');requestAnimationFrame(()=>document.getElementById('bctHomeownerLoginCard')?.scrollIntoView({block:'start'}));}else if(intent==='admin'){setVisibleView('admin');}return;}
    const current=(document.querySelector('.view:not(.hidden)')?.id||'').replace('view-','');
    // A signed-out user who deliberately opened Client, Contractor, or Admin must stay on that login portal.
    if(entryIntent==='contractor'&&current!=='status')return openEntry('contractor');
