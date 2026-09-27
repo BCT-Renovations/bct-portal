@@ -2,6 +2,15 @@
 
 Last verified: 2026-09-26
 
+## Current production source of record
+
+- GitHub source: `BCT-Renovations/bct-portal` on `main`.
+- Current verified GitHub commit: `a1f64217286aa331b4d8821af57c2e4b2ae5b3d0` (`Complete V46 home language and celebration flow`).
+- Current V46 production project: `bct_secure_admin_v45_email_field_fixed` (`prj_YCigLFW7rgXaq1RvhRFWICEKsh3T`).
+- Current V46 production URL: `https://bctsecureadminv45emailfieldfixed.vercel.app`.
+- Latest verified production deployment: `dpl_9F53DDCPLcVjug4MWZTf3RmKNBAY`, `READY`, serving GitHub commit `a1f64217286aa331b4d8821af57c2e4b2ae5b3d0`.
+- Do not use `https://bct-portal.vercel.app` for V46 verification. That URL is an older/stale project stream and can show removed public admin metrics, placeholder branding, and outdated Home copy.
+
 ## Completed in the current build
 
 - Job Health Dashboard and admin project-operations bundle are wired to Supabase.
@@ -37,8 +46,8 @@ Last verified: 2026-09-26
 - `scripts/bct-supabase-security-smoke.sql` now passes all four checks in Supabase: no broad homeowner storage ALL policy, no PUBLIC execute on admin RPCs, password-history direct access denied, and no unexpected BCT `SECURITY DEFINER` functions.
 - `node scripts/bct-role-visibility-smoke.mjs` passes and verifies customer-safe homeowner estimate summaries, safe estimate line items, contractor-safe available jobs, contractor job lockout, sanitized-scope wording, private bids, internal BCT target amount hiding, and AI release wording.
 - `scripts/bct-submission-lock-smoke.mjs` adds dedicated regression coverage for homeowner/contractor duplicate-submit blocking, in-flight pending state, error recovery, and hard lockout after a successful submission; equivalent assertions were rechecked against current GitHub `main` after creation.
-- Latest frontend source, launch-critical migration files, Edge Function source, and smoke coverage are synchronized to GitHub `main` through commit `c2b9e25a73a749dba7d26c6f73fce9d78ca51ee7`.
-- Production deployment verification continues on the existing V45/V46 project stream. The latest Vercel production deployment inspected is `READY` at commit `c2b9e25a73a749dba7d26c6f73fce9d78ca51ee7` with deployment `dpl_DqExSrJXbBcBqHRt1rEoKbCPzXAb`.
+- Latest frontend source, launch-critical migration files, Edge Function source, and smoke coverage are synchronized to GitHub `main` through commit `a1f64217286aa331b4d8821af57c2e4b2ae5b3d0`.
+- Production deployment verification continues on the current V46 project stream. The latest Vercel production deployment inspected is `READY` at commit `a1f64217286aa331b4d8821af57c2e4b2ae5b3d0` with deployment `dpl_9F53DDCPLcVjug4MWZTf3RmKNBAY`.
 - Live protected production was checked for the V46 launch cutover title, portal navigation, financing card, and admin entry.
 - Vercel runtime error clusters were checked again after the submission-lock smoke deployment; no production runtime errors were reported in the selected one-hour window.
 - Operational readiness returns 10/10 internal capabilities covered and zero internal gaps.
