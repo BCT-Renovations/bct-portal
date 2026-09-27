@@ -440,6 +440,13 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
 .bct-login-language label{display:block;margin:0 0 6px;font-weight:800;color:#0A5558}
 .bct-login-language select{width:100%;min-height:50px;border:1px solid #a9c7b3;border-radius:12px;background:#fff;color:#173c3e;font-weight:700;padding:10px 42px 10px 12px}
 
+/* BCT V46 LANGUAGE-AWARE BRAND SLOGAN */
+.bct-dynamic-brand{width:100%;display:flex;flex-direction:column;align-items:center;background:#e8f5ec}
+.bct-logo-crop{width:min(100vw,630px);overflow:hidden;background:#e8f5ec;line-height:0}
+.bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;clip-path:inset(0 0 16% 0);margin-bottom:-10%!important}
+.bct-dynamic-slogan{font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.55rem,5.6vw,2.65rem);font-weight:600;font-style:italic;line-height:1.05;color:#004b57;text-align:center;padding:0 12px 10px;max-width:95vw}
+@media(max-width:480px){.bct-logo-crop{width:100%}.bct-dynamic-slogan{margin-top:-2px}}
+
 </style>
 </head>
 <body>
@@ -447,7 +454,7 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
 <header>
   <div class="wrap">
     <div class="brand">
-      <img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo">
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo"></div><div class="bct-dynamic-slogan" data-bct-slogan>Your General Contractor</div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -2014,6 +2021,7 @@ async function applyBctLanguage(languageCode){
   applyCommonPortalLanguage(language);
   updateFileUploadUI(language);
   syncLoginLanguageUI(language);
+  syncBrandSlogan(language);
   if(selector) selector.value=language;
   if(loginSelector) loginSelector.value=language;
 }
@@ -2022,6 +2030,21 @@ function bctText(key){
   if(language!=='en' && BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) return BCT_HOME_TRANSLATION_OVERRIDES[language][key];
   if(language!=='en' && BCT_LOCAL_TRANSLATIONS[language]?.[key]) return BCT_LOCAL_TRANSLATIONS[language][key];
   return BCT_ENGLISH_FALLBACK[key]||key;
+}
+const BCT_BRAND_SLOGANS={
+ en:'Your General Contractor',
+ es:'Su Contratista General',
+ fr:'Votre Entrepreneur Général',
+ ht:'Kontraktè Jeneral Ou',
+ pt:'Seu Empreiteiro Geral',
+ vi:'Tổng Thầu Của Bạn',
+ zh:'您的总承包商',
+ ar:'المقاول العام الخاص بك',
+ ru:'Ваш генеральный подрядчик'
+};
+function syncBrandSlogan(language){
+ const el=document.querySelector('[data-bct-slogan]');
+ if(el) el.textContent=BCT_BRAND_SLOGANS[language]||BCT_BRAND_SLOGANS.en;
 }
 const BCT_LOGIN_LANGUAGE_UI={
   en:{label:'Choose Your Language',signin:'Sign In',client:'Client',contractor:'Contractor',admin:'Admin'},
