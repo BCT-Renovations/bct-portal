@@ -24,6 +24,7 @@ header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-
 .wrap{max-width:1180px;margin:auto;padding:18px}
 .brand{display:flex;gap:14px;align-items:center}
 .brand-logo{width:68px;height:68px;border-radius:12px;background:transparent;object-fit:contain;padding:0;flex:0 0 auto}
+.brand-slogan{margin-top:2px;font-family:"Brush Script MT","Segoe Script","Lucida Handwriting",cursive;font-size:clamp(22px,3.1vw,34px);font-weight:600;line-height:1;color:var(--bct-teal-deep);letter-spacing:0}
 h1,h2,h3{margin:.2em 0}
 small,.muted{color:var(--muted)}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
@@ -325,10 +326,11 @@ body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):n
 @media(max-width:700px){.bct-entry-actions{grid-template-columns:1fr}}
 
 
-/* BCT V46 SIGNED-OUT LOGO SCALE LOCK */
-body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:10px}
-body:not(.bct-authenticated) header .brand-logo{width:clamp(150px,42vw,240px)!important;height:clamp(150px,42vw,240px)!important;max-width:240px!important;max-height:240px!important;border-radius:0!important}
+/* BCT V46 SIGNED-OUT LOGO BANNER SCALE LOCK */
+body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:8px}
+body:not(.bct-authenticated) header .brand-logo{width:min(92vw,520px)!important;height:auto!important;max-width:520px!important;max-height:none!important;border-radius:0!important;display:block}
 body:not(.bct-authenticated) header .brand h1{font-size:clamp(1.5rem,5vw,2.1rem);margin:0}
+body:not(.bct-authenticated) header .brand-slogan{font-size:clamp(28px,8vw,46px);color:var(--bct-teal);margin-top:4px}
 body:not(.bct-authenticated) header .bct-auth-only-header-copy{display:none!important}
 body:not(.bct-authenticated) header nav{display:none!important}
 body:not(.bct-authenticated) header .wrap>div[style*="max-width:220px"]{margin-left:auto!important;margin-right:auto!important;text-align:center}
@@ -336,6 +338,10 @@ body:not(.bct-authenticated) header .wrap>div:has(#bctLanguage){display:none!imp
 body:not(.bct-authenticated) #bctSignedOutEntry{max-width:620px;margin:18px auto;padding:22px}
 body:not(.bct-authenticated) #bctEntryActions{display:grid;grid-template-columns:1fr;gap:12px}
 body:not(.bct-authenticated) #bctEntryActions button{min-height:54px;font-size:1.05rem}
+@media(max-width:480px){
+  body:not(.bct-authenticated) header .wrap{padding:8px 6px 10px}
+  body:not(.bct-authenticated) header .brand-logo{width:94vw!important;max-width:94vw!important}
+}
 
 </style>
 </head>
@@ -346,6 +352,7 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:54px;font-size:1
       <img class="brand-logo" src="/bct-logo-master.png" alt="BCT Renovations logo">
       <div>
         <h1>BCT Renovations, LLC</h1>
+        <div class="brand-slogan">“Your General Contractor”</div>
         <div class="muted bct-auth-only-header-copy" data-i18n="site.subtitle">Homeowner Project Management & Contractor Network</div><small class="muted bct-auth-only-header-copy">Launch Cutover V46</small>
       </div>
     </div>
