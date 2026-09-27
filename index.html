@@ -307,6 +307,8 @@ nav button:nth-child(6){background:#123f45}
 
 /* BCT V46 AUTH-ONLY ENTRY SHELL */
 body:not(.bct-authenticated) header nav{display:none!important}
+body:not(.bct-authenticated) .bct-auth-only-header-copy{display:none!important}
+html:not(.bct-session-resolved) header nav,html:not(.bct-session-resolved) .bct-auth-only-header-copy{display:none!important}
 body:not(.bct-authenticated) header small.muted{display:none!important}
 body:not(.bct-authenticated) #view-home .home-panel>h2,body:not(.bct-authenticated) #view-home .home-panel>p{display:none!important}
 body:not(.bct-authenticated) #view-home .home-quick-grid,
@@ -328,7 +330,7 @@ body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):n
       <img class="brand-logo" src="/bct-logo-master.png" alt="BCT Renovations logo">
       <div>
         <h1>BCT Renovations, LLC</h1>
-        <div class="muted" data-i18n="site.subtitle">Homeowner Project Management & Contractor Network</div><small class="muted">Launch Cutover V46</small>
+        <div class="muted bct-auth-only-header-copy" data-i18n="site.subtitle">Homeowner Project Management & Contractor Network</div><small class="muted bct-auth-only-header-copy">Launch Cutover V46</small>
       </div>
     </div>
     <nav>
@@ -2894,7 +2896,7 @@ renderAll();
 (function(){
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
  let entryIntent=null;
- function setAuthShell(session){document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);}
+ function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
