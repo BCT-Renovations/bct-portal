@@ -307,10 +307,13 @@ nav button:nth-child(6){background:#123f45}
 
 /* BCT V46 AUTH-ONLY ENTRY SHELL */
 body:not(.bct-authenticated) header nav{display:none!important}
-body:not(.bct-authenticated) #view-home .home-panel>p,
+body:not(.bct-authenticated) header small.muted{display:none!important}
+body:not(.bct-authenticated) #view-home .home-panel>h2,body:not(.bct-authenticated) #view-home .home-panel>p{display:none!important}
 body:not(.bct-authenticated) #view-home .home-quick-grid,
 body:not(.bct-authenticated) #bctFinancingCard{display:none!important}
-body:not(.bct-authenticated) #view-home .home-panel{max-width:760px;margin:28px auto;text-align:center;padding:28px}
+body:not(.bct-authenticated) #view-home .home-panel{max-width:760px;margin:18px auto;text-align:center;padding:22px}
+body:not(.bct-authenticated) header .wrap{padding-bottom:14px}
+body:not(.bct-authenticated) header .brand{margin-bottom:10px}
 .bct-entry-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
 .bct-entry-actions button{min-height:52px;font-weight:800}
 body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset){display:none!important}
@@ -2897,7 +2900,7 @@ renderAll();
 (function(){
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
  let entryIntent=null;
- function setAuthShell(session){document.body.classList.toggle('bct-authenticated',!!session?.user);}
+ function setAuthShell(session){document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
