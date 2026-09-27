@@ -2,10 +2,19 @@
 
 Use this checklist on the newest V46 production deployment only. Do not switch projects, old ZIPs, old Vercel projects, or prototype copies during the dry run.
 
+Current V46 production source:
+
+- GitHub source: `BCT-Renovations/bct-portal` on `main`.
+- Verified commit: `a1f64217286aa331b4d8821af57c2e4b2ae5b3d0`.
+- Vercel project: `bct_secure_admin_v45_email_field_fixed`.
+- Production URL: `https://bctsecureadminv45emailfieldfixed.vercel.app`.
+- Latest verified deployment: `dpl_9F53DDCPLcVjug4MWZTf3RmKNBAY`.
+- Do not verify V46 against `https://bct-portal.vercel.app`; that is a stale older project stream.
+
 ## Preflight
 
 - Confirm GitHub `main` is the source of record for `BCT-Renovations/bct-portal`.
-- Confirm Vercel production deployment is `READY` on the existing V45/V46 project stream.
+- Confirm Vercel production deployment is `READY` on the current V46 project stream: `bct_secure_admin_v45_email_field_fixed`.
 - Confirm Supabase project `onpqykpikxbbypfvmtin` is `ACTIVE_HEALTHY`.
 - Confirm Supabase Pro-only items are either completed or explicitly marked blocked: leaked-password protection, daily backups, and PITR/retention decision.
 - Confirm `PRE_PRO_BACKUP_EXPORT_PLAN.md` has been followed for a manual export if Supabase Pro backups/PITR are still blocked.
