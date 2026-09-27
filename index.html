@@ -380,6 +380,30 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:54px;font-size:1
   body:not(.bct-authenticated) #bctEntryActions button{display:block!important;width:100%!important;min-height:52px!important}
 }
 
+/* BCT V46 FULL-BLEED LIGHT GREEN BRANDING — iPhone header/background correction */
+html{background:#e8f5ec!important}
+body{background:#e8f5ec!important;min-height:100vh}
+header,header .wrap,header .brand,main.wrap{background:#e8f5ec!important}
+header{border-top:0!important;box-shadow:none!important}
+body:not(.bct-authenticated) header{margin:0!important;padding:0!important}
+body:not(.bct-authenticated) header .wrap{width:100%!important;max-width:none!important;margin:0!important;padding:0 0 12px!important}
+body:not(.bct-authenticated) header .brand{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+body:not(.bct-authenticated) header .brand-logo{
+  width:min(100vw,630px)!important;
+  max-width:100%!important;
+  height:auto!important;
+  margin:0 auto!important;
+  padding:0!important;
+  display:block!important;
+  background:#e8f5ec!important;
+  mix-blend-mode:multiply;
+}
+body:not(.bct-authenticated) main.wrap{max-width:none!important;width:100%!important;margin:0!important;padding-left:10px!important;padding-right:10px!important}
+@media(max-width:480px){
+  body:not(.bct-authenticated) header .wrap{padding:0 0 8px!important}
+  body:not(.bct-authenticated) header .brand-logo{width:100%!important;max-width:100%!important}
+}
+
 </style>
 </head>
 <body>
