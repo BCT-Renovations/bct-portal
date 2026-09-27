@@ -435,6 +435,11 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+/* BCT V46 LOGIN-FIRST LANGUAGE SELECTOR */
+.bct-login-language{margin:0 0 14px;text-align:left}
+.bct-login-language label{display:block;margin:0 0 6px;font-weight:800;color:#0A5558}
+.bct-login-language select{width:100%;min-height:50px;border:1px solid #a9c7b3;border-radius:12px;background:#fff;color:#173c3e;font-weight:700;padding:10px 42px 10px 12px}
+
 </style>
 </head>
 <body>
@@ -477,7 +482,21 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
 <main class="wrap" id="bctMain" tabindex="-1">
 <section id="view-home" class="view section">
   <div class="card home-panel" id="bctSignedOutEntry">
-    <div class="bct-signin-heading" aria-hidden="true">Sign In</div>
+    <div class="bct-login-language">
+      <label for="bctLoginLanguage" data-login-language-label>Choose Your Language</label>
+      <select id="bctLoginLanguage" aria-label="Choose your language">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="ht">Kreyòl Ayisyen</option>
+        <option value="pt">Português</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="zh">中文</option>
+        <option value="ar">العربية</option>
+        <option value="ru">Русский</option>
+      </select>
+    </div>
+    <div class="bct-signin-heading" aria-hidden="true" data-login-signin-heading>Sign In</div>
     <div class="bct-entry-actions" id="bctEntryActions">
       <button type="button" data-entry-login="client">Client</button>
       <button type="button" data-entry-login="contractor">Contractor</button>
@@ -1922,6 +1941,7 @@ async function applyBctLanguage(languageCode){
   document.documentElement.dir=language==='ar'?'rtl':'ltr';
   const selector=document.getElementById('bctLanguage');
   if(selector) selector.value=language;
+  syncLoginLanguageUI(language);
   const nodes=[...document.querySelectorAll('[data-i18n]')];
   await Promise.all(nodes.map(async node=>{
     const key=node.dataset.i18n;
@@ -1959,6 +1979,29 @@ function bctText(key){
   if(language!=='en' && BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) return BCT_HOME_TRANSLATION_OVERRIDES[language][key];
   if(language!=='en' && BCT_LOCAL_TRANSLATIONS[language]?.[key]) return BCT_LOCAL_TRANSLATIONS[language][key];
   return BCT_ENGLISH_FALLBACK[key]||key;
+}
+const BCT_LOGIN_LANGUAGE_UI={
+  en:{label:'Choose Your Language',signin:'Sign In',client:'Client',contractor:'Contractor',admin:'Admin'},
+  es:{label:'Elija su idioma',signin:'Iniciar sesión',client:'Cliente',contractor:'Contratista',admin:'Administrador'},
+  fr:{label:'Choisissez votre langue',signin:'Se connecter',client:'Client',contractor:'Entrepreneur',admin:'Administrateur'},
+  ht:{label:'Chwazi lang ou',signin:'Konekte',client:'Kliyan',contractor:'Kontraktè',admin:'Administratè'},
+  pt:{label:'Escolha seu idioma',signin:'Entrar',client:'Cliente',contractor:'Empreiteiro',admin:'Administrador'},
+  vi:{label:'Chọn ngôn ngữ của bạn',signin:'Đăng nhập',client:'Khách hàng',contractor:'Nhà thầu',admin:'Quản trị viên'},
+  zh:{label:'选择您的语言',signin:'登录',client:'客户',contractor:'承包商',admin:'管理员'},
+  ar:{label:'اختر لغتك',signin:'تسجيل الدخول',client:'العميل',contractor:'المقاول',admin:'المسؤول'},
+  ru:{label:'Выберите язык',signin:'Войти',client:'Клиент',contractor:'Подрядчик',admin:'Администратор'}
+};
+function syncLoginLanguageUI(language){
+  const ui=BCT_LOGIN_LANGUAGE_UI[language]||BCT_LOGIN_LANGUAGE_UI.en;
+  const loginSelector=document.getElementById('bctLoginLanguage');
+  if(loginSelector) loginSelector.value=language;
+  const label=document.querySelector('[data-login-language-label]'); if(label) label.textContent=ui.label;
+  const heading=document.querySelector('[data-login-signin-heading]'); if(heading) heading.textContent=ui.signin;
+  ['client','contractor','admin'].forEach(role=>{const btn=document.querySelector('[data-entry-login="'+role+'"]');if(btn)btn.textContent=ui[role]});
+}
+const bctLoginLanguageSelector=document.getElementById('bctLoginLanguage');
+if(bctLoginLanguageSelector){
+  bctLoginLanguageSelector.addEventListener('change',e=>applyBctLanguage(e.target.value));
 }
 const bctLanguageSelector=document.getElementById('bctLanguage');
 if(bctLanguageSelector){
