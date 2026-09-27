@@ -1,10 +1,12 @@
 {
   "name": "BCT Renovations Project Network",
   "short_name": "BCT Renovations",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#f5f7f7",
+  "theme_color": "#0f5f63",
   "description": "BCT Renovations homeowner, contractor, and admin project portal.",
   "icons": [
     {
