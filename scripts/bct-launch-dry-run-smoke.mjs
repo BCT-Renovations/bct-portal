@@ -100,6 +100,21 @@ assert(launchStatus.includes('PRE_PRO_BACKUP_EXPORT_PLAN.md'), 'Launch status mu
 assert(indexHtml.includes('validateUploadFiles'), 'Launch app must validate uploads before private storage upload.');
 assert(readinessSql.includes('bct_admin_notification_delivery_queue'), 'Operational readiness must inspect notification delivery coverage.');
 
+const currentProductionMarkers = [
+  [launchStatus, 'a1f64217286aa331b4d8821af57c2e4b2ae5b3d0', 'launch status current GitHub commit'],
+  [launchStatus, 'bct_secure_admin_v45_email_field_fixed', 'launch status current Vercel project'],
+  [launchStatus, 'bctsecureadminv45emailfieldfixed.vercel.app', 'launch status current production URL'],
+  [launchStatus, 'dpl_9F53DDCPLcVjug4MWZTf3RmKNBAY', 'launch status current Vercel deployment'],
+  [launchStatus, 'Do not use `https://bct-portal.vercel.app` for V46 verification', 'launch status stale-project warning'],
+  [dryRunChecklist, 'a1f64217286aa331b4d8821af57c2e4b2ae5b3d0', 'dry-run checklist current GitHub commit'],
+  [dryRunChecklist, 'bct_secure_admin_v45_email_field_fixed', 'dry-run checklist current Vercel project'],
+  [dryRunChecklist, 'bctsecureadminv45emailfieldfixed.vercel.app', 'dry-run checklist current production URL'],
+  [dryRunChecklist, 'Do not verify V46 against `https://bct-portal.vercel.app`', 'dry-run checklist stale-project warning']
+];
+for (const [source, marker, label] of currentProductionMarkers) {
+  assert(source.includes(marker), `Current production pointer must include ${label}: ${marker}`);
+}
+
 assert(aiHtml.includes('AI creates drafts only'), 'AI estimating page must state draft-only generation.');
 assert(aiHtml.includes('AI_PROJECT_DRAFT_LIMIT'), 'AI estimating page must define project-level cost limits.');
 assert(aiHtml.includes('AI_DAILY_DRAFT_LIMIT'), 'AI estimating page must define daily cost limits.');
