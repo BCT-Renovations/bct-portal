@@ -153,7 +153,7 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
 assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v8-command-center"), 'Service worker cache version must refresh after the official logo replacement.');
+assert(serviceWorker.includes("bct-portal-shell-v9-clean-signin"), 'Service worker cache version must refresh after the official logo replacement.');
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
@@ -178,7 +178,7 @@ assert(contractorOnboardingSmoke.includes('exact five-reference UI'), 'Dedicated
 assert(html.includes("supabaseClient?.auth?.getSession?.()"), 'V46 auth shell uses live Supabase client.');
 assert(html.includes("supabaseClient?.auth?.onAuthStateChange?.("), 'V46 auth shell listens to live auth changes.');
 assert(!html.includes("window.bctSupabase?.auth"), 'V46 auth shell must not reference nonexistent bctSupabase global.');
-assert(!html.includes("header #bctLanguage{display:none!important}"), 'Language selector must remain available on the signed-out entry screen.');
+assert(html.includes('body:not(.bct-authenticated) header .wrap>div:has(#bctLanguage){display:none!important}'), 'Signed-out V46 must hide the language selector so only the logo/name and three email sign-ins show.');
 
 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
@@ -189,6 +189,7 @@ assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-log
 
 const signedOutHome=(html.match(/<section id="view-home"[\s\S]*?<section id="view-customer"/)||[''])[0];
 assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all three role logins.');
+assert(signedOutHome.includes('Client Email Sign In')&&signedOutHome.includes('Contractor Email Sign In')&&signedOutHome.includes('BCT Admin Email Sign In'), 'Signed-out entry must label all three actions as email sign-ins.');
 assert(count(/data-entry-login="/g) === 3, 'Signed-out V46 must expose only the three role login buttons.');
 assert(!signedOutHome.includes('home-action-card'), 'Signed-out entry must not contain extra workflow cards.');
 assert(!signedOutHome.includes('home-quick-grid'), 'Old signed-out quick dashboard must not exist in entry DOM.');
