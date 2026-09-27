@@ -155,6 +155,8 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 .portal-tabs button.active{background:var(--accent);color:#062033;border-color:var(--accent)}
 .portal-page{display:none}
 .portal-page.active{display:block}
+[data-admin-page-panel]{display:none}
+[data-admin-page-panel].active{display:block}
 .mini-list{display:grid;gap:8px;margin-top:10px}
 .mini-list .stage{padding:10px}
 .command-center{display:grid;grid-template-columns:1fr;gap:12px}
@@ -369,6 +371,16 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 </section>
 
 <section id="view-apply" class="view section hidden">
+  <div class="card section">
+    <span class="badge info">BCT Contractor Portal</span>
+    <h2>Contractor Application</h2>
+    <p class="muted">Apply, check status, upload documents, and view authorized jobs from separate contractor pages.</p>
+    <div class="portal-tabs" aria-label="Contractor portal pages">
+      <button type="button" class="active" data-contractor-view="apply">Application</button>
+      <button type="button" data-contractor-view="status">Status & Documents</button>
+      <button type="button" data-contractor-view="jobs">Authorized Jobs</button>
+    </div>
+  </div>
   <div class="card">
     <h2>Stage 1 — Subcontractor Pre-Application</h2>
     <p class="muted">This form helps BCT learn who the applicant is before background screening.</p>
@@ -447,6 +459,16 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 </section>
 
 <section id="view-status" class="view section hidden">
+  <div class="card section">
+    <span class="badge info">BCT Contractor Portal</span>
+    <h2>Status & Documents</h2>
+    <p class="muted">Sign in to view your application, screening status, approved document checklist, and contractor access state.</p>
+    <div class="portal-tabs" aria-label="Contractor portal pages">
+      <button type="button" data-contractor-view="apply">Application</button>
+      <button type="button" class="active" data-contractor-view="status">Status & Documents</button>
+      <button type="button" data-contractor-view="jobs">Authorized Jobs</button>
+    </div>
+  </div>
   <div class="card section"><h3>Contractor Sign In</h3><div class="grid grid-2"><div><label>Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctContractorLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
   <div class="card">
     <h2 data-i18n="status.title">Applicant Status</h2>
@@ -460,6 +482,16 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 </section>
 
 <section id="view-jobs" class="view section hidden">
+  <div class="card section">
+    <span class="badge info">BCT Contractor Portal</span>
+    <h2>Authorized Jobs</h2>
+    <p class="muted">Only BCT-approved contractors can view matched opportunities, private bid tools, and assigned-job access.</p>
+    <div class="portal-tabs" aria-label="Contractor portal pages">
+      <button type="button" data-contractor-view="apply">Application</button>
+      <button type="button" data-contractor-view="status">Status & Documents</button>
+      <button type="button" class="active" data-contractor-view="jobs">Authorized Jobs</button>
+    </div>
+  </div>
   <div class="card section"><h3>Approved Contractor Access</h3><p class="muted">Sign in on Applicant Status first. Available jobs are matched to your approved trades and language.</p><button type="button" class="secondary" data-view="status">Go to Contractor Sign In</button><div id="bctJobsAuthStatus" class="section"></div></div>
   <div id="bctSafetyTrainingPanel" class="card section hidden"></div>
   <div class="card">
@@ -541,15 +573,25 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div><h3>Command Center</h3><p class="muted">Search or jump to the BCT Admin area you need without scrolling through the full production dashboard.</p></div>
     <input id="bctCommandSearch" placeholder="Search: applicants, homeowner projects, bids, job health, service calls, launch, safety, AI, post job">
     <div class="command-results" id="bctCommandResults">
-      <button type="button" data-admin-jump="bctLaunchControlCenter" data-command-label="launch readiness owner checklist automation security">Launch</button>
-      <button type="button" data-admin-jump="adminApplicantPipeline" data-command-label="applicant pipeline contractor applications screening approval">Applicants</button>
-      <button type="button" data-admin-jump="adminHomeownerProjects" data-command-label="homeowner project review customer verification assignment">Projects</button>
-      <button type="button" data-admin-jump="adminAiEstimating" data-command-label="AI estimating estimate contract approval">AI Estimates</button>
-      <button type="button" data-admin-jump="adminBidReview" data-command-label="bid review award contractor assignment">Bids</button>
-      <button type="button" data-admin-jump="jobHealthDashboard" data-command-label="job health schedule progress materials payments escrow">Job Health</button>
-      <button type="button" data-admin-jump="adminServiceCalls" data-command-label="service calls warranty customer concern">Service Calls</button>
-      <button type="button" data-admin-jump="adminPostJob" data-command-label="post job publish contractor network">Post Job</button>
+      <button type="button" data-admin-page="launch" data-admin-jump="bctLaunchControlCenter" data-command-label="launch readiness owner checklist automation security">Launch</button>
+      <button type="button" data-admin-page="contractors" data-admin-jump="adminApplicantPipeline" data-command-label="applicant pipeline contractor applications screening approval">Applicants</button>
+      <button type="button" data-admin-page="projects" data-admin-jump="adminHomeownerProjects" data-command-label="homeowner project review customer verification assignment">Projects</button>
+      <button type="button" data-admin-page="projects" data-admin-jump="adminAiEstimating" data-command-label="AI estimating estimate contract approval">AI Estimates</button>
+      <button type="button" data-admin-page="bids" data-admin-jump="adminBidReview" data-command-label="bid review award contractor assignment">Bids</button>
+      <button type="button" data-admin-page="jobs" data-admin-jump="jobHealthDashboard" data-command-label="job health schedule progress materials payments escrow">Job Health</button>
+      <button type="button" data-admin-page="service" data-admin-jump="adminServiceCalls" data-command-label="service calls warranty customer concern">Service Calls</button>
+      <button type="button" data-admin-page="post" data-admin-jump="adminPostJob" data-command-label="post job publish contractor network">Post Job</button>
     </div>
+  </div>
+
+  <div class="portal-tabs" aria-label="BCT Admin dashboard pages">
+    <button type="button" class="active" data-admin-page-tab="launch">Launch</button>
+    <button type="button" data-admin-page-tab="contractors">Contractors</button>
+    <button type="button" data-admin-page-tab="projects">Projects & Estimates</button>
+    <button type="button" data-admin-page-tab="bids">Bids</button>
+    <button type="button" data-admin-page-tab="jobs">Jobs & Progress</button>
+    <button type="button" data-admin-page-tab="service">Service Calls</button>
+    <button type="button" data-admin-page-tab="post">Post Job</button>
   </div>
 
   <div class="grid grid-4 section">
@@ -559,7 +601,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div class="card"><div id="a-approved" class="metric">0</div><small>Approved</small></div>
   </div>
 
-  <div class="card section" id="bctLaunchControlCenter" data-admin-section="launch readiness">
+  <div class="card section active" id="bctLaunchControlCenter" data-admin-section="launch readiness" data-admin-page-panel="launch">
     <div class="toolbar"><div><h3>Launch Control Center</h3><p class="muted">Live readiness, security, notification delivery, policy status, and work that still needs BCT attention. Customer pilot remains closed until these checks are complete.</p></div><button type="button" class="secondary" id="refreshLaunchControlsBtn">Refresh Controls</button></div>
     <div class="grid grid-4 section">
       <div class="card"><div id="lc-ready" class="metric">—</div><small>Frontend Readiness</small></div>
@@ -570,7 +612,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div id="launchControlList" class="grid grid-2"></div>
   </div>
 
-  <div class="card section" id="bctOperationalReadinessCenter">
+  <div class="card section active" id="bctOperationalReadinessCenter" data-admin-page-panel="launch">
     <div class="toolbar"><div><h3>Operational Readiness</h3><p class="muted">Admin-only coverage check for final pilot workflows: completion sign-off, documents, expiration alerts, ratings, disputes, reporting, messaging, notifications, audit, backup and security gates.</p></div><button type="button" class="secondary" id="refreshOperationalReadinessBtn">Refresh Readiness</button></div>
     <div class="grid grid-4 section">
       <div class="card"><div id="op-required" class="metric">—</div><small>Required Capabilities</small></div>
@@ -581,12 +623,12 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div id="operationalReadinessList" class="grid grid-2"></div>
   </div>
 
-  <div class="card section" id="adminActivityAuditPanel">
+  <div class="card section active" id="adminActivityAuditPanel" data-admin-page-panel="launch">
     <div class="toolbar"><div><h3>Admin Activity Audit</h3><p class="muted">Local session audit for operator traceability while testing. Supabase remains the durable system of record for approval, job, financing, escrow, and correction actions.</p></div><button type="button" class="secondary" id="clearAdminActivityAuditBtn">Clear Local Trail</button></div>
     <div id="adminActivityAuditList" class="grid"></div>
   </div>
 
-  <div class="card section" id="adminApplicantPipeline" data-admin-section="applicant pipeline">
+  <div class="card section" id="adminApplicantPipeline" data-admin-section="applicant pipeline" data-admin-page-panel="contractors">
     <h3>Applicant Pipeline</h3>
     <div class="app-review-wrap"><table class="app-review-table">
       <thead><tr><th>ID</th><th>Applicant</th><th>Trade</th><th>Status</th><th>Actions</th></tr></thead>
@@ -595,7 +637,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
 
 
-  <div class="card section" id="adminSafetyTrainingCard" data-admin-section="contractor safety compliance">
+  <div class="card section" id="adminSafetyTrainingCard" data-admin-section="contractor safety compliance" data-admin-page-panel="contractors">
     <div class="toolbar"><div><h3>Contractor Safety Compliance</h3><p class="muted">Training compliance controls eligibility for new BCT work. Separate Admin holds remain under BCT control.</p></div><div><button type="button" class="secondary" id="refreshSafetyAdminBtn">Refresh Safety</button> <button type="button" class="secondary" id="runSafetyCycleBtn">Run Safety Cycle</button></div></div>
     <div id="adminSafetySummary" class="grid grid-4 section"></div>
     <div class="stage section"><div class="toolbar"><div><h4>Training Program Settings</h4><p class="muted">BCT controls recurrence, grace period and reminder timing.</p></div><span id="adminSafetySettingsState" class="badge info">Loading</span></div><form id="adminSafetySettingsForm" class="grid grid-4"><div><label>Cadence (days)</label><input name="cadence" type="number" min="7" max="365" value="30"></div><div><label>Grace (days)</label><input name="grace" type="number" min="0" max="30" value="1"></div><div><label>Reminder days</label><input name="reminders" value="7,3,1"></div><div><label>Program</label><select name="enabled"><option value="true">Enabled</option><option value="false">Paused</option></select></div><button type="submit">Save Safety Settings</button></form></div>
@@ -606,14 +648,14 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div id="adminSafetyHistory" class="grid section"></div>
   </div>
 
-  <div class="card section" id="adminHomeownerProjects" data-admin-section="homeowner project review">
+  <div class="card section" id="adminHomeownerProjects" data-admin-section="homeowner project review" data-admin-page-panel="projects">
     <div class="toolbar"><div><h3>Homeowner Project Review</h3><p class="muted">Customer information is BCT-only. Contractors receive a separate sanitized scope when BCT publishes the project for bidding.</p></div><span class="badge info" id="a-customer-projects">0 Customer Projects</span></div>
     <div id="customerProjectAdminList" class="grid section"></div>
   </div>
 
-  <div class="card section" id="adminAiEstimating" data-admin-section="ai estimating"><div class="toolbar"><div><h3>AI Estimating</h3><p class="muted">BCT Admin-only estimating workspace with draft generation, internal costs, editable materials/labor, recalculation and manual customer approval.</p></div><a class="btn" href="/ai-estimating.html">Open AI Estimating</a></div><div class="notice section"><b>AI never approves estimates.</b> Every AI-generated estimate stays internal until BCT Admin completes review and manually releases it.</div></div>
+  <div class="card section" id="adminAiEstimating" data-admin-section="ai estimating" data-admin-page-panel="projects"><div class="toolbar"><div><h3>AI Estimating</h3><p class="muted">BCT Admin-only estimating workspace with draft generation, internal costs, editable materials/labor, recalculation and manual customer approval.</p></div><a class="btn" href="/ai-estimating.html">Open AI Estimating</a></div><div class="notice section"><b>AI never approves estimates.</b> Every AI-generated estimate stays internal until BCT Admin completes review and manually releases it.</div></div>
 
-  <div class="card section" id="adminBidReview" data-admin-section="bid review">
+  <div class="card section" id="adminBidReview" data-admin-section="bid review" data-admin-page-panel="bids">
     <h3>BCT Bid Review</h3>
     <p class="muted">Review subcontractor bids and award or reject each submission.</p>
     <div class="bid-review-wrap" style="overflow:auto"><table class="bid-review-table">
@@ -622,7 +664,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     </table></div>
   </div>
 
-  <div class="card section" id="jobHealthDashboard" data-admin-section="job health">
+  <div class="card section" id="jobHealthDashboard" data-admin-section="job health" data-admin-page-panel="jobs">
     <div class="toolbar"><div><h3>Job Health Dashboard</h3><p class="muted">Every active BCT job: customer, contractor, job number, schedule, completion, manual weather impact, materials, approvals, financing, escrow, messages, and items that need attention. Weather remains manually recorded until a live provider is enabled.</p></div><button type="button" class="secondary" id="refreshJobHealthBtn">Refresh Job Health</button></div>
     <div class="grid grid-4 section">
       <div class="card"><div id="jh-active" class="metric">0</div><small>Active Jobs</small></div>
@@ -633,7 +675,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     <div id="jobHealthList" class="grid"></div>
   </div>
 
-  <div id="jobManagementPanel" class="card section hidden">
+  <div id="jobManagementPanel" class="card section hidden" data-admin-page-panel="jobs">
     <div class="toolbar"><div><h3 id="jobManagementTitle">Manage BCT Job</h3><p id="jobManagementSub" class="muted"></p></div><button type="button" class="secondary" id="closeJobManagementBtn">Close</button></div>
     <div id="jobManagementStatus" class="notice hidden"></div>
     <div class="grid grid-2 section">
@@ -652,14 +694,14 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
     </div>
   </div>
 
-  <div class="card section" id="adminServiceCalls" data-admin-section="service calls">
+  <div class="card section" id="adminServiceCalls" data-admin-section="service calls" data-admin-page-panel="service">
     <h3>BCT Service Calls</h3>
     <p class="muted">Create a service call tied to an original BCT job for warranty, workmanship, or post-completion concerns. BCT service team inspects first; responsibility is determined after review.</p>
     <form id="serviceCallForm"><div class="grid grid-2"><div><label>Original Job Number</label><input name="jobNumber" placeholder="JOB-2026-123456" required></div><div><label>Service Call Type</label><select name="type"><option>Warranty / Workmanship Review</option><option>Customer Concern</option><option>Material Issue</option><option>Other</option></select></div></div><label>Issue Reported</label><textarea name="issue" required></textarea><button type="submit">Create BCT Service Call</button><div id="serviceCallStatus" class="section"></div></form>
     <div id="serviceCallList" class="grid section"></div>
   </div>
 
-  <div class="card section" id="adminPostJob" data-admin-section="post job">
+  <div class="card section" id="adminPostJob" data-admin-section="post job" data-admin-page-panel="post">
     <h3>Post BCT Job</h3>
     <form id="jobForm">
       <div class="grid grid-2">
@@ -1298,9 +1340,17 @@ function showCustomerPage(page){
   if(view&&!view.classList.contains('hidden'))window.scrollTo({top:view.offsetTop-80,behavior:'smooth'});
 }
 document.querySelectorAll('[data-customer-page]').forEach(btn=>btn.addEventListener('click',()=>showCustomerPage(btn.dataset.customerPage)));
+function showAdminPage(page='launch'){
+  document.querySelectorAll('[data-admin-page-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.adminPageTab===page));
+  document.querySelectorAll('[data-admin-page-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.adminPagePanel===page));
+}
 function adminCommandJump(id){
   const target=document.getElementById(id);
-  if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  if(target){
+    const page=target.dataset.adminPagePanel||target.closest('[data-admin-page-panel]')?.dataset.adminPagePanel;
+    if(page)showAdminPage(page);
+    requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'start'}));
+  }
 }
 function filterAdminCommandCenter(){
   const q=String(document.getElementById('bctCommandSearch')?.value||'').trim().toLowerCase();
@@ -1312,6 +1362,8 @@ function filterAdminCommandCenter(){
   });
 }
 document.querySelectorAll('[data-admin-jump]').forEach(btn=>btn.addEventListener('click',()=>adminCommandJump(btn.dataset.adminJump)));
+document.querySelectorAll('[data-admin-page-tab]').forEach(btn=>btn.addEventListener('click',()=>showAdminPage(btn.dataset.adminPageTab)));
+document.querySelectorAll('[data-contractor-view]').forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.contractorView)));
 document.getElementById('bctCommandSearch')?.addEventListener('input',filterAdminCommandCenter);
 async function openBctAdmin(){
   // Always show the login screen immediately so mobile browsers never appear blank
