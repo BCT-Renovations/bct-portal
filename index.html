@@ -235,6 +235,27 @@ p{line-height:1.42}
  textarea{min-height:72px}
 }
 
+
+/* BCT V46 DEEP GREEN SURFACE + NAV COLOR LOCK */
+:root{--bct-surface-green:#e8f5ec;--bct-surface-green-strong:#d8eddf;--bct-nav-green:#0a4549;--bct-nav-green-hover:#07383b}
+body{background:linear-gradient(180deg,#e8f5ec,#dfeee4);color:var(--text)}
+header{background:rgba(232,245,236,.97);border-bottom-color:#b9d7c2}
+.card{background:var(--bct-surface-green)}
+.card:nth-of-type(5n+1),.card:nth-of-type(5n+2),.card:nth-of-type(5n+3),.card:nth-of-type(5n+4),.card:nth-of-type(5n){background:var(--bct-surface-green)}
+.stage,.check-tile,.privacy-note,.file-upload-ui{background:var(--bct-surface-green-strong)}
+input,select,textarea{background:#f5fbf7;border-color:#b9d7c2}
+nav button.secondary{background:var(--bct-nav-green);color:#fff;border:1px solid #07383b;box-shadow:0 4px 10px rgba(10,69,73,.18)}
+nav button.secondary:hover,nav button.secondary:focus-visible{background:var(--bct-nav-green-hover);color:#fff}
+nav button:nth-child(2){background:#0f5f63}
+nav button:nth-child(3){background:#2563a6}
+nav button:nth-child(4){background:#166534}
+nav button:nth-child(5){background:#8a5a10}
+nav button:nth-child(6){background:#123f45}
+.portal-tabs{background:rgba(216,237,223,.97)}
+.portal-tabs button{background:#d8eddf;color:#0a4549;border-color:#9bc7aa}
+.portal-tabs button.active{background:#0f5f63;color:#fff;border-color:#0a4549}
+.home-action-card{color:var(--text)}
+
 </style>
 </head>
 <body>\n<a class="bct-skip-link" href="#bctMain">Skip to main content</a>
