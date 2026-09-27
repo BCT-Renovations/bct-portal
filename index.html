@@ -372,13 +372,13 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
 <section id="view-apply" class="view section hidden">
   <div class="card section">
-    <span class="badge info">BCT Contractor Portal</span>
-    <h2>Contractor Application</h2>
-    <p class="muted">Apply, check status, upload documents, and view authorized jobs from separate contractor pages.</p>
+    <span class="badge info" data-i18n="contractor.portal_badge">BCT Contractor Portal</span>
+    <h2 data-i18n="contractor.application_title">Contractor Application</h2>
+    <p class="muted" data-i18n="contractor.application_description">Apply, check status, upload documents, and view authorized jobs from separate contractor pages.</p>
     <div class="portal-tabs" aria-label="Contractor portal pages">
-      <button type="button" class="active" data-contractor-view="apply">Application</button>
-      <button type="button" data-contractor-view="status">Status & Documents</button>
-      <button type="button" data-contractor-view="jobs">Authorized Jobs</button>
+      <button type="button" class="active" data-contractor-view="apply" data-i18n="contractor.tab_application">Application</button>
+      <button type="button" data-contractor-view="status" data-i18n="contractor.tab_status">Status & Documents</button>
+      <button type="button" data-contractor-view="jobs" data-i18n="contractor.tab_jobs">Authorized Jobs</button>
     </div>
   </div>
   <div class="card">
@@ -460,13 +460,13 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
 <section id="view-status" class="view section hidden">
   <div class="card section">
-    <span class="badge info">BCT Contractor Portal</span>
-    <h2>Status & Documents</h2>
-    <p class="muted">Sign in to view your application, screening status, approved document checklist, and contractor access state.</p>
+    <span class="badge info" data-i18n="contractor.portal_badge">BCT Contractor Portal</span>
+    <h2 data-i18n="contractor.status_title">Status & Documents</h2>
+    <p class="muted" data-i18n="contractor.status_description">Sign in to view your application, screening status, approved document checklist, and contractor access state.</p>
     <div class="portal-tabs" aria-label="Contractor portal pages">
-      <button type="button" data-contractor-view="apply">Application</button>
-      <button type="button" class="active" data-contractor-view="status">Status & Documents</button>
-      <button type="button" data-contractor-view="jobs">Authorized Jobs</button>
+      <button type="button" data-contractor-view="apply" data-i18n="contractor.tab_application">Application</button>
+      <button type="button" class="active" data-contractor-view="status" data-i18n="contractor.tab_status">Status & Documents</button>
+      <button type="button" data-contractor-view="jobs" data-i18n="contractor.tab_jobs">Authorized Jobs</button>
     </div>
   </div>
   <div class="card section"><h3>Contractor Sign In</h3><div class="grid grid-2"><div><label>Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctContractorLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
@@ -483,13 +483,13 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 
 <section id="view-jobs" class="view section hidden">
   <div class="card section">
-    <span class="badge info">BCT Contractor Portal</span>
-    <h2>Authorized Jobs</h2>
-    <p class="muted">Only BCT-approved contractors can view matched opportunities, private bid tools, and assigned-job access.</p>
+    <span class="badge info" data-i18n="contractor.portal_badge">BCT Contractor Portal</span>
+    <h2 data-i18n="contractor.jobs_title">Authorized Jobs</h2>
+    <p class="muted" data-i18n="contractor.jobs_description">Only BCT-approved contractors can view matched opportunities, private bid tools, and assigned-job access.</p>
     <div class="portal-tabs" aria-label="Contractor portal pages">
-      <button type="button" data-contractor-view="apply">Application</button>
-      <button type="button" data-contractor-view="status">Status & Documents</button>
-      <button type="button" class="active" data-contractor-view="jobs">Authorized Jobs</button>
+      <button type="button" data-contractor-view="apply" data-i18n="contractor.tab_application">Application</button>
+      <button type="button" data-contractor-view="status" data-i18n="contractor.tab_status">Status & Documents</button>
+      <button type="button" class="active" data-contractor-view="jobs" data-i18n="contractor.tab_jobs">Authorized Jobs</button>
     </div>
   </div>
   <div class="card section"><h3>Approved Contractor Access</h3><p class="muted">Sign in on Applicant Status first. Available jobs are matched to your approved trades and language.</p><button type="button" class="secondary" data-view="status">Go to Contractor Sign In</button><div id="bctJobsAuthStatus" class="section"></div></div>
@@ -585,13 +585,13 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
 
   <div class="portal-tabs" aria-label="BCT Admin dashboard pages">
-    <button type="button" class="active" data-admin-page-tab="launch">Launch</button>
-    <button type="button" data-admin-page-tab="contractors">Contractors</button>
-    <button type="button" data-admin-page-tab="projects">Projects & Estimates</button>
-    <button type="button" data-admin-page-tab="bids">Bids</button>
-    <button type="button" data-admin-page-tab="jobs">Jobs & Progress</button>
-    <button type="button" data-admin-page-tab="service">Service Calls</button>
-    <button type="button" data-admin-page-tab="post">Post Job</button>
+    <button type="button" class="active" data-admin-page-tab="launch" data-i18n="admin.page_launch">Launch</button>
+    <button type="button" data-admin-page-tab="contractors" data-i18n="admin.page_contractors">Contractors</button>
+    <button type="button" data-admin-page-tab="projects" data-i18n="admin.page_projects">Projects & Estimates</button>
+    <button type="button" data-admin-page-tab="bids" data-i18n="admin.page_bids">Bids</button>
+    <button type="button" data-admin-page-tab="jobs" data-i18n="admin.page_jobs">Jobs & Progress</button>
+    <button type="button" data-admin-page-tab="service" data-i18n="admin.page_service">Service Calls</button>
+    <button type="button" data-admin-page-tab="post" data-i18n="admin.page_post">Post Job</button>
   </div>
 
   <div class="grid grid-4 section">
@@ -768,6 +768,23 @@ const BCT_ENGLISH_FALLBACK={
   'admin.back_home':'Back to Home',
   'admin.security_label':'Security:',
   'admin.security_message':'The password is sent directly to Supabase Authentication and is not stored in this HTML file.',
+  'admin.page_launch':'Launch',
+  'admin.page_contractors':'Contractors',
+  'admin.page_projects':'Projects & Estimates',
+  'admin.page_bids':'Bids',
+  'admin.page_jobs':'Jobs & Progress',
+  'admin.page_service':'Service Calls',
+  'admin.page_post':'Post Job',
+  'contractor.portal_badge':'BCT Contractor Portal',
+  'contractor.application_title':'Contractor Application',
+  'contractor.application_description':'Apply, check status, upload documents, and view authorized jobs from separate contractor pages.',
+  'contractor.status_title':'Status & Documents',
+  'contractor.status_description':'Sign in to view your application, screening status, approved document checklist, and contractor access state.',
+  'contractor.jobs_title':'Authorized Jobs',
+  'contractor.jobs_description':'Only BCT-approved contractors can view matched opportunities, private bid tools, and assigned-job access.',
+  'contractor.tab_application':'Application',
+  'contractor.tab_status':'Status & Documents',
+  'contractor.tab_jobs':'Authorized Jobs',
   'jobs.available_title':'Available BCT Jobs',
   'jobs.approved_only':'Only approved subcontractors may submit bids in the production version.',
   'jobs.none_posted':'No BCT jobs posted yet.',
@@ -873,6 +890,163 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.secure_access":"Безопасный доступ BCT","admin.login_title":"Вход администратора BCT","admin.login_description":"Войдите с учетной записью администратора BCT. Панель могут открыть только пользователи с ролью администратора в Supabase.","admin.email":"Эл. почта"
   }
 };
+const BCT_PAGE_TRANSLATION_PATCHES={
+  es:{
+    "admin.page_launch":"Lanzamiento",
+    "admin.page_contractors":"Contratistas",
+    "admin.page_projects":"Proyectos y estimados",
+    "admin.page_bids":"Ofertas",
+    "admin.page_jobs":"Trabajos y progreso",
+    "admin.page_service":"Llamadas de servicio",
+    "admin.page_post":"Publicar trabajo",
+    "contractor.portal_badge":"Portal de contratistas BCT",
+    "contractor.application_title":"Solicitud de contratista",
+    "contractor.application_description":"Solicite, revise el estado, suba documentos y vea trabajos autorizados desde páginas separadas para contratistas.",
+    "contractor.status_title":"Estado y documentos",
+    "contractor.status_description":"Inicie sesión para ver su solicitud, estado de evaluación, lista de documentos aprobados y estado de acceso como contratista.",
+    "contractor.jobs_title":"Trabajos autorizados",
+    "contractor.jobs_description":"Solo los contratistas aprobados por BCT pueden ver oportunidades asignadas, herramientas privadas de oferta e instrucciones de acceso al trabajo.",
+    "contractor.tab_application":"Solicitud",
+    "contractor.tab_status":"Estado y documentos",
+    "contractor.tab_jobs":"Trabajos autorizados"
+  },
+  fr:{
+    "admin.page_launch":"Lancement",
+    "admin.page_contractors":"Entrepreneurs",
+    "admin.page_projects":"Projets et estimations",
+    "admin.page_bids":"Soumissions",
+    "admin.page_jobs":"Travaux et progression",
+    "admin.page_service":"Appels de service",
+    "admin.page_post":"Publier un travail",
+    "contractor.portal_badge":"Portail entrepreneurs BCT",
+    "contractor.application_title":"Candidature entrepreneur",
+    "contractor.application_description":"Postulez, vérifiez le statut, téléversez des documents et consultez les travaux autorisés sur des pages distinctes.",
+    "contractor.status_title":"Statut et documents",
+    "contractor.status_description":"Connectez-vous pour voir votre candidature, le statut de vérification, la liste des documents approuvés et l'état d'accès entrepreneur.",
+    "contractor.jobs_title":"Travaux autorisés",
+    "contractor.jobs_description":"Seuls les entrepreneurs approuvés par BCT peuvent voir les occasions jumelées, les outils privés de soumission et l'accès aux travaux assignés.",
+    "contractor.tab_application":"Candidature",
+    "contractor.tab_status":"Statut et documents",
+    "contractor.tab_jobs":"Travaux autorisés"
+  },
+  ht:{
+    "admin.page_launch":"Lansman",
+    "admin.page_contractors":"Kontraktè",
+    "admin.page_projects":"Pwojè ak estimasyon",
+    "admin.page_bids":"Òf",
+    "admin.page_jobs":"Travay ak pwogrè",
+    "admin.page_service":"Apèl sèvis",
+    "admin.page_post":"Afiche travay",
+    "contractor.portal_badge":"Pòtal kontraktè BCT",
+    "contractor.application_title":"Aplikasyon kontraktè",
+    "contractor.application_description":"Aplike, tcheke estati, telechaje dokiman, epi wè travay otorize yo nan paj kontraktè separe.",
+    "contractor.status_title":"Estati ak dokiman",
+    "contractor.status_description":"Konekte pou wè aplikasyon ou, estati tès/verifikasyon, lis dokiman apwouve yo, ak eta aksè kontraktè a.",
+    "contractor.jobs_title":"Travay otorize",
+    "contractor.jobs_description":"Se sèlman kontraktè BCT apwouve ki ka wè opòtinite matche, zouti òf prive, ak aksè pou travay ki asiyen.",
+    "contractor.tab_application":"Aplikasyon",
+    "contractor.tab_status":"Estati ak dokiman",
+    "contractor.tab_jobs":"Travay otorize"
+  },
+  pt:{
+    "admin.page_launch":"Lançamento",
+    "admin.page_contractors":"Contratados",
+    "admin.page_projects":"Projetos e estimativas",
+    "admin.page_bids":"Propostas",
+    "admin.page_jobs":"Trabalhos e progresso",
+    "admin.page_service":"Chamadas de serviço",
+    "admin.page_post":"Publicar trabalho",
+    "contractor.portal_badge":"Portal de contratados BCT",
+    "contractor.application_title":"Inscrição de contratado",
+    "contractor.application_description":"Inscreva-se, verifique o status, envie documentos e veja trabalhos autorizados em páginas separadas para contratados.",
+    "contractor.status_title":"Status e documentos",
+    "contractor.status_description":"Entre para ver sua inscrição, status de triagem, lista de documentos aprovados e estado de acesso como contratado.",
+    "contractor.jobs_title":"Trabalhos autorizados",
+    "contractor.jobs_description":"Somente contratados aprovados pela BCT podem ver oportunidades correspondentes, ferramentas privadas de proposta e acesso a trabalhos atribuídos.",
+    "contractor.tab_application":"Inscrição",
+    "contractor.tab_status":"Status e documentos",
+    "contractor.tab_jobs":"Trabalhos autorizados"
+  },
+  vi:{
+    "admin.page_launch":"Ra mắt",
+    "admin.page_contractors":"Nhà thầu",
+    "admin.page_projects":"Dự án và báo giá",
+    "admin.page_bids":"Giá thầu",
+    "admin.page_jobs":"Công việc và tiến độ",
+    "admin.page_service":"Cuộc gọi dịch vụ",
+    "admin.page_post":"Đăng công việc",
+    "contractor.portal_badge":"Cổng nhà thầu BCT",
+    "contractor.application_title":"Đơn đăng ký nhà thầu",
+    "contractor.application_description":"Đăng ký, kiểm tra trạng thái, tải tài liệu lên và xem các công việc được ủy quyền từ các trang nhà thầu riêng.",
+    "contractor.status_title":"Trạng thái và tài liệu",
+    "contractor.status_description":"Đăng nhập để xem đơn đăng ký, trạng thái sàng lọc, danh sách tài liệu được phê duyệt và trạng thái quyền truy cập nhà thầu.",
+    "contractor.jobs_title":"Công việc được ủy quyền",
+    "contractor.jobs_description":"Chỉ các nhà thầu được BCT phê duyệt mới có thể xem cơ hội phù hợp, công cụ đấu thầu riêng và quyền truy cập công việc được giao.",
+    "contractor.tab_application":"Đơn đăng ký",
+    "contractor.tab_status":"Trạng thái và tài liệu",
+    "contractor.tab_jobs":"Công việc được ủy quyền"
+  },
+  zh:{
+    "admin.page_launch":"上线",
+    "admin.page_contractors":"承包商",
+    "admin.page_projects":"项目和估价",
+    "admin.page_bids":"报价",
+    "admin.page_jobs":"工作和进度",
+    "admin.page_service":"服务请求",
+    "admin.page_post":"发布工作",
+    "contractor.portal_badge":"BCT 承包商门户",
+    "contractor.application_title":"承包商申请",
+    "contractor.application_description":"在独立的承包商页面中申请、查看状态、上传文件并查看授权工作。",
+    "contractor.status_title":"状态和文件",
+    "contractor.status_description":"登录以查看您的申请、筛选状态、已批准文件清单和承包商访问状态。",
+    "contractor.jobs_title":"授权工作",
+    "contractor.jobs_description":"只有经 BCT 批准的承包商才能查看匹配机会、私密报价工具和已分配工作的访问权限。",
+    "contractor.tab_application":"申请",
+    "contractor.tab_status":"状态和文件",
+    "contractor.tab_jobs":"授权工作"
+  },
+  ar:{
+    "admin.page_launch":"الإطلاق",
+    "admin.page_contractors":"المقاولون",
+    "admin.page_projects":"المشاريع والتقديرات",
+    "admin.page_bids":"العطاءات",
+    "admin.page_jobs":"الأعمال والتقدم",
+    "admin.page_service":"طلبات الخدمة",
+    "admin.page_post":"نشر عمل",
+    "contractor.portal_badge":"بوابة مقاولي BCT",
+    "contractor.application_title":"طلب المقاول",
+    "contractor.application_description":"قدّم الطلب، تحقق من الحالة، ارفع المستندات، واعرض الأعمال المصرح بها من صفحات منفصلة للمقاولين.",
+    "contractor.status_title":"الحالة والمستندات",
+    "contractor.status_description":"سجّل الدخول لعرض طلبك وحالة الفحص وقائمة المستندات المعتمدة وحالة وصول المقاول.",
+    "contractor.jobs_title":"الأعمال المصرح بها",
+    "contractor.jobs_description":"يمكن فقط للمقاولين المعتمدين من BCT عرض الفرص المطابقة وأدوات العطاء الخاصة والوصول إلى الأعمال المسندة.",
+    "contractor.tab_application":"الطلب",
+    "contractor.tab_status":"الحالة والمستندات",
+    "contractor.tab_jobs":"الأعمال المصرح بها"
+  },
+  ru:{
+    "admin.page_launch":"Запуск",
+    "admin.page_contractors":"Подрядчики",
+    "admin.page_projects":"Проекты и сметы",
+    "admin.page_bids":"Предложения",
+    "admin.page_jobs":"Работы и прогресс",
+    "admin.page_service":"Сервисные заявки",
+    "admin.page_post":"Опубликовать работу",
+    "contractor.portal_badge":"Портал подрядчиков BCT",
+    "contractor.application_title":"Заявка подрядчика",
+    "contractor.application_description":"Подайте заявку, проверьте статус, загрузите документы и просматривайте разрешенные работы на отдельных страницах подрядчика.",
+    "contractor.status_title":"Статус и документы",
+    "contractor.status_description":"Войдите, чтобы увидеть вашу заявку, статус проверки, список одобренных документов и состояние доступа подрядчика.",
+    "contractor.jobs_title":"Разрешенные работы",
+    "contractor.jobs_description":"Только подрядчики, одобренные BCT, могут видеть подходящие возможности, частные инструменты подачи предложений и доступ к назначенным работам.",
+    "contractor.tab_application":"Заявка",
+    "contractor.tab_status":"Статус и документы",
+    "contractor.tab_jobs":"Разрешенные работы"
+  }
+};
+Object.entries(BCT_PAGE_TRANSLATION_PATCHES).forEach(([language,translations])=>{
+  BCT_LOCAL_TRANSLATIONS[language]=Object.assign(BCT_LOCAL_TRANSLATIONS[language]||{},translations);
+});
 async function fetchBctTranslation(key,language){
   const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_ui_translation`,{
     method:'POST',
