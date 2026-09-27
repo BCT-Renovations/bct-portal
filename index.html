@@ -454,7 +454,7 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
 <header>
   <div class="wrap">
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo"></div><div class="bct-dynamic-slogan" data-bct-slogan>Your General Contractor</div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo"></div><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">Your General Contractor</div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -1969,7 +1969,7 @@ const BCT_ORIGINAL_UI_TEXT=new WeakMap();
 function applyCommonPortalLanguage(language){
  const dict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
  document.querySelectorAll('button,label,h2,h3,h4,p,span,legend,th,td').forEach(el=>{
-   if(el.matches('[data-i18n],[data-login-language-label],[data-login-signin-heading],[data-entry-login]')) return;
+   if(el.matches('[data-i18n],[data-login-language-label],[data-login-signin-heading],[data-entry-login],[data-bct-slogan]')) return;
    if(!BCT_ORIGINAL_UI_TEXT.has(el)) BCT_ORIGINAL_UI_TEXT.set(el,el.textContent.trim());
    const original=BCT_ORIGINAL_UI_TEXT.get(el);
    if(language==='en') el.textContent=original;
@@ -1989,6 +1989,7 @@ async function applyBctLanguage(languageCode){
   if(selector) selector.value=language;
   if(loginSelector) loginSelector.value=language;
   syncLoginLanguageUI(language);
+  syncBrandSlogan(language);
 
   const nodes=[...document.querySelectorAll('[data-i18n]')];
   await Promise.all(nodes.map(async node=>{
@@ -2071,11 +2072,12 @@ function syncLoginLanguageUI(language){
 }
 const bctLoginLanguageSelector=document.getElementById('bctLoginLanguage');
 if(bctLoginLanguageSelector){
-  bctLoginLanguageSelector.addEventListener('change',e=>applyBctLanguage(e.target.value));
+  bctLoginLanguageSelector.addEventListener('change',e=>{syncBrandSlogan(e.target.value);applyBctLanguage(e.target.value)});
 }
+syncBrandSlogan(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
 const bctLanguageSelector=document.getElementById('bctLanguage');
 if(bctLanguageSelector){
-  bctLanguageSelector.addEventListener('change',e=>applyBctLanguage(e.target.value));
+  bctLanguageSelector.addEventListener('change',e=>{syncBrandSlogan(e.target.value);applyBctLanguage(e.target.value)});
   applyBctLanguage(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
 }
 
