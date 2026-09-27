@@ -373,13 +373,19 @@ body:not(.bct-authenticated) #bctSignedOutEntry{max-width:620px;margin:18px auto
 body:not(.bct-authenticated) #bctEntryActions{display:grid;grid-template-columns:1fr;gap:12px}
 body:not(.bct-authenticated) #bctEntryActions button{min-height:54px;font-size:1.05rem}
 @media(max-width:480px){
-  body:not(.bct-authenticated) header .wrap{padding:8px 6px 10px}
-  body:not(.bct-authenticated) header .brand-logo{width:94vw!important;max-width:94vw!important}
+  body:not(.bct-authenticated) header{position:relative!important}
+  body:not(.bct-authenticated) header .wrap{padding:8px 10px 10px}
+  body:not(.bct-authenticated) header .brand-logo{width:min(86vw,360px)!important;max-width:360px!important}
+  body:not(.bct-authenticated) header .brand-slogan{font-size:clamp(24px,7vw,32px)!important;margin-top:-10px!important;line-height:1.05!important}
+  body:not(.bct-authenticated) #bctSignedOutEntry{display:block!important;margin:10px auto!important;padding:14px!important;min-height:0!important}
+  body:not(.bct-authenticated) #bctEntryActions{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+  body:not(.bct-authenticated) #bctEntryActions button{display:block!important;width:100%!important;min-height:52px!important}
 }
 
 </style>
 </head>
-<body>\n<a class="bct-skip-link" href="#bctMain">Skip to main content</a>
+<body>
+<a class="bct-skip-link" href="#bctMain">Skip to main content</a>
 <header>
   <div class="wrap">
     <div class="brand">
