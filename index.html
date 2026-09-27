@@ -1994,6 +1994,12 @@ function setVisibleView(name,options={}){
 window.addEventListener('popstate',()=>{
   const name=(location.hash||'#home').slice(1);
   const safe=document.getElementById('view-'+name)?name:'home';
+  // Never expose a protected portal directly from browser history while signed out.
+  if(!document.body.classList.contains('bct-authenticated')&&['customer','apply','status','jobs','admin'].includes(safe)){
+    if(safe==='customer')return document.querySelector('[data-entry-login="client"]')?.click();
+    if(['apply','status','jobs'].includes(safe))return document.querySelector('[data-entry-login="contractor"]')?.click();
+    return document.querySelector('[data-entry-login="admin"]')?.click();
+  }
   setVisibleView(safe,{history:false});
 });
 function showView(name){
