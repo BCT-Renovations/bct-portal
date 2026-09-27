@@ -173,4 +173,10 @@ assert(auditReadiness.includes('Contractor approval/screening'), 'Audit readines
 assert(auditReadiness.includes('Notifications'), 'Audit readiness must cover notification readiness.');
 assert(contractorOnboardingSmoke.includes('exact five-reference UI'), 'Dedicated contractor onboarding smoke must cover exact five-reference enforcement.');
 
+
+assert(html.includes("supabaseClient?.auth?.getSession?.()"), 'V46 auth shell uses live Supabase client.');
+assert(html.includes("supabaseClient?.auth?.onAuthStateChange?.("), 'V46 auth shell listens to live auth changes.');
+assert(!html.includes("window.bctSupabase?.auth"), 'V46 auth shell must not reference nonexistent bctSupabase global.');
+assert(!html.includes("header #bctLanguage{display:none!important}"), 'Language selector must remain available on the signed-out entry screen.');
+
 console.log(`BCT launch smoke passed: ${scripts.length} inline scripts parsed and ${requiredMarkers.length} launch markers verified.`);
