@@ -749,7 +749,7 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
       <button type="button" data-contractor-view="jobs" data-i18n="contractor.tab_jobs">Authorized Jobs</button>
     </div>
   </div>
-  <div class="card section"><h3>Contractor Sign In</h3><div class="grid grid-2"><div><label>Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctContractorBackHomeBtn">Back to Home</button><button type="button" class="secondary" id="bctContractorLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
+  <div class="card section"><h3 data-i18n="contractor.signin_title">Contractor Sign In</h3><div class="grid grid-2"><div><label>Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctContractorBackHomeBtn">Back to Home</button><button type="button" class="secondary" id="bctContractorLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
   <div class="card">
     <h2 data-i18n="status.title">Applicant Status</h2>
     <label data-i18n="status.application_id">Application ID</label>
@@ -1108,6 +1108,7 @@ const BCT_ENGLISH_FALLBACK={
   'contractor.portal_badge':'BCT Contractor Portal',
   'contractor.application_title':'Contractor Application',
   'contractor.application_description':'Apply, check status, upload documents, and view authorized jobs from separate contractor pages.',
+  'contractor.signin_title':'Contractor Sign In',
   'contractor.status_title':'Status & Documents',
   'contractor.status_description':'Sign in to view your application, screening status, approved document checklist, and contractor access state.',
   'contractor.jobs_title':'Authorized Jobs',
@@ -1124,6 +1125,7 @@ const BCT_ENGLISH_FALLBACK={
 };
 const BCT_LOCAL_TRANSLATIONS={
   "es": {
+    "contractor.signin_title": "Inicio de sesión del contratista",
     "status.title": 'Estado de la solicitud',
     "status.application_id": 'ID de la solicitud',
     "status.check_status": 'Verificar estado',
@@ -1142,6 +1144,7 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "Correo electrónico"
   },
   "fr": {
+    "contractor.signin_title": "Connexion entrepreneur",
     "status.title": 'Statut de la candidature',
     "status.application_id": 'ID de la candidature',
     "status.check_status": 'Vérifier le statut',
@@ -1154,6 +1157,7 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "E-mail"
   },
   "ht": {
+    "contractor.signin_title": "Koneksyon kontraktè",
     "status.title": 'Estati aplikasyon',
     "status.application_id": 'ID aplikasyon',
     "status.check_status": 'Tcheke estati',
@@ -1166,6 +1170,7 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "Imèl"
   },
   "pt": {
+    "contractor.signin_title": "Login do empreiteiro",
     "status.title": 'Status da inscrição',
     "status.application_id": 'ID da inscrição',
     "status.check_status": 'Verificar status',
@@ -1178,6 +1183,7 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "E-mail"
   },
   "vi": {
+    "contractor.signin_title": "Đăng nhập nhà thầu",
     "status.title": 'Trạng thái đơn đăng ký',
     "status.application_id": 'Mã đơn đăng ký',
     "status.check_status": 'Kiểm tra trạng thái',
@@ -1190,6 +1196,7 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "Email"
   },
   "zh": {
+    "contractor.signin_title": "承包商登录",
     "status.title": '申请状态',
     "status.application_id": '申请编号',
     "status.check_status": '检查状态',
@@ -1202,6 +1209,7 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "电子邮件"
   },
   "ar": {
+    "contractor.signin_title": "تسجيل دخول المقاول",
     "status.title": 'حالة الطلب',
     "status.application_id": 'معرّف الطلب',
     "status.check_status": 'التحقق من الحالة',
@@ -1215,6 +1223,7 @@ const BCT_LOCAL_TRANSLATIONS={
   }
   ,
   "ru": {
+    "contractor.signin_title": "Вход подрядчика",
     "status.title":"Статус заявки","status.application_id":"ID заявки","status.check_status":"Проверить статус",
     "jobs.available_title":"Доступные работы BCT","jobs.approved_only":"В рабочей версии заявки могут подавать только одобренные субподрядчики.","jobs.none_posted":"Работы BCT пока не опубликованы.",
     "admin.secure_access":"Безопасный доступ BCT","admin.login_title":"Вход администратора BCT","admin.login_description":"Войдите с учетной записью администратора BCT. Панель могут открыть только пользователи с ролью администратора в Supabase.","admin.email":"Эл. почта"
