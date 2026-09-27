@@ -321,6 +321,18 @@ body:not(.bct-authenticated) header .brand{margin-bottom:10px}
 body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset){display:none!important}
 @media(max-width:700px){.bct-entry-actions{grid-template-columns:1fr}}
 
+
+/* BCT V46 SIGNED-OUT LOGO SCALE LOCK */
+body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:10px}
+body:not(.bct-authenticated) header .brand-logo{width:clamp(150px,42vw,240px)!important;height:clamp(150px,42vw,240px)!important;max-width:240px!important;max-height:240px!important;border-radius:0!important}
+body:not(.bct-authenticated) header .brand h1{font-size:clamp(1.5rem,5vw,2.1rem);margin:0}
+body:not(.bct-authenticated) header .bct-auth-only-header-copy{display:none!important}
+body:not(.bct-authenticated) header nav{display:none!important}
+body:not(.bct-authenticated) header .wrap>div[style*="max-width:220px"]{margin-left:auto!important;margin-right:auto!important;text-align:center}
+body:not(.bct-authenticated) #bctSignedOutEntry{max-width:620px;margin:18px auto;padding:22px}
+body:not(.bct-authenticated) #bctEntryActions{display:grid;grid-template-columns:1fr;gap:12px}
+body:not(.bct-authenticated) #bctEntryActions button{min-height:54px;font-size:1.05rem}
+
 </style>
 </head>
 <body>\n<a class="bct-skip-link" href="#bctMain">Skip to main content</a>
