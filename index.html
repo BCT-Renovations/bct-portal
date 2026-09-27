@@ -47,6 +47,12 @@ th,td{text-align:left;padding:10px;border-bottom:1px solid var(--border);vertica
 .badge.bad{color:#fecaca;border-color:#991b1b}
 .badge.info{color:#bae6fd;border-color:#075985}
 .hidden{display:none!important}
+.bct-skip-link{position:fixed;left:12px;top:12px;z-index:2000;transform:translateY(-180%);padding:10px 14px;border-radius:10px;background:#f8fafc;color:#0f172a;font-weight:800}
+.bct-skip-link:focus{transform:translateY(0)}
+button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
+button:disabled,.btn[aria-disabled="true"]{cursor:not-allowed;opacity:.62}
+input::placeholder,textarea::placeholder{color:#94a3b8;opacity:1}
+@media(prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto!important}*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .section{margin:18px 0}
 .notice{padding:12px 14px;border-radius:12px;border:1px solid #075985;background:#082f49;color:#e0f2fe}
@@ -187,7 +193,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
 }
 </style>
 </head>
-<body>
+<body>\n<a class="bct-skip-link" href="#bctMain">Skip to main content</a>
 <header>
   <div class="wrap">
     <div class="brand">
@@ -222,7 +228,7 @@ hr{border:0;border-top:1px solid var(--border);margin:16px 0}
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="bctMain" tabindex="-1">
 <section id="view-home" class="view section">
   <div class="card home-panel">
     <span class="badge good" data-i18n="home.license_badge">Licensed • Bonded • Insured</span>
