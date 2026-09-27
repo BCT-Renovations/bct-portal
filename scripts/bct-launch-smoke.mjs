@@ -46,6 +46,8 @@ const requiredMarkers = [
   ['homeowner estimate page', 'Estimate & Contract'],
   ['homeowner final walkthrough page', 'Final Walkthrough / Completion'],
   ['homeowner tab controller', 'showCustomerPage'],
+  ['contractor portal page tabs', 'data-contractor-view="status"'],
+  ['contractor portal jobs page', 'data-contractor-view="jobs"'],
   ['home translation override guard', 'BCT_HOME_TRANSLATION_OVERRIDES'],
   ['Spanish home translation refresh', 'Iniciar o revisar un proyecto'],
   ['Spanish home license badge translation', 'Con licencia • Fianza • Asegurado'],
@@ -58,6 +60,9 @@ const requiredMarkers = [
   ['admin command center', 'bctCommandCenter'],
   ['admin command search', 'bctCommandSearch'],
   ['admin command navigation', 'data-admin-jump="adminHomeownerProjects"'],
+  ['admin dashboard page tabs', 'data-admin-page-tab="projects"'],
+  ['admin page panel controller', 'showAdminPage'],
+  ['admin job progress page panel', 'data-admin-page-panel="jobs"'],
   ['forgot-password request form', 'passwordRequestForm'],
   ['two-box password reset form', 'passwordResetNew'],
   ['two-box password reset confirmation', 'passwordResetConfirm'],
@@ -105,6 +110,13 @@ for (const [label, marker] of requiredMarkers) {
 assert(count(/type="file"[^>]*multiple|multiple[^>]*type="file"/gi) >= 5, 'Expected at least five multi-file upload inputs.');
 assert(count(/class="file-upload-ui"/g) >= 5, 'Expected custom file upload UI wrappers for phone-friendly uploads.');
 assert(count(/Choose Files|Choose Documents|Choose Photos/gi) >= 4, 'Expected clean file chooser labels.');
+assert(count(/data-contractor-view="/g) >= 9, 'Contractor portal must expose Application, Status/Documents, and Authorized Jobs tabs on each contractor page.');
+for (const page of ['launch', 'contractors', 'projects', 'bids', 'jobs', 'service', 'post']) {
+  assert(html.includes(`data-admin-page-tab="${page}"`), `Admin dashboard must include ${page} page tab.`);
+  assert(html.includes(`data-admin-page-panel="${page}"`), `Admin dashboard must include ${page} page panel.`);
+}
+assert(count(/data-admin-page="/g) >= 8, 'Admin command center buttons must carry page targets for click-through navigation.');
+assert(html.includes('[data-admin-page-panel]{display:none}'), 'Admin page panels must be hidden until their page is selected.');
 assert(html.includes("maxFiles:10"), 'Uploads must enforce a 10-file limit.');
 assert(html.includes("maxFileSizeBytes:25*1024*1024"), 'Uploads must enforce a 25 MB per-file limit.');
 assert(html.includes("projectAllowedExtensions:['jpg','jpeg','png','webp','heic','heif','pdf','mov','mp4']"), 'Project uploads must enforce launch-approved file types.');
