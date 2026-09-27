@@ -24,7 +24,7 @@ header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-
 .wrap{max-width:1180px;margin:auto;padding:18px}
 .brand{display:flex;gap:14px;align-items:center}
 .brand-logo{width:68px;height:68px;border-radius:12px;background:transparent;object-fit:contain;padding:0;flex:0 0 auto}
-.brand-slogan{margin-top:2px;font-family:"Brush Script MT","Segoe Script","Lucida Handwriting",cursive;font-size:clamp(22px,3.1vw,34px);font-weight:600;line-height:1;color:var(--bct-teal-deep);letter-spacing:0}
+.brand-slogan{margin-top:0;font-family:Arial,Helvetica,sans-serif;font-size:clamp(22px,3.1vw,34px);font-weight:900;line-height:1;color:var(--bct-teal-deep);letter-spacing:.02em}
 h1,h2,h3{margin:.2em 0}
 small,.muted{color:var(--muted)}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
@@ -1977,13 +1977,19 @@ function statusBadge(s){
   const cls=s.includes('Approved')?'good':s.includes('Rejected')?'bad':s.includes('Background')?'warn':'info';
   return `<span class="badge ${cls}">${s}</span>`;
 }
-function setVisibleView(name){
+function setVisibleView(name,options={}){
   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
   const target=document.getElementById('view-'+name);
   if(target) target.classList.remove('hidden');
   if(name==='jobs')renderJobs();
   if(name==='admin')renderCustomerProjectsAdmin();
+  if(options.history!==false){const next='#'+name;if(location.hash!==next)history.pushState({bctView:name},'',next);}
 }
+window.addEventListener('popstate',()=>{
+  const name=(location.hash||'#home').slice(1);
+  const safe=document.getElementById('view-'+name)?name:'home';
+  setVisibleView(safe,{history:false});
+});
 function showView(name){
   if(name==='admin') return openBctAdmin();
   if(name==='status'){ const i=document.getElementById('statusId'),r=document.getElementById('statusResult'); if(i)i.value=''; if(r)r.innerHTML=''; }
@@ -2974,10 +2980,29 @@ renderAll();
    const s=await sessionNow();setAuthShell(s);
    if(s){if(kind==='admin')setVisibleView('admin');else if(kind==='contractor')setVisibleView('status');else setVisibleView('customer');return;}
    if(kind==='admin'){setVisibleView('admin-login');return;}
-   if(kind==='contractor'){setVisibleView('status');document.querySelectorAll('#view-status>*').forEach(x=>x.classList.add('bct-signedout-hidden'));const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');if(login)login.classList.remove('bct-signedout-hidden');return;}
-   setVisibleView('customer');document.querySelectorAll('#view-customer>*').forEach(x=>{if(x.id!=='bctHomeownerLoginCard')x.classList.add('bct-signedout-hidden')});const card=document.getElementById('bctHomeownerLoginCard');if(card)card.classList.add('active');
+   if(kind==='contractor'){
+     setVisibleView('status');
+     const view=document.getElementById('view-status');
+     view?.classList.remove('hidden','bct-signedout-hidden');
+     view?.querySelectorAll(':scope>*').forEach(x=>x.classList.add('bct-signedout-hidden'));
+     const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');
+     if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.removeProperty('display');}
+     return;
+   }
+   setVisibleView('customer');
+   const view=document.getElementById('view-customer');
+   view?.classList.remove('hidden','bct-signedout-hidden');
+   view?.querySelectorAll(':scope>*').forEach(x=>{if(x.id!=='bctHomeownerLoginCard')x.classList.add('bct-signedout-hidden')});
+   const card=document.getElementById('bctHomeownerLoginCard');
+   if(card){card.classList.remove('hidden','bct-signedout-hidden');card.classList.add('active');card.style.removeProperty('display');}
  }
  document.querySelectorAll('[data-entry-login]').forEach(b=>b.addEventListener('click',()=>openEntry(b.dataset.entryLogin)));
+ const adminLogin=document.getElementById('view-admin-login');
+ if(adminLogin&&!document.getElementById('bctAdminBackHome')){
+   const back=document.createElement('button');back.type='button';back.id='bctAdminBackHome';back.className='secondary';back.textContent='← Back to BCT Home';
+   back.addEventListener('click',()=>{document.body.classList.remove('bct-entry-admin');setVisibleView('home');});
+   adminLogin.querySelector('.admin-gate .card')?.prepend(back);
+ }
  const original=window.showView;
  window.showView=async function(name){
    const s=await sessionNow();setAuthShell(s);
