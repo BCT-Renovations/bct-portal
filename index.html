@@ -2915,7 +2915,7 @@ renderAll();
    const s=await sessionNow();setAuthShell(s);
    if(s){if(kind==='admin')setVisibleView('admin');else if(kind==='contractor')setVisibleView('status');else setVisibleView('customer');return;}
    if(kind==='admin'){setVisibleView('admin-login');return;}
-   if(kind==='contractor'){setVisibleView('status');document.querySelectorAll('#view-status>*').forEach((x,i)=>{if(i>1)x.classList.add('bct-signedout-hidden')});return;}
+   if(kind==='contractor'){setVisibleView('status');document.querySelectorAll('#view-status>*').forEach(x=>x.classList.add('bct-signedout-hidden'));const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');if(login)login.classList.remove('bct-signedout-hidden');return;}
    setVisibleView('customer');document.querySelectorAll('#view-customer>*').forEach(x=>{if(x.id!=='bctHomeownerLoginCard')x.classList.add('bct-signedout-hidden')});const card=document.getElementById('bctHomeownerLoginCard');if(card)card.classList.add('active');
  }
  document.querySelectorAll('[data-entry-login]').forEach(b=>b.addEventListener('click',()=>openEntry(b.dataset.entryLogin)));
