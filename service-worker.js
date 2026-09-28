@@ -4,21 +4,43 @@
 // bct-wide-logo-hotfix forces phones to reload the wider signed-out logo header.
 // bct-official-logo-hotfix forces phones to load the selected full official BCT logo.
 // bct-portal-entry-hotfix forces installed/mobile clients to load repaired Contractor and Client portal entry rendering.
-const CACHE_NAME='bct-portal-shell-v23-v46-production-refresh';
-const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png'];
-self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(Promise.all([
-  caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('bct-portal-shell-')&&key!==CACHE_NAME).map(key=>caches.delete(key)))),
-  self.clients.claim()
-])));
+// bct-startup-cache-reset stops old cached HTML from replacing the correct V46 iPhone startup screen.
+const CACHE_NAME='bct-portal-shell-v24-startup-cache-reset';
+const STATIC_ASSETS=['/bct-logo-master.png'];
+const HTML_PATHS=new Set(['/','/index.html']);
+self.addEventListener('install',event=>event.waitUntil(
+  caches.open(CACHE_NAME)
+    .then(cache=>cache.addAll(STATIC_ASSETS))
+    .then(()=>self.skipWaiting())
+));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{
+  const keys=await caches.keys();
+  await Promise.all(keys
+    .filter(key=>key.startsWith('bct-portal-shell-')&&key!==CACHE_NAME)
+    .map(key=>caches.delete(key)));
+  await self.clients.claim();
+  const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+  clients.forEach(client=>client.postMessage({type:'BCT_V46_STARTUP_CACHE_RESET',cacheName:CACHE_NAME}));
+})()));
+self.addEventListener('message',event=>{
+  if(event.data?.type==='BCT_CLEAR_STARTUP_CACHES'){
+    event.waitUntil(caches.keys().then(keys=>Promise.all(
+      keys.filter(key=>key.startsWith('bct-portal-shell-')&&key!==CACHE_NAME).map(key=>caches.delete(key))
+    )));
+  }
+});
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
   const url=new URL(event.request.url);
   if(url.origin!==location.origin)return;
-  // Only the static shell is safe to cache. Never store API responses or private pages.
-  if(!APP_SHELL.includes(url.pathname)||url.search)return;
   // Installed iPhone/PWA navigations must always prefer the newest V46 document.
-  event.respondWith(fetch(event.request,{cache:'no-store'}).then(response=>{
+  if(HTML_PATHS.has(url.pathname)){
+    event.respondWith(fetch(new Request(event.request,{cache:'no-store'})));
+    return;
+  }
+  // Only safe static assets are cached. Never cache HTML, API responses, auth state, or private pages.
+  if(!STATIC_ASSETS.includes(url.pathname)||url.search)return;
+  event.respondWith(fetch(event.request).then(response=>{
     if(response.ok&&response.type==='basic'){
       const copy=response.clone();
       event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy)));
