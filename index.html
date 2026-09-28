@@ -2327,6 +2327,9 @@ async function applyBctLanguage(languageCode){
   updateFileUploadUI(language);
   syncLoginLanguageUI(language);
   syncBrandSlogan(language);
+  // Re-apply Share App copy after the generic data-i18n pass so untranslated
+  // share.button/share.help keys can never replace the approved referral copy.
+  syncShareLanguage(language);
   if(selector) selector.value=language;
   if(loginSelector) loginSelector.value=language;
 }
