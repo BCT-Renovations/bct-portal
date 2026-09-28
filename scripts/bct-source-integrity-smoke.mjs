@@ -36,6 +36,7 @@ assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must
 assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must force the clean signed-out entry screen.');
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
 assert(serviceWorker.includes('bct-official-logo-hotfix'), 'service worker must force the selected official logo rollout.');
+assert(serviceWorker.includes('bct-green-logo-band-hotfix'), 'service worker must force the full-width green logo band rollout.');
 assert(serviceWorker.includes('bct-portal-shell-v24-startup-cache-reset'), 'service worker cache version must stay bumped for the startup cache reset rollout.');
 assert(serviceWorker.includes('bct-portal-entry-hotfix'), 'service worker must preserve repaired Client and Contractor portal entry rendering.');
 assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png']"), 'service worker static cache must stay limited to safe assets.');
