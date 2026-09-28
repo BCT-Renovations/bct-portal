@@ -692,6 +692,31 @@ html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-license
   body:not(.bct-authenticated) main.wrap{padding-left:12px!important;padding-right:12px!important}
 }
 
+
+/* BCT V46 SHARED-LINK VISUAL LOCK — preserve approved iPhone public design */
+html.bct-session-resolved body.bct-signed-out,
+body:not(.bct-authenticated){background:#e8f5ec!important}
+html.bct-session-resolved body.bct-signed-out header,
+html.bct-session-resolved body.bct-signed-out header .wrap,
+html.bct-session-resolved body.bct-signed-out header .brand,
+html.bct-session-resolved body.bct-signed-out .bct-dynamic-brand,
+body:not(.bct-authenticated) header,
+body:not(.bct-authenticated) header .wrap,
+body:not(.bct-authenticated) header .brand,
+body:not(.bct-authenticated) .bct-dynamic-brand{background:#e8f5ec!important}
+html.bct-session-resolved body.bct-signed-out .bct-logo-crop,
+body:not(.bct-authenticated) .bct-logo-crop{position:relative!important;overflow:hidden!important;background:#e8f5ec!important}
+html.bct-session-resolved body.bct-signed-out .bct-logo-crop::after,
+body:not(.bct-authenticated) .bct-logo-crop::after{height:25%!important;background:#e8f5ec!important}
+html.bct-session-resolved body.bct-signed-out .bct-dynamic-slogan,
+body:not(.bct-authenticated) .bct-dynamic-slogan{bottom:5.5%!important;z-index:4!important;text-shadow:0 1px 0 #e8f5ec!important}
+html.bct-session-resolved body.bct-signed-out #bctSignedOutEntry,
+body:not(.bct-authenticated) #bctSignedOutEntry{background:#fff!important;border:1px solid #d7e0e1!important;border-radius:16px!important}
+html.bct-session-resolved body.bct-signed-out #bctAboutPublic,
+body:not(.bct-authenticated) #bctAboutPublic{background:#eef7f1!important;border:1px solid #c8dfcf!important;border-radius:18px!important;overflow:hidden!important}
+html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-licensed,
+body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed{display:block!important;width:100%!important;max-width:none!important;background:#0f5f63!important;color:#fff!important;margin:22px 0 0!important;padding:17px 10px!important;border-radius:0 0 17px 17px!important;text-align:center!important;font-weight:900!important;letter-spacing:.08em!important}
+
 </style>
 
 <script>
