@@ -3640,6 +3640,20 @@ renderAll();
 
 <!-- BCT V46 deployment sync marker 2026-09-28 -->
 
+<style>
+/* BCT V46 PORTAL PAGE ISOLATION — public About content belongs to landing only */
+body.bct-entry-client:not(.bct-authenticated) #view-home,
+body.bct-entry-contractor:not(.bct-authenticated) #view-home,
+body.bct-entry-admin:not(.bct-authenticated) #view-home,
+body.bct-authenticated #view-home.hidden{display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #bctAboutPublic,
+body.bct-entry-contractor:not(.bct-authenticated) #bctAboutPublic,
+body.bct-entry-admin:not(.bct-authenticated) #bctAboutPublic{display:none!important}
+body.bct-entry-client:not(.bct-authenticated) main.wrap,
+body.bct-entry-contractor:not(.bct-authenticated) main.wrap,
+body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!important}
+</style>
+
 <script>
 /* BCT V46 AUTHORITATIVE SIGN-OUT RESET */
 window.bctReturnToPublicLanding=function(){
