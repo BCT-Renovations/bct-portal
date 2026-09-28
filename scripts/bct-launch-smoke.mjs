@@ -153,7 +153,7 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
 assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v17-seamless-brand-slogan"), 'Service worker cache version must match the current V46 live cleanup rollout.');
+assert(serviceWorker.includes("bct-portal-shell-v18-original-slogan-position"), 'Service worker cache version must match the current V46 live cleanup rollout.');
 assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'Service worker must not cache the retired standalone homeowner controller.');
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
