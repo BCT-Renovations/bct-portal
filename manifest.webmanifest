@@ -15,5 +15,23 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start a Project",
+      "short_name": "New Project",
+      "description": "Open BCT Renovations to start or review a homeowner project.",
+      "url": "/?bct_v46=visible#homeowner"
+    },
+    {
+      "name": "Contractor Portal",
+      "short_name": "Contractor",
+      "description": "Open the BCT contractor portal.",
+      "url": "/?bct_v46=visible#contractor"
+    }
+  ],
+  "categories": [
+    "business",
+    "productivity"
   ]
 }
