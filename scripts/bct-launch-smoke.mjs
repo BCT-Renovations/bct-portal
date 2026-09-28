@@ -153,7 +153,7 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
 assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v20-single-slogan-header"), 'Service worker cache version must match the current V46 live cleanup rollout.');
+assert(serviceWorker.includes("bct-portal-shell-v21-master-signin-layout"), 'Service worker cache version must match the current V46 live cleanup rollout.');
 assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'Service worker must not cache the retired standalone homeowner controller.');
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
@@ -197,6 +197,7 @@ assert(html.includes('function bctDialogShell(') && html.includes("dialog.addEve
 assert(html.includes('bctDialogPending=false') && html.includes('previous?.focus'), 'V46 in-app dialogs must guard concurrent prompts and restore focus.');
 
 assert(html.includes('.bct-dynamic-slogan') && html.includes('background:transparent'), 'Translated slogan must remain visually integrated without its own box.');
+assert(html.includes('BCT V46 MASTER SIGN-IN LOCK') && html.includes('header nav,') && html.includes('display:none!important'), 'Signed-out V46 must preserve the approved clean sign-in layout without the authenticated navigation grid.');
 assert(html.includes('.bct-logo-crop::after') && html.includes('height:19%') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
 
 
