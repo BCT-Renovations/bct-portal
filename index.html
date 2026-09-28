@@ -2167,8 +2167,9 @@ function projectId(){return uniqueCode('PRJ-',6,db.customerProjects)}
 function jobId(){return uniqueCode('JOB-',4,db.jobs)}
 function bidId(){return uniqueCode('BID-',6,db.bids)}
 function statusBadge(s){
+  s=String(s||'');
   const cls=s.includes('Approved')?'good':s.includes('Rejected')?'bad':s.includes('Background')?'warn':'info';
-  return `<span class="badge ${cls}">${s}</span>`;
+  return `<span class="badge ${cls}">${esc(s)}</span>`;
 }
 function setVisibleView(name,options={}){
   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
@@ -2348,8 +2349,9 @@ document.getElementById('adminShowPassword').addEventListener('change',e=>{
 });
 
 function customerStatusBadge(s){
+  s=String(s||'');
   const cls=s.includes('Completed')?'good':s.includes('Declined')?'bad':s.includes('Hold')?'warn':'info';
-  return `<span class="badge ${cls}">${s}</span>`;
+  return `<span class="badge ${cls}">${esc(s)}</span>`;
 }
 function customerVerificationBadge(s){
   if(s==='Verified')return `<span class="verified-customer">BCT VERIFIED CUSTOMER</span>`;
