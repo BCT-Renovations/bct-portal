@@ -917,7 +917,12 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!imp
       <button type="button" data-contractor-view="jobs" data-i18n="contractor.tab_jobs">Authorized Jobs</button>
     </div>
   </div>
-  <div class="card section"><h3 data-i18n="contractor.signin_title">Contractor Sign In</h3><div class="grid grid-2"><div><label>Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctContractorBackHomeBtn">Back to Home</button><button type="button" class="secondary" id="bctContractorLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
+  <div class="card section" id="bctContractorSignupCard">
+    <h3 data-i18n="contractor.signup_title">New Contractor — Sign Up</h3>
+    <p class="muted" data-i18n="contractor.signup_description">New to the BCT Contractor Network? Create your contractor account and start your BCT pre-application.</p>
+    <button type="button" id="bctContractorSignupBtn" data-i18n="contractor.signup_button">Sign Up / Start Contractor Application</button>
+  </div>
+  <div class="card section"><h3 data-i18n="contractor.signin_title">Existing Contractor — Sign In</h3><div class="grid grid-2"><div><label>Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctContractorBackHomeBtn">Back to Home</button><button type="button" class="secondary" id="bctContractorLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
   <div class="card">
     <h2 data-i18n="status.title">Applicant Status</h2>
     <label data-i18n="status.application_id">Application ID</label>
@@ -1305,7 +1310,10 @@ const BCT_ENGLISH_FALLBACK={
   'contractor.portal_badge':'BCT Contractor Portal',
   'contractor.application_title':'Contractor Application',
   'contractor.application_description':'Apply, check status, upload documents, and view authorized jobs from separate contractor pages.',
-  'contractor.signin_title':'Contractor Sign In',
+  'contractor.signin_title':'Existing Contractor — Sign In',
+  'contractor.signup_title':'New Contractor — Sign Up',
+  'contractor.signup_description':'New to the BCT Contractor Network? Create your contractor account and start your BCT pre-application.',
+  'contractor.signup_button':'Sign Up / Start Contractor Application',
   'contractor.status_title':'Status & Documents',
   'contractor.status_description':'Sign in to view your application, screening status, approved document checklist, and contractor access state.',
   'contractor.jobs_title':'Authorized Jobs',
@@ -2405,6 +2413,12 @@ function openNewHomeownerSignup(){
   });
 }
 document.getElementById('bctHomeSignupBtn')?.addEventListener('click',openNewHomeownerSignup);
+function openNewContractorSignup(){
+  document.body.classList.add('bct-portal-entered','bct-entry-contractor');
+  setVisibleView('apply');
+  requestAnimationFrame(()=>{window.scrollTo({top:0,left:0,behavior:'auto'});document.querySelector('#applicationForm input[name="legalName"]')?.focus({preventScroll:true});});
+}
+document.getElementById('bctContractorSignupBtn')?.addEventListener('click',openNewContractorSignup);
 function showCustomerPage(page){
   document.querySelectorAll('[data-customer-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.customerPage===page));
   document.querySelectorAll('[data-customer-page-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.customerPagePanel===page));
@@ -3711,7 +3725,9 @@ body.bct-portal-entered #view-home{display:none!important}
 body.bct-portal-entered main.wrap{padding-top:0!important;margin-top:0!important}
 body.bct-portal-entered .view:not(.hidden){margin-top:0!important}
 body.bct-portal-entered #bctMain{padding-top:0!important}
-body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(.bct-public-contractor-login):not(#bctContractorAbout){display:none!important}
+body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContractorSignupCard):not(.bct-public-contractor-login):not(#bctContractorAbout){display:none!important}
+body.bct-entry-contractor:not(.bct-authenticated) #bctContractorSignupCard,
+body.bct-entry-contractor:not(.bct-authenticated) .bct-public-contractor-login{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer> :not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
