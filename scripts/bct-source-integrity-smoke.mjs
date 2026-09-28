@@ -36,8 +36,8 @@ assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must
 assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must force the clean signed-out entry screen.');
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
 assert(serviceWorker.includes('bct-official-logo-hotfix'), 'service worker must force the selected official logo rollout.');
-assert(serviceWorker.includes('bct-portal-shell-v19-dialog-language-hardening'), 'service worker cache version must stay bumped for the current V46 rollout.');
-assert(serviceWorker.includes('bct-portal-shell-v19-dialog-language-hardening'), 'service worker cache version must include the current V46 live cleanup rollout.');
+assert(serviceWorker.includes('bct-portal-shell-v20-single-slogan-header'), 'service worker cache version must stay bumped for the current V46 rollout.');
+assert(serviceWorker.includes('bct-portal-shell-v20-single-slogan-header'), 'service worker cache version must include the current V46 live cleanup rollout.');
 assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'service worker must not cache the retired standalone homeowner controller.');
 
 try {
