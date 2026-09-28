@@ -548,6 +548,18 @@ html.bct-session-resolved body.bct-signed-out header,
 html.bct-session-resolved body.bct-signed-out header .wrap,
 html.bct-session-resolved body.bct-signed-out main.wrap{background:#e8f5ec!important}
 
+/* BCT V46 SCREENSHOT HOTFIX — legacy nav and header leakage */
+#bctAuthenticatedNav[hidden]{display:none!important}
+body.bct-signed-out #bctAuthenticatedNav,
+body:not(.bct-authenticated) #bctAuthenticatedNav{display:none!important}
+body:not(.bct-authenticated) header .brand>div:not(.bct-dynamic-brand){display:none!important}
+body:not(.bct-authenticated) header .brand{display:block!important;width:100%!important;max-width:100%!important}
+body:not(.bct-authenticated) header{overflow:hidden!important}
+body:not(.bct-authenticated) header .wrap{overflow:hidden!important}
+body:not(.bct-authenticated) .bct-dynamic-brand{overflow:hidden!important;max-width:100%!important}
+body:not(.bct-authenticated) .bct-logo-crop{overflow:hidden!important;max-width:100%!important}
+body:not(.bct-authenticated) #bctSignedOutEntry{margin-top:0!important}
+
 /* BCT V46 PUBLIC ABOUT — continuous background, no box */
 .bct-about-public{max-width:920px;margin:34px auto 8px;padding:18px 10px 28px;text-align:center;background:transparent;border:0;box-shadow:none}
 .bct-about-accent{display:flex;align-items:center;justify-content:center;gap:7px;color:#0f5f63;margin-bottom:2px;line-height:1}
@@ -589,7 +601,7 @@ html.bct-session-resolved body.bct-signed-out main.wrap{background:#e8f5ec!impor
         <div class="muted bct-auth-only-header-copy" data-i18n="site.subtitle">Homeowner Project Management & Contractor Network</div><small class="muted bct-auth-only-header-copy">Launch Cutover V46</small>
       </div>
     </div>
-    <nav>
+    <nav id="bctAuthenticatedNav" class="bct-authenticated-nav" hidden>
       <button class="secondary" data-view="home" data-i18n="nav.home">Home</button>
       <button class="secondary" data-view="customer" data-i18n="nav.homeowner_portal">Client Portal</button>
       <button class="secondary" data-view="apply" data-i18n="nav.pre_application">Pre-Application</button>
@@ -3343,7 +3355,7 @@ renderAll();
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
  let entryIntent=null;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
- function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');const signedIn=!!session?.user;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
+ function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');const signedIn=!!session?.user;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();const nav=document.getElementById('bctAuthenticatedNav');if(nav){nav.hidden=false;nav.style.removeProperty('display');}}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
