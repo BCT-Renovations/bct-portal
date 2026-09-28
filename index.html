@@ -768,6 +768,11 @@ html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-license
       <button type="button" data-entry-login="contractor">Contractor</button>
       <button type="button" data-entry-login="admin">Admin</button>
     </div>
+    <div class="bct-share-referral">
+      <button type="button" class="secondary" id="bctShareAppBtn" aria-describedby="bctShareAppHelp">Share BCT App</button>
+      <p class="muted" id="bctShareAppHelp">Know someone who needs home-improvement service? Share BCT so they can create their own account and submit their project.</p>
+      <div id="bctShareAppStatus" class="muted" role="status" aria-live="polite"></div>
+    </div>
   </div>
 
   <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle">
@@ -3641,6 +3646,10 @@ renderAll();
 <!-- BCT V46 deployment sync marker 2026-09-28 -->
 
 <style>
+.bct-share-referral{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);text-align:center}
+.bct-share-referral button{width:min(100%,420px);min-height:50px;font-size:16px}
+.bct-share-referral p{max-width:650px;margin:10px auto 4px;line-height:1.45}
+#bctShareAppStatus{min-height:20px;margin-top:6px;font-weight:700}
 /* BCT V46 PORTAL PAGE ISOLATION — public About content belongs to landing only */
 body.bct-entry-client:not(.bct-authenticated),
 body.bct-entry-contractor:not(.bct-authenticated),
@@ -3658,6 +3667,22 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
 </style>
 
 <script>
+/* BCT V46 SHARE APP REFERRAL */
+(function(){
+  const btn=document.getElementById('bctShareAppBtn');
+  const status=document.getElementById('bctShareAppStatus');
+  if(!btn)return;
+  const publicUrl=()=>location.origin+location.pathname;
+  const shareText='BCT Renovations can help with your home-improvement project. Open the BCT app, create your own account, and submit your project directly to BCT.';
+  btn.addEventListener('click',async()=>{
+    const data={title:'BCT Renovations',text:shareText,url:publicUrl()};
+    try{
+      if(navigator.share){await navigator.share(data);if(status)status.textContent='BCT app shared.';return;}
+      if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(shareText+' '+publicUrl());if(status)status.textContent='BCT app link copied. You can paste it into a text or email.';return;}
+      const box=document.createElement('textarea');box.value=shareText+' '+publicUrl();box.setAttribute('readonly','');box.style.position='fixed';box.style.opacity='0';document.body.appendChild(box);box.select();document.execCommand('copy');box.remove();if(status)status.textContent='BCT app link copied. You can paste it into a text or email.';
+    }catch(e){if(e?.name!=='AbortError'&&status)status.textContent='Sharing did not open. You can copy this page address from your browser.';}
+  });
+})();
 /* BCT V46 AUTHORITATIVE SIGN-OUT RESET */
 window.bctReturnToPublicLanding=function(){
   try{history.replaceState({bctView:'home'},'',location.pathname+location.search+'#home');}catch(_){}
