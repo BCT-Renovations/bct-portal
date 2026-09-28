@@ -36,6 +36,10 @@ for (const marker of uiMarkers) {
   assert(aiHtml.includes(marker), `AI estimating UI must include: ${marker}`);
 }
 
+assert(aiHtml.includes("e.key==='Escape'") && aiHtml.includes("e.key!=='Tab'"), 'AI confirmation dialog must support Escape cancellation and keyboard focus trapping.');
+assert(aiHtml.includes('confirmPreviousFocus') && aiHtml.includes('previous?.focus'), 'AI confirmation dialog must restore focus after closing.');
+assert(aiHtml.includes('if(confirmResolve)return Promise.resolve(false)'), 'AI confirmation dialog must prevent overlapping confirmation requests.');
+
 const edgeMarkers = [
   "req.headers.get('authorization')",
   "rpc('is_bct_admin')",
