@@ -185,7 +185,7 @@ assert(html.includes('data-bct-slogan'), 'Signed-out V46 must expose the live la
 assert(html.includes('BCT_BRAND_SLOGANS'), 'V46 must include localized BCT brand slogans.');
 assert(html.includes('syncBrandSlogan'), 'V46 must synchronize the BCT slogan when language changes.');
 for (const language of ['en','es','fr','ht','pt','vi','zh','ar','ru']) {
-  assert(new RegExp('\\\\b'+language+':').test(html) || html.includes("'"+language+"':") || html.includes('"'+language+'":'), 'V46 language data must include '+language+'.');
+  assert(new RegExp('\\b'+language+':').test(html) || html.includes("'"+language+"':") || html.includes('"'+language+'":'), 'V46 language data must include '+language+'.');
 }
 for (const slogan of ['Your General Contractor','Su Contratista General','Votre Entrepreneur Général','Kontraktè Jeneral Ou','Seu Empreiteiro Geral','Tổng Thầu Của Bạn','您的总承包商','المقاول العام الخاص بك','Ваш генеральный подрядчик']) {
   assert(html.includes(slogan), 'V46 must keep every approved translated brand slogan.');
