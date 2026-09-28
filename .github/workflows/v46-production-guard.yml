@@ -20,5 +20,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run 200 V46 production safeguards
+      - name: Run first 200 V46 production safeguards
         run: node tests/v46-production-200-checks.mjs
+      - name: Run second 200 V46 production safeguards
+        run: node tests/v46-production-200-checks-round2.mjs
