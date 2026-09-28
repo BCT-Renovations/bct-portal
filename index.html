@@ -727,12 +727,12 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
     <h3>1 — Create Your Private Customer Account</h3>
     <p class="muted">Your private customer account and project are securely created through BCT’s Supabase authentication and database.</p>
     <div class="grid grid-2">
-      <div><label>First Name</label><input id="custFirst" autocomplete="given-name"></div>
-      <div><label>Last Name</label><input id="custLast" autocomplete="family-name"></div>
-      <div><label>Email</label><input id="custEmail" type="email" autocomplete="email"></div>
-      <div><label>Mobile Phone</label><input id="custPhone" type="tel" autocomplete="tel" inputmode="tel"></div>
-      <div><label>Create Password</label><input id="custPassword" type="password" minlength="7" autocomplete="new-password"></div>
-      <div><label>Confirm Password</label><input id="custPassword2" type="password" minlength="7" autocomplete="new-password"></div>
+      <div><label data-i18n="homeowner.first_name">First Name</label><input id="custFirst" autocomplete="given-name"></div>
+      <div><label data-i18n="homeowner.last_name">Last Name</label><input id="custLast" autocomplete="family-name"></div>
+      <div><label data-i18n="homeowner.email">Email</label><input id="custEmail" type="email" autocomplete="email"></div>
+      <div><label data-i18n="homeowner.mobile_phone">Mobile Phone</label><input id="custPhone" type="tel" autocomplete="tel" inputmode="tel"></div>
+      <div><label data-i18n="homeowner.create_password">Create Password</label><input id="custPassword" type="password" minlength="7" autocomplete="new-password"></div>
+      <div><label data-i18n="homeowner.confirm_password">Confirm Password</label><input id="custPassword2" type="password" minlength="7" autocomplete="new-password"></div>
     </div>
     <div class="password-rule">Password must have at least 7 characters, one number, and one special character.</div><div id="custPasswordCheck" class="password-check">Enter and confirm a strong password.</div>
     <div class="privacy-note" style="margin-top:12px"><b><span>Privacy:</span></b> <span>Customer contact information is for BCT use and is not displayed in the contractor bidding view.</span></div>
@@ -3938,6 +3938,46 @@ body.bct-authenticated #bctClientPublicAbout{display:none!important}
  document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(localize));
  document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(localize));
  localize();
+})();
+</script>
+<style>
+/* V46 NEW CLIENT PAGING + NAV LOCK */
+body.bct-home-signup:not(.bct-authenticated) #bctClientPublicAbout{display:none!important}
+body.bct-home-signup:not(.bct-authenticated) #bctClientBackHomeTop{display:block!important;width:100%;max-width:760px;margin:8px auto!important}
+body.bct-home-signup:not(.bct-authenticated) #bctNewClientBackBtn{display:block!important;width:100%;margin:0 0 12px!important}
+body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-form-step:not(.bct-step-active){display:none!important}
+body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-controls{position:sticky;bottom:env(safe-area-inset-bottom,0);z-index:5;background:#fff;padding:10px;border:1px solid var(--border);border-radius:12px;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-controls button{width:100%}
+</style>
+<script>
+/* V46 NEW CLIENT PAGING + NAV LOCK */
+(function(){
+ const navText={
+ en:{back:'Back',next:'Continue',review:'Review & Submit',step:'Step',of:'of',choices:'← Back to Client Sign Up / Sign In'},
+ es:{back:'Atrás',next:'Continuar',review:'Revisar y enviar',step:'Paso',of:'de',choices:'← Volver a Registro / Inicio de sesión'},
+ fr:{back:'Retour',next:'Continuer',review:'Vérifier et envoyer',step:'Étape',of:'sur',choices:'← Retour à Inscription / Connexion'},
+ ht:{back:'Retounen',next:'Kontinye',review:'Revize epi soumèt',step:'Etap',of:'sou',choices:'← Retounen nan Enskripsyon / Koneksyon'},
+ pt:{back:'Voltar',next:'Continuar',review:'Revisar e enviar',step:'Etapa',of:'de',choices:'← Voltar para Cadastro / Login'},
+ vi:{back:'Quay lại',next:'Tiếp tục',review:'Xem lại và gửi',step:'Bước',of:'trên',choices:'← Quay lại Đăng ký / Đăng nhập'},
+ zh:{back:'返回',next:'继续',review:'检查并提交',step:'步骤',of:'共',choices:'← 返回注册 / 登录'},
+ ar:{back:'رجوع',next:'متابعة',review:'مراجعة وإرسال',step:'الخطوة',of:'من',choices:'العودة إلى التسجيل / تسجيل الدخول ←'},
+ ru:{back:'Назад',next:'Продолжить',review:'Проверить и отправить',step:'Шаг',of:'из',choices:'← Назад к регистрации / входу'}
+ };
+ function apply(){
+  const l=localStorage.getItem('bctPreferredLanguage')||'en',t=navText[l]||navText.en;
+  document.querySelectorAll('#customerProjectForm .bct-step-controls').forEach(ctrl=>{
+   const b=ctrl.querySelector('[data-bct-back]'),n=ctrl.querySelector('[data-bct-next]'),p=ctrl.querySelector('.bct-step-progress');
+   if(b)b.textContent=t.back;
+   if(n)n.textContent=n.textContent==='Review & Submit'||n.dataset.final==='1'?t.review:t.next;
+   if(p){const m=p.textContent.match(/(\d+)\D+(\d+)/);if(m)p.textContent=t.step+' '+m[1]+' '+t.of+' '+m[2];}
+  });
+  const choices=document.getElementById('bctNewClientBackBtn');if(choices)choices.textContent=t.choices;
+ }
+ document.addEventListener('click',e=>{if(e.target.closest('#bctHomeSignupBtn'))requestAnimationFrame(()=>setTimeout(apply,0));},true);
+ document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(apply));
+ document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(apply));
+ new MutationObserver(apply).observe(document.getElementById('view-customer')||document.body,{childList:true,subtree:true});
+ requestAnimationFrame(apply);
 })();
 </script>
 </body>
