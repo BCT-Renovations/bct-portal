@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BCT Renovations" />
-<link rel="apple-touch-icon" href="/bct-logo-master.png?v=official-bct-logo-v46" />
+<link rel="apple-touch-icon" href="/bct-logo-master.png?v=official-bct-logo-v46-green-band" />
 <link rel="manifest" href="/manifest.webmanifest" />
 <!-- V28: comprehensive French UI sweep -->
 <!-- BCT V32: full translation sweep for vi/zh/ar/ru -->
@@ -363,9 +363,12 @@ body.bct-entry-admin:not(.bct-authenticated) #view-admin-login{display:block!imp
 #view-admin-login .muted{color:#405c58!important}
 #view-admin-login .privacy-note{background:#f4f8f6!important;color:#294944!important;border-color:#9ab7b2!important}
 
-/* BCT V46 SIGNED-OUT LOGO BANNER SCALE LOCK */
-body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:0!important}
-body:not(.bct-authenticated) header .brand-logo{width:min(92vw,520px)!important;height:auto!important;max-width:520px!important;max-height:none!important;border-radius:0!important;display:block}
+/* BCT V46 SIGNED-OUT FULL-WIDTH GREEN LOGO BAND */
+body:not(.bct-authenticated) header{background:#e1f9e6!important;border-bottom-color:#9ed8ac!important;box-shadow:none!important;backdrop-filter:none!important}
+body:not(.bct-authenticated) header .wrap{width:100%!important;max-width:none!important;margin:0!important;padding:16px 0 18px!important;background:#e1f9e6!important}
+body:not(.bct-authenticated) header .brand{justify-content:center;flex-direction:column;text-align:center;gap:0!important;width:100%;margin:0 auto!important;background:#e1f9e6!important}
+body:not(.bct-authenticated) header .brand-logo{display:block;width:clamp(330px,92vw,680px)!important;height:auto!important;max-width:92vw!important;max-height:none!important;border-radius:0!important;background:#e1f9e6!important;object-fit:contain!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{font-weight:900!important;font-size:clamp(20px,5.8vw,34px)!important;color:#07383b!important;text-shadow:0 1px 0 rgba(255,255,255,.65)!important}
 body:not(.bct-authenticated) header .brand h1{display:none!important}
 body:not(.bct-authenticated) header .bct-auth-only-header-copy{display:none!important}
 body:not(.bct-authenticated) header nav{display:none!important}
@@ -506,7 +509,7 @@ body:not(.bct-authenticated) #bctSignedOutEntry>.bct-login-language{display:none
 body:not(.bct-authenticated) .bct-signin-heading{min-height:auto!important;margin:0 0 12px!important;padding:0!important;font-family:Georgia,"Times New Roman",serif!important;font-style:italic!important}
 body:not(.bct-authenticated) #bctEntryActions{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
 body:not(.bct-authenticated) #bctEntryActions button{width:100%!important;min-height:54px!important;font-size:1rem!important}
-body:not(.bct-authenticated) #bctAboutPublic{margin-top:16px!important}
+body:not(.bct-authenticated) #bctAboutPublic{background:#eef7f1!important;border:1px solid #c8dfcf!important;border-radius:18px!important;padding:22px 16px!important;margin:18px 0 0!important;box-shadow:0 8px 24px rgba(23,36,39,.06)!important}
 
 /* BCT V46 APPROVED IPHONE PUBLIC DESIGN — 2026-09-27 */
 body:not(.bct-authenticated){background:#e8f5ec!important}
@@ -521,7 +524,7 @@ body:not(.bct-authenticated) .brand-logo{display:block!important;width:100%!impo
 body:not(.bct-authenticated) main.wrap{background:#e8f5ec!important;max-width:620px!important;margin:0 auto!important;padding:4px 14px 24px!important}
 body:not(.bct-authenticated) #bctSignedOutEntry{background:rgba(255,255,255,.96)!important;margin:0 auto 14px!important}
 body:not(.bct-authenticated) #bctAboutPublic{background:#fffaf0!important;border:1px solid #eadfc9!important;border-radius:18px!important;padding:22px 16px!important;margin:18px 0 0!important;box-shadow:0 8px 24px rgba(23,36,39,.06)!important}
-body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed{background:#0f5f63!important;color:#fff!important;margin:22px -16px -22px!important;padding:15px 12px!important;border-radius:0 0 17px 17px!important;letter-spacing:.08em!important}
+body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed{display:block!important;width:auto!important;background:#0f5f63!important;color:#fff!important;margin:22px -16px -22px!important;padding:16px 12px!important;border-radius:0 0 17px 17px!important;letter-spacing:.08em!important;text-align:center!important;font-weight:900!important}
 @media(max-width:480px){
  body:not(.bct-authenticated) header .wrap{padding-left:12px!important;padding-right:12px!important}
  body:not(.bct-authenticated) .bct-logo-crop{width:min(90vw,390px)!important}
@@ -685,7 +688,7 @@ body:not(.bct-authenticated) .bct-dynamic-slogan[dir="rtl"]{font-family:"Noto Na
       </select>
     </div>
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -731,7 +734,7 @@ body:not(.bct-authenticated) .bct-dynamic-slogan[dir="rtl"]{font-family:"Noto Na
       <span data-i18n="about.promise3">We help protect the quality of the project.</span>
       <span data-i18n="about.promise4">We give you one company to turn to from start to finish.</span>
     </div>
-    <p class="bct-about-close" data-i18n="about.close">Your home. Your project. Your contractor.</p>
+    <p class="bct-about-close" data-i18n="about.close">Your Home, Your Project, Your Contractor.</p>
     <p class="bct-about-licensed" data-i18n="about.licensed">Licensed • Bonded • Insured</p>
   </section>
 </section>
@@ -1265,7 +1268,7 @@ const BCT_ENGLISH_FALLBACK={
   'about.promise2':'We oversee the process.',
   'about.promise3':'We help protect the quality of the project.',
   'about.promise4':'We give you one company to turn to from start to finish.',
-  'about.close':'Your home. Your project. Your contractor.',
+  'about.close':'Your Home, Your Project, Your Contractor.',
   'home.hero_title':'BCT Renovations manages your project from request to completion.',
   'home.hero_description':'Start a private request, sign in, check contractor status, review available BCT jobs, or open Admin tools from one clean dashboard.',
   'home.project_button':'Start or Track a Project',
