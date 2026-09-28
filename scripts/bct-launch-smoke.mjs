@@ -153,7 +153,11 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
 assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v21-master-signin-layout"), 'Service worker cache version must match the current V46 live cleanup rollout.');
+assert(serviceWorker.includes("bct-portal-shell-v24-startup-cache-reset"), 'Service worker cache version must stay bumped for the current V46 startup cache reset rollout.');
+assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png']"), 'Service worker static cache must stay limited to safe non-HTML assets.');
+assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'Service worker must not cache the root HTML startup path.');
+assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'Service worker must not cache index.html.');
+assert(serviceWorker.includes("cache:'no-store'"), 'Service worker must fetch startup HTML with no-store.');
 assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'Service worker must not cache the retired standalone homeowner controller.');
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
@@ -184,10 +188,19 @@ assert(html.includes('id="bctLoginLanguage"'), 'Signed-out V46 must expose the l
 assert(html.includes('data-bct-slogan'), 'Signed-out V46 must expose the live language-aware BCT slogan.');
 assert(html.includes('BCT_BRAND_SLOGANS'), 'V46 must include localized BCT brand slogans.');
 assert(html.includes('syncBrandSlogan'), 'V46 must synchronize the BCT slogan when language changes.');
+assert(html.includes('BCT V46 FINAL LANGUAGE + LOGO LOCK'), 'V46 must keep the final signed-out logo/slogan lock.');
+assert(html.includes('show live translated slogan in its place'), 'V46 must hide the baked logo slogan and show the translated live slogan.');
+assert(html.includes("'about.p1':'En BCT Renovations, LLC, los propietarios merecen"), 'Spanish About BCT body copy must be translated, not only the heading.');
+assert(html.includes("'about.p3':'BCT no simplemente hace la conexión y se va"), 'Spanish About BCT coordination copy must be translated.');
+assert(html.includes("'about.promise4':'Le damos una sola compañía a la cual acudir de principio a fin."), 'Spanish About BCT promise copy must be translated.');
+assert(html.includes("applyBctLanguage(language);"), 'V46 must re-apply the selected language after registering the About BCT translation bundle.');
+for (const key of ['about.p1','about.difference','about.p2','about.p3','about.p4','about.battle','about.promise1','about.promise2','about.promise3','about.promise4','about.close','about.licensed']) {
+  assert(html.includes(`'${key}'`), `About BCT translation bundle must include ${key}.`);
+}
 for (const language of ['en','es','fr','ht','pt','vi','zh','ar','ru']) {
   assert(new RegExp('\\b'+language+':').test(html) || html.includes("'"+language+"':") || html.includes('"'+language+'":'), 'V46 language data must include '+language+'.');
 }
-for (const slogan of ['Your General Contractor','Su Contratista General','Votre Entrepreneur Général','Kontraktè Jeneral Ou','Seu Empreiteiro Geral','Tổng Thầu Của Bạn','您的总承包商','المقاول العام الخاص بك','Ваш генеральный подрядчик']) {
+for (const slogan of ['We Are Your General Contractor','Somos su contratista general','Nous sommes votre entrepreneur général','Nou se kontraktè jeneral ou','Somos o seu empreiteiro geral','Chúng tôi là tổng thầu của bạn','我们是您的总承包商','نحن المقاول العام الخاص بك','Мы — ваш генеральный подрядчик']) {
   assert(html.includes(slogan), 'V46 must keep every approved translated brand slogan.');
 }
 assert(html.includes("document.documentElement.dir=language==='ar'?'rtl':'ltr'"), 'Arabic must switch the document to RTL.');
@@ -198,7 +211,7 @@ assert(html.includes('bctDialogPending=false') && html.includes('previous?.focus
 
 assert(html.includes('.bct-dynamic-slogan') && html.includes('background:transparent'), 'Translated slogan must remain visually integrated without its own box.');
 assert(html.includes('BCT V46 MASTER SIGN-IN LOCK') && html.includes('header nav,') && html.includes('display:none!important'), 'Signed-out V46 must preserve the approved clean sign-in layout without the authenticated navigation grid.');
-assert(html.includes('.bct-logo-crop::after') && html.includes('height:19%') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
+assert(html.includes('.bct-logo-crop::after') && html.includes('height:22%') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
 
 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
@@ -209,7 +222,7 @@ assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-log
 
 const signedOutHome=(html.match(/<section id="view-home"[\s\S]*?<section id="view-customer"/)||[''])[0];
 assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all three role logins.');
-assert(signedOutHome.includes('>Client</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the three current V46 role actions.');
+assert(signedOutHome.includes('>Client / Homeowner</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the three current V46 role actions.');
 assert((signedOutHome.match(/data-entry-login="/g)||[]).length === 3, 'Signed-out V46 must expose only the three role login buttons in the signed-out entry.');
 assert(!signedOutHome.includes('home-action-card'), 'Signed-out entry must not contain extra workflow cards.');
 assert(!signedOutHome.includes('home-quick-grid'), 'Old signed-out quick dashboard must not exist in entry DOM.');
