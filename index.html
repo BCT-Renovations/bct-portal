@@ -3823,5 +3823,40 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
  try{supabaseClient?.auth?.getSession?.().then(r=>sync(r?.data?.session));supabaseClient?.auth?.onAuthStateChange?.((_e,s)=>sync(s));}catch(_){}
 })();
 </script>
+<style>
+body.bct-contractor-signup:not(.bct-authenticated) #view-apply{display:block!important}
+body.bct-contractor-signup:not(.bct-authenticated) #view-apply .card{display:block}
+body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!important}
+</style>
+<script>
+/* V46 PRIORITY SIGNUP ROUTER — direct, delegated and iPhone-safe */
+(function(){
+ function homeSignup(){
+   document.body.classList.add('bct-home-signup','bct-portal-entered','bct-entry-client');
+   document.body.classList.remove('bct-entry-contractor','bct-entry-admin');
+   document.getElementById('view-home')?.classList.add('hidden');
+   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
+   const v=document.getElementById('view-customer'); if(v){v.classList.remove('hidden','bct-signedout-hidden');v.style.display='block';}
+   document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.toggle('active',p.dataset.customerPagePanel==='details'));
+   document.querySelectorAll('#view-customer [data-customer-page-panel="details"],#customerProjectForm').forEach(p=>{p.classList.remove('hidden','bct-signedout-hidden');p.style.display='block';});
+   history.pushState({bctView:'customer'},'','#customer');
+   requestAnimationFrame(()=>{window.scrollTo(0,0);document.getElementById('custFirst')?.focus({preventScroll:true});});
+ }
+ function contractorSignup(){
+   document.body.classList.add('bct-contractor-signup','bct-portal-entered','bct-entry-contractor');
+   document.body.classList.remove('bct-entry-client','bct-entry-admin');
+   document.getElementById('view-home')?.classList.add('hidden');
+   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
+   const v=document.getElementById('view-apply'); if(v){v.classList.remove('hidden','bct-signedout-hidden');v.style.display='block';}
+   history.pushState({bctView:'apply'},'','#apply');
+   requestAnimationFrame(()=>{window.scrollTo(0,0);document.querySelector('#applicationForm input[name="legalName"]')?.focus({preventScroll:true});});
+ }
+ document.addEventListener('click',function(e){
+   const h=e.target.closest('#bctHomeSignupBtn'); if(h){e.preventDefault();e.stopImmediatePropagation();homeSignup();return;}
+   const k=e.target.closest('#bctContractorSignupBtn'); if(k){e.preventDefault();e.stopImmediatePropagation();contractorSignup();}
+ },true);
+ window.bctOpenHomeSignup=homeSignup; window.bctOpenContractorSignup=contractorSignup;
+})();
+</script>
 </body>
 </html>
