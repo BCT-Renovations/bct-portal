@@ -3475,13 +3475,12 @@ renderAll();
    view?.classList.remove('hidden','bct-signedout-hidden');
    // Keep the Client Portal identity, tabs and sign-in visible; hide protected project/form data until authentication.
    view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
+   const signup=document.getElementById('bctHomeownerSignupCard');
    const card=document.getElementById('bctHomeownerLoginCard');
-   const hero=view?.querySelector('.customer-hero');
-   const tabs=view?.querySelector('.portal-tabs');
-   [...(view?.children||[])].forEach(x=>{if(x!==hero&&x!==tabs&&x!==card)x.classList.add('bct-signedout-hidden')});
+   // Signed-out Homeowner portal is intentionally limited to the two separate account choices plus public About.
+   [...(view?.children||[])].forEach(x=>{if(x!==signup&&x!==card&&x.id!=='bctAboutPublic')x.classList.add('bct-signedout-hidden')});
+   if(signup){signup.classList.remove('hidden','bct-signedout-hidden');signup.classList.add('active');signup.style.display='block';}
    if(card){card.classList.remove('hidden','bct-signedout-hidden');card.classList.add('active');card.style.display='block';}
-   if(hero)hero.style.removeProperty('display');
-   if(tabs)tabs.style.removeProperty('display');
    view.style.display='block';
    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
  }
@@ -3704,6 +3703,10 @@ body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(.bct-public
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer> :not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{display:block!important;visibility:visible!important;opacity:1!important}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard{order:1}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2}
 body.bct-entry-admin:not(.bct-authenticated) #view-admin{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeProjects{display:none!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorDocsPanel{display:none!important}
