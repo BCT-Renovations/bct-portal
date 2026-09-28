@@ -613,6 +613,55 @@ select{max-width:100%}
 .bct-about-licensed{font-weight:900;letter-spacing:.08em;color:#0f5f63}
 @media(max-width:600px){.bct-about-public{margin-top:24px;padding-left:4px;padding-right:4px}.bct-about-public p{font-size:.96rem}.bct-about-accent b{font-size:1.2rem}}
 
+
+/* BCT V46 FINAL LANGUAGE + LOGO LOCK: hide baked logo slogan; show live translated slogan in its place. */
+body:not(.bct-authenticated) .bct-logo-crop{
+  position:relative!important;
+  overflow:hidden!important;
+  background:#e8f5ec!important;
+  line-height:0!important;
+}
+body:not(.bct-authenticated) .bct-logo-crop::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  height:22%!important;
+  background:#e8f5ec!important;
+  z-index:2!important;
+  pointer-events:none!important;
+}
+body:not(.bct-authenticated) .bct-logo-crop .brand-logo{
+  position:relative!important;
+  z-index:1!important;
+}
+body:not(.bct-authenticated) .bct-dynamic-slogan{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:5.6%!important;
+  z-index:3!important;
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0 8px!important;
+  white-space:normal!important;
+  text-align:center!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-style:italic!important;
+  font-weight:700!important;
+  font-size:clamp(1.22rem,5.7vw,1.72rem)!important;
+  line-height:1.13!important;
+  color:#0a4549!important;
+  background:transparent!important;
+}
+@media(max-width:480px){
+  body:not(.bct-authenticated) .bct-logo-crop::after{height:23%!important}
+  body:not(.bct-authenticated) .bct-dynamic-slogan{bottom:5.8%!important;font-size:clamp(1.16rem,5.8vw,1.62rem)!important}
+}
+
 </style>
 </head>
 <body>
@@ -3474,28 +3523,33 @@ renderAll();
 (function(){
  const en={
   'about.title':'About BCT Renovations',
-  'about.lead':'We’re Not Just Connecting You With a Contractor. We Are Your General Contractor.',
+  'about.lead':'We\u2019re Not Just Connecting You With a Contractor. We Are Your General Contractor.',
   'about.p1':'At BCT Renovations, LLC, homeowners deserve more than just a name and a phone number. You deserve to know who is working on your property, that they have been properly verified, and that someone is standing with you throughout the entire project.',
-  'about.difference':'That’s where BCT comes in.',
+  'about.difference':'That\u2019s where BCT comes in.',
   'about.p2':'Contractors in our network go through the BCT verification process, including verification of required credentials and current insurance documentation before they are approved to perform work through our platform.',
-  'about.p3':'BCT doesn’t simply make the connection and walk away. We help coordinate your project, assign qualified contractors, monitor progress, and remain your point of contact from the beginning of the project through completion.',
-  'about.p4':'Our goal is to take the guesswork out of hiring someone to work on your home. You shouldn’t have to wonder who to trust, whether the proper documentation is current, or who to turn to if something isn’t going the way it should.',
-  'about.battle':'You don’t have to fight that battle alone. BCT stands with the homeowner.',
-  'about.promise1':'We bring the contractors.','about.promise2':'We oversee the process.','about.promise3':'We help protect the quality of the project.','about.promise4':'We give you one company to turn to from start to finish.','about.close':'Your home. Your project. Your contractor.'
+  'about.p3':'BCT doesn\u2019t simply make the connection and walk away. We help coordinate your project, assign qualified contractors, monitor progress, and remain your point of contact from the beginning of the project through completion.',
+  'about.p4':'Our goal is to take the guesswork out of hiring someone to work on your home. You shouldn\u2019t have to wonder who to trust, whether the proper documentation is current, or who to turn to if something isn\u2019t going the way it should.',
+  'about.battle':'You don\u2019t have to fight that battle alone. BCT stands with the homeowner.',
+  'about.promise1':'We bring the contractors.',
+  'about.promise2':'We oversee the process.',
+  'about.promise3':'We help protect the quality of the project.',
+  'about.promise4':'We give you one company to turn to from start to finish.',
+  'about.close':'Your home. Your project. Your contractor.',
+  'about.licensed':'Licensed • Bonded • Insured'
+ };
+ const translations={
+  es:{'about.title':'Acerca de BCT Renovations','about.lead':'No solo le conectamos con un contratista. Somos su contratista general.','about.p1':'En BCT Renovations, LLC, los propietarios merecen más que solo un nombre y un número de teléfono. Usted merece saber quién está trabajando en su propiedad, que ha sido verificado correctamente y que alguien le acompaña durante todo el proyecto.','about.difference':'Ahí es donde entra BCT.','about.p2':'Los contratistas de nuestra red pasan por el proceso de verificación de BCT, incluida la verificación de las credenciales requeridas y la documentación de seguro vigente antes de ser aprobados para realizar trabajos a través de nuestra plataforma.','about.p3':'BCT no simplemente hace la conexión y se va. Ayudamos a coordinar su proyecto, asignamos contratistas calificados, supervisamos el progreso y seguimos siendo su punto de contacto desde el comienzo del proyecto hasta su finalización.','about.p4':'Nuestro objetivo es eliminar las dudas al contratar a alguien para trabajar en su hogar. Usted no debería tener que preguntarse en quién confiar, si la documentación correspondiente está vigente o a quién acudir si algo no marcha como debería.','about.battle':'No tiene que pelear esa batalla a solas. BCT acompaña al propietario.','about.promise1':'Nosotros traemos los contratistas.','about.promise2':'Supervisamos el proceso.','about.promise3':'Ayudamos a proteger la calidad del proyecto.','about.promise4':'Le damos una sola compañía a la cual acudir de principio a fin.','about.close':'Su hogar. Su proyecto. Su contratista.','about.licensed':'Con licencia • Fianza • Asegurado'},
+  fr:{'about.title':'À propos de BCT Renovations','about.lead':'Nous ne faisons pas que vous mettre en relation avec un entrepreneur. Nous sommes votre entrepreneur général.','about.p1':'Chez BCT Renovations, LLC, les propriétaires méritent plus qu\u2019un nom et un numéro de téléphone. Vous méritez de savoir qui travaille sur votre propriété, que cette personne a été vérifiée correctement et que quelqu\u2019un vous accompagne pendant tout le projet.','about.difference':'C\u2019est là que BCT intervient.','about.p2':'Les entrepreneurs de notre réseau passent par le processus de vérification BCT, y compris la vérification des références requises et des documents d\u2019assurance à jour avant d\u2019être approuvés pour travailler sur notre plateforme.','about.p3':'BCT ne se contente pas de faire la connexion puis de disparaître. Nous aidons à coordonner votre projet, à affecter des entrepreneurs qualifiés, à suivre l\u2019avancement et à rester votre point de contact du début à la fin.','about.p4':'Notre objectif est de retirer l\u2019incertitude du choix d\u2019une personne pour travailler chez vous.','about.battle':'Vous n\u2019avez pas à mener ce combat seul. BCT se tient aux côtés du propriétaire.','about.promise1':'Nous amenons les entrepreneurs.','about.promise2':'Nous supervisons le processus.','about.promise3':'Nous aidons à protéger la qualité du projet.','about.promise4':'Nous vous donnons une seule entreprise à contacter du début à la fin.','about.close':'Votre maison. Votre projet. Votre entrepreneur.','about.licensed':'Autorisé • Cautionné • Assuré'},
+  ht:{'about.title':'Konsènan BCT Renovations','about.lead':'Nou pa sèlman konekte ou ak yon kontraktè. Nou se kontraktè jeneral ou.','about.p1':'Nan BCT Renovations, LLC, pwopriyetè kay merite plis pase yon non ak yon nimewo telefòn. Ou merite konnen kiyès k ap travay lakay ou, ke yo verifye li byen, epi ke gen yon moun k ap mache avè ou pandan tout pwojè a.','about.difference':'Se la BCT antre.','about.p2':'Kontraktè nan rezo nou an pase nan pwosesis verifikasyon BCT, tankou verifikasyon kalifikasyon obligatwa ak dokiman asirans ki ajou anvan yo apwouve pou travay sou platfòm nou an.','about.p3':'BCT pa jis fè koneksyon an epi ale. Nou ede kowòdone pwojè ou, bay kontraktè ki kalifye, suiv pwogrè a, epi rete pwen kontak ou depi kòmansman jouk fen.','about.p4':'Objektif nou se retire dout lè w ap anboche yon moun pou travay lakay ou.','about.battle':'Ou pa bezwen batay sa pou kont ou. BCT kanpe ak pwopriyetè kay la.','about.promise1':'Nou pote kontraktè yo.','about.promise2':'Nou sipèvize pwosesis la.','about.promise3':'Nou ede pwoteje kalite pwojè a.','about.promise4':'Nou ba ou yon sèl konpayi pou kontakte depi kòmansman jouk fen.','about.close':'Kay ou. Pwojè ou. Kontraktè ou.','about.licensed':'Lisansye • Kosyone • Asire'},
+  pt:{'about.title':'Sobre a BCT Renovations','about.lead':'Não apenas conectamos você a um empreiteiro. Somos o seu empreiteiro geral.','about.p1':'Na BCT Renovations, LLC, proprietários merecem mais do que apenas um nome e um telefone. Você merece saber quem está trabalhando em sua propriedade, que essa pessoa foi devidamente verificada e que alguém estará ao seu lado durante todo o projeto.','about.difference':'É aí que a BCT entra.','about.p2':'Os empreiteiros da nossa rede passam pelo processo de verificação da BCT, incluindo credenciais exigidas e documentação de seguro atualizada antes de serem aprovados para trabalhar pela nossa plataforma.','about.p3':'A BCT não apenas faz a conexão e vai embora. Ajudamos a coordenar seu projeto, designar empreiteiros qualificados, acompanhar o progresso e permanecer como seu ponto de contato do início ao fim.','about.p4':'Nosso objetivo é eliminar as dúvidas ao contratar alguém para trabalhar em sua casa.','about.battle':'Você não precisa enfrentar essa batalha sozinho. A BCT fica ao lado do proprietário.','about.promise1':'Nós trazemos os empreiteiros.','about.promise2':'Nós supervisionamos o processo.','about.promise3':'Nós ajudamos a proteger a qualidade do projeto.','about.promise4':'Damos a você uma única empresa para procurar do início ao fim.','about.close':'Sua casa. Seu projeto. Seu empreiteiro.','about.licensed':'Licenciado • Afiançado • Segurado'},
+  vi:{'about.title':'Giới thiệu BCT Renovations','about.lead':'Chúng tôi không chỉ kết nối bạn với một nhà thầu. Chúng tôi là tổng thầu của bạn.','about.p1':'Tại BCT Renovations, LLC, chủ nhà xứng đáng nhận được nhiều hơn một cái tên và số điện thoại. Bạn xứng đáng biết ai đang làm việc trên tài sản của mình, họ đã được xác minh đúng cách và có người đồng hành với bạn trong suốt dự án.','about.difference':'Đó là lúc BCT hỗ trợ bạn.','about.p2':'Các nhà thầu trong mạng lưới của chúng tôi trải qua quy trình xác minh của BCT, bao gồm xác minh thông tin bắt buộc và giấy tờ bảo hiểm hiện hành trước khi được chấp thuận làm việc qua nền tảng của chúng tôi.','about.p3':'BCT không chỉ kết nối rồi rời đi. Chúng tôi giúp điều phối dự án, phân công nhà thầu đủ năng lực, theo dõi tiến độ và là đầu mối liên hệ của bạn từ đầu đến cuối.','about.p4':'Mục tiêu của chúng tôi là loại bỏ sự phỏng đoán khi thuê người làm việc tại nhà bạn.','about.battle':'Bạn không phải tự mình đối mặt với việc đó. BCT đứng về phía chủ nhà.','about.promise1':'Chúng tôi mang đến các nhà thầu.','about.promise2':'Chúng tôi giám sát quy trình.','about.promise3':'Chúng tôi giúp bảo vệ chất lượng dự án.','about.promise4':'Chúng tôi cho bạn một công ty để liên hệ từ đầu đến cuối.','about.close':'Ngôi nhà của bạn. Dự án của bạn. Nhà thầu của bạn.','about.licensed':'Có giấy phép • Có bảo lãnh • Có bảo hiểm'},
+  zh:{'about.title':'关于 BCT Renovations','about.lead':'我们不只是为您联系承包商。我们就是您的总承包商。','about.p1':'在 BCT Renovations, LLC，业主理应得到的不只是一个名字和电话号码。您应该知道谁在您的物业上施工，他们已被妥善核验，并且有人会在整个项目期间与您站在一起。','about.difference':'这正是 BCT 的作用。','about.p2':'我们网络中的承包商必须通过 BCT 验证流程，包括所需资质和有效保险文件的核验，之后才可通过我们的平台承接工作。','about.p3':'BCT 不会只是完成对接后就离开。我们帮助协调项目、安排合格承包商、监督进度，并从项目开始到完成始终作为您的联系方。','about.p4':'我们的目标是让您在雇人进行家居工程时不再靠猜。','about.battle':'您不必独自面对这些问题。BCT 与业主站在一起。','about.promise1':'我们带来承包商。','about.promise2':'我们监督流程。','about.promise3':'我们帮助保障项目质量。','about.promise4':'从开始到结束，您都有一家可联系的公司。','about.close':'您的家。您的项目。您的承包商。','about.licensed':'持证 • 担保 • 保险'},
+  ar:{'about.title':'حول BCT Renovations','about.lead':'نحن لا نكتفي بربطك بمقاول. نحن المقاول العام الخاص بك.','about.p1':'في BCT Renovations, LLC، يستحق أصحاب المنازل أكثر من مجرد اسم ورقم هاتف. تستحق أن تعرف من يعمل في عقارك، وأنه تم التحقق منه بشكل صحيح، وأن هناك جهة تقف معك طوال المشروع.','about.difference':'وهنا يأتي دور BCT.','about.p2':'يمر المقاولون في شبكتنا بعملية تحقق BCT، بما في ذلك التحقق من المؤهلات المطلوبة ووثائق التأمين الحالية قبل الموافقة عليهم للعمل عبر منصتنا.','about.p3':'BCT لا تقوم بمجرد الربط ثم تغادر. نحن نساعد في تنسيق مشروعك، وتعيين مقاولين مؤهلين، ومراقبة التقدم، ونبقى نقطة اتصالك من بداية المشروع حتى اكتماله.','about.p4':'هدفنا هو إزالة التخمين عند توظيف شخص للعمل في منزلك.','about.battle':'لا يتعين عليك خوض هذه المعركة وحدك. BCT تقف مع صاحب المنزل.','about.promise1':'نحن نوفر المقاولين.','about.promise2':'نحن نشرف على العملية.','about.promise3':'نساعد في حماية جودة المشروع.','about.promise4':'نمنحك شركة واحدة تلجأ إليها من البداية إلى النهاية.','about.close':'منزلك. مشروعك. مقاولك.','about.licensed':'مرخص • مكفول • مؤمن'},
+  ru:{'about.title':'О BCT Renovations','about.lead':'Мы не просто связываем вас с подрядчиком. Мы — ваш генеральный подрядчик.','about.p1':'В BCT Renovations, LLC домовладельцы заслуживают большего, чем просто имя и номер телефона. Вы заслуживаете знать, кто работает на вашей собственности, что этот человек должным образом проверен и что кто-то сопровождает вас на протяжении всего проекта.','about.difference':'Именно здесь помогает BCT.','about.p2':'Подрядчики в нашей сети проходят проверку BCT, включая подтверждение необходимых данных и актуальных страховых документов, прежде чем им разрешают выполнять работы через нашу платформу.','about.p3':'BCT не просто соединяет вас с подрядчиком и уходит. Мы помогаем координировать проект, назначаем квалифицированных подрядчиков, следим за прогрессом и остаемся вашей контактной точкой от начала до завершения.','about.p4':'Наша цель — убрать неопределенность при найме человека для работы в вашем доме.','about.battle':'Вам не нужно бороться с этим в одиночку. BCT поддерживает домовладельца.','about.promise1':'Мы приводим подрядчиков.','about.promise2':'Мы контролируем процесс.','about.promise3':'Мы помогаем защитить качество проекта.','about.promise4':'Мы даем вам одну компанию, к которой можно обращаться от начала до конца.','about.close':'Ваш дом. Ваш проект. Ваш подрядчик.','about.licensed':'Лицензировано • Обеспечено • Застраховано'}
  };
  try{Object.assign(BCT_ENGLISH_FALLBACK,en);}catch(_){}
- const lead={
-  es:'No solo le conectamos con un contratista. Somos su contratista general.',
-  fr:'Nous ne faisons pas que vous mettre en relation avec un entrepreneur. Nous sommes votre entrepreneur général.',
-  ht:'Nou pa sèlman konekte ou ak yon kontraktè. Nou se kontraktè jeneral ou.',
-  pt:'Não apenas conectamos você a um empreiteiro. Somos o seu empreiteiro geral.',
-  vi:'Chúng tôi không chỉ kết nối bạn với một nhà thầu. Chúng tôi là tổng thầu của bạn.',
-  zh:'我们不只是为您联系承包商。我们就是您的总承包商。',
-  ar:'نحن لا نكتفي بربطك بمقاول. نحن المقاول العام الخاص بك.',
-  ru:'Мы не просто связываем вас с подрядчиком. Мы — ваш генеральный подрядчик.'
- };
- const titles={es:'Acerca de BCT Renovations',fr:'À propos de BCT Renovations',ht:'Konsènan BCT Renovations',pt:'Sobre a BCT Renovations',vi:'Giới thiệu BCT Renovations',zh:'关于 BCT Renovations',ar:'حول BCT Renovations',ru:'О BCT Renovations'};
- try{for(const lang of Object.keys(lead)){BCT_LOCAL_TRANSLATIONS[lang]=BCT_LOCAL_TRANSLATIONS[lang]||{};BCT_LOCAL_TRANSLATIONS[lang]['about.title']=titles[lang];BCT_LOCAL_TRANSLATIONS[lang]['about.lead']=lead[lang];}}catch(_){}
+ try{for(const lang of Object.keys(translations)){BCT_LOCAL_TRANSLATIONS[lang]=BCT_LOCAL_TRANSLATIONS[lang]||{};Object.assign(BCT_LOCAL_TRANSLATIONS[lang],translations[lang]);}}catch(_){}
+ try{const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';syncBrandSlogan(language);syncLoginLanguageUI(language);applyBctLanguage(language);}catch(_){}
 })();
 </script>
 
