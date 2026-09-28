@@ -475,6 +475,29 @@ header .wrap>div:has(#bctLanguage){display:none!important}
 body:not(.bct-authenticated) header .bct-auth-only-header-copy{display:none!important}
 @media(max-width:480px){.bct-logo-crop{width:min(94vw,500px)!important}.bct-dynamic-slogan{font-size:clamp(1.35rem,6vw,1.8rem)!important;margin:-2px 10px 6px!important}}
 
+/* BCT V46 IPHONE SIGNED-OUT MASTER LAYOUT — screenshot-driven */
+body:not(.bct-authenticated) header{position:relative!important;top:auto!important;overflow:visible!important}
+body:not(.bct-authenticated) header .wrap{width:100%!important;max-width:none!important;padding:10px 12px 6px!important;overflow:visible!important}
+body:not(.bct-authenticated) header .brand{width:100%!important;display:block!important;overflow:visible!important}
+body:not(.bct-authenticated) header nav{display:none!important}
+body:not(.bct-authenticated) header .wrap>div:has(#bctLanguage){display:none!important}
+body:not(.bct-authenticated) .bct-dynamic-brand{width:100%!important;display:block!important;overflow:visible!important}
+body:not(.bct-authenticated) .bct-logo-crop{width:min(88vw,480px)!important;margin:0 auto!important;overflow:visible!important;position:relative!important}
+body:not(.bct-authenticated) .bct-logo-crop::after{display:none!important}
+body:not(.bct-authenticated) .bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important;object-position:center!important;display:block!important;margin:0 auto!important;transform:none!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{position:static!important;width:100%!important;display:block!important;margin:2px auto 4px!important;padding:0 4px!important;font-size:clamp(1.3rem,5.7vw,1.85rem)!important;line-height:1.12!important;white-space:normal!important;text-align:center!important}
+body:not(.bct-authenticated) main.wrap{width:100%!important;max-width:620px!important;margin:0 auto!important;padding:8px 12px 24px!important}
+body:not(.bct-authenticated) #bctSignedOutEntry{margin:4px auto 12px!important;padding:14px!important;width:100%!important;max-width:100%!important}
+body:not(.bct-authenticated) #bctEntryActions{gap:10px!important}
+body:not(.bct-authenticated) #bctEntryActions button{min-height:58px!important}
+@media(max-width:480px){
+ body:not(.bct-authenticated) header .wrap{padding-top:8px!important}
+ body:not(.bct-authenticated) .bct-logo-crop{width:min(86vw,390px)!important}
+ body:not(.bct-authenticated) #bctSignedOutEntry{border-radius:14px!important}
+ body:not(.bct-authenticated) .bct-login-language{margin-bottom:10px!important}
+ body:not(.bct-authenticated) .bct-signin-heading{min-height:52px!important;margin-bottom:10px!important}
+}
+
 /* BCT V46 PUBLIC ABOUT — continuous background, no box */
 .bct-about-public{max-width:920px;margin:34px auto 8px;padding:18px 10px 28px;text-align:center;background:transparent;border:0;box-shadow:none}
 .bct-about-accent{display:flex;align-items:center;justify-content:center;gap:7px;color:#0f5f63;margin-bottom:2px;line-height:1}
