@@ -157,7 +157,7 @@ assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
 assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v24-startup-cache-reset"), 'Service worker cache version must stay bumped for the current V46 startup cache reset rollout.');
+assert(serviceWorker.includes("bct-portal-shell-v25-green-logo-band-cache-reset"), 'Service worker cache version must stay bumped for the current V46 startup cache reset rollout.');
 assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png']"), 'Service worker static cache must stay limited to safe non-HTML assets.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'Service worker must not cache the root HTML startup path.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'Service worker must not cache index.html.');
