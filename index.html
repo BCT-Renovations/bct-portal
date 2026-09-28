@@ -297,7 +297,7 @@ nav button:nth-child(6){background:#123f45}
 .bct-step-controls{padding:7px;margin-top:6px}
 @media(max-width:820px){
  #view-customer .customer-hero{grid-template-columns:1fr}
- #view-customer .customer-hero .card:nth-child(2){display:none}
+ /* Keep both Homeowner entry choices visible on mobile. Do not hide the second card. */
  #view-customer .check-grid,#view-apply .check-grid{grid-template-columns:1fr 1fr}
 }
 
@@ -550,6 +550,18 @@ body:not(.bct-authenticated) header .brand small{display:none!important;visibili
 #bctAboutPublic .bct-about-home-mark span{font-size:30px!important;line-height:1;font-weight:900;letter-spacing:0!important}
 #bctAboutPublic .bct-about-home-mark b{font-size:20px;line-height:1;color:#0f5f63!important}
 #bctAboutPublic .bct-about-title{font-size:clamp(30px,7vw,42px)!important;line-height:1.08!important;font-weight:900!important;color:#0a4549!important;letter-spacing:.01em!important;margin:4px 0 14px!important;text-align:center!important}
+
+/* V46 HOMEOWNER TWO-CARD MOBILE LOCK — 2026-09-28 */
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{
+ display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important;
+}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard{order:1!important}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!important}
+@media(max-width:820px){
+ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
+ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{display:block!important}
+}
 </style>
 
 <script>
