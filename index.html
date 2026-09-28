@@ -605,6 +605,18 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 #bctShareAppHelp{color:#0a4549!important;font-weight:800!important;font-size:16px!important;line-height:1.45!important}
 @media(max-width:820px){#bctShareAppHelp{font-size:16px!important}}
 </style>
+<style>
+/* V46 LANDING CLEANUP LOCK */
+/* Opening screen is portal selection only. About BCT belongs inside Client Portal. */
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{display:none!important}
+body.bct-portal-entered #bctAboutPublic{display:none!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #view-home{padding-bottom:18px!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{margin-bottom:0!important}
+@media(max-width:820px){
+ body:not(.bct-authenticated):not(.bct-portal-entered) #view-home{margin-bottom:0!important}
+ body:not(.bct-authenticated):not(.bct-portal-entered) #bctEntryActions button{min-height:54px!important}
+}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
