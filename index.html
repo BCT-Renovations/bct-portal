@@ -3605,8 +3605,10 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
 window.bctReturnToPublicLanding=function(){
   try{history.replaceState({bctView:'home'},'',location.pathname+location.search+'#home');}catch(_){}
   const b=document.body;
-  b.classList.remove('bct-authenticated','bct-entry-admin','bct-entry-client','bct-entry-contractor');
+  b.classList.remove('bct-authenticated','bct-entry-admin','bct-entry-client','bct-entry-contractor','bct-portal-entered');
   b.classList.add('bct-signed-out');
+  const landing=document.getElementById('view-home');
+  if(landing){landing.classList.remove('hidden');landing.removeAttribute('aria-hidden');}
   document.documentElement.classList.add('bct-session-resolved');
   document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));
   if(typeof setVisibleView==='function')setVisibleView('home');
@@ -3666,13 +3668,15 @@ body.bct-entry-admin:not(.bct-authenticated) .bct-portal-about{display:none!impo
  function prepare(kind){
    const homeownerAbout=document.getElementById('bctAboutPublic');
    if(kind==='client'){
-     const target=document.querySelector('#view-customer .customer-hero .card');
-     if(homeownerAbout&&target&&!target.contains(homeownerAbout)){homeownerAbout.classList.add('bct-portal-about');target.appendChild(homeownerAbout);}
+     const login=document.getElementById('bctHomeownerLoginCard');
+     if(homeownerAbout&&login){homeownerAbout.classList.add('bct-portal-about');login.after(homeownerAbout);}
    }else if(kind==='contractor'){
-     const target=document.querySelector('#view-status .card');
-     if(target&&!document.getElementById('bctContractorAbout'))target.appendChild(contractorAbout);
+     const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');
+     let about=document.getElementById('bctContractorAbout');
+     if(!about&&login){login.insertAdjacentHTML('afterend',contractorAbout);about=document.getElementById('bctContractorAbout');}
+     if(about&&login&&about.previousElementSibling!==login)login.after(about);
    }
-   const lang=localStorage.getItem('bct_language')||localStorage.getItem('bctLanguage')||document.documentElement.lang||'en';
+   const lang=localStorage.getItem(BCT_LANGUAGE_KEY)||document.documentElement.lang||'en';
    try{applyBctLanguage(String(lang).toLowerCase());}catch(_){}
  }
  document.querySelectorAll('[data-entry-login]').forEach(btn=>btn.addEventListener('click',()=>prepare(btn.dataset.entryLogin),true));
