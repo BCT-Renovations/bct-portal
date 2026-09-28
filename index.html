@@ -3348,7 +3348,7 @@ renderAll();
   document.querySelectorAll('[data-view="jobs"]').forEach(btn=>btn.addEventListener('click',()=>setTimeout(()=>{if(contractorState)renderContractorJobs(contractorState.available_jobs||[])},0)));
   if(window.location.hash==='#password-reset'){openPasswordReset();note('passwordResetStatus','Checking your secure reset link...');setTimeout(async()=>{try{const {data}=await supabaseClient.auth.getSession();if(!data?.session)note('passwordResetStatus','This password-reset link is missing, invalid, or expired. Request a new reset link and open it from your email.')}catch(e){note('passwordResetStatus',esc(authFriendly(e)))}
   },900)}
-  supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'){openPasswordReset();note('passwordResetStatus','Enter and save your new password.')}setTimeout(async()=>{try{const u=session?.user;if(!u)return;if(u.app_metadata?.role==='admin')await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}},0)});
+  window.bctHandlePortalAuthState=(event,session)=>{if(event==='PASSWORD_RECOVERY'){openPasswordReset();note('passwordResetStatus','Enter and save your new password.')}setTimeout(async()=>{try{const u=session?.user;if(!u)return;if(u.app_metadata?.role==='admin')await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}},0)};
   loadPublic().then(async()=>{try{const u=await user();if(!u)return;if(u.app_metadata?.role==='admin')await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}}).catch(e=>console.error('BCT public bootstrap failed',e));
 })();
 </script>
@@ -3510,6 +3510,7 @@ renderAll();
  const style=document.createElement('style');style.textContent='body:not(.bct-authenticated) .bct-signedout-hidden{display:none!important}';document.head.appendChild(style);
  sessionNow().then(setAuthShell);
  try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{
+   try{window.bctHandlePortalAuthState?.(_event,session)}catch(_){};
    if(_event==='SIGNED_OUT'){
      entryIntent=null;
      window.bctReturnToPublicLanding?.();
