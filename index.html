@@ -697,6 +697,7 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
     <h3 data-i18n="homeowner.signup_title">New Client — Sign Up</h3>
     <p class="muted" data-i18n="homeowner.signup_description">New to BCT? Create your private client account and start your project.</p>
     <button type="button" id="bctHomeSignupBtn" data-i18n="homeowner.signup_button">Sign Up / Start as a New Client</button>
+    <button type="button" class="secondary hidden" id="bctHomeSignupBackBtn" data-i18n="homeowner.back_choices">← Back to Client Sign Up / Sign In</button>
   </div>
 
   <div class="card section portal-page active" data-customer-page-panel="overview" id="bctHomeownerLoginCard">
@@ -816,6 +817,7 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 </section>
 
 <section id="view-apply" class="view section hidden">
+  <div id="bctContractorApplyPortalTitle" class="bct-portal-title" data-i18n="portal.contractor_title">CONTRACTOR PORTAL</div>
   <div class="card section">
     <span class="badge info" data-i18n="contractor.portal_badge">BCT Contractor Portal</span>
     <h2 data-i18n="contractor.application_title">Contractor Application</h2>
@@ -1010,6 +1012,7 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 </section>
 
 <section id="view-admin" class="view section hidden">
+  <div id="bctAdminDashboardPortalTitle" class="bct-portal-title" data-i18n="portal.admin_title">ADMIN PORTAL</div>
   <div id="adminSessionBar" class="admin-session-bar">
     <div><b>✓ BCT Admin Authenticated</b><br><small id="adminSessionEmail"></small></div>
     <button type="button" id="adminLogoutBtn" class="secondary">Sign Out</button>
@@ -3522,7 +3525,7 @@ renderAll();
      // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
      view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
      const cards=view?[...view.children]:[];
-     cards.forEach((x,i)=>{if(i>1)x.classList.add('bct-signedout-hidden')});
+     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout';x.classList.toggle('bct-signedout-hidden',!keep);});
      const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');
      if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
      view.style.display='block';
@@ -3537,7 +3540,7 @@ renderAll();
    const signup=document.getElementById('bctHomeownerSignupCard');
    const card=document.getElementById('bctHomeownerLoginCard');
    // Signed-out Homeowner portal is intentionally limited to the two separate account choices plus public About.
-   [...(view?.children||[])].forEach(x=>{if(x!==signup&&x!==card&&x.id!=='bctAboutPublic')x.classList.add('bct-signedout-hidden')});
+   [...(view?.children||[])].forEach(x=>{const keep=x.id==='bctClientPortalTitle'||x===signup||x===card||x.id==='bctAboutPublic';x.classList.toggle('bct-signedout-hidden',!keep);});
    if(signup){signup.classList.remove('hidden','bct-signedout-hidden');signup.classList.add('active');signup.style.display='block';}
    if(card){card.classList.remove('hidden','bct-signedout-hidden');card.classList.add('active');card.style.display='block';}
    view.style.display='block';
@@ -3666,7 +3669,7 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
   });
 })();
 /* BCT V46 AUTHORITATIVE SIGN-OUT RESET */
-window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-home-signup');
+window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-home-signup','bct-contractor-signup');
   try{history.replaceState({bctView:'home'},'',location.pathname+location.search+'#home');}catch(_){}
   const b=document.body;
   b.classList.remove('bct-authenticated','bct-entry-admin','bct-entry-client','bct-entry-contractor','bct-portal-entered');
@@ -3678,7 +3681,7 @@ window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-h
   document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));
   if(typeof setVisibleView==='function')setVisibleView('home');
   else if(typeof showView==='function')showView('home');
-  const lang=(localStorage.getItem('bct_language')||document.documentElement.lang||'en').toLowerCase();
+  const lang=(localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase();
   if(typeof syncBrandSlogan==='function') syncBrandSlogan(lang);
   window.scrollTo({top:0,behavior:'auto'});
 };
@@ -3855,6 +3858,7 @@ body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!import
    const h=e.target.closest('#bctHomeSignupBtn'); if(h){e.preventDefault();e.stopImmediatePropagation();homeSignup();return;}
    const k=e.target.closest('#bctContractorSignupBtn'); if(k){e.preventDefault();e.stopImmediatePropagation();contractorSignup();}
  },true);
+ document.getElementById('bctHomeSignupBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelector('[data-entry-login="client"]')?.click();});
  window.bctOpenHomeSignup=homeSignup; window.bctOpenContractorSignup=contractorSignup;
 })();
 </script>
