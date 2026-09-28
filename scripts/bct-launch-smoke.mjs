@@ -217,7 +217,7 @@ assert(html.includes('bctDialogPending=false') && html.includes('previous?.focus
 
 assert(html.includes('.bct-dynamic-slogan') && html.includes('background:transparent'), 'Translated slogan must remain visually integrated without its own box.');
 assert(html.includes('BCT V46 MASTER SIGN-IN LOCK') && html.includes('header nav,') && html.includes('display:none!important'), 'Signed-out V46 must preserve the approved clean sign-in layout without the authenticated navigation grid.');
-assert(html.includes('.bct-logo-crop::after') && html.includes('height:22%') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
+assert(html.includes('.bct-logo-crop::after') && html.includes('height:25%') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
 
 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
