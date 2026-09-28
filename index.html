@@ -2295,7 +2295,11 @@ const BCT_BRAND_SLOGANS={
 };
 function syncBrandSlogan(language){
  const el=document.querySelector('[data-bct-slogan]');
- if(el) el.textContent=BCT_BRAND_SLOGANS[language]||BCT_BRAND_SLOGANS.en;
+ if(!el)return;
+ const text=BCT_BRAND_SLOGANS[language]||BCT_BRAND_SLOGANS.en;
+ el.textContent='“'+text+'”';
+ el.lang=language||'en';
+ el.dir=(language==='ar')?'rtl':'ltr';
 }
 const BCT_LOGIN_LANGUAGE_UI={
   en:{label:'Choose Your Language',signin:'Sign In',client:'Client / Homeowner',contractor:'Contractor',admin:'Admin'},
@@ -3578,12 +3582,8 @@ window.bctReturnToPublicLanding=function(){
   document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));
   if(typeof setVisibleView==='function')setVisibleView('home');
   else if(typeof showView==='function')showView('home');
-  const slogan=document.querySelector('[data-bct-slogan]');
-  if(slogan){
-    const lang=(document.documentElement.lang||'en').toLowerCase();
-    const map={en:'We Are Your General Contractor',es:'Somos su contratista general',fr:'Nous sommes votre entrepreneur général',ht:'Nou se kontraktè jeneral ou',pt:'Somos o seu empreiteiro geral',vi:'Chúng tôi là tổng thầu của bạn',zh:'我们是您的总承包商',ar:'نحن المقاول العام الخاص بك',ru:'Мы ваш генеральный подрядчик'};
-    slogan.textContent='“'+(map[lang]||map.en)+'”';
-  }
+  const lang=(localStorage.getItem('bct_language')||document.documentElement.lang||'en').toLowerCase();
+  if(typeof syncBrandSlogan==='function') syncBrandSlogan(lang);
   window.scrollTo({top:0,behavior:'auto'});
 };
 </script>
