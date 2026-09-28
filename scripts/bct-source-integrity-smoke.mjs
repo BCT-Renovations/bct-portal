@@ -42,6 +42,17 @@ assert(serviceWorker.includes("const APP_SHELL=['/','/index.html','/manifest.web
 assert(serviceWorker.includes("if(!APP_SHELL.includes(url.pathname)||url.search)return;"), 'service worker must refuse to cache non-shell routes and query-string responses.');
 assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'service worker must not cache the retired standalone homeowner controller.');
 
+assert(html.includes("maxFiles:10"), 'V46 must enforce the 10-file upload limit in JavaScript.');
+assert(html.includes("maxFileSizeBytes:25*1024*1024"), 'V46 must enforce the 25 MB document/image upload limit.');
+assert(html.includes("maxVideoSizeBytes:100*1024*1024"), 'V46 must enforce the 100 MB project video upload limit.');
+assert(html.includes("files=validateUploadFiles(files,'project')"), 'Homeowner uploads must be revalidated immediately before Supabase storage upload.');
+assert(html.includes("files=validateUploadFiles(files,documentType==='work_photo'?'contractorPhoto':'contractorDocument')"), 'Contractor uploads must be revalidated immediately before Supabase storage upload.');
+assert(html.includes("if(refs.length!==5)throw new Error('All five professional references and their contact information are required.')"), 'Contractor submission must require all five professional references.');
+assert(html.includes("p_sanitized_scope:String(f.get('scope')||'')"), 'Published contractor jobs must use the sanitized scope field.');
+assert(html.includes("esc(j.sanitized_scope||'')"), 'Contractor job cards must render only the sanitized scope.');
+assert(!/available_jobs[\\s\\S]{0,1800}resident_(?:name|phone)/i.test(html), 'Contractor available-job rendering must not expose resident name or phone.');
+assert(html.includes("p_admin_override_second_job:override"), 'Second active contractor assignment must remain behind an explicit BCT Admin override.');
+
 try {
   new Function(serviceWorker);
 } catch (error) {
