@@ -465,6 +465,20 @@ body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;marg
 .bct-dynamic-slogan{position:absolute;left:0;right:0;bottom:5.1%;z-index:3;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.35rem,5.2vw,2.35rem);font-weight:600;font-style:italic;line-height:1;color:#004b57;text-align:center;white-space:nowrap;padding:0 8px;margin:0;background:transparent}
 @media(max-width:480px){.bct-logo-crop{width:100%}.bct-logo-crop::after{height:19%}.bct-dynamic-slogan{font-size:clamp(1.25rem,5.2vw,2.15rem);bottom:5.1%}}
 
+
+/* BCT V46 PUBLIC ABOUT — continuous background, no box */
+.bct-about-public{max-width:920px;margin:34px auto 8px;padding:18px 10px 28px;text-align:center;background:transparent;border:0;box-shadow:none}
+.bct-about-accent{display:flex;align-items:center;justify-content:center;gap:7px;color:#0f5f63;margin-bottom:2px;line-height:1}
+.bct-about-accent span{font-size:.78rem;letter-spacing:.08em}.bct-about-accent b{display:block;font-size:1.35rem;margin-left:5px;font-weight:700}
+.bct-about-title{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700;letter-spacing:.035em;color:#0a4549;font-size:clamp(1.65rem,5vw,2.55rem);margin:6px 0 14px}
+.bct-about-lead{font-size:clamp(1.15rem,3.4vw,1.55rem);line-height:1.28;color:#123f45;margin:0 auto 16px;max-width:800px}
+.bct-about-public p{max-width:820px;margin:10px auto;line-height:1.62}
+.bct-about-callout,.bct-about-battle{font-weight:800;color:#0a4549}
+.bct-about-promise{display:grid;gap:5px;margin:16px auto;max-width:720px;font-weight:700;color:#173f42}
+.bct-about-close{font-size:clamp(1.1rem,3vw,1.35rem);font-weight:900;color:#0a4549;letter-spacing:.015em}
+.bct-about-licensed{font-weight:900;letter-spacing:.08em;color:#0f5f63}
+@media(max-width:600px){.bct-about-public{margin-top:24px;padding-left:4px;padding-right:4px}.bct-about-public p{font-size:.96rem}.bct-about-accent b{font-size:1.2rem}}
+
 </style>
 </head>
 <body>
@@ -472,7 +486,7 @@ body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;marg
 <header>
   <div class="wrap">
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">Your General Contractor</div></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">We Are Your General Contractor</div></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -528,6 +542,26 @@ body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;marg
       <button type="button" data-entry-login="admin">Admin</button>
     </div>
   </div>
+
+  <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle">
+    <div class="bct-about-accent" aria-hidden="true"><span>★</span><span>★</span><span>★</span><b>↓</b></div>
+    <h2 id="bctAboutTitle" class="bct-about-title" data-i18n="about.title">About BCT Renovations</h2>
+    <h3 class="bct-about-lead" data-i18n="about.lead">We’re Not Just Connecting You With a Contractor. We Are Your General Contractor.</h3>
+    <p data-i18n="about.p1">At BCT Renovations, LLC, homeowners deserve more than just a name and a phone number. You deserve to know who is working on your property, that they have been properly verified, and that someone is standing with you throughout the entire project.</p>
+    <p class="bct-about-callout" data-i18n="about.difference">That’s where BCT comes in.</p>
+    <p data-i18n="about.p2">Contractors in our network go through the BCT verification process, including verification of required credentials and current insurance documentation before they are approved to perform work through our platform.</p>
+    <p data-i18n="about.p3">BCT doesn’t simply make the connection and walk away. We help coordinate your project, assign qualified contractors, monitor progress, and remain your point of contact from the beginning of the project through completion.</p>
+    <p data-i18n="about.p4">Our goal is to take the guesswork out of hiring someone to work on your home. You shouldn’t have to wonder who to trust, whether the proper documentation is current, or who to turn to if something isn’t going the way it should.</p>
+    <p class="bct-about-battle" data-i18n="about.battle">You don’t have to fight that battle alone. <strong>BCT stands with the homeowner.</strong></p>
+    <div class="bct-about-promise" aria-label="BCT homeowner commitment">
+      <span data-i18n="about.promise1">We bring the contractors.</span>
+      <span data-i18n="about.promise2">We oversee the process.</span>
+      <span data-i18n="about.promise3">We help protect the quality of the project.</span>
+      <span data-i18n="about.promise4">We give you one company to turn to from start to finish.</span>
+    </div>
+    <p class="bct-about-close" data-i18n="about.close">Your home. Your project. Your contractor.</p>
+    <p class="bct-about-licensed">Licensed • Bonded • Insured</p>
+  </section>
 </section>
 
 
@@ -2055,15 +2089,15 @@ function bctText(key){
   return BCT_ENGLISH_FALLBACK[key]||key;
 }
 const BCT_BRAND_SLOGANS={
- en:'Your General Contractor',
- es:'Su Contratista General',
- fr:'Votre Entrepreneur Général',
- ht:'Kontraktè Jeneral Ou',
- pt:'Seu Empreiteiro Geral',
- vi:'Tổng Thầu Của Bạn',
- zh:'您的总承包商',
- ar:'المقاول العام الخاص بك',
- ru:'Ваш генеральный подрядчик'
+ en:'We Are Your General Contractor',
+ es:'Somos su contratista general',
+ fr:'Nous sommes votre entrepreneur général',
+ ht:'Nou se kontraktè jeneral ou',
+ pt:'Somos o seu empreiteiro geral',
+ vi:'Chúng tôi là tổng thầu của bạn',
+ zh:'我们是您的总承包商',
+ ar:'نحن المقاول العام الخاص بك',
+ ru:'Мы — ваш генеральный подрядчик'
 };
 function syncBrandSlogan(language){
  const el=document.querySelector('[data-bct-slogan]');
@@ -3296,6 +3330,36 @@ renderAll();
    if(entryIntent==='admin'&&current!=='admin-login')return openEntry('admin');
    if(!entryIntent&&protectedViews.has(current))setVisibleView('home');
  });}catch(e){}
+})();
+</script>
+
+<script>
+/* BCT V46 public About copy — local fallbacks keep the signed-out company story translated. */
+(function(){
+ const en={
+  'about.title':'About BCT Renovations',
+  'about.lead':'We’re Not Just Connecting You With a Contractor. We Are Your General Contractor.',
+  'about.p1':'At BCT Renovations, LLC, homeowners deserve more than just a name and a phone number. You deserve to know who is working on your property, that they have been properly verified, and that someone is standing with you throughout the entire project.',
+  'about.difference':'That’s where BCT comes in.',
+  'about.p2':'Contractors in our network go through the BCT verification process, including verification of required credentials and current insurance documentation before they are approved to perform work through our platform.',
+  'about.p3':'BCT doesn’t simply make the connection and walk away. We help coordinate your project, assign qualified contractors, monitor progress, and remain your point of contact from the beginning of the project through completion.',
+  'about.p4':'Our goal is to take the guesswork out of hiring someone to work on your home. You shouldn’t have to wonder who to trust, whether the proper documentation is current, or who to turn to if something isn’t going the way it should.',
+  'about.battle':'You don’t have to fight that battle alone. BCT stands with the homeowner.',
+  'about.promise1':'We bring the contractors.','about.promise2':'We oversee the process.','about.promise3':'We help protect the quality of the project.','about.promise4':'We give you one company to turn to from start to finish.','about.close':'Your home. Your project. Your contractor.'
+ };
+ try{Object.assign(BCT_ENGLISH_FALLBACK,en);}catch(_){}
+ const lead={
+  es:'No solo le conectamos con un contratista. Somos su contratista general.',
+  fr:'Nous ne faisons pas que vous mettre en relation avec un entrepreneur. Nous sommes votre entrepreneur général.',
+  ht:'Nou pa sèlman konekte ou ak yon kontraktè. Nou se kontraktè jeneral ou.',
+  pt:'Não apenas conectamos você a um empreiteiro. Somos o seu empreiteiro geral.',
+  vi:'Chúng tôi không chỉ kết nối bạn với một nhà thầu. Chúng tôi là tổng thầu của bạn.',
+  zh:'我们不只是为您联系承包商。我们就是您的总承包商。',
+  ar:'نحن لا نكتفي بربطك بمقاول. نحن المقاول العام الخاص بك.',
+  ru:'Мы не просто связываем вас с подрядчиком. Мы — ваш генеральный подрядчик.'
+ };
+ const titles={es:'Acerca de BCT Renovations',fr:'À propos de BCT Renovations',ht:'Konsènan BCT Renovations',pt:'Sobre a BCT Renovations',vi:'Giới thiệu BCT Renovations',zh:'关于 BCT Renovations',ar:'حول BCT Renovations',ru:'О BCT Renovations'};
+ try{for(const lang of Object.keys(lead)){BCT_LOCAL_TRANSLATIONS[lang]=BCT_LOCAL_TRANSLATIONS[lang]||{};BCT_LOCAL_TRANSLATIONS[lang]['about.title']=titles[lang];BCT_LOCAL_TRANSLATIONS[lang]['about.lead']=lead[lang];}}catch(_){}
 })();
 </script>
 
