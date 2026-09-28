@@ -1,0 +1,24 @@
+name: BCT V46 Production Guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  v46-production-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out current V46
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run 200 V46 production safeguards
+        run: node tests/v46-production-200-checks.mjs
