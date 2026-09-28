@@ -2664,8 +2664,9 @@ function jobCardHtml(j,closed){
   const finalClosed=closed||awarded||completed;
   const approved=db.applications.find(a=>a.status==='Approved BCT Subcontractor');
   const existing=approved&&db.bids.find(b=>b.jobId===j.id&&b.appId===approved.id&&b.status!=='Rejected');
-  const action=finalClosed?`<span class="badge good">${completed?'Completed':'Bidding Closed'}</span>`:(existing?`<button class="success" disabled>✓ Bid Submitted — ${existing.status||'Pending Review'}</button>`:`<button onclick="demoBid('${j.id}')">Submit Bid</button>`);
-  return `<div class="card job"><div><div class="project-meta"><span class="badge good">${j.id}</span><span class="badge ${finalClosed?'good':'info'}">${completed?'Completed':awarded?'Awarded':j.trade}</span>${j.verifiedCustomer?'<span class="verified-customer">BCT VERIFIED CUSTOMER</span>':''}</div><h3>${j.id} — ${j.title}</h3><div class="muted">${j.location||''}</div><p>${j.scope||''}</p><small>Start: ${j.startDate||'TBD'} • Bid deadline: ${j.bidDeadline||'TBD'}</small></div><div class="right">${Number(j.budget)>0?`<div class="metric" style="font-size:22px">$${Number(j.budget).toLocaleString()}</div><small>target amount</small>`:'<small>BCT target not published</small>'}<br><br>${action}</div></div>`;
+  const safeId=esc(j.id||''),safeTrade=esc(j.trade||''),safeTitle=esc(j.title||''),safeLocation=esc(j.location||''),safeScope=esc(j.scope||''),safeStart=esc(j.startDate||'TBD'),safeDeadline=esc(j.bidDeadline||'TBD');
+  const action=finalClosed?`<span class="badge good">${completed?'Completed':'Bidding Closed'}</span>`:(existing?`<button class="success" disabled>✓ Bid Submitted — ${esc(existing.status||'Pending Review')}</button>`:`<button data-demo-bid="${safeId}">Submit Bid</button>`);
+  return `<div class="card job"><div><div class="project-meta"><span class="badge good">${safeId}</span><span class="badge ${finalClosed?'good':'info'}">${completed?'Completed':awarded?'Awarded':safeTrade}</span>${j.verifiedCustomer?'<span class="verified-customer">BCT VERIFIED CUSTOMER</span>':''}</div><h3>${safeId} — ${safeTitle}</h3><div class="muted">${safeLocation}</div><p>${safeScope}</p><small>Start: ${safeStart} • Bid deadline: ${safeDeadline}</small></div><div class="right">${Number(j.budget)>0?`<div class="metric" style="font-size:22px">${Number(j.budget).toLocaleString()}</div><small>target amount</small>`:'<small>BCT target not published</small>'}<br><br>${action}</div></div>`;
 }
 function renderJobs(){
   const open=[],closed=[];
@@ -2674,6 +2675,8 @@ function renderJobs(){
   el.innerHTML=open.map(j=>jobCardHtml(j,false)).join('')||'<div class="notice"><b>No jobs are currently open for bidding.</b></div>';
   const sec=document.getElementById('closedJobsSection'),ce=document.getElementById('closedJobList');
   if(sec&&ce){sec.classList.toggle('hidden',!closed.length);ce.innerHTML=closed.map(j=>jobCardHtml(j,true)).join('');}
+  el.querySelectorAll('[data-demo-bid]').forEach(btn=>btn.onclick=()=>window.demoBid(btn.dataset.demoBid));
+  if(ce)ce.querySelectorAll('[data-demo-bid]').forEach(btn=>btn.onclick=()=>window.demoBid(btn.dataset.demoBid));
   applyBctLanguage(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
 }
 window.demoBid=async(jid)=>{
