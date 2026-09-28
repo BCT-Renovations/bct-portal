@@ -46,7 +46,7 @@ const requiredMarkers = [
   ['larger signed-out logo sizing', 'width:clamp(330px,92vw,680px)!important;height:auto!important'],
   ['bolder general contractor slogan', 'body:not(.bct-authenticated) .bct-dynamic-slogan{font-weight:900!important'],
   ['capitalized about close line', 'Your Home, Your Project, Your Contractor.'],
-  ['final visible iphone override', 'BCT V46 LIVE IPHONE VISIBLE OVERRIDE'],
+  ['final visible iphone override', 'BCT V46 CANONICAL PUBLIC + SHARED LANDING DESIGN'],
   ['iphone startup reset script', 'bct-v46-visible-landing-reset-v26'],
   ['locked BCT teal brand token', '--bct-teal:#0f5f63'],
   ['locked BCT light app background', '--bg:#f5f7f7'],
