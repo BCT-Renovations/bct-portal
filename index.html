@@ -3655,5 +3655,37 @@ body.bct-entry-admin:not(.bct-authenticated) .bct-portal-about{display:none!impo
 })();
 </script>
 
+
+<style>
+/* BCT V46 LOCKED PORTAL ENTRY FLOW 2026-09-28 */
+body.bct-portal-entered>header{display:none!important}
+body.bct-portal-entered main.wrap{padding-top:8px}
+body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(.bct-public-contractor-login):not(#bctContractorAbout){display:none!important}
+body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #view-customer> :not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
+body.bct-entry-admin:not(.bct-authenticated) #view-admin{display:none!important}
+#view-status.bct-public-entry,#view-customer.bct-public-entry{margin-top:0!important}
+@media(max-width:820px){body.bct-portal-entered main.wrap{padding:6px 12px 18px}.bct-public-contractor-login,#bctHomeownerLoginCard{margin-top:6px!important}}
+</style>
+<script>
+/* BCT V46 LOCKED PORTAL ENTRY FLOW 2026-09-28 */
+(function(){
+ const contractorView=document.getElementById('view-status');
+ const contractorLogin=document.getElementById('bctContractorLoginBtn')?.closest('.card');
+ const contractorAbout=document.getElementById('bctContractorAbout');
+ if(contractorLogin){contractorLogin.classList.add('bct-public-contractor-login');if(contractorView)contractorView.prepend(contractorLogin);}
+ if(contractorAbout&&contractorLogin&&contractorView){contractorLogin.after(contractorAbout);}
+ const homeView=document.getElementById('view-customer'),homeLogin=document.getElementById('bctHomeownerLoginCard'),homeAbout=document.getElementById('bctAboutPublic');
+ if(homeLogin&&homeView)homeView.prepend(homeLogin);
+ if(homeAbout&&homeLogin&&homeView)homeLogin.after(homeAbout);
+ function entered(kind){document.body.classList.add('bct-portal-entered');document.body.classList.toggle('bct-entry-client',kind==='client');document.body.classList.toggle('bct-entry-contractor',kind==='contractor');document.body.classList.toggle('bct-entry-admin',kind==='admin');}
+ document.querySelectorAll('[data-entry-login]').forEach(btn=>btn.addEventListener('click',()=>{entered(btn.dataset.entryLogin);if(btn.dataset.entryLogin==='contractor')contractorView?.classList.add('bct-public-entry');if(btn.dataset.entryLogin==='client')homeView?.classList.add('bct-public-entry');},true));
+ const oldReturn=window.bctReturnToPublicLanding;
+ window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-portal-entered');contractorView?.classList.remove('bct-public-entry');homeView?.classList.remove('bct-public-entry');return oldReturn?.();};
+ function sync(session){const signedIn=!!session?.user;if(signedIn){document.body.classList.add('bct-authenticated');document.body.classList.remove('bct-signed-out');}const cl=document.getElementById('bctContractorLogoutBtn'),hl=document.getElementById('bctHomeLogoutBtn');if(cl)cl.style.display=signedIn?'':'none';if(hl)hl.style.display=signedIn?'':'none';}
+ try{supabaseClient?.auth?.getSession?.().then(r=>sync(r?.data?.session));supabaseClient?.auth?.onAuthStateChange?.((_e,s)=>sync(s));}catch(_){}
+})();
+</script>
 </body>
 </html>
