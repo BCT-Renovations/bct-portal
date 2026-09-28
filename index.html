@@ -2315,12 +2315,12 @@ function syncLoginLanguageUI(language){
 }
 const bctLoginLanguageSelector=document.getElementById('bctLoginLanguage');
 if(bctLoginLanguageSelector){
-  bctLoginLanguageSelector.addEventListener('change',e=>{syncBrandSlogan(e.target.value);applyBctLanguage(e.target.value)});
+  bctLoginLanguageSelector.addEventListener('change',e=>{applyBctLanguage(e.target.value)});
 }
 syncBrandSlogan(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
 const bctLanguageSelector=document.getElementById('bctLanguage');
 if(bctLanguageSelector){
-  bctLanguageSelector.addEventListener('change',e=>{syncBrandSlogan(e.target.value);applyBctLanguage(e.target.value)});
+  bctLanguageSelector.addEventListener('change',e=>{applyBctLanguage(e.target.value)});
   applyBctLanguage(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
 }
 
