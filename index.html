@@ -769,8 +769,8 @@ html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-license
       <button type="button" data-entry-login="admin">Admin</button>
     </div>
     <div class="bct-share-referral">
-      <button type="button" class="secondary" id="bctShareAppBtn" aria-describedby="bctShareAppHelp">Share BCT App</button>
-      <p class="muted" id="bctShareAppHelp">Know someone who needs home-improvement service? Share BCT so they can create their own account and submit their project.</p>
+      <button type="button" class="secondary" id="bctShareAppBtn" aria-describedby="bctShareAppHelp" data-i18n="share.button">Share BCT App</button>
+      <p class="muted" id="bctShareAppHelp" data-i18n="share.help">Know someone who needs home-improvement service? Share BCT so they can create their own account and submit their project.</p>
       <div id="bctShareAppStatus" class="muted" role="status" aria-live="polite"></div>
     </div>
   </div>
@@ -2289,6 +2289,7 @@ async function applyBctLanguage(languageCode){
   if(loginSelector) loginSelector.value=language;
   syncLoginLanguageUI(language);
   syncBrandSlogan(language);
+  syncShareLanguage(language);
 
   const nodes=[...document.querySelectorAll('[data-i18n]')];
   await Promise.all(nodes.map(async node=>{
@@ -2334,6 +2335,22 @@ function bctText(key){
   if(language!=='en' && BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) return BCT_HOME_TRANSLATION_OVERRIDES[language][key];
   if(language!=='en' && BCT_LOCAL_TRANSLATIONS[language]?.[key]) return BCT_LOCAL_TRANSLATIONS[language][key];
   return BCT_ENGLISH_FALLBACK[key]||key;
+}
+const BCT_SHARE_TRANSLATIONS={
+ en:{button:'Share BCT App',help:'Know someone who needs home-improvement service? Share BCT so they can create their own account and submit their project.',text:'BCT Renovations can help with your home-improvement project. Open the BCT app, create your own account, and submit your project directly to BCT.',shared:'BCT app shared.',copied:'BCT app link copied. You can paste it into a text or email.',failed:'Sharing did not open. You can copy this page address from your browser.'},
+ es:{button:'Compartir la app de BCT',help:'¿Conoce a alguien que necesite servicios para mejorar su hogar? Comparta BCT para que pueda crear su propia cuenta y enviar su proyecto.',text:'BCT Renovations puede ayudar con su proyecto de mejoras del hogar. Abra la app de BCT, cree su propia cuenta y envíe su proyecto directamente a BCT.',shared:'App de BCT compartida.',copied:'Enlace de la app de BCT copiado. Puede pegarlo en un mensaje de texto o correo electrónico.',failed:'No se pudo abrir la opción para compartir. Puede copiar la dirección de esta página desde su navegador.'},
+ fr:{button:'Partager l’app BCT',help:'Vous connaissez quelqu’un qui a besoin de travaux? Partagez BCT afin qu’il puisse créer son propre compte et soumettre son projet.',text:'BCT Renovations peut vous aider avec votre projet de rénovation. Ouvrez l’app BCT, créez votre propre compte et soumettez votre projet directement à BCT.',shared:'App BCT partagée.',copied:'Lien de l’app BCT copié. Vous pouvez le coller dans un SMS ou un e-mail.',failed:'Le partage ne s’est pas ouvert. Vous pouvez copier l’adresse de cette page depuis votre navigateur.'},
+ ht:{button:'Pataje app BCT la',help:'Ou konnen yon moun ki bezwen sèvis amelyorasyon kay? Pataje BCT pou li ka kreye pwòp kont li epi soumèt pwojè li.',text:'BCT Renovations ka ede ak pwojè amelyorasyon kay ou. Louvri app BCT la, kreye pwòp kont ou, epi soumèt pwojè ou dirèkteman bay BCT.',shared:'App BCT la pataje.',copied:'Lyen app BCT la kopye. Ou ka kole li nan yon tèks oswa imèl.',failed:'Pataj la pa louvri. Ou ka kopye adrès paj sa a nan navigatè ou.'},
+ pt:{button:'Compartilhar app BCT',help:'Conhece alguém que precisa de serviços de melhoria residencial? Compartilhe a BCT para que a pessoa possa criar a própria conta e enviar o projeto.',text:'A BCT Renovations pode ajudar com seu projeto de melhoria residencial. Abra o app da BCT, crie sua própria conta e envie seu projeto diretamente para a BCT.',shared:'App da BCT compartilhado.',copied:'Link do app da BCT copiado. Você pode colá-lo em uma mensagem ou e-mail.',failed:'O compartilhamento não abriu. Você pode copiar o endereço desta página no navegador.'},
+ vi:{button:'Chia sẻ ứng dụng BCT',help:'Biết ai cần dịch vụ cải tạo nhà? Hãy chia sẻ BCT để họ có thể tạo tài khoản riêng và gửi dự án của mình.',text:'BCT Renovations có thể giúp dự án cải tạo nhà của bạn. Mở ứng dụng BCT, tạo tài khoản riêng và gửi dự án trực tiếp cho BCT.',shared:'Đã chia sẻ ứng dụng BCT.',copied:'Đã sao chép liên kết ứng dụng BCT. Bạn có thể dán vào tin nhắn hoặc email.',failed:'Không mở được tính năng chia sẻ. Bạn có thể sao chép địa chỉ trang này từ trình duyệt.'},
+ zh:{button:'分享 BCT 应用',help:'认识需要家装服务的人吗？分享 BCT，让他们创建自己的账户并提交项目。',text:'BCT Renovations 可以帮助您的家装项目。打开 BCT 应用，创建您自己的账户，并直接向 BCT 提交项目。',shared:'已分享 BCT 应用。',copied:'已复制 BCT 应用链接。您可以将其粘贴到短信或电子邮件中。',failed:'未能打开分享功能。您可以从浏览器复制此页面地址。'},
+ ar:{button:'مشاركة تطبيق BCT',help:'هل تعرف شخصًا يحتاج إلى خدمات تحسين المنزل؟ شارك BCT ليتمكن من إنشاء حسابه الخاص وإرسال مشروعه.',text:'يمكن لـ BCT Renovations مساعدتك في مشروع تحسين منزلك. افتح تطبيق BCT وأنشئ حسابك الخاص وأرسل مشروعك مباشرةً إلى BCT.',shared:'تمت مشاركة تطبيق BCT.',copied:'تم نسخ رابط تطبيق BCT. يمكنك لصقه في رسالة نصية أو بريد إلكتروني.',failed:'لم تفتح نافذة المشاركة. يمكنك نسخ عنوان هذه الصفحة من المتصفح.'},
+ ru:{button:'Поделиться приложением BCT',help:'Знаете кого-то, кому нужны услуги по ремонту дома? Поделитесь BCT, чтобы этот человек мог создать собственную учетную запись и отправить свой проект.',text:'BCT Renovations может помочь с вашим проектом по ремонту дома. Откройте приложение BCT, создайте собственную учетную запись и отправьте проект напрямую в BCT.',shared:'Приложение BCT отправлено.',copied:'Ссылка на приложение BCT скопирована. Ее можно вставить в сообщение или электронное письмо.',failed:'Окно отправки не открылось. Вы можете скопировать адрес этой страницы из браузера.'}
+};
+function syncShareLanguage(language){
+ const t=BCT_SHARE_TRANSLATIONS[language]||BCT_SHARE_TRANSLATIONS.en;
+ const b=document.getElementById('bctShareAppBtn'),h=document.getElementById('bctShareAppHelp');
+ if(b)b.textContent=t.button;if(h)h.textContent=t.help;
 }
 const BCT_BRAND_SLOGANS={
  en:'We Are Your General Contractor',
@@ -3674,14 +3691,15 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
   const status=document.getElementById('bctShareAppStatus');
   if(!btn)return;
   const publicUrl=()=>location.origin+location.pathname;
-  const shareText='BCT Renovations can help with your home-improvement project. Open the BCT app, create your own account, and submit your project directly to BCT.';
   btn.addEventListener('click',async()=>{
-    const data={title:'BCT Renovations',text:shareText,url:publicUrl()};
+    const language=localStorage.getItem('bctLanguage')||document.documentElement.lang||'en';
+    const t=(typeof BCT_SHARE_TRANSLATIONS!=='undefined'&&(BCT_SHARE_TRANSLATIONS[language]||BCT_SHARE_TRANSLATIONS.en))||{text:'BCT Renovations can help with your home-improvement project.',shared:'BCT app shared.',copied:'BCT app link copied. You can paste it into a text or email.',failed:'Sharing did not open. You can copy this page address from your browser.'};
+    const data={title:'BCT Renovations',text:t.text,url:publicUrl()};
     try{
-      if(navigator.share){await navigator.share(data);if(status)status.textContent='BCT app shared.';return;}
-      if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(shareText+' '+publicUrl());if(status)status.textContent='BCT app link copied. You can paste it into a text or email.';return;}
-      const box=document.createElement('textarea');box.value=shareText+' '+publicUrl();box.setAttribute('readonly','');box.style.position='fixed';box.style.opacity='0';document.body.appendChild(box);box.select();document.execCommand('copy');box.remove();if(status)status.textContent='BCT app link copied. You can paste it into a text or email.';
-    }catch(e){if(e?.name!=='AbortError'&&status)status.textContent='Sharing did not open. You can copy this page address from your browser.';}
+      if(navigator.share){await navigator.share(data);if(status)status.textContent=t.shared;return;}
+      if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(t.text+' '+publicUrl());if(status)status.textContent=t.copied;return;}
+      const box=document.createElement('textarea');box.value=t.text+' '+publicUrl();box.setAttribute('readonly','');box.style.position='fixed';box.style.opacity='0';document.body.appendChild(box);box.select();document.execCommand('copy');box.remove();if(status)status.textContent=t.copied;
+    }catch(e){if(e?.name!=='AbortError'&&status)status.textContent=t.failed;}
   });
 })();
 /* BCT V46 AUTHORITATIVE SIGN-OUT RESET */
