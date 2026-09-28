@@ -56,7 +56,7 @@ const signatures=[
   "<input type=\"checkbox\" id=\"customerPrivacy\" required style=\"width:auto\">",
   "<input name=\"legalName\" required>",
   "<input name=\"businessName\">",
-  "<input name=\"phone\" type=\"tel\" inputmode=\"tel\" required>",
+  "<input name=\"phone\" type=\"tel\" autocomplete=\"tel\" inputmode=\"tel\" required>",
   "<input name=\"email\" type=\"email\" required autocomplete=\"email\">",
   "<input name=\"contractorPassword\" type=\"password\" minlength=\"7\" required autocomplete=\"new-password\">",
   "<input name=\"contractorPassword2\" type=\"password\" minlength=\"7\" required autocomplete=\"new-password\">",
