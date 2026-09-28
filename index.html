@@ -3509,8 +3509,27 @@ renderAll();
    entryIntent=kind;
    document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');
    document.body.classList.add('bct-entry-'+kind);
-   const s=await sessionNow();setAuthShell(s);
-   if(s){if(kind==='admin')setVisibleView('admin');else if(kind==='contractor')setVisibleView('status');else setVisibleView('customer');return;}
+   // Admin must respond immediately on iPhone even if Supabase session recovery is slow.
+   // Show the secure gate first, then upgrade to the dashboard only after an admin-role check.
+   if(kind==='admin')setVisibleView('admin-login');
+   const s=await Promise.race([
+     sessionNow(),
+     new Promise(resolve=>setTimeout(()=>resolve(null),1800))
+   ]);
+   setAuthShell(s);
+   if(s){
+     if(kind==='admin'){
+       const role=String(s?.user?.app_metadata?.role||'').trim().toLowerCase();
+       if(role==='admin'){setVisibleView('admin');return;}
+       try{await supabaseClient?.auth?.signOut?.({scope:'local'});}catch(_){}
+       setAuthShell(null);
+       setVisibleView('admin-login');
+       const status=document.getElementById('adminAuthStatus');
+       if(status)status.innerHTML='<div class="notice">This account is signed in, but it is not authorized for BCT Admin. Sign in with the BCT administrator account.</div>';
+       return;
+     }
+     if(kind==='contractor')setVisibleView('status');else setVisibleView('customer');return;
+   }
    if(kind==='admin'){setVisibleView('admin-login');return;}
    if(kind==='contractor'){
      setVisibleView('status');
