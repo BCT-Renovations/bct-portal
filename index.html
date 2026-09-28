@@ -3512,7 +3512,7 @@ renderAll();
    document.body.classList.add('bct-entry-'+kind);
    // Admin must respond immediately on iPhone even if Supabase session recovery is slow.
    // Show the secure gate first, then upgrade to the dashboard only after an admin-role check.
-   if(kind==='admin')setVisibleView('admin-login');
+   if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});}
    const s=await Promise.race([
      sessionNow(),
      new Promise(resolve=>setTimeout(()=>resolve(null),1800))
@@ -3531,7 +3531,7 @@ renderAll();
      }
      if(kind==='contractor')setVisibleView('status');else setVisibleView('customer');return;
    }
-   if(kind==='admin'){setVisibleView('admin-login');return;}
+   if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});return;}
    if(kind==='contractor'){
      setVisibleView('status');
      const view=document.getElementById('view-status');
@@ -3543,7 +3543,7 @@ renderAll();
      const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');
      if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
      view.style.display='block';
-     requestAnimationFrame(()=>login?.scrollIntoView({block:'start'}));
+     requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
      return;
    }
    setVisibleView('customer');
@@ -3559,7 +3559,7 @@ renderAll();
    if(hero)hero.style.removeProperty('display');
    if(tabs)tabs.style.removeProperty('display');
    view.style.display='block';
-   requestAnimationFrame(()=>card?.scrollIntoView({block:'start'}));
+   requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
  }
  document.querySelectorAll('[data-entry-login]').forEach(b=>b.addEventListener('click',()=>openEntry(b.dataset.entryLogin)));
  window.addEventListener('popstate',()=>{
@@ -3642,6 +3642,9 @@ renderAll();
 
 <style>
 /* BCT V46 PORTAL PAGE ISOLATION — public About content belongs to landing only */
+body.bct-entry-client:not(.bct-authenticated),
+body.bct-entry-contractor:not(.bct-authenticated),
+body.bct-entry-admin:not(.bct-authenticated){scroll-behavior:auto}
 body.bct-entry-client:not(.bct-authenticated) #view-home,
 body.bct-entry-contractor:not(.bct-authenticated) #view-home,
 body.bct-entry-admin:not(.bct-authenticated) #view-home,
