@@ -443,6 +443,20 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
 .bct-login-language label{display:block;margin:0 0 6px;font-weight:800;color:#0A5558}
 .bct-login-language select{width:100%;min-height:50px;border:1px solid #a9c7b3;border-radius:12px;background:#fff;color:#173c3e;font-weight:700;padding:10px 42px 10px 12px}
 
+/* BCT V46 MASTER SIGN-IN LOCK — keep signed-out screen identical to approved reference */
+body:not(.bct-authenticated) header nav,
+body:not(.bct-authenticated) header .wrap>div:has(#bctLanguage){display:none!important}
+body:not(.bct-authenticated) header .wrap{padding:0 0 8px!important}
+body:not(.bct-authenticated) header .brand{margin:0!important;padding:0!important}
+body:not(.bct-authenticated) #bctSignedOutEntry{display:block!important;max-width:calc(100% - 40px)!important;margin:46px auto 0!important;padding:28px!important}
+body:not(.bct-authenticated) #bctEntryActions{display:grid!important;grid-template-columns:1fr!important;gap:18px!important}
+body:not(.bct-authenticated) #bctEntryActions button{display:block!important;width:100%!important;min-height:104px!important;font-size:1.15rem!important}
+body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;margin:28px 0 40px!important}
+@media(max-width:480px){
+ body:not(.bct-authenticated) #bctSignedOutEntry{max-width:calc(100% - 40px)!important;margin:46px auto 0!important;padding:28px!important}
+ body:not(.bct-authenticated) #bctEntryActions{gap:18px!important}
+}
+
 /* BCT V46 LANGUAGE-AWARE BRAND SLOGAN — master-reference treatment */
 .bct-dynamic-brand{width:100%;display:flex;justify-content:center;background:#e8f5ec}
 .bct-logo-crop{width:min(100vw,630px);overflow:hidden;background:#e8f5ec;line-height:0;position:relative!important}
