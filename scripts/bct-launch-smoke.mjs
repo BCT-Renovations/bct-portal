@@ -192,6 +192,10 @@ for (const slogan of ['Your General Contractor','Su Contratista General','Votre 
 }
 assert(html.includes("document.documentElement.dir=language==='ar'?'rtl':'ltr'"), 'Arabic must switch the document to RTL.');
 assert(html.includes("requestId!==BCT_LANGUAGE_REQUEST_ID"), 'Language switching must guard against stale async translation responses.');
+assert(!/\b(?:alert|confirm|prompt)\s*\(/.test(html), 'Production V46 must not use native browser alert/confirm/prompt dialogs.');
+assert(html.includes('function bctDialogShell(') && html.includes("dialog.addEventListener('cancel'"), 'V46 must provide an accessible in-app confirmation/input dialog with Escape cancellation.');
+assert(html.includes('bctDialogPending=false') && html.includes('previous?.focus'), 'V46 in-app dialogs must guard concurrent prompts and restore focus.');
+
 assert(html.includes('.bct-dynamic-slogan') && html.includes('background:transparent'), 'Translated slogan must remain visually integrated without its own box.');
 assert(html.includes('.bct-logo-crop::after') && html.includes('background:linear-gradient'), 'Master-reference slogan cover must preserve the integrated green treatment.');
 
