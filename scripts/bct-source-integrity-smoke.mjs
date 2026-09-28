@@ -2,7 +2,6 @@ import fs from 'node:fs';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
-const homeownerPages = fs.readFileSync(new URL('../bct-homeowner-pages.js', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -38,8 +37,8 @@ assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must f
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
 assert(serviceWorker.includes('bct-official-logo-hotfix'), 'service worker must force the selected official logo rollout.');
 assert(/bct-portal-shell-v\d+-(?:command-center|homeowner-pages|clean-signin|wide-logo|slogan|official-logo)/.test(serviceWorker), 'service worker cache version must stay bumped for V46 UI rollouts.');
-assert(serviceWorker.includes('bct-portal-shell-v15-official-logo-refresh'), 'service worker cache version must include the official logo refresh rollout.');
-assert(serviceWorker.includes('/bct-homeowner-pages.js'), 'service worker must inject the paged homeowner portal controller.');
+assert(serviceWorker.includes('bct-portal-shell-v16-v46-live-cleanup'), 'service worker cache version must include the current V46 live cleanup rollout.');
+assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'service worker must not cache the retired standalone homeowner controller.');
 
 try {
   new Function(serviceWorker);
@@ -47,10 +46,5 @@ try {
   throw new Error(`service-worker.js failed to parse: ${error.message}`);
 }
 
-try {
-  new Function(homeownerPages);
-} catch (error) {
-  throw new Error(`bct-homeowner-pages.js failed to parse: ${error.message}`);
-}
 
 console.log('BCT source integrity smoke passed.');
