@@ -205,9 +205,9 @@ const requiredIds=[
 ];
 for(const id of requiredIds){
   check('unique production element #'+id,()=>{
-    const escaped=id.replace(/[.*+?^$\{\}()|[\]\\]/g,'\\$&');
-    const matches=html.match(new RegExp('\\\\bid=["\\\']'+escaped+'["\\\']','g'))||[];
-    return matches.length===1;
+    const doubleQuoted=html.split('id="'+id+'"').length-1;
+    const singleQuoted=html.split("id='"+id+"'").length-1;
+    return doubleQuoted+singleQuoted===1;
   });
 }
 
