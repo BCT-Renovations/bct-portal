@@ -2567,7 +2567,7 @@ async function bctAdminLogout(){
 }
 
 document.getElementById('adminLoginBtn').onclick=bctAdminLogin;
-document.getElementById('adminBackBtn').onclick=()=>{document.body.classList.remove('bct-entry-admin','bct-entry-client','bct-entry-contractor');setVisibleView('home');window.scrollTo({top:0,behavior:'smooth'});};
+document.getElementById('adminBackBtn').onclick=()=>window.bctReturnToPublicLanding?.();
 document.getElementById('adminLogoutBtn').onclick=bctAdminLogout;
 document.getElementById('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')bctAdminLogin();});
 document.getElementById('adminShowPassword').addEventListener('change',e=>{
@@ -3513,6 +3513,11 @@ renderAll();
  const style=document.createElement('style');style.textContent='body:not(.bct-authenticated) .bct-signedout-hidden{display:none!important}';document.head.appendChild(style);
  sessionNow().then(setAuthShell);
  try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{
+   if(_event==='SIGNED_OUT'){
+     entryIntent=null;
+     window.bctReturnToPublicLanding?.();
+     return;
+   }
    setAuthShell(session);
    if(session){const intent=entryIntent;entryIntent=null;if(intent==='contractor'){setVisibleView('status');requestAnimationFrame(()=>document.getElementById('view-status')?.scrollIntoView({block:'start'}));}else if(intent==='client'){setVisibleView('customer');showCustomerPage('overview');requestAnimationFrame(()=>document.getElementById('view-customer')?.scrollIntoView({block:'start'}));}else if(intent==='admin'){setVisibleView('admin');}return;}
    const current=(document.querySelector('.view:not(.hidden)')?.id||'').replace('view-','');
