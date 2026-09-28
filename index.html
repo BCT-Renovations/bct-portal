@@ -2496,24 +2496,24 @@ window.verifyCustomer=(customerId,status)=>{
 }
 window.updateCustomerProject=(pid,key,val)=>{const p=db.customerProjects.find(x=>x.id===pid);if(p){p[key]=val;localStorage.setItem(KEY,JSON.stringify(db));}}
 window.projectAction=(pid,status)=>{const p=db.customerProjects.find(x=>x.id===pid);if(p){p.status=status;p.workflowStage=status;p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status,at:new Date().toISOString(),note:'Updated by BCT'});save();}}
-window.holdCustomerProject=(pid)=>{
+window.holdCustomerProject=async(pid)=>{
   const p=db.customerProjects.find(x=>x.id===pid);if(!p)return;
-  if(!confirm('Put '+pid+' ON HOLD? This does not send the project to contractor bidding.'))return;
+  if(!await bctAskConfirm('Put '+pid+' ON HOLD? This does not send the project to contractor bidding.'))return;
   p.status='On Hold';p.workflowStage='On Hold';p.statusHistory=p.statusHistory||[];
   p.statusHistory.unshift({status:'On Hold',at:new Date().toISOString(),note:'Put on hold by BCT'});save();
 }
-window.requestProjectContractorAssignment=(pid,contractorId)=>{
+window.requestProjectContractorAssignment=async(pid,contractorId)=>{
   const p=db.customerProjects.find(x=>x.id===pid);if(!p||!contractorId)return;
   const a=db.applications.find(x=>x.id===contractorId);if(!a)return;
-  if(!confirm('Assign '+(a.businessName||a.legalName||a.id)+' to '+(p.biddingJobId||p.id)+'? This assignment will be recorded and locked.')){renderCustomerProjectsAdmin();return;}
-  assignProjectContractor(pid,contractorId,true);
+  if(!await bctAskConfirm('Assign '+(a.businessName||a.legalName||a.id)+' to '+(p.biddingJobId||p.id)+'? This assignment will be recorded and locked.')){renderCustomerProjectsAdmin();return;}
+  await assignProjectContractor(pid,contractorId,true);
 }
-window.assignProjectContractor=(pid,contractorId,confirmed=false)=>{
+window.assignProjectContractor=async(pid,contractorId,confirmed=false)=>{
   const p=db.customerProjects.find(x=>x.id===pid);if(!p)return false;
   const a=db.applications.find(x=>x.id===contractorId);if(!a)return false;
   const activeOther=db.customerProjects.find(x=>x.id!==p.id&&x.assignedContractorId===a.id&&!['Completed','Declined by BCT'].includes(x.workflowStage));
   if(activeOther){
-    const ok=confirm((a.businessName||a.legalName||a.id)+' already has active job '+(activeOther.biddingJobId||activeOther.id)+'. BCT policy allows a second contract only with explicit Admin approval. Approve and record this exception?');
+    const ok=await bctAskConfirm((a.businessName||a.legalName||a.id)+' already has active job '+(activeOther.biddingJobId||activeOther.id)+'. BCT policy allows a second contract only with explicit Admin approval. Approve and record this exception?');
     if(!ok){renderCustomerProjectsAdmin();return false;}
     p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Second Contract Override Approved',at:new Date().toISOString(),note:'BCT Admin approved exception while '+(activeOther.biddingJobId||activeOther.id)+' remains active'});
   }
@@ -2538,19 +2538,19 @@ window.saveQualityFiles=(pid)=>{
   p.qualityReviewFiles=p.qualityReviewFiles||[];const seen=new Set(p.qualityReviewFiles.map(x=>x.name+'|'+x.size));
   files.forEach(f=>{const k=f.name+'|'+f.size;if(!seen.has(k)){p.qualityReviewFiles.push({name:f.name,size:f.size,addedAt:new Date().toISOString()});seen.add(k);}});save();
 }
-window.qualityReviewDecision=(pid,decision)=>{
+window.qualityReviewDecision=async(pid,decision)=>{
   const p=db.customerProjects.find(x=>x.id===pid);if(!p||p.workflowStage!=='BCT Quality Review')return;
   if(decision==='correction'){
-    const note=prompt('Describe the correction required before this job can pass BCT Quality Review:');if(!note||!note.trim())return;
+    const note=await bctAskInput('Describe the correction required before this job can pass BCT Quality Review:');if(!note||!note.trim())return;
     p.correctionNote=note.trim();p.workflowStage='In Progress';p.status='Correction Required';p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Correction Required',at:new Date().toISOString(),note:p.correctionNote});save();return;
   }
   if(!(p.qualityReviewNotes||'').trim()){bctNotice('Enter BCT Quality Review notes before passing the job.');return;}
   if(!(p.qualityReviewFiles||[]).length){bctNotice('Add at least one completion/quality review file before passing the job.');return;}
   if((p.homeownerSignoff||'Pending')==='Pending'){bctNotice('Set Homeowner Completion Acknowledgment to Received or Not Required by BCT before completion.');return;}
-  if(!confirm('Pass BCT Quality Review and mark this job Completed? This will lock the workflow.'))return;
+  if(!await bctAskConfirm('Pass BCT Quality Review and mark this job Completed? This will lock the workflow.'))return;
   p.workflowStage='Completed';p.status='Completed';p.completedAt=new Date().toISOString();p.correctionNote='';p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Completed',at:p.completedAt,note:'BCT Quality Review passed'});save();
 }
-window.publishCustomerProject=(pid)=>{
+window.publishCustomerProject=async(pid)=>{
   const p=db.customerProjects.find(x=>x.id===pid);if(!p)return;
   if(p.workflowStage==='On Hold'){bctNotice('This project is On Hold. Mark Scope Ready before sending it to contractor bidding.');return;}
   const c=db.customers.find(x=>x.id===p.customerId)||{};
@@ -2559,7 +2559,7 @@ window.publishCustomerProject=(pid)=>{
   if(!(Number(p.targetSubcontractAmount)>0)){bctNotice('Enter the BCT Target Subcontract Amount before publishing this job.');return}
   if(!p.bidDeadline){bctNotice('Enter a Bid Deadline before publishing this job.');return}
   if(p.biddingJobId){bctNotice('This customer project has already been sent to contractor bidding.');return}
-  if(!confirm('Send '+pid+' to CONTRACTOR BIDDING? Only the sanitized contractor scope and city/state will be published.'))return;
+  if(!await bctAskConfirm('Send '+pid+' to CONTRACTOR BIDDING? Only the sanitized contractor scope and city/state will be published.'))return;
   const j={id:jobId(),created:new Date().toISOString(),bids:0,title:(p.services||[]).join(' + ')||'BCT Customer Project',trade:(p.services||[])[0]||'General Repairs',location:`${p.city||''}, ${p.state||''}`.replace(/^, |, $/g,''),budget:String(p.targetSubcontractAmount),scope:p.contractorScope,startDate:p.desiredStartDate||p.specificStart||'',bidDeadline:p.bidDeadline,sourceProjectId:p.id,verifiedCustomer:true,status:'Open'};
   db.jobs.unshift(j);p.biddingJobId=j.id;p.status='Bidding';p.workflowStage='Bidding';p.statusHistory=p.statusHistory||[];p.statusHistory.unshift({status:'Bidding',at:new Date().toISOString(),note:'Published as '+j.id});save();bctNotice(`${p.id} was published to the private contractor job list as ${j.id}. Customer name, phone, email and exact street address were not copied into the contractor job.`);
 }
@@ -2660,14 +2660,14 @@ function renderJobs(){
   if(sec&&ce){sec.classList.toggle('hidden',!closed.length);ce.innerHTML=closed.map(j=>jobCardHtml(j,true)).join('');}
   applyBctLanguage(localStorage.getItem(BCT_LANGUAGE_KEY)||'en');
 }
-window.demoBid=(jid)=>{
+window.demoBid=async(jid)=>{
   const j=db.jobs.find(x=>x.id===jid);
   if(j&&j.status==='Awarded'){bctNotice('This job has already been awarded. Bidding is closed.');return}
   const approved=db.applications.find(a=>a.status==='Approved BCT Subcontractor');
   if(!approved){bctNotice('Demo rule: no bid allowed until at least one subcontractor is approved.');return}
   const existing=db.bids.find(b=>b.jobId===jid&&b.appId===approved.id&&b.status!=='Rejected');
   if(existing){bctNotice('A bid from this subcontractor has already been submitted for this job.');return}
-  const amount=prompt('Enter bid amount for '+approved.legalName+':');
+  const amount=await bctAskInput('Enter bid amount for '+approved.legalName+':','number');
   if(!amount||Number(amount)<=0)return;
   db.bids.push({id:bidId(),jobId:jid,appId:approved.id,amount:Number(amount),status:'Pending Review',created:new Date().toISOString()});
   if(j)j.bids=(j.bids||0)+1;save();bctNotice('Bid submitted.');
@@ -2685,24 +2685,24 @@ function renderBids(){
     return `<tr><td data-label="Job"><span class="badge good">${j.id||b.jobId}</span><br><b>${j.title||b.jobId}</b><br><small>${j.location||''}</small></td><td data-label="Subcontractor"><b>${a.legalName||b.appId}</b><br><small>${a.businessName||''}</small></td><td data-label="Subcontractor Bid"><b>$${Number(b.amount||0).toLocaleString()}</b></td><td data-label="BCT Target">$${Number(j.budget||0).toLocaleString()}</td><td data-label="Status">${statusBadge(b.status)}</td><td data-label="Submitted">${date}</td><td data-label="Actions">${actions}</td></tr>`;
   }).join('')||'<tr><td colspan="7" class="muted">No bids submitted yet.</td></tr>';
 }
-window.bidAct=(bidId,jobId,appId,action)=>{
+window.bidAct=async(bidId,jobId,appId,action)=>{
   let b=db.bids.find(x=>x.id===bidId);
   if(!b)b=db.bids.find(x=>x.jobId===jobId&&x.appId===appId&&(!x.status||x.status==='Pending Review'));
   if(!b)return;
   const j=db.jobs.find(x=>x.id===b.jobId);
   if(action==='accept'){
-    if(!confirm('Accept this bid and award the job? This will close bidding for this job.'))return;
+    if(!await bctAskConfirm('Accept this bid and award the job? This will close bidding for this job.'))return;
     b.status='Accepted / Awarded';
     if(j){j.status='Awarded';j.awardedBidId=b.id||'';j.awardedAppId=b.appId;j.awardedAmount=b.amount;}
     db.bids.forEach(x=>{if(x!==b&&x.jobId===b.jobId&&(!x.status||x.status==='Pending Review'))x.status='Not Selected';});
     const source=j?.sourceProjectId?db.customerProjects.find(p=>p.id===j.sourceProjectId):null;
     if(source&&!source.assignedContractorId){
-      const assigned=assignProjectContractor(source.id,b.appId,true);
+      const assigned=await assignProjectContractor(source.id,b.appId,true);
       if(!assigned){b.status='Pending Review';if(j){j.status='Open';j.awardedBidId='';j.awardedAppId='';j.awardedAmount='';}bctNotice('The bid was not awarded because contractor assignment was not approved.');return;}
       source.statusHistory=source.statusHistory||[];source.statusHistory.unshift({status:'Bid Awarded',at:new Date().toISOString(),note:'Winning bid $'+Number(b.amount||0).toLocaleString()+' automatically assigned to '+source.assignedContractorName});
     }
   }
-  if(action==='reject'){if(!confirm('Reject this bid?'))return;b.status='Rejected';}
+  if(action==='reject'){if(!await bctAskConfirm('Reject this bid?'))return;b.status='Rejected';}
   save();
 }
 
@@ -2777,6 +2777,39 @@ renderAll();
     if(!host){host=document.createElement('div');host.id='bctGlobalStatus';host.className='notice section';host.setAttribute('role','status');host.setAttribute('aria-live','polite');host.style.position='fixed';host.style.left='max(12px,env(safe-area-inset-left,0px))';host.style.right='max(12px,env(safe-area-inset-right,0px))';host.style.bottom='max(12px,env(safe-area-inset-bottom,0px))';host.style.zIndex='9999';document.body.appendChild(host);}
     host.textContent=text;host.hidden=false;clearTimeout(window.__bctNoticeTimer);window.__bctNoticeTimer=setTimeout(()=>{host.hidden=true},5000);
   }
+  let bctDialogPending=false;
+  function bctDialogShell(message,{input=false,inputType='text'}={}){
+    if(bctDialogPending)return Promise.resolve(null);
+    bctDialogPending=true;
+    const previous=document.activeElement;
+    const dialog=document.createElement('dialog');
+    dialog.setAttribute('aria-label',input?'BCT input required':'BCT confirmation');
+    dialog.style.maxWidth='min(520px,calc(100vw - 32px))';
+    dialog.style.width='100%';
+    dialog.style.border='1px solid var(--border)';
+    dialog.style.borderRadius='16px';
+    dialog.style.padding='18px';
+    dialog.style.background='#fff';
+    dialog.style.color='var(--text)';
+    const copy=document.createElement('p');copy.textContent=String(message??'');copy.style.fontWeight='700';dialog.appendChild(copy);
+    let field=null;
+    if(input){field=document.createElement('input');field.type=inputType;field.required=true;field.autocomplete='off';field.setAttribute('aria-label','Required value');dialog.appendChild(field);}
+    const actions=document.createElement('div');actions.className='admin-project-actions section';
+    const yes=document.createElement('button');yes.type='button';yes.className='success';yes.textContent=input?'Continue':'Confirm';
+    const no=document.createElement('button');no.type='button';no.className='secondary';no.textContent='Cancel';
+    actions.append(yes,no);dialog.appendChild(actions);document.body.appendChild(dialog);
+    return new Promise(resolve=>{
+      let settled=false;
+      const finish=value=>{if(settled)return;settled=true;bctDialogPending=false;dialog.close();dialog.remove();if(previous?.focus)previous.focus();resolve(value);};
+      no.onclick=()=>finish(null);
+      yes.onclick=()=>{if(input){const value=field.value.trim();if(!value){field.focus();return;}finish(value)}else finish(true)};
+      dialog.addEventListener('cancel',e=>{e.preventDefault();finish(null)});
+      dialog.showModal();(field||yes).focus();
+    });
+  }
+  function bctAskConfirm(message){return bctDialogShell(message)}
+  function bctAskInput(message,inputType='text'){return bctDialogShell(message,{input:true,inputType})}
+
   function adminRef(collection,id,fallback=''){const row=(adminState?.[collection]||[]).find(x=>[x.id,x.application_id,x.project_id,x.customer_id,x.bid_id,x.job_id].includes(id));return row?.application_number||row?.project_number||row?.job_number||row?.service_call_number||fallback||id||''}
 
   async function loadPublic(){
@@ -3042,7 +3075,7 @@ renderAll();
     try{adminState=await rpc('bct_frontend_admin_state');try{adminState.automation_health=await rpc('bct_frontend_admin_automation_health')}catch(_){adminState.automation_health={scheduler:'not_configured'}}try{adminState.notification_health=await rpc('bct_admin_notification_health')}catch(_){adminState.notification_health={queued:0,failed:0,stuck:0,max_attempts_reached:0}}const m=adminState.metrics||{};if($('a-apps'))$('a-apps').textContent=m.applications||0;if($('a-pending'))$('a-pending').textContent=m.applications_pending||0;if($('a-bg'))$('a-bg').textContent=(adminState.applications||[]).filter(a=>['background_check','background_cleared_documents_needed'].includes(a.status)).length;if($('a-approved'))$('a-approved').textContent=m.contractors_active||0;renderAdminApps();await loadAdminSafety();renderAdminProjects();renderAdminBids();renderAdminServices();fillAdminProjects();renderLaunchControls();renderAdminActivityAudit();await loadOperationalReadiness();await loadJobHealth()}catch(e){console.error(e);adminError(e,'adminActionStatus','BCT Admin backend load failed');throw e}
   }
   async function loadAdminSafety(){try{const [data,history,config]=await Promise.all([rpc('bct_frontend_admin_safety_state'),rpc('bct_admin_safety_training_history',{p_contractor_id:null}),rpc('bct_admin_safety_configuration_state')]);const sf=$('adminSafetySettingsForm'),settings=config?.settings||{},mods=config?.modules||[];if(sf){sf.cadence.value=settings.cadence_days??30;sf.grace.value=settings.grace_days??1;sf.reminders.value=Array.isArray(settings.reminder_days)?settings.reminder_days.join(','):'7,3,1';sf.enabled.value=String(settings.enabled!==false)}if($('adminSafetySettingsState'))$('adminSafetySettingsState').textContent=settings.enabled===false?'Paused':`Every ${settings.cadence_days||30} days`;if($('adminSafetyModules'))$('adminSafetyModules').innerHTML=mods.length?mods.map(m=>`<div><b>${esc(m.title)}</b> <span class="badge ${m.active?'good':'warn'}">${m.active?'Active':'Inactive'}</span><br><small>${esc(m.module_type)}${m.trade_code?' • '+esc(m.trade_code):''} • Passing score ${Number(m.passing_score||80)}${m.quiz_required?' • Quiz required':''}</small></div>`).join(''):'<div class="muted">No training modules created yet.</div>';const summary=data?.summary||{},rows=data?.contractors||[];const box=$('adminSafetySummary'),list=$('adminSafetyContractors');if(box)box.innerHTML=[['Active Contractors',summary.active_contractors||0],['Eligible',summary.eligible_contractors||0],['Safety Restricted',summary.safety_restricted||0],['Admin Holds',summary.admin_holds||0],['Training Pending',summary.training_pending||0],['Training Overdue',summary.training_overdue||0],['Training Completed',summary.training_completed||0]].map(([label,value])=>`<div class="card"><div class="metric">${Number(value)}</div><small>${esc(label)}</small></div>`).join('');if(list)list.innerHTML=rows.length?rows.map(r=>`<div class="stage"><div class="toolbar"><div><b>${esc(r.legal_name||r.business_name||'Contractor')}</b><div class="muted">${esc(r.primary_trade||'')}</div></div><span class="badge ${r.workforce_eligible?'good':'bad'}">${r.workforce_eligible?'Eligible':'Restricted'}</span></div><div class="project-meta"><span class="badge ${Number(r.overdue_count)>0?'bad':'info'}">Overdue: ${Number(r.overdue_count||0)}</span><span class="badge info">Pending: ${Number(r.pending_count||0)}</span>${r.admin_hold?'<span class="badge bad">Admin Hold</span>':''}${r.safety_restricted?'<span class="badge warn">Safety Restriction</span>':''}</div><small>Next due: ${r.next_due_at?new Date(r.next_due_at).toLocaleString():'None'} • Last completed: ${r.last_completed_at?new Date(r.last_completed_at).toLocaleString():'None'}</small><div class="admin-project-actions"><button class="secondary" onclick="bctAdminSafetyHold('${esc(r.contractor_id)}',true)">Place Admin Hold</button>${r.admin_hold?`<button class="success" onclick="bctAdminSafetyHold('${esc(r.contractor_id)}',false)">Clear Admin Hold</button>`:''}</div></div>`).join(''):'<div class="muted">No active contractor safety records yet.</div>';const hist=$('adminSafetyHistory'),records=history?.records||[];if(hist)hist.innerHTML=records.length?records.map(r=>`<div class="stage"><div class="toolbar"><div><b>${esc(r.legal_name||r.business_name||'Contractor')}</b><div class="muted">${esc(r.module_title||'Safety training')} • ${esc(r.cycle_key||'')}</div></div><span class="badge ${r.status==='completed'?'good':r.status==='exempt'?'info':'warn'}">${esc(r.status||'pending')}</span></div><small>Assigned: ${r.assigned_at?new Date(r.assigned_at).toLocaleString():'—'} • Due: ${r.due_at?new Date(r.due_at).toLocaleString():'—'} • Grace: ${r.grace_until?new Date(r.grace_until).toLocaleString():'—'}</small><small>Completed: ${r.completed_at?new Date(r.completed_at).toLocaleString():'—'} • Acknowledged: ${r.acknowledged_at?new Date(r.acknowledged_at).toLocaleString():'—'} • Score: ${r.quiz_score??'—'} / ${r.passing_score??'—'} • Verified: ${r.completion_verified?'Yes':'No'}</small>${r.exemption_reason?`<small>Exemption: ${esc(r.exemption_reason)}</small>`:''}${r.admin_hold?`<small><b>Admin hold:</b> ${esc(r.admin_hold_reason||'Active')}</small>`:''}</div>`).join(''):'<div class="muted">No permanent training records yet.</div>';}catch(e){adminError(e,'adminActionStatus','Safety compliance load failed')}}
-  window.bctAdminSafetyHold=async(contractorId,onHold)=>{try{let reason='';if(onHold){reason=prompt('Reason for BCT Admin hold:')||'';if(!reason.trim())return}await rpc('bct_admin_set_contractor_hold',{p_contractor_id:contractorId,p_on_hold:onHold,p_reason:onHold?reason:'BCT Admin cleared hold'});adminAuditEvent(onHold?'Contractor Admin hold placed':'Contractor Admin hold cleared',reason,contractorId);await loadAdminSafety();adminSuccess(onHold?'Admin hold placed.':'Admin hold cleared.')}catch(e){adminError(e)}};
+  window.bctAdminSafetyHold=async(contractorId,onHold)=>{try{let reason='';if(onHold){reason=await bctAskInput('Reason for BCT Admin hold:')||'';if(!reason.trim())return}await rpc('bct_admin_set_contractor_hold',{p_contractor_id:contractorId,p_on_hold:onHold,p_reason:onHold?reason:'BCT Admin cleared hold'});adminAuditEvent(onHold?'Contractor Admin hold placed':'Contractor Admin hold cleared',reason,contractorId);await loadAdminSafety();adminSuccess(onHold?'Admin hold placed.':'Admin hold cleared.')}catch(e){adminError(e)}};
   if($('refreshSafetyAdminBtn'))$('refreshSafetyAdminBtn').onclick=loadAdminSafety;
   if($('runSafetyCycleBtn'))$('runSafetyCycleBtn').onclick=async()=>{const b=$('runSafetyCycleBtn');try{b.disabled=true;b.textContent='Running…';const assigned=await rpc('bct_admin_assign_due_safety_training');const compliance=await rpc('bct_refresh_safety_training_compliance');const reminders=await rpc('bct_admin_process_safety_training_reminders');adminAuditEvent('Safety compliance cycle run',`Assigned ${assigned?.assigned||0}; overdue updated ${compliance?.overdue_updated||0}; reminders queued ${reminders?.notifications_queued||0}.`);await Promise.all([loadAdminSafety(),loadJobHealth()]);adminSuccess(`Safety cycle complete: ${assigned?.assigned||0} assigned, ${compliance?.overdue_updated||0} overdue updates, ${reminders?.notifications_queued||0} reminders queued.`)}catch(e){adminError(e)}finally{b.disabled=false;b.textContent='Run Safety Cycle'}};
   if($('adminSafetySettingsForm'))$('adminSafetySettingsForm').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget;try{const reminders=String(f.reminders.value).split(',').map(x=>Number(x.trim())).filter(Number.isFinite);await rpc('bct_admin_upsert_safety_training_settings',{p_cadence_days:Number(f.cadence.value),p_grace_days:Number(f.grace.value),p_reminder_days:reminders,p_enabled:f.enabled.value==='true'});adminAuditEvent('Safety training settings updated',`Cadence ${f.cadence.value} days; grace ${f.grace.value} days.`);await loadAdminSafety();adminSuccess('Safety training settings saved.')}catch(e){adminError(e)}};
