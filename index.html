@@ -443,13 +443,13 @@ button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allo
 .bct-login-language label{display:block;margin:0 0 6px;font-weight:800;color:#0A5558}
 .bct-login-language select{width:100%;min-height:50px;border:1px solid #a9c7b3;border-radius:12px;background:#fff;color:#173c3e;font-weight:700;padding:10px 42px 10px 12px}
 
-/* BCT V46 LANGUAGE-AWARE BRAND SLOGAN — seamless original-logo treatment */
+/* BCT V46 LANGUAGE-AWARE BRAND SLOGAN — original-position seamless treatment */
 .bct-dynamic-brand{width:100%;display:flex;justify-content:center;background:#e8f5ec}
 .bct-logo-crop{width:min(100vw,630px);overflow:hidden;background:#e8f5ec;line-height:0;position:relative!important}
 .bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;margin:0!important;transform:none!important}
-.bct-logo-crop::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18%;background:#e8f5ec;z-index:2;pointer-events:none}
-.bct-dynamic-slogan{position:absolute;left:0;right:0;bottom:2.7%;z-index:3;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.45rem,5.2vw,2.45rem);font-weight:600;font-style:italic;line-height:1;color:#004b57;text-align:center;white-space:nowrap;padding:0;margin:0;background:transparent}
-@media(max-width:480px){.bct-logo-crop{width:100%}.bct-dynamic-slogan{font-size:clamp(1.35rem,5.2vw,2.25rem)}}
+.bct-logo-crop::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16.5%;background:#e8f5ec;z-index:2;pointer-events:none}
+.bct-dynamic-slogan{position:absolute;left:0;right:0;bottom:4.1%;z-index:3;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.45rem,5.2vw,2.45rem);font-weight:600;font-style:italic;line-height:1;color:#004b57;text-align:center;white-space:nowrap;padding:0;margin:0;background:transparent}
+@media(max-width:480px){.bct-logo-crop{width:100%}.bct-logo-crop::after{height:16.5%}.bct-dynamic-slogan{font-size:clamp(1.35rem,5.2vw,2.25rem);bottom:4.1%}}
 
 </style>
 </head>
