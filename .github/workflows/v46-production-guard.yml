@@ -30,3 +30,5 @@ jobs:
         run: node tests/v46-production-500-checks-round4.mjs
       - name: Run fifth 200 V46 label integrity safeguards
         run: node tests/v46-production-200-checks-round5.mjs
+      - name: Run sixth 200 V46 select-option integrity safeguards
+        run: node tests/v46-production-200-checks-round6.mjs
