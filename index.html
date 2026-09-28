@@ -3380,9 +3380,10 @@ renderAll();
 /* BCT V46 AUTH-ONLY ENTRY SHELL */
 (function(){
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
+ const publicShareMode=new URLSearchParams(location.search).get('shared')==='1';
  let entryIntent=null;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
- function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');const signedIn=!!session?.user;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
+ function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const signedIn=!!session?.user;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
@@ -3469,6 +3470,7 @@ renderAll();
      window.bctReturnToPublicLanding?.();
      return;
    }
+   if(publicShareMode){entryIntent=null;setAuthShell(null);setVisibleView('home');return;}
    setAuthShell(session);
    if(session){const intent=entryIntent;entryIntent=null;if(intent==='contractor'){setVisibleView('status');requestAnimationFrame(()=>document.getElementById('view-status')?.scrollIntoView({block:'start'}));}else if(intent==='client'){setVisibleView('customer');showCustomerPage('overview');requestAnimationFrame(()=>document.getElementById('view-customer')?.scrollIntoView({block:'start'}));}else if(intent==='admin'){setVisibleView('admin');}return;}
    const current=(document.querySelector('.view:not(.hidden)')?.id||'').replace('view-','');
@@ -3548,7 +3550,7 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
   const btn=document.getElementById('bctShareAppBtn');
   const status=document.getElementById('bctShareAppStatus');
   if(!btn)return;
-  const publicUrl=()=>location.origin+location.pathname;
+  const publicUrl=()=>location.origin+location.pathname+'?shared=1';
   btn.addEventListener('click',async()=>{
     const language=localStorage.getItem('bctLanguage')||document.documentElement.lang||'en';
     const t=(typeof BCT_SHARE_TRANSLATIONS!=='undefined'&&(BCT_SHARE_TRANSLATIONS[language]||BCT_SHARE_TRANSLATIONS.en))||{text:'BCT Renovations can help with your home-improvement project.',shared:'BCT app shared.',copied:'BCT app link copied. You can paste it into a text or email.',failed:'Sharing did not open. You can copy this page address from your browser.'};
