@@ -662,6 +662,15 @@ body:not(.bct-authenticated) .bct-dynamic-slogan{
   body:not(.bct-authenticated) .bct-dynamic-slogan{bottom:5.8%!important;font-size:clamp(1.16rem,5.8vw,1.62rem)!important}
 }
 
+
+/* BCT V46 SIGN-OUT LOGO LOCK — one slogan only */
+body.bct-signed-out .bct-logo-crop,
+body:not(.bct-authenticated) .bct-logo-crop{position:relative!important;overflow:hidden!important;padding-bottom:0!important}
+body.bct-signed-out .bct-logo-crop::after,
+body:not(.bct-authenticated) .bct-logo-crop::after{display:block!important;content:""!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:19%!important;background:#e8f5ec!important;z-index:2!important;pointer-events:none!important}
+body.bct-signed-out .bct-dynamic-slogan,
+body:not(.bct-authenticated) .bct-dynamic-slogan{position:absolute!important;left:0!important;right:0!important;bottom:5.1%!important;z-index:3!important;display:block!important;margin:0!important;padding:0 8px!important;width:auto!important;white-space:nowrap!important;text-align:center!important;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive!important;font-size:clamp(1.25rem,5.2vw,2.15rem)!important;font-weight:600!important;font-style:italic!important;line-height:1!important;color:#004b57!important;background:transparent!important}
+
 </style>
 </head>
 <body>
