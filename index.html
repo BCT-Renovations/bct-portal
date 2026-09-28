@@ -565,7 +565,7 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!imp
 
 /* V46 PRIORITY PORTAL HEADER + PUBLIC REGISTRATION LOCK */
 .bct-portal-title{width:100%;background:#0f5f63;color:#fff;font-size:22px;font-weight:900;text-align:center;padding:14px 16px;margin:0 0 10px;border-radius:0 0 14px 14px;letter-spacing:.02em}
-body.bct-home-signup:not(.bct-authenticated) #view-customer> :not(#bctClientPortalTitle):not(#bctClientBackHomeTop):not([data-customer-page-panel="details"]):not(#customerProjectForm){display:none!important}
+body.bct-home-signup:not(.bct-authenticated) #view-customer> :not(#bctClientPortalTitle):not(#bctClientBackHomeTop):not(#bctClientPublicAbout):not([data-customer-page-panel="details"]):not(#customerProjectForm){display:none!important}
 body.bct-home-signup:not(.bct-authenticated) #view-customer [data-customer-page-panel="details"]{display:block!important}
 body.bct-home-signup:not(.bct-authenticated) #customerProjectForm{display:block!important}
 body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!important}
@@ -666,6 +666,13 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 
 <section id="view-customer" class="view section hidden">
   <div id="bctClientPortalTitle" class="bct-portal-title" data-i18n="portal.client_title">CLIENT PORTAL</div>
+  <section id="bctClientPublicAbout" class="card bct-client-public-about">
+    <h2 data-i18n="about.title">About BCT Renovations</h2>
+    <p><strong data-i18n="about.short_lead">BCT Renovations is your general contractor — not just a contractor referral service.</strong></p>
+    <p data-i18n="about.short_body">We coordinate your project, work with verified contractors, monitor progress, and stay involved from start to finish.</p>
+    <p><strong data-i18n="about.short_close">Your project. Your home. Our commitment.</strong></p>
+    <p data-i18n="about.licensed">Licensed • Bonded • Insured</p>
+  </section>
   <button type="button" id="bctClientBackHomeTop" class="secondary bct-portal-back" data-i18n="homeowner.back_home">← Back to Home</button>
   <div class="customer-hero">
     <div class="card">
@@ -3768,7 +3775,7 @@ body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContrac
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorSignupCard,
 body.bct-entry-contractor:not(.bct-authenticated) .bct-public-contractor-login{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
-body.bct-entry-client:not(.bct-authenticated):not(.bct-home-signup) #view-customer> :not(#bctClientPortalTitle):not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
+body.bct-entry-client:not(.bct-authenticated):not(.bct-home-signup) #view-customer> :not(#bctClientPortalTitle):not(#bctClientPublicAbout):not(#bctClientBackHomeTop):not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
 body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{display:block!important;visibility:visible!important;opacity:1!important}
@@ -3796,9 +3803,13 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
  if(contractorView&&contractorLogin)contractorSignup?.after(contractorLogin);
  if(contractorAbout&&contractorLogin&&contractorView){contractorLogin.after(contractorAbout);}
  const homeView=document.getElementById('view-customer'),homeLogin=document.getElementById('bctHomeownerLoginCard'),homeSignup=document.getElementById('bctHomeownerSignupCard'),homeAbout=document.getElementById('bctAboutPublic');
- if(homeLogin&&homeView)homeView.prepend(homeLogin);
- if(homeSignup&&homeView)homeView.prepend(homeSignup);
- if(homeAbout&&homeLogin&&homeView)homeLogin.after(homeAbout);
+ const homeTitle=document.getElementById('bctClientPortalTitle'),homePublicAbout=document.getElementById('bctClientPublicAbout'),homeBack=document.getElementById('bctClientBackHomeTop');
+ if(homeView&&homeTitle)homeView.prepend(homeTitle);
+ if(homeTitle&&homePublicAbout)homeTitle.after(homePublicAbout);
+ if(homePublicAbout&&homeBack)homePublicAbout.after(homeBack);
+ if(homeBack&&homeSignup)homeBack.after(homeSignup);
+ if(homeSignup&&homeLogin)homeSignup.after(homeLogin);
+ if(homeAbout)homeAbout.style.display='none';
  function entered(kind){
    document.body.classList.add('bct-portal-entered');
    document.body.classList.toggle('bct-entry-client',kind==='client');
@@ -3882,6 +3893,51 @@ body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!import
  document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(localizeSignupNav));
  document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(localizeSignupNav));
  requestAnimationFrame(localizeSignupNav);
+})();
+</script>
+<style>
+#bctClientPublicAbout{margin:10px auto 12px;max-width:760px;padding:14px 16px}
+#bctClientPublicAbout h2{font-size:20px;margin:0 0 8px;color:#0a4549}
+#bctClientPublicAbout p{margin:6px 0;line-height:1.4}
+body.bct-authenticated #bctClientPublicAbout{display:none!important}
+#bctClientAboutPanel{max-width:760px;margin:12px auto}
+</style>
+<script>
+/* V46 CLIENT ABOUT ACCESS PATCH */
+(function(){
+ const T={
+  en:{about:'About',close:'Close About'},
+  es:{about:'Acerca de',close:'Cerrar información'},
+  fr:{about:'À propos',close:'Fermer'},
+  ht:{about:'Konsènan',close:'Fèmen'},
+  pt:{about:'Sobre',close:'Fechar'},
+  vi:{about:'Giới thiệu',close:'Đóng'},
+  zh:{about:'关于',close:'关闭'},
+  ar:{about:'حول',close:'إغلاق'},
+  ru:{about:'О компании',close:'Закрыть'}
+ };
+ const tabs=document.querySelector('#view-customer .portal-tabs');
+ if(tabs&&!document.getElementById('bctClientAboutBtn')){
+   const b=document.createElement('button');b.type='button';b.id='bctClientAboutBtn';b.dataset.i18n='homeowner.about_button';b.textContent='About';tabs.appendChild(b);
+ }
+ if(tabs&&!document.getElementById('bctClientAboutPanel')){
+   const p=document.createElement('section');p.id='bctClientAboutPanel';p.className='card hidden';
+   p.innerHTML='<h2 data-i18n="about.title">About BCT Renovations</h2><p><strong data-i18n="about.short_lead">BCT Renovations is your general contractor — not just a contractor referral service.</strong></p><p data-i18n="about.short_body">We coordinate your project, work with verified contractors, monitor progress, and stay involved from start to finish.</p><p><strong data-i18n="about.short_close">Your project. Your home. Our commitment.</strong></p><p data-i18n="about.licensed">Licensed • Bonded • Insured</p><button type="button" class="secondary" id="bctClientAboutClose" data-i18n="homeowner.about_close">Close About</button>';
+   tabs.after(p);
+ }
+ function localize(){
+   const l=localStorage.getItem('bctPreferredLanguage')||'en',t=T[l]||T.en;
+   if(window.BCT_ENGLISH_FALLBACK){BCT_ENGLISH_FALLBACK['homeowner.about_button']='About';BCT_ENGLISH_FALLBACK['homeowner.about_close']='Close About';}
+   if(l!=='en'&&window.BCT_HOME_TRANSLATION_OVERRIDES){BCT_HOME_TRANSLATION_OVERRIDES[l]=BCT_HOME_TRANSLATION_OVERRIDES[l]||{};BCT_HOME_TRANSLATION_OVERRIDES[l]['homeowner.about_button']=t.about;BCT_HOME_TRANSLATION_OVERRIDES[l]['homeowner.about_close']=t.close;}
+   const b=document.getElementById('bctClientAboutBtn'),x=document.getElementById('bctClientAboutClose');if(b)b.textContent=t.about;if(x)x.textContent=t.close;
+ }
+ document.addEventListener('click',e=>{
+   if(e.target.closest('#bctClientAboutBtn')){document.getElementById('bctClientAboutPanel')?.classList.remove('hidden');document.getElementById('bctClientAboutPanel')?.scrollIntoView({behavior:'smooth',block:'start'});}
+   if(e.target.closest('#bctClientAboutClose')){document.getElementById('bctClientAboutPanel')?.classList.add('hidden');document.querySelector('#view-customer .portal-tabs')?.scrollIntoView({behavior:'smooth',block:'start'});}
+ });
+ document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(localize));
+ document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(localize));
+ localize();
 })();
 </script>
 </body>
