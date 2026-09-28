@@ -498,6 +498,25 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:58px!important}
  body:not(.bct-authenticated) .bct-signin-heading{min-height:52px!important;margin-bottom:10px!important}
 }
 
+/* BCT V46 LOCKED PUBLIC LANDING PAGE */
+body:not(.bct-authenticated) header{position:relative!important;background:#e8f5ec!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
+body:not(.bct-authenticated) header .wrap{display:flex!important;flex-direction:column!important;align-items:center!important;max-width:620px!important;padding:12px 14px 4px!important}
+body:not(.bct-authenticated) header .bct-login-language{order:1!important;width:100%!important;max-width:360px!important;margin:0 auto 10px!important}
+body:not(.bct-authenticated) header .brand{order:2!important;width:100%!important;display:block!important}
+body:not(.bct-authenticated) header .brand>div:not(.bct-dynamic-brand){display:none!important}
+body:not(.bct-authenticated) header nav{display:none!important}
+body:not(.bct-authenticated) .bct-logo-crop{width:min(86vw,420px)!important;margin:0 auto!important;overflow:visible!important}
+body:not(.bct-authenticated) .bct-logo-crop::after{display:none!important}
+body:not(.bct-authenticated) .brand-logo{width:100%!important;height:auto!important;object-fit:contain!important;display:block!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{position:static!important;display:block!important;margin:2px auto 8px!important;padding:0 6px!important;white-space:normal!important;text-align:center!important;font-size:clamp(1.35rem,6vw,1.9rem)!important}
+body:not(.bct-authenticated) main.wrap{max-width:620px!important;padding:4px 14px 24px!important}
+body:not(.bct-authenticated) #bctSignedOutEntry{margin:0 auto 12px!important;padding:14px!important}
+body:not(.bct-authenticated) #bctSignedOutEntry>.bct-login-language{display:none!important}
+body:not(.bct-authenticated) .bct-signin-heading{min-height:auto!important;margin:0 0 12px!important;padding:0!important;font-family:Georgia,"Times New Roman",serif!important;font-style:italic!important}
+body:not(.bct-authenticated) #bctEntryActions{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+body:not(.bct-authenticated) #bctEntryActions button{width:100%!important;min-height:54px!important;font-size:1rem!important}
+body:not(.bct-authenticated) #bctAboutPublic{margin-top:16px!important}
+
 /* BCT V46 PUBLIC ABOUT — continuous background, no box */
 .bct-about-public{max-width:920px;margin:34px auto 8px;padding:18px 10px 28px;text-align:center;background:transparent;border:0;box-shadow:none}
 .bct-about-accent{display:flex;align-items:center;justify-content:center;gap:7px;color:#0f5f63;margin-bottom:2px;line-height:1}
@@ -517,6 +536,20 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:58px!important}
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
 <header>
   <div class="wrap">
+    <div class="bct-login-language">
+      <label for="bctLoginLanguage" data-login-language-label>Choose Your Language</label>
+      <select id="bctLoginLanguage" aria-label="Choose your language">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="ht">Kreyòl Ayisyen</option>
+        <option value="pt">Português</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="zh">中文</option>
+        <option value="ar">العربية</option>
+        <option value="ru">Русский</option>
+      </select>
+    </div>
     <div class="brand">
       <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">We Are Your General Contractor</div></div></div>
       <div>
@@ -533,43 +566,16 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:58px!important}
       <button class="secondary" data-view="jobs" data-i18n="nav.available_jobs">Available Jobs</button>
       <button class="secondary" data-view="admin" data-i18n="nav.bct_admin">BCT Admin</button>
     </nav>
-    <div style="margin-top:10px;max-width:220px">
-      <label for="bctLanguage" class="muted" style="display:block;margin-bottom:4px" data-i18n="site.language">Language</label>
-      <select id="bctLanguage" aria-label="Language">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-        <option value="fr">Français</option>
-        <option value="ht">Kreyòl Ayisyen</option>
-        <option value="pt">Português</option>
-        <option value="vi">Tiếng Việt</option>
-        <option value="zh">中文</option>
-        <option value="ar">العربية</option>
-        <option value="ru">Русский</option>
-      </select>
-    </div>
   </div>
 </header>
 
 <main class="wrap" id="bctMain" tabindex="-1">
 <section id="view-home" class="view section">
   <div class="card home-panel" id="bctSignedOutEntry">
-    <div class="bct-login-language">
-      <label for="bctLoginLanguage" data-login-language-label>Choose Your Language</label>
-      <select id="bctLoginLanguage" aria-label="Choose your language">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-        <option value="fr">Français</option>
-        <option value="ht">Kreyòl Ayisyen</option>
-        <option value="pt">Português</option>
-        <option value="vi">Tiếng Việt</option>
-        <option value="zh">中文</option>
-        <option value="ar">العربية</option>
-        <option value="ru">Русский</option>
-      </select>
-    </div>
-    <div class="bct-signin-heading" aria-hidden="true" data-login-signin-heading>Sign In</div>
+
+    <div class="bct-signin-heading" aria-hidden="true"><span data-login-signin-heading>Sign In</span> / <span data-i18n="entry.signup">Sign Up</span></div>
     <div class="bct-entry-actions" id="bctEntryActions">
-      <button type="button" data-entry-login="client">Client</button>
+      <button type="button" data-entry-login="client">Client / Homeowner</button>
       <button type="button" data-entry-login="contractor">Contractor</button>
       <button type="button" data-entry-login="admin">Admin</button>
     </div>
@@ -592,7 +598,7 @@ body:not(.bct-authenticated) #bctEntryActions button{min-height:58px!important}
       <span data-i18n="about.promise4">We give you one company to turn to from start to finish.</span>
     </div>
     <p class="bct-about-close" data-i18n="about.close">Your home. Your project. Your contractor.</p>
-    <p class="bct-about-licensed">Licensed • Bonded • Insured</p>
+    <p class="bct-about-licensed" data-i18n="about.licensed">Licensed • Bonded • Insured</p>
   </section>
 </section>
 
@@ -1110,6 +1116,8 @@ const BCT_ENGLISH_FALLBACK={
   'nav.bct_admin':'BCT Admin',
   'site.subtitle':'Homeowner Project Management & Contractor Network',
   'site.language':'Language',
+  'entry.signup':'Sign Up',
+  'about.licensed':'Licensed • Bonded • Insured',
   'home.license_badge':'Licensed • Bonded • Insured',
   'about.title':'About BCT Renovations',
   'about.lead':'We’re Not Just Connecting You With a Contractor. We Are Your General Contractor.',
@@ -2149,7 +2157,7 @@ function syncBrandSlogan(language){
  if(el) el.textContent=BCT_BRAND_SLOGANS[language]||BCT_BRAND_SLOGANS.en;
 }
 const BCT_LOGIN_LANGUAGE_UI={
-  en:{label:'Choose Your Language',signin:'Sign In',client:'Client',contractor:'Contractor',admin:'Admin'},
+  en:{label:'Choose Your Language',signin:'Sign In',client:'Client / Homeowner',contractor:'Contractor',admin:'Admin'},
   es:{label:'Elija su idioma',signin:'Iniciar sesión',client:'Cliente',contractor:'Contratista',admin:'Administrador'},
   fr:{label:'Choisissez votre langue',signin:'Se connecter',client:'Client',contractor:'Entrepreneur',admin:'Administrateur'},
   ht:{label:'Chwazi lang ou',signin:'Konekte',client:'Kliyan',contractor:'Kontraktè',admin:'Administratè'},
