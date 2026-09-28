@@ -565,7 +565,7 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!imp
 
 /* V46 PRIORITY PORTAL HEADER + PUBLIC REGISTRATION LOCK */
 .bct-portal-title{width:100%;background:#0f5f63;color:#fff;font-size:22px;font-weight:900;text-align:center;padding:14px 16px;margin:0 0 10px;border-radius:0 0 14px 14px;letter-spacing:.02em}
-body.bct-home-signup:not(.bct-authenticated) #view-customer> :not(#bctClientPortalTitle):not([data-customer-page-panel="details"]):not(#customerProjectForm){display:none!important}
+body.bct-home-signup:not(.bct-authenticated) #view-customer> :not(#bctClientPortalTitle):not(#bctClientBackHomeTop):not([data-customer-page-panel="details"]):not(#customerProjectForm){display:none!important}
 body.bct-home-signup:not(.bct-authenticated) #view-customer [data-customer-page-panel="details"]{display:block!important}
 body.bct-home-signup:not(.bct-authenticated) #customerProjectForm{display:block!important}
 body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!important}
@@ -3471,7 +3471,7 @@ renderAll();
      const fields=block.querySelectorAll('input,select,textarea').length;
      if(fields<=7){steps.push(block);return;}
      const children=[...block.children],title=children.shift(),parts=[];let cur=[],count=0;
-     children.forEach(el=>{const n=el.querySelectorAll('input,select,textarea').length;if(cur.length&&count+n>7){parts.push(cur);cur=[];count=0;}cur.push(el);count+=n;});if(cur.length)parts.push(cur);
+     children.forEach(el=>{const n=el.querySelectorAll('input,select,textarea').length;if(cur.length&&count+n>4){parts.push(cur);cur=[];count=0;}cur.push(el);count+=n;});if(cur.length)parts.push(cur);
      parts.forEach((part,i)=>{const page=document.createElement('div');page.className='card section portal-page';page.dataset.customerPagePanel=block.dataset.customerPagePanel;if(title){const h=title.cloneNode(true);if(i)h.textContent=h.textContent+' — Continued';page.appendChild(h);}part.forEach(x=>page.appendChild(x));block.before(page);steps.push(page);});block.remove();
    });
    setupPagedFlow(home,steps,'bct-home-balanced-v46');
@@ -3866,6 +3866,22 @@ body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!import
  document.getElementById('bctHomeSignupBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelector('[data-entry-login="client"]')?.click();});
  document.getElementById('bctNewClientBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.remove('active'));document.getElementById('bctHomeownerSignupCard')?.classList.add('active');document.getElementById('bctHomeownerLoginCard')?.classList.add('active');document.querySelector('[data-entry-login="client"]')?.click();requestAnimationFrame(()=>window.scrollTo(0,0));});
  window.bctOpenHomeSignup=homeSignup; window.bctOpenContractorSignup=contractorSignup;
+})();
+</script>
+<script>
+/* V46 CLIENT SIGNUP HOME + PAGING PATCH */
+(function(){
+ const backHomeText={en:'← Back to Home',es:'← Volver al inicio',fr:'← Retour à l’accueil',ht:'← Retounen lakay',pt:'← Voltar ao início',vi:'← Về trang chủ',zh:'← 返回主页',ar:'العودة إلى الصفحة الرئيسية ←',ru:'← На главную'};
+ const progressText={en:'Step',es:'Paso',fr:'Étape',ht:'Etap',pt:'Etapa',vi:'Bước',zh:'步骤',ar:'الخطوة',ru:'Шаг'};
+ function localizeSignupNav(){
+   const lang=(localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase();
+   const b=document.getElementById('bctClientBackHomeTop');if(b)b.textContent=backHomeText[lang]||backHomeText.en;
+   document.querySelectorAll('#customerProjectForm .bct-step-progress').forEach(x=>{const m=x.textContent.match(/(\d+)\D+(\d+)/);if(m)x.textContent=(progressText[lang]||progressText.en)+' '+m[1]+' / '+m[2];});
+ }
+ document.addEventListener('click',e=>{if(e.target.closest('#bctClientBackHomeTop')){e.preventDefault();window.bctReturnToPublicLanding?.();}},true);
+ document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(localizeSignupNav));
+ document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(localizeSignupNav));
+ requestAnimationFrame(localizeSignupNav);
 })();
 </script>
 </body>
