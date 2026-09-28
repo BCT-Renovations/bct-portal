@@ -617,6 +617,17 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{margin
  body:not(.bct-authenticated):not(.bct-portal-entered) #bctEntryActions button{min-height:54px!important}
 }
 </style>
+<style>
+/* V46 AUTH ENTRY POLISH + TRANSLATION LOCK */
+body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLoginCard{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important}
+body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
+body.bct-entry-admin:not(.bct-authenticated) #adminLogoutBtn{display:none!important}
+@media(max-width:820px){
+ #bctContractorLoginCard .admin-project-actions,#bctHomeownerLoginCard .admin-project-actions{display:grid!important;grid-template-columns:1fr!important}
+ #bctContractorLoginCard .admin-project-actions button,#bctHomeownerLoginCard .admin-project-actions button{width:100%!important}
+}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -950,7 +961,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{margin
     <p class="muted" data-i18n="contractor.signup_description">New to the BCT Contractor Network? Create your contractor account and start your BCT pre-application.</p>
     <button type="button" id="bctContractorSignupBtn" data-i18n="contractor.signup_button">Sign Up / Start Contractor Application</button>
   </div>
-  <div class="card section"><h3 data-i18n="contractor.signin_title">Existing Contractor — Sign In</h3><div class="grid grid-2"><div><label>Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctContractorBackHomeBtn">Back to Home</button><button type="button" class="secondary" id="bctContractorLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
+  <div class="card section bct-public-contractor-login" id="bctContractorLoginCard"><h3 data-i18n="contractor.signin_title">Existing Contractor — Sign In</h3><div class="grid grid-2"><div><label data-i18n="contractor.email">Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label data-i18n="contractor.password">Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn" data-i18n="contractor.signin_button">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn" data-i18n="contractor.forgot_password">Forgot Password?</button><button type="button" class="secondary" id="bctContractorBackHomeBtn" data-i18n="contractor.back_home">Back to Home</button><button type="button" class="secondary" id="bctContractorLogoutBtn" data-i18n="contractor.signout_button">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn" data-i18n="contractor.resend_confirmation">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
   <div class="card">
     <h2 data-i18n="status.title">Applicant Status</h2>
     <label data-i18n="status.application_id">Application ID</label>
@@ -997,11 +1008,11 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{margin
       <input id="adminPassword" type="password" autocomplete="current-password" placeholder="BCT Admin password" data-i18n-placeholder="admin.password_placeholder">
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
         <input id="adminShowPassword" type="checkbox" style="width:auto;margin:0">
-        <label for="adminShowPassword" style="margin:0">Show password</label>
+        <label for="adminShowPassword" style="margin:0" data-i18n="admin.show_password">Show password</label>
       </div>
       <div class="admin-gate-actions">
         <button type="button" id="adminLoginBtn" data-i18n="admin.sign_in">Sign In to BCT Admin</button>
-        <button id="adminForgotBtn" class="secondary" type="button">Forgot Password?</button>
+        <button id="adminForgotBtn" class="secondary" type="button" data-i18n="admin.forgot_password">Forgot Password?</button>
         <button type="button" id="adminBackBtn" class="secondary" data-i18n="admin.back_home">Back to Home</button>
       </div>
       <div id="adminAuthStatus" class="admin-auth-status"></div>
@@ -4020,5 +4031,23 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  requestAnimationFrame(apply);
 })();
 </script>
-</body>
+<script>
+/* V46 AUTH ENTRY POLISH + TRANSLATION LOCK */
+(function(){
+ const A={
+ es:{ce:'Correo electrónico',cp:'Contraseña',si:'Iniciar sesión',fp:'¿Olvidó su contraseña?',bh:'Volver al inicio',so:'Cerrar sesión',rc:'Reenviar correo de confirmación',sp:'Mostrar contraseña'},
+ fr:{ce:'E-mail',cp:'Mot de passe',si:'Se connecter',fp:'Mot de passe oublié ?',bh:'Retour à l’accueil',so:'Se déconnecter',rc:'Renvoyer l’e-mail de confirmation',sp:'Afficher le mot de passe'},
+ ht:{ce:'Imèl',cp:'Modpas',si:'Konekte',fp:'Bliye modpas?',bh:'Retounen lakay',so:'Dekonekte',rc:'Voye imèl konfimasyon ankò',sp:'Montre modpas'},
+ pt:{ce:'E-mail',cp:'Senha',si:'Entrar',fp:'Esqueceu a senha?',bh:'Voltar ao início',so:'Sair',rc:'Reenviar e-mail de confirmação',sp:'Mostrar senha'},
+ vi:{ce:'Email',cp:'Mật khẩu',si:'Đăng nhập',fp:'Quên mật khẩu?',bh:'Về trang chủ',so:'Đăng xuất',rc:'Gửi lại email xác nhận',sp:'Hiện mật khẩu'},
+ zh:{ce:'电子邮箱',cp:'密码',si:'登录',fp:'忘记密码？',bh:'返回主页',so:'退出登录',rc:'重新发送确认邮件',sp:'显示密码'},
+ ar:{ce:'البريد الإلكتروني',cp:'كلمة المرور',si:'تسجيل الدخول',fp:'هل نسيت كلمة المرور؟',bh:'العودة إلى الصفحة الرئيسية',so:'تسجيل الخروج',rc:'إعادة إرسال رسالة التأكيد',sp:'إظهار كلمة المرور'},
+ ru:{ce:'Электронная почта',cp:'Пароль',si:'Войти',fp:'Забыли пароль?',bh:'На главную',so:'Выйти',rc:'Повторно отправить письмо подтверждения',sp:'Показать пароль'}
+ };
+ const map={'contractor.email':'ce','contractor.password':'cp','contractor.signin_button':'si','contractor.forgot_password':'fp','contractor.back_home':'bh','contractor.signout_button':'so','contractor.resend_confirmation':'rc','admin.show_password':'sp','admin.forgot_password':'fp'};
+ function apply(){const l=localStorage.getItem('bctPreferredLanguage')||'en';if(l==='en'||!A[l])return;for(const [key,k] of Object.entries(map))document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>el.textContent=A[l][k]);}
+ document.addEventListener('change',e=>{if(e.target.matches('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(apply)},true);
+ requestAnimationFrame(apply);
+})();
+</script></body>
 </html>
