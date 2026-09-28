@@ -37,7 +37,9 @@ assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must f
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
 assert(serviceWorker.includes('bct-official-logo-hotfix'), 'service worker must force the selected official logo rollout.');
 assert(serviceWorker.includes('bct-portal-shell-v21-master-signin-layout'), 'service worker cache version must stay bumped for the current V46 rollout.');
-assert(serviceWorker.includes('bct-portal-shell-v21-master-signin-layout'), 'service worker cache version must include the current V46 live cleanup rollout.');
+assert(serviceWorker.includes('bct-portal-entry-hotfix'), 'service worker must preserve repaired Client and Contractor portal entry rendering.');
+assert(serviceWorker.includes("const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png']"), 'service worker app shell must stay limited to public static assets.');
+assert(serviceWorker.includes("if(!APP_SHELL.includes(url.pathname)||url.search)return;"), 'service worker must refuse to cache non-shell routes and query-string responses.');
 assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'service worker must not cache the retired standalone homeowner controller.');
 
 try {
