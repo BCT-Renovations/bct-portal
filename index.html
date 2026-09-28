@@ -684,11 +684,17 @@ body:not(.bct-authenticated) header .brand small{display:none!important;visibili
     <button type="button" data-customer-page="completion" data-i18n="homeowner.tab_completion">Final Walkthrough</button>
   </div>
 
+  <div class="card section portal-page active" data-customer-page-panel="overview" id="bctHomeownerSignupCard">
+    <h3 data-i18n="homeowner.signup_title">New Client — Sign Up</h3>
+    <p class="muted" data-i18n="homeowner.signup_description">New to BCT? Create your private client account and start your project.</p>
+    <button type="button" id="bctHomeSignupBtn" data-i18n="homeowner.signup_button">Sign Up / Start as a New Client</button>
+  </div>
+
   <div class="card section portal-page active" data-customer-page-panel="overview" id="bctHomeownerLoginCard">
     <h3 data-i18n="homeowner.returning_title">Returning Client — Sign In</h3>
     <p class="muted" data-i18n="homeowner.returning_description">Sign in to see your real BCT project status and upload private project files.</p>
-    <div class="grid grid-2"><div><label>Email</label><input id="bctHomeEmail" type="email" autocomplete="email"></div><div><label>Password</label><input id="bctHomePassword" type="password" autocomplete="current-password"></div></div>
-    <div class="admin-project-actions"><button type="button" id="bctHomeLoginBtn">Sign In</button><button type="button" class="secondary" id="bctHomeForgotBtn">Forgot Password?</button><button type="button" class="secondary" id="bctHomeBackHomeBtn">Back to Home</button><button type="button" class="secondary" id="bctHomeLogoutBtn">Sign Out</button><button type="button" class="secondary" id="bctHomeResendBtn">Resend Confirmation Email</button></div>
+    <div class="grid grid-2"><div><label data-i18n="homeowner.email">Email</label><input id="bctHomeEmail" type="email" autocomplete="email"></div><div><label data-i18n="homeowner.password">Password</label><input id="bctHomePassword" type="password" autocomplete="current-password"></div></div>
+    <div class="admin-project-actions"><button type="button" id="bctHomeLoginBtn" data-i18n="homeowner.signin_button">Sign In</button><button type="button" class="secondary" id="bctHomeForgotBtn" data-i18n="homeowner.forgot_password">Forgot Password?</button><button type="button" class="secondary" id="bctHomeBackHomeBtn" data-i18n="homeowner.back_home">Back to Home</button><button type="button" class="secondary" id="bctHomeLogoutBtn" data-i18n="homeowner.signout_button">Sign Out</button><button type="button" class="secondary" id="bctHomeResendBtn" data-i18n="homeowner.resend_confirmation">Resend Confirmation Email</button></div>
     <div id="bctHomeAuthStatus" class="section"></div>
     <div class="mini-list">
       <div class="stage" data-i18n="homeowner.next_step_note">Next step: New clients should open Project Details and complete the private request.</div>
@@ -1224,6 +1230,16 @@ const BCT_ENGLISH_FALLBACK={
   'homeowner.tab_progress':'Schedule & Progress',
   'homeowner.tab_messages':'Messages',
   'homeowner.tab_completion':'Final Walkthrough',
+  'homeowner.signup_title':'New Client — Sign Up',
+  'homeowner.signup_description':'New to BCT? Create your private client account and start your project.',
+  'homeowner.signup_button':'Sign Up / Start as a New Client',
+  'homeowner.email':'Email',
+  'homeowner.password':'Password',
+  'homeowner.signin_button':'Sign In',
+  'homeowner.forgot_password':'Forgot Password?',
+  'homeowner.back_home':'Back to Home',
+  'homeowner.signout_button':'Sign Out',
+  'homeowner.resend_confirmation':'Resend Confirmation Email',
   'homeowner.returning_title':'Returning Client — Sign In',
   'homeowner.returning_description':'Sign in to see your real BCT project status and upload private project files.',
   'homeowner.next_step_note':'Next step: New clients should open Project Details and complete the private request.',
@@ -2367,6 +2383,16 @@ function showView(name){
   if(name==='status'){ const i=document.getElementById('statusId'),r=document.getElementById('statusResult'); if(i)i.value=''; if(r)r.innerHTML=''; }
   setVisibleView(name);
 }
+function openNewHomeownerSignup(){
+  showCustomerPage('details');
+  requestAnimationFrame(()=>{
+    const first=document.getElementById('custFirst');
+    const target=first?.closest('.card')||first;
+    target?.scrollIntoView({behavior:'smooth',block:'start'});
+    first?.focus({preventScroll:true});
+  });
+}
+document.getElementById('bctHomeSignupBtn')?.addEventListener('click',openNewHomeownerSignup);
 function showCustomerPage(page){
   document.querySelectorAll('[data-customer-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.customerPage===page));
   document.querySelectorAll('[data-customer-page-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.customerPagePanel===page));
@@ -3665,7 +3691,7 @@ body.bct-portal-entered .view:not(.hidden){margin-top:0!important}
 body.bct-portal-entered #bctMain{padding-top:0!important}
 body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(.bct-public-contractor-login):not(#bctContractorAbout){display:none!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
-body.bct-entry-client:not(.bct-authenticated) #view-customer> :not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
+body.bct-entry-client:not(.bct-authenticated) #view-customer> :not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
 body.bct-entry-admin:not(.bct-authenticated) #view-admin{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeProjects{display:none!important}
@@ -3682,8 +3708,9 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
  const contractorAbout=document.getElementById('bctContractorAbout');
  if(contractorLogin){contractorLogin.classList.add('bct-public-contractor-login');if(contractorView)contractorView.prepend(contractorLogin);}
  if(contractorAbout&&contractorLogin&&contractorView){contractorLogin.after(contractorAbout);}
- const homeView=document.getElementById('view-customer'),homeLogin=document.getElementById('bctHomeownerLoginCard'),homeAbout=document.getElementById('bctAboutPublic');
+ const homeView=document.getElementById('view-customer'),homeLogin=document.getElementById('bctHomeownerLoginCard'),homeSignup=document.getElementById('bctHomeownerSignupCard'),homeAbout=document.getElementById('bctAboutPublic');
  if(homeLogin&&homeView)homeView.prepend(homeLogin);
+ if(homeSignup&&homeView)homeView.prepend(homeSignup);
  if(homeAbout&&homeLogin&&homeView)homeLogin.after(homeAbout);
  function entered(kind){
    document.body.classList.add('bct-portal-entered');
