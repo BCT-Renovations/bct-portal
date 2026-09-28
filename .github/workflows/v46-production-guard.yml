@@ -24,3 +24,5 @@ jobs:
         run: node tests/v46-production-200-checks.mjs
       - name: Run second 200 V46 production safeguards
         run: node tests/v46-production-200-checks-round2.mjs
+      - name: Run third 200 V46 production safeguards
+        run: node tests/v46-production-200-checks-round3.mjs
