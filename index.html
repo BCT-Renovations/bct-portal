@@ -621,14 +621,14 @@ body:not(.bct-authenticated) header .brand small{display:none!important;visibili
 <section id="view-home" class="view section">
   <div class="card home-panel" id="bctSignedOutEntry">
 
-    <div class="bct-signin-heading" aria-hidden="true"><span data-login-signin-heading>Sign In</span> / <span data-i18n="entry.signup">Sign Up</span></div>
+    <div class="bct-signin-heading" aria-hidden="true"><span data-login-signin-heading data-i18n="entry.signin">Sign In</span> / <span data-i18n="entry.signup">Sign Up</span></div>
     <div class="bct-entry-actions" id="bctEntryActions">
-      <button type="button" data-entry-login="client">Client / Homeowner</button>
-      <button type="button" data-entry-login="contractor">Contractor</button>
-      <button type="button" data-entry-login="admin">Admin</button>
+      <button type="button" data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>
+      <button type="button" data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>
+      <button type="button" data-entry-login="admin" data-i18n="entry.admin">Admin</button>
     </div>
     <div class="bct-share-referral">
-      <button type="button" class="secondary" id="bctShareAppBtn" aria-describedby="bctShareAppHelp" data-i18n="share.button"><span class="bct-share-icon" aria-hidden="true">↗</span><span class="bct-share-label">Share App</span></button>
+      <button type="button" class="secondary" id="bctShareAppBtn" aria-describedby="bctShareAppHelp"><span class="bct-share-icon" aria-hidden="true">↗</span><span class="bct-share-label">Share App</span></button>
       <p class="muted" id="bctShareAppHelp" data-i18n="share.help">Give a friend or family member a gift, give them a contractor they can trust.</p>
       <div id="bctShareAppStatus" class="muted" role="status" aria-live="polite"></div>
     </div>
@@ -1169,7 +1169,11 @@ const BCT_ENGLISH_FALLBACK={
   'nav.bct_admin':'BCT Admin',
   'site.subtitle':'Homeowner Project Management & Contractor Network',
   'site.language':'Language',
+  'entry.signin':'Sign In',
   'entry.signup':'Sign Up',
+  'entry.client':'Client / Homeowner',
+  'entry.contractor':'Contractor',
+  'entry.admin':'Admin',
   'about.licensed':'Licensed • Bonded • Insured',
   'home.license_badge':'Licensed • Bonded • Insured',
   'about.title':'About BCT Renovations',
@@ -2233,6 +2237,8 @@ function syncBrandSlogan(language){
  el.lang=language||'en';
  el.dir=(language==='ar')?'rtl':'ltr';
 }
+// BCT V46 opening-screen translation keys are merged locally so the landing page never depends on a network translation call.
+const BCT_ENTRY_TRANSLATION_KEYS={signin:'entry.signin',signup:'entry.signup',client:'entry.client',contractor:'entry.contractor',admin:'entry.admin'};
 const BCT_LOGIN_LANGUAGE_UI={
   en:{label:'Choose Your Language',signin:'Sign In',signup:'Sign Up',client:'Client / Homeowner',contractor:'Contractor',admin:'Admin'},
   es:{label:'Elija su idioma',signin:'Iniciar sesión',signup:'Registrarse',client:'Cliente',contractor:'Contratista',admin:'Administrador'},
@@ -2246,6 +2252,7 @@ const BCT_LOGIN_LANGUAGE_UI={
 };
 function syncLoginLanguageUI(language){
   const ui=BCT_LOGIN_LANGUAGE_UI[language]||BCT_LOGIN_LANGUAGE_UI.en;
+  if(language!=='en'){ BCT_LOCAL_TRANSLATIONS[language]=BCT_LOCAL_TRANSLATIONS[language]||{}; Object.entries(BCT_ENTRY_TRANSLATION_KEYS).forEach(([field,key])=>{BCT_LOCAL_TRANSLATIONS[language][key]=ui[field];}); }
   const loginSelector=document.getElementById('bctLoginLanguage');
   if(loginSelector) loginSelector.value=language;
   const label=document.querySelector('[data-login-language-label]'); if(label) label.textContent=ui.label;
