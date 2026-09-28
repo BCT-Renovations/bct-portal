@@ -6,7 +6,8 @@
 // bct-portal-entry-hotfix forces installed/mobile clients to load repaired Contractor and Client portal entry rendering.
 // bct-green-logo-band-hotfix forces installed/mobile clients to load the full-width mint logo band.
 // bct-startup-cache-reset stops old cached HTML from replacing the correct V46 iPhone startup screen.
-const CACHE_NAME='bct-portal-shell-v25-green-logo-band-cache-reset';
+// bct-visible-landing-reset forces the final visible iPhone landing CSS and cache reset.
+const CACHE_NAME='bct-portal-shell-v26-visible-landing-cache-reset';
 const STATIC_ASSETS=['/bct-logo-master.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 self.addEventListener('install',event=>event.waitUntil(
