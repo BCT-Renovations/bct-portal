@@ -845,7 +845,7 @@ html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-license
       <div><label>First Name</label><input id="custFirst" autocomplete="given-name"></div>
       <div><label>Last Name</label><input id="custLast" autocomplete="family-name"></div>
       <div><label>Email</label><input id="custEmail" type="email" autocomplete="email"></div>
-      <div><label>Mobile Phone</label><input id="custPhone" autocomplete="tel"></div>
+      <div><label>Mobile Phone</label><input id="custPhone" type="tel" autocomplete="tel" inputmode="tel"></div>
       <div><label>Create Password</label><input id="custPassword" type="password" minlength="7" autocomplete="new-password"></div>
       <div><label>Confirm Password</label><input id="custPassword2" type="password" minlength="7" autocomplete="new-password"></div>
     </div>
@@ -868,7 +868,7 @@ html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-license
         <div><label>Unit / Suite Number</label><input name="unitNumber"></div>
         <div><label>Unit Status</label><select name="occupancyStatus"><option value="">Not applicable</option><option value="vacant">Vacant</option><option value="occupied">Occupied</option></select></div>
         <div><label>Resident Name (BCT private)</label><input name="residentName" autocomplete="off"></div>
-        <div><label>Resident Phone (BCT private)</label><input name="residentPhone" autocomplete="off" inputmode="tel"></div>
+        <div><label>Resident Phone (BCT private)</label><input name="residentPhone" type="tel" autocomplete="off" inputmode="tel"></div>
       </div>
       <label>Access Instructions (released only by BCT to the approved assigned contractor)</label>
       <textarea name="accessInstructions" placeholder="Gate code, office check-in, lockbox location, best entry point, parking, pets, or resident scheduling instructions."></textarea>
@@ -959,7 +959,7 @@ html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-license
       <div class="grid grid-2">
         <div><label>Legal Name</label><input name="legalName" required></div>
         <div><label>Business / Crew Name</label><input name="businessName"></div>
-        <div><label>Phone</label><input name="phone" required></div>
+        <div><label>Phone</label><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></div>
         <div><label>Email</label><input name="email" type="email" required autocomplete="email"></div>
         <div><label>Create Password</label><input name="contractorPassword" type="password" minlength="7" required autocomplete="new-password"></div>
         <div><label>Confirm Password</label><input name="contractorPassword2" type="password" minlength="7" required autocomplete="new-password"></div>
