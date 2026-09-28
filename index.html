@@ -2563,9 +2563,7 @@ async function bctAdminLogin(){
 async function bctAdminLogout(){
   if(supabaseClient)await supabaseClient.auth.signOut({scope:'local'});
   document.getElementById('adminPassword').value='';
-  document.body.classList.remove('bct-entry-admin','bct-entry-client','bct-entry-contractor');
-  setVisibleView('home');
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.bctReturnToPublicLanding?.();
 }
 
 document.getElementById('adminLoginBtn').onclick=bctAdminLogin;
@@ -3103,7 +3101,7 @@ renderAll();
   window.bctUploadHomeFiles=async projectId=>{const status=$(`homeFilesStatus-${projectId}`);try{const p=(homeownerState?.projects||[]).find(x=>x.id===projectId);const input=$(`homeFiles-${projectId}`);if(!p||!input?.files?.length){if(status)status.textContent='Choose one or more files first.';return}const n=await uploadProjectFiles(p,[...input.files]);await loadHomeownerState();const refreshedStatus=$(`homeFilesStatus-${projectId}`);if(refreshedStatus)refreshedStatus.textContent=`✓ ${n} file${n===1?'':'s'} uploaded privately to BCT.`}catch(e){if(status)status.textContent=`Upload failed: ${e.message||e}`;else bctNotice(e.message||e)}};
 
   async function homeLogin(){const btn=$('bctHomeLoginBtn');await withBusyButton(btn,'Signing in...',async()=>{try{const email=$('bctHomeEmail').value.trim(),password=$('bctHomePassword').value;if(!email||!password)throw new Error('Enter your email and password.');note('bctHomeAuthStatus','Checking your BCT homeowner account...','notice backend-live');const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;await loadHomeownerState()}catch(e){note('bctHomeAuthStatus',`<b>Sign-in failed:</b> ${esc(authFriendly(e))}`)}})}
-  async function homeLogout(){await supabaseClient.auth.signOut({scope:'local'});homeownerState=null;note('bctHomeAuthStatus','Signed out.');if($('bctHomeProjects'))$('bctHomeProjects').innerHTML='';document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');showView('home');window.scrollTo({top:0,behavior:'smooth'})}
+  async function homeLogout(){await supabaseClient.auth.signOut({scope:'local'});homeownerState=null;note('bctHomeAuthStatus','Signed out.');if($('bctHomeProjects'))$('bctHomeProjects').innerHTML='';window.bctReturnToPublicLanding?.()}
   async function resend(emailId,statusId){const button=statusId==='bctHomeAuthStatus'?$('bctHomeResendBtn'):statusId==='bctContractorAuthStatus'?$('bctContractorResendBtn'):null,hash=statusId==='bctContractorAuthStatus'?'status':'customer';await withBusyButton(button,'Sending...',async()=>{try{const email=$(emailId).value.trim();if(!email)throw new Error('Enter your email first.');const {error}=await supabaseClient.auth.resend({type:'signup',email,options:{emailRedirectTo:`${window.location.origin}${window.location.pathname}#${hash}`}});if(error)throw error;note(statusId,'Confirmation email requested. Please check your inbox and spam/junk folders.')}catch(e){note(statusId,esc(authFriendly(e)))}})}
   function requestPasswordReset(){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$('view-password-request')?.classList.remove('hidden');const form=$('passwordRequestForm');form?.reset();form?.classList.remove('hidden');form?.querySelectorAll('input,button').forEach(el=>el.disabled=false);const email=$('passwordRequestEmail');if(email)setTimeout(()=>email.focus(),0);note('passwordRequestStatus','');window.scrollTo({top:0,behavior:'smooth'});}
   const passwordRequestForm=$('passwordRequestForm');if(passwordRequestForm)passwordRequestForm.onsubmit=async e=>{e.preventDefault();if(passwordRequestForm.dataset.pending==='true'||passwordRequestForm.classList.contains('hidden'))return;const email=$('passwordRequestEmail')?.value.trim();if(!email){note('passwordRequestStatus','Enter your email address.');return}passwordRequestForm.dataset.pending='true';const sendButton=passwordRequestForm.querySelector('[type="submit"]');if(sendButton){sendButton.disabled=true;sendButton.textContent='Sending...'}const safeMessage='<b>Request received.</b> If that email address is on file, a reset link will be sent. Open that link to enter your new password in two matching boxes.';try{const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:`${window.location.origin}${window.location.pathname}#password-reset`});if(error)console.warn('Password reset request was not accepted by the authentication provider.')}catch(e){console.warn('Password reset request failed.')}finally{passwordRequestForm.dataset.pending='false';passwordRequestForm.reset();passwordRequestForm.querySelectorAll('input,button').forEach(el=>el.disabled=true);passwordRequestForm.classList.add('hidden');if(sendButton)sendButton.textContent='Send Reset Link';note('passwordRequestStatus',safeMessage)}};
@@ -3563,5 +3561,26 @@ renderAll();
 </script>
 
 <!-- BCT V46 deployment sync marker 2026-09-28 -->
+
+<script>
+/* BCT V46 AUTHORITATIVE SIGN-OUT RESET */
+window.bctReturnToPublicLanding=function(){
+  const b=document.body;
+  b.classList.remove('bct-authenticated','bct-entry-admin','bct-entry-client','bct-entry-contractor');
+  b.classList.add('bct-signed-out');
+  document.documentElement.classList.add('bct-session-resolved');
+  document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));
+  if(typeof setVisibleView==='function')setVisibleView('home');
+  else if(typeof showView==='function')showView('home');
+  const slogan=document.querySelector('[data-bct-slogan]');
+  if(slogan){
+    const lang=(document.documentElement.lang||'en').toLowerCase();
+    const map={en:'We Are Your General Contractor',es:'Somos su contratista general',fr:'Nous sommes votre entrepreneur général',ht:'Nou se kontraktè jeneral ou',pt:'Somos o seu empreiteiro geral',vi:'Chúng tôi là tổng thầu của bạn',zh:'我们是您的总承包商',ar:'نحن المقاول العام الخاص بك',ru:'Мы ваш генеральный подрядчик'};
+    slogan.textContent='“'+(map[lang]||map.en)+'”';
+  }
+  window.scrollTo({top:0,behavior:'auto'});
+};
+</script>
+
 </body>
 </html>
