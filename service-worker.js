@@ -4,7 +4,7 @@
 // bct-wide-logo-hotfix forces phones to reload the wider signed-out logo header.
 // bct-official-logo-hotfix forces phones to load the selected full official BCT logo.
 // bct-portal-entry-hotfix forces installed/mobile clients to load repaired Contractor and Client portal entry rendering.
-const CACHE_NAME='bct-portal-shell-v21-master-signin-layout';
+const CACHE_NAME='bct-portal-shell-v22-v46-landing-lock';
 const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([
@@ -17,7 +17,8 @@ self.addEventListener('fetch',event=>{
   if(url.origin!==location.origin)return;
   // Only the static shell is safe to cache. Never store API responses or private pages.
   if(!APP_SHELL.includes(url.pathname)||url.search)return;
-  event.respondWith(fetch(event.request).then(response=>{
+  // Installed iPhone/PWA navigations must always prefer the newest V46 document.
+  event.respondWith(fetch(event.request,{cache:'no-store'}).then(response=>{
     if(response.ok&&response.type==='basic'){
       const copy=response.clone();
       event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy)));
