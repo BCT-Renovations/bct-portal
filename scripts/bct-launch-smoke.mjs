@@ -194,8 +194,8 @@ assert(html.includes('id="bctLoginLanguage"'), 'Signed-out V46 must expose the l
 assert(html.includes('data-bct-slogan'), 'Signed-out V46 must expose the live language-aware BCT slogan.');
 assert(html.includes('BCT_BRAND_SLOGANS'), 'V46 must include localized BCT brand slogans.');
 assert(html.includes('syncBrandSlogan'), 'V46 must synchronize the BCT slogan when language changes.');
-assert(html.includes('BCT V46 FINAL LANGUAGE + LOGO LOCK'), 'V46 must keep the final signed-out logo/slogan lock.');
-assert(html.includes('show live translated slogan in its place'), 'V46 must hide the baked logo slogan and show the translated live slogan.');
+assert(html.includes('BCT V46 CANONICAL PUBLIC + SHARED LANDING DESIGN'), 'V46 must keep the canonical signed-out/shared logo and landing lock.');
+assert(html.includes('.bct-logo-crop::after') && html.includes('.bct-dynamic-slogan'), 'V46 must mask the baked logo slogan and show the translated live slogan.');
 assert(html.includes("'about.p1':'En BCT Renovations, LLC, los propietarios merecen"), 'Spanish About BCT body copy must be translated, not only the heading.');
 assert(html.includes("'about.p3':'BCT no simplemente hace la conexión y se va"), 'Spanish About BCT coordination copy must be translated.');
 assert(html.includes("'about.promise4':'Le damos una sola compañía a la cual acudir de principio a fin."), 'Spanish About BCT promise copy must be translated.');
