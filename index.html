@@ -715,6 +715,8 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
   </div>
 
   <div class="card section portal-page" data-customer-page-panel="details">
+    <button type="button" class="secondary bct-new-client-back" id="bctNewClientBackBtn" data-i18n="homeowner.back_choices">← Back to Client Sign Up / Sign In</button>
+    
     <h3>1 — Create Your Private Customer Account</h3>
     <p class="muted">Your private customer account and project are securely created through BCT’s Supabase authentication and database.</p>
     <div class="grid grid-2">
@@ -3862,6 +3864,7 @@ body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!import
    const k=e.target.closest('#bctContractorSignupBtn'); if(k){e.preventDefault();e.stopImmediatePropagation();contractorSignup();}
  },true);
  document.getElementById('bctHomeSignupBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelector('[data-entry-login="client"]')?.click();});
+ document.getElementById('bctNewClientBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.remove('active'));document.getElementById('bctHomeownerSignupCard')?.classList.add('active');document.getElementById('bctHomeownerLoginCard')?.classList.add('active');document.querySelector('[data-entry-login="client"]')?.click();requestAnimationFrame(()=>window.scrollTo(0,0));});
  window.bctOpenHomeSignup=homeSignup; window.bctOpenContractorSignup=contractorSignup;
 })();
 </script>
