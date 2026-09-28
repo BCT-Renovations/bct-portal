@@ -544,6 +544,12 @@ body:not(.bct-authenticated) header .brand>div:last-child:not(.bct-dynamic-brand
 body:not(.bct-authenticated) header .brand h1,
 body:not(.bct-authenticated) header .brand .bct-auth-only-header-copy,
 body:not(.bct-authenticated) header .brand small{display:none!important;visibility:hidden!important;position:absolute!important;left:-99999px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+
+/* BCT V46 About-section emphasis — replaces rating-like stars with a home/roof mark. */
+#bctAboutPublic .bct-about-home-mark{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 8px;color:#0f5f63!important}
+#bctAboutPublic .bct-about-home-mark span{font-size:30px!important;line-height:1;font-weight:900;letter-spacing:0!important}
+#bctAboutPublic .bct-about-home-mark b{font-size:20px;line-height:1;color:#0f5f63!important}
+#bctAboutPublic .bct-about-title{font-size:clamp(30px,7vw,42px)!important;line-height:1.08!important;font-weight:900!important;color:#0a4549!important;letter-spacing:.01em!important;margin:4px 0 14px!important;text-align:center!important}
 </style>
 
 <script>
@@ -629,7 +635,7 @@ body:not(.bct-authenticated) header .brand small{display:none!important;visibili
   </div>
 
   <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle">
-    <div class="bct-about-accent" aria-hidden="true"><span>★</span><span>★</span><span>★</span><b>↓</b></div>
+    <div class="bct-about-accent bct-about-home-mark" aria-hidden="true"><span>⌂</span><b>↓</b></div>
     <h2 id="bctAboutTitle" class="bct-about-title" data-i18n="about.title">About BCT Renovations</h2>
     <h3 class="bct-about-lead" data-i18n="about.lead">We’re Not Just Connecting You With a Contractor. We Are Your General Contractor.</h3>
     <p data-i18n="about.p1">At BCT Renovations, LLC, homeowners deserve more than just a name and a phone number. You deserve to know who is working on your property, that they have been properly verified, and that someone is standing with you throughout the entire project.</p>
