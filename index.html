@@ -2324,7 +2324,7 @@ async function bctAdminLogin(){
     if(/invalid login credentials/i.test(msg)) friendly='Supabase rejected the email/password combination. The BCT Admin page is connected correctly, but the credentials did not match the Supabase account.';
     else if(/email not confirmed/i.test(msg)) friendly='Supabase says this email has not been confirmed.';
     else if(/failed to fetch|network|load failed/i.test(msg)) friendly='The browser could not reach Supabase. Check the internet connection and try again.';
-    status.innerHTML='<div class="notice"><b>Sign-in failed.</b> '+friendly+'</div>';
+    status.replaceChildren();const notice=document.createElement('div');notice.className='notice';const strong=document.createElement('b');strong.textContent='Sign-in failed.';notice.append(strong,document.createTextNode(' '+String(friendly||'')));status.appendChild(notice);
   }finally{
     btn.disabled=false;
     btn.textContent='Sign In to BCT Admin';
@@ -2374,7 +2374,7 @@ document.getElementById('customerProjectForm').onsubmit=async e=>{
   const form=e.target;
   const err=document.getElementById('customerSubmitError');
   const btn=document.getElementById('customerSubmitBtn');
-  const fail=(message,el)=>{err.innerHTML='<b>Please fix this item:</b> '+message;err.classList.remove('hidden');btn.disabled=false;btn.textContent='Submit Project Privately to BCT';if(el){el.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{try{el.focus({preventScroll:true})}catch(_){ }},250);}};
+  const fail=(message,el)=>{err.replaceChildren();const strong=document.createElement('b');strong.textContent='Please fix this item:';err.append(strong,document.createTextNode(' '+String(message||'')));err.classList.remove('hidden');btn.disabled=false;btn.textContent='Submit Project Privately to BCT';if(el){el.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{try{el.focus({preventScroll:true})}catch(_){ }},250);}};
   err.classList.add('hidden');
   btn.disabled=true;btn.textContent='Submitting…';
   try{
