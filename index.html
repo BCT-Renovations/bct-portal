@@ -3986,5 +3986,27 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  requestAnimationFrame(apply);
 })();
 </script>
+<script>
+/* V46 HOMEOWNER ACCOUNT FIELD TRANSLATIONS */
+(function(){
+ const X={
+ es:{first:'Nombre',last:'Apellido',email:'Correo electrónico',phone:'Teléfono móvil',create:'Crear contraseña',confirm:'Confirmar contraseña'},
+ fr:{first:'Prénom',last:'Nom',email:'E-mail',phone:'Téléphone mobile',create:'Créer un mot de passe',confirm:'Confirmer le mot de passe'},
+ ht:{first:'Prenon',last:'Siyati',email:'Imèl',phone:'Telefòn mobil',create:'Kreye modpas',confirm:'Konfime modpas'},
+ pt:{first:'Nome',last:'Sobrenome',email:'E-mail',phone:'Celular',create:'Criar senha',confirm:'Confirmar senha'},
+ vi:{first:'Tên',last:'Họ',email:'Email',phone:'Điện thoại di động',create:'Tạo mật khẩu',confirm:'Xác nhận mật khẩu'},
+ zh:{first:'名字',last:'姓氏',email:'电子邮箱',phone:'手机号码',create:'创建密码',confirm:'确认密码'},
+ ar:{first:'الاسم الأول',last:'اسم العائلة',email:'البريد الإلكتروني',phone:'رقم الهاتف المحمول',create:'إنشاء كلمة مرور',confirm:'تأكيد كلمة المرور'},
+ ru:{first:'Имя',last:'Фамилия',email:'Электронная почта',phone:'Мобильный телефон',create:'Создать пароль',confirm:'Подтвердить пароль'}
+ };
+ const keys={first:'homeowner.first_name',last:'homeowner.last_name',email:'homeowner.email',phone:'homeowner.mobile_phone',create:'homeowner.create_password',confirm:'homeowner.confirm_password'};
+ function apply(){
+  const l=localStorage.getItem('bctPreferredLanguage')||'en'; if(l==='en'||!X[l])return;
+  for(const [k,key] of Object.entries(keys)){document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>el.textContent=X[l][k]);}
+ }
+ document.addEventListener('change',e=>{if(e.target.matches('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(apply)},true);
+ requestAnimationFrame(apply);
+})();
+</script>
 </body>
 </html>
