@@ -4,8 +4,9 @@
 // bct-wide-logo-hotfix forces phones to reload the wider signed-out logo header.
 // bct-official-logo-hotfix forces phones to load the selected full official BCT logo.
 // bct-portal-entry-hotfix forces installed/mobile clients to load repaired Contractor and Client portal entry rendering.
+// bct-green-logo-band-hotfix forces installed/mobile clients to load the full-width mint logo band.
 // bct-startup-cache-reset stops old cached HTML from replacing the correct V46 iPhone startup screen.
-const CACHE_NAME='bct-portal-shell-v24-startup-cache-reset';
+const CACHE_NAME='bct-portal-shell-v16-green-logo-band';
 const STATIC_ASSETS=['/bct-logo-master.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 self.addEventListener('install',event=>event.waitUntil(
