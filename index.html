@@ -755,8 +755,8 @@ body:not(.bct-authenticated) header .brand small{display:none!important;visibili
 
     <div class="card section portal-page" data-customer-page-panel="files">
       <h3>4 — Photos, Video & Documents</h3>
-      <label>Upload Project Files</label><div class="file-upload-ui"><input id="customerFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4"><label class="file-upload-button" for="customerFiles" data-file-choose>Choose Files</label><span class="file-upload-name" data-file-name="customerFiles">No files selected</span></div>
-      <p class="muted">Up to 10 files, 25 MB each. Allowed: JPG, PNG, WEBP, HEIC/HEIF, PDF, MOV, and MP4. Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.</p>
+      <label>Upload Project Files or Take a Photo</label><div class="file-upload-ui"><input id="customerFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4,image/*,video/*" capture="environment"><label class="file-upload-button" for="customerFiles" data-file-choose>Choose Files</label><span class="file-upload-name" data-file-name="customerFiles">No files selected</span></div>
+      <p class="muted">Use your phone camera or choose existing files. Up to 10 files, 25 MB each (videos up to 100 MB). Allowed: JPG, PNG, WEBP, HEIC/HEIF, PDF, MOV, and MP4. Project files are stored in BCT’s private cloud storage after you confirm your account and sign in.</p>
     </div>
 
     <div class="card section portal-page" data-customer-page-panel="details">
