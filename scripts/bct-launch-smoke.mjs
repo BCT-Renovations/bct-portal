@@ -197,7 +197,7 @@ assert(html.includes('function bctDialogShell(') && html.includes("dialog.addEve
 assert(html.includes('bctDialogPending=false') && html.includes('previous?.focus'), 'V46 in-app dialogs must guard concurrent prompts and restore focus.');
 
 assert(html.includes('.bct-dynamic-slogan') && html.includes('background:transparent'), 'Translated slogan must remain visually integrated without its own box.');
-assert(html.includes('.bct-logo-crop::after') && html.includes('background:linear-gradient'), 'Master-reference slogan cover must preserve the integrated green treatment.');
+assert(html.includes('.bct-logo-crop::after') && html.includes('height:19%') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
 
 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
