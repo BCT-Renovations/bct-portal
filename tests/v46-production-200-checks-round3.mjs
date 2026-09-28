@@ -45,7 +45,7 @@ const signatures=[
   "<input type=\"checkbox\" name=\"service\" value=\"Other\">",
   "<select name=\"projectType\">",
   "<textarea name=\"description\" required placeholder=\"Tell BCT what is happening, what you want changed, and anything we should know.\">",
-  "<input id=\"customerFiles\" type=\"file\" multiple accept=\".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4\">",
+  "<input id=\"customerFiles\" type=\"file\" multiple accept=\".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,.mov,.mp4,image/*,video/*\" capture=\"environment\">",
   "<select name=\"budgetStatus\">",
   "<select name=\"budgetRange\">",
   "<select name=\"startWindow\">",
