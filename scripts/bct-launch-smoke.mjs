@@ -184,6 +184,16 @@ assert(html.includes('id="bctLoginLanguage"'), 'Signed-out V46 must expose the l
 assert(html.includes('data-bct-slogan'), 'Signed-out V46 must expose the live language-aware BCT slogan.');
 assert(html.includes('BCT_BRAND_SLOGANS'), 'V46 must include localized BCT brand slogans.');
 assert(html.includes('syncBrandSlogan'), 'V46 must synchronize the BCT slogan when language changes.');
+for (const language of ['en','es','fr','ht','pt','vi','zh','ar','ru']) {
+  assert(new RegExp('\\\\b'+language+':').test(html) || html.includes("'"+language+"':") || html.includes('"'+language+'":'), 'V46 language data must include '+language+'.');
+}
+for (const slogan of ['Your General Contractor','Su Contratista General','Votre Entrepreneur Général','Kontraktè Jeneral Ou','Seu Empreiteiro Geral','Tổng Thầu Của Bạn','您的总承包商','المقاول العام الخاص بك','Ваш генеральный подрядчик']) {
+  assert(html.includes(slogan), 'V46 must keep every approved translated brand slogan.');
+}
+assert(html.includes("document.documentElement.dir=language==='ar'?'rtl':'ltr'"), 'Arabic must switch the document to RTL.');
+assert(html.includes("requestId!==BCT_LANGUAGE_REQUEST_ID"), 'Language switching must guard against stale async translation responses.');
+assert(html.includes('.bct-dynamic-slogan') && html.includes('background:transparent'), 'Translated slogan must remain visually integrated without its own box.');
+assert(html.includes('.bct-logo-crop::after') && html.includes('background:linear-gradient'), 'Master-reference slogan cover must preserve the integrated green treatment.');
 
 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
