@@ -3782,7 +3782,12 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
  const contractorView=document.getElementById('view-status');
  const contractorLogin=document.getElementById('bctContractorLoginBtn')?.closest('.card');
  const contractorAbout=document.getElementById('bctContractorAbout');
- if(contractorLogin){contractorLogin.classList.add('bct-public-contractor-login');if(contractorView)contractorView.prepend(contractorLogin);}
+ if(contractorLogin){contractorLogin.classList.add('bct-public-contractor-login');}
+ const contractorSignup=document.getElementById('bctContractorSignupCard');
+ const contractorTitle=document.getElementById('bctContractorPortalTitle');
+ if(contractorView&&contractorTitle)contractorView.prepend(contractorTitle);
+ if(contractorView&&contractorSignup)contractorTitle?.after(contractorSignup);
+ if(contractorView&&contractorLogin)contractorSignup?.after(contractorLogin);
  if(contractorAbout&&contractorLogin&&contractorView){contractorLogin.after(contractorAbout);}
  const homeView=document.getElementById('view-customer'),homeLogin=document.getElementById('bctHomeownerLoginCard'),homeSignup=document.getElementById('bctHomeownerSignupCard'),homeAbout=document.getElementById('bctAboutPublic');
  if(homeLogin&&homeView)homeView.prepend(homeLogin);
