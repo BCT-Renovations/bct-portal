@@ -539,6 +539,15 @@ body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed{background:#0f5
  body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed{margin-left:-14px!important;margin-right:-14px!important}
 }
 
+/* BCT V46 SIGNED-OUT STARTUP GUARD — prevents post-load snap-back */
+html.bct-session-resolved body.bct-signed-out header nav{display:none!important}
+html.bct-session-resolved body.bct-signed-out .bct-auth-only-header-copy{display:none!important}
+html.bct-session-resolved body.bct-signed-out #view-home{display:block!important}
+html.bct-session-resolved body.bct-signed-out:not(.bct-entry-client):not(.bct-entry-contractor):not(.bct-entry-admin) main>.view:not(#view-home){display:none!important}
+html.bct-session-resolved body.bct-signed-out header,
+html.bct-session-resolved body.bct-signed-out header .wrap,
+html.bct-session-resolved body.bct-signed-out main.wrap{background:#e8f5ec!important}
+
 /* BCT V46 PUBLIC ABOUT — continuous background, no box */
 .bct-about-public{max-width:920px;margin:34px auto 8px;padding:18px 10px 28px;text-align:center;background:transparent;border:0;box-shadow:none}
 .bct-about-accent{display:flex;align-items:center;justify-content:center;gap:7px;color:#0f5f63;margin-bottom:2px;line-height:1}
@@ -3334,7 +3343,7 @@ renderAll();
  const protectedViews=new Set(['customer','apply','status','jobs','admin']);
  let entryIntent=null;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
- function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');document.body.classList.toggle('bct-authenticated',!!session?.user);document.body.classList.toggle('bct-signed-out',!session?.user);if(session?.user){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');}}
+ function setAuthShell(session){document.documentElement.classList.add('bct-session-resolved');const signedIn=!!session?.user;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
