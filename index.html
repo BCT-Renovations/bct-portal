@@ -562,6 +562,14 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!imp
  body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
  body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{display:block!important}
 }
+
+/* V46 PRIORITY PORTAL HEADER + PUBLIC REGISTRATION LOCK */
+.bct-portal-title{width:100%;background:#0f5f63;color:#fff;font-size:22px;font-weight:900;text-align:center;padding:14px 16px;margin:0 0 10px;border-radius:0 0 14px 14px;letter-spacing:.02em}
+body.bct-home-signup:not(.bct-authenticated) #view-customer> :not(#bctClientPortalTitle):not([data-customer-page-panel="details"]):not(#customerProjectForm){display:none!important}
+body.bct-home-signup:not(.bct-authenticated) #view-customer [data-customer-page-panel="details"]{display:block!important}
+body.bct-home-signup:not(.bct-authenticated) #customerProjectForm{display:block!important}
+body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!important}
+@media(max-width:820px){.bct-portal-title{font-size:20px;margin-left:-12px;width:calc(100% + 24px);border-radius:0 0 12px 12px}}
 </style>
 
 <script>
@@ -647,28 +655,17 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!imp
   </div>
 
   <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle">
-    <div class="bct-about-accent bct-about-home-mark" aria-hidden="true"><span>⌂</span><b>↓</b></div>
     <h2 id="bctAboutTitle" class="bct-about-title" data-i18n="about.title">About BCT Renovations</h2>
-    <h3 class="bct-about-lead" data-i18n="about.lead">We’re Not Just Connecting You With a Contractor. We Are Your General Contractor.</h3>
-    <p data-i18n="about.p1">At BCT Renovations, LLC, homeowners deserve more than just a name and a phone number. You deserve to know who is working on your property, that they have been properly verified, and that someone is standing with you throughout the entire project.</p>
-    <p class="bct-about-callout" data-i18n="about.difference">That’s where BCT comes in.</p>
-    <p data-i18n="about.p2">Contractors in our network go through the BCT verification process, including verification of required credentials and current insurance documentation before they are approved to perform work through our platform.</p>
-    <p data-i18n="about.p3">BCT doesn’t simply make the connection and walk away. We help coordinate your project, assign qualified contractors, monitor progress, and remain your point of contact from the beginning of the project through completion.</p>
-    <p data-i18n="about.p4">Our goal is to take the guesswork out of hiring someone to work on your home. You shouldn’t have to wonder who to trust, whether the proper documentation is current, or who to turn to if something isn’t going the way it should.</p>
-    <p class="bct-about-battle" data-i18n="about.battle">You don’t have to fight that battle alone. <strong>BCT stands with the homeowner.</strong></p>
-    <div class="bct-about-promise" aria-label="BCT homeowner commitment">
-      <span data-i18n="about.promise1">We bring the contractors.</span>
-      <span data-i18n="about.promise2">We oversee the process.</span>
-      <span data-i18n="about.promise3">We help protect the quality of the project.</span>
-      <span data-i18n="about.promise4">We give you one company to turn to from start to finish.</span>
-    </div>
-    <p class="bct-about-close" data-i18n="about.close">Your Home, Your Project, Your Contractor.</p>
+    <h3 class="bct-about-lead" data-i18n="about.short_lead">BCT Renovations is your general contractor — not just a contractor referral service.</h3>
+    <p data-i18n="about.short_body">We coordinate your project, work with verified contractors, monitor progress, and stay involved from start to finish.</p>
+    <p class="bct-about-close" data-i18n="about.short_close">Your project. Your home. Our commitment.</p>
     <p class="bct-about-licensed" data-i18n="about.licensed">Licensed • Bonded • Insured</p>
   </section>
 </section>
 
 
 <section id="view-customer" class="view section hidden">
+  <div id="bctClientPortalTitle" class="bct-portal-title" data-i18n="portal.client_title">CLIENT PORTAL</div>
   <div class="customer-hero">
     <div class="card">
       <span class="badge info" data-i18n="homeowner.portal_badge">BCT Client Portal</span>
@@ -907,6 +904,7 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!imp
 </section>
 
 <section id="view-status" class="view section hidden">
+  <div id="bctContractorPortalTitle" class="bct-portal-title" data-i18n="portal.contractor_title">CONTRACTOR PORTAL</div>
   <div class="card section">
     <span class="badge info" data-i18n="contractor.portal_badge">BCT Contractor Portal</span>
     <h2 data-i18n="contractor.status_title">Status & Documents</h2>
@@ -957,6 +955,7 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!imp
 
 
 <section id="view-admin-login" class="view section hidden">
+  <div id="bctAdminPortalTitle" class="bct-portal-title" data-i18n="portal.admin_title">ADMIN PORTAL</div>
   <div class="admin-gate">
     <div class="card">
       <span class="badge info" data-i18n="admin.secure_access">Secure BCT Access</span>
@@ -1184,6 +1183,13 @@ const supabaseClient=window.supabase ? window.supabase.createClient(SUPABASE_URL
 
 const BCT_LANGUAGE_KEY='bctPreferredLanguage';
 const BCT_ENGLISH_FALLBACK={
+  'portal.client_title':'CLIENT PORTAL',
+  'portal.contractor_title':'CONTRACTOR PORTAL',
+  'portal.admin_title':'ADMIN PORTAL',
+  'about.short_lead':'BCT Renovations is your general contractor — not just a contractor referral service.',
+  'about.short_body':'We coordinate your project, work with verified contractors, monitor progress, and stay involved from start to finish.',
+  'about.short_close':'Your project. Your home. Our commitment.',
+
   'nav.home':'Home',
   'nav.homeowner_portal':'Client Portal',
   'nav.pre_application':'Pre-Application',
@@ -2428,11 +2434,14 @@ function showView(name){
   setVisibleView(name);
 }
 function openNewHomeownerSignup(){
+  document.body.classList.add('bct-home-signup','bct-portal-entered','bct-entry-client');
+  const view=document.getElementById('view-customer');
+  view?.classList.remove('hidden','bct-signedout-hidden');
+  view?.querySelectorAll('[data-customer-page-panel="details"],#customerProjectForm').forEach(x=>x.classList.remove('bct-signedout-hidden','hidden'));
   showCustomerPage('details');
   requestAnimationFrame(()=>{
+    window.scrollTo({top:0,left:0,behavior:'auto'});
     const first=document.getElementById('custFirst');
-    const target=first?.closest('.card')||first;
-    target?.scrollIntoView({behavior:'smooth',block:'start'});
     first?.focus({preventScroll:true});
   });
 }
@@ -3657,7 +3666,7 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
   });
 })();
 /* BCT V46 AUTHORITATIVE SIGN-OUT RESET */
-window.bctReturnToPublicLanding=function(){
+window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-home-signup');
   try{history.replaceState({bctView:'home'},'',location.pathname+location.search+'#home');}catch(_){}
   const b=document.body;
   b.classList.remove('bct-authenticated','bct-entry-admin','bct-entry-client','bct-entry-contractor','bct-portal-entered');
