@@ -34,3 +34,5 @@ jobs:
         run: node tests/v46-production-200-checks-round6.mjs
       - name: Run seventh 200 V46 DOM contract safeguards
         run: node tests/v46-production-200-checks-round7.mjs
+      - name: Run eighth 200 V46 behavior contract safeguards
+        run: node tests/v46-production-200-checks-round8.mjs
