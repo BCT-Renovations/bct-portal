@@ -87,6 +87,15 @@ Last verified: 2026-09-26
 - Supabase performance advisors no longer report unindexed foreign keys, auth-initplan warnings, or multiple-permissive-policy warnings for the new Phase 1 property/communication tables. Remaining performance notices are `unused_index` INFO findings expected on a launch-prep database with low traffic.
 - Full local `.mjs` smoke suite passes: AI estimating, automation health, contractor onboarding, contractor safety UI, launch dry run, launch smoke, Phase 1 privacy/communications, Phase 1 workflow boundaries, role visibility, safety training, and submission lockout.
 
+## TEST → FIX → RETEST → PASS → LOCK ledger — 2026-09-27 evening
+
+- **PASS / LOCK — Vercel production runtime:** current production deployment inspected as READY; Vercel runtime error clustering returned zero errors for the latest six-hour verification window. Reopen only after a production deployment or runtime-affecting change.
+- **PASS / LOCK — Supabase Edge Function deployment posture:** all eight current BCT Edge Functions are ACTIVE with JWT verification enabled, including `bct-ai-estimate` and `bct-notification-dispatch`. Reopen only after Edge Function/config deployment changes.
+- **PASS / LOCK — Notification authorization boundary:** `bct-notification-dispatch` requires POST, JWT, and `is_bct_admin`; the admin notification summary RPC rejected a non-admin database context. Reopen only after notification auth/RPC changes.
+- **OPEN — Live email provider delivery:** an email notification remains queued with zero delivery attempts and no provider message ID. Do not mark PASS until a real provider-backed send is verified end-to-end.
+- **OPEN — Supabase leaked-password protection:** security advisor still reports the Auth setting disabled.
+- **OPEN / intentional-review — Password-history SECURITY DEFINER warnings:** only `bct_record_password_history` and `bct_validate_password_not_recent` are executable by authenticated users; three other BCT SECURITY DEFINER functions are postgres-only. Existing password-history smoke remains the regression gate.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
