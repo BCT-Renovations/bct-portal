@@ -3691,7 +3691,7 @@ body.bct-entry-admin:not(.bct-authenticated) .bct-portal-about{display:none!impo
    }else if(kind==='contractor'){
      const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');
      let about=document.getElementById('bctContractorAbout');
-     if(!about&&login){login.insertAdjacentHTML('afterend',contractorAbout);about=document.getElementById('bctContractorAbout');}
+     if(!about&&login){login.after(contractorAbout);about=contractorAbout;}
      if(about&&login&&about.previousElementSibling!==login)login.after(about);
    }
    const lang=localStorage.getItem(BCT_LANGUAGE_KEY)||document.documentElement.lang||'en';
