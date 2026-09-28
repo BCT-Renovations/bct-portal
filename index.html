@@ -466,6 +466,15 @@ body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;marg
 @media(max-width:480px){.bct-logo-crop{width:100%}.bct-logo-crop::after{height:19%}.bct-dynamic-slogan{font-size:clamp(1.25rem,5.2vw,2.15rem);bottom:5.1%}}
 
 
+/* BCT V46 screenshot correction: clean official logo, one signed-out language selector */
+header .wrap>div:has(#bctLanguage){display:none!important}
+.bct-logo-crop{overflow:visible!important;width:min(92vw,560px)!important}
+.bct-logo-crop::after{display:none!important}
+.bct-logo-crop .brand-logo{width:100%!important;height:auto!important;object-fit:contain!important}
+.bct-dynamic-slogan{position:static!important;display:block!important;margin:-4px 12px 8px!important;line-height:1.15!important;white-space:normal!important}
+body:not(.bct-authenticated) header .bct-auth-only-header-copy{display:none!important}
+@media(max-width:480px){.bct-logo-crop{width:min(94vw,500px)!important}.bct-dynamic-slogan{font-size:clamp(1.35rem,6vw,1.8rem)!important;margin:-2px 10px 6px!important}}
+
 /* BCT V46 PUBLIC ABOUT — continuous background, no box */
 .bct-about-public{max-width:920px;margin:34px auto 8px;padding:18px 10px 28px;text-align:center;background:transparent;border:0;box-shadow:none}
 .bct-about-accent{display:flex;align-items:center;justify-content:center;gap:7px;color:#0f5f63;margin-bottom:2px;line-height:1}
