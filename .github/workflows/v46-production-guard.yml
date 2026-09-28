@@ -32,3 +32,5 @@ jobs:
         run: node tests/v46-production-200-checks-round5.mjs
       - name: Run sixth 200 V46 select-option integrity safeguards
         run: node tests/v46-production-200-checks-round6.mjs
+      - name: Run seventh 200 V46 DOM contract safeguards
+        run: node tests/v46-production-200-checks-round7.mjs
