@@ -667,7 +667,59 @@ body:not(.bct-authenticated) .bct-dynamic-slogan{position:absolute!important;lef
 body:not(.bct-authenticated) .bct-dynamic-slogan[dir="rtl"]{font-family:"Noto Naskh Arabic","Geeza Pro","Arial",sans-serif!important;font-style:normal!important;line-height:1.2!important}
 @media(max-width:390px){body:not(.bct-authenticated) .bct-dynamic-slogan{font-size:clamp(1rem,4.5vw,1.55rem)!important;padding:0 10px!important}}
 
+
+/* BCT V46 LIVE IPHONE VISIBLE OVERRIDE — wins over older public-design blocks */
+body:not(.bct-authenticated),html.bct-session-resolved body.bct-signed-out{background:#e8f5ec!important}
+body:not(.bct-authenticated) header,
+body:not(.bct-authenticated) header .wrap,
+body:not(.bct-authenticated) header .brand,
+body:not(.bct-authenticated) .bct-dynamic-brand,
+body:not(.bct-authenticated) main.wrap{background:#e8f5ec!important;border-color:#9ed8ac!important;box-shadow:none!important}
+body:not(.bct-authenticated) header .wrap{width:100%!important;max-width:none!important;margin:0!important;padding:8px 0 10px!important}
+body:not(.bct-authenticated) .bct-logo-crop{width:min(100vw,680px)!important;max-width:100vw!important;margin:0 auto!important;background:#e8f5ec!important;overflow:hidden!important}
+body:not(.bct-authenticated) .bct-logo-crop .brand-logo,
+body:not(.bct-authenticated) .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;margin:0 auto!important;object-fit:contain!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{font-weight:900!important;font-size:clamp(20px,5.9vw,34px)!important;color:#07383b!important;text-shadow:0 1px 0 rgba(255,255,255,.7)!important}
+body:not(.bct-authenticated) #bctAboutPublic,
+html.bct-session-resolved body.bct-signed-out #bctAboutPublic{background:#eef7f1!important;border:1px solid #c8dfcf!important;border-radius:18px!important;padding:22px 0 0!important;margin:18px 0 0!important;overflow:hidden!important;box-shadow:0 8px 24px rgba(23,36,39,.06)!important}
+body:not(.bct-authenticated) #bctAboutPublic > *:not(.bct-about-licensed){padding-left:16px!important;padding-right:16px!important}
+body:not(.bct-authenticated) #bctAboutPublic .bct-about-close{text-transform:none!important}
+body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed,
+html.bct-session-resolved body.bct-signed-out #bctAboutPublic .bct-about-licensed{display:block!important;width:100%!important;max-width:none!important;background:#0f5f63!important;color:#fff!important;margin:22px 0 0!important;padding:17px 10px!important;border-radius:0!important;text-align:center!important;font-weight:900!important;letter-spacing:.08em!important}
+@media(max-width:480px){
+  body:not(.bct-authenticated) header .wrap{padding-left:0!important;padding-right:0!important}
+  body:not(.bct-authenticated) .bct-logo-crop{width:100vw!important;max-width:100vw!important}
+  body:not(.bct-authenticated) main.wrap{padding-left:12px!important;padding-right:12px!important}
+}
+
 </style>
+
+<script>
+/* BCT V46 iPhone startup cache reset: clears older PWA shells that can make the app look unchanged. */
+(function(){
+  var cacheName='bct-portal-shell-v26-visible-landing-cache-reset', resetKey='bct-v46-visible-landing-reset-v26';
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(function(regs){
+        regs.forEach(function(reg){
+          try{ if(reg.active) reg.active.postMessage({type:'BCT_CLEAR_STARTUP_CACHES'}); reg.update&&reg.update(); }catch(_){}
+        });
+      });
+    }
+    if('caches' in window){
+      caches.keys().then(function(keys){
+        return Promise.all(keys.filter(function(k){return /^bct-portal-shell-/.test(k)&&k!==cacheName}).map(function(k){return caches.delete(k)}));
+      }).then(function(){
+        if(!sessionStorage.getItem(resetKey)){
+          sessionStorage.setItem(resetKey,'1');
+          var sep=location.search?'&':'?';
+          if(!/[?&]bct_v46=visible/.test(location.search)) location.replace(location.pathname+location.search+sep+'bct_v46=visible'+location.hash);
+        }
+      });
+    }
+  }catch(_){}
+})();
+</script>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -3547,7 +3599,7 @@ renderAll();
   'about.promise2':'We oversee the process.',
   'about.promise3':'We help protect the quality of the project.',
   'about.promise4':'We give you one company to turn to from start to finish.',
-  'about.close':'Your home. Your project. Your contractor.',
+  'about.close':'Your Home, Your Project, Your Contractor.',
   'about.licensed':'Licensed • Bonded • Insured'
  };
  const translations={
