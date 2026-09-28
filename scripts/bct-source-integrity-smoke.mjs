@@ -36,10 +36,13 @@ assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must
 assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must force the clean signed-out entry screen.');
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
 assert(serviceWorker.includes('bct-official-logo-hotfix'), 'service worker must force the selected official logo rollout.');
-assert(serviceWorker.includes('bct-portal-shell-v21-master-signin-layout'), 'service worker cache version must stay bumped for the current V46 rollout.');
+assert(serviceWorker.includes('bct-portal-shell-v24-startup-cache-reset'), 'service worker cache version must stay bumped for the startup cache reset rollout.');
 assert(serviceWorker.includes('bct-portal-entry-hotfix'), 'service worker must preserve repaired Client and Contractor portal entry rendering.');
-assert(serviceWorker.includes("const APP_SHELL=['/','/index.html','/manifest.webmanifest','/bct-logo-master.png']"), 'service worker app shell must stay limited to public static assets.');
-assert(serviceWorker.includes("if(!APP_SHELL.includes(url.pathname)||url.search)return;"), 'service worker must refuse to cache non-shell routes and query-string responses.');
+assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png']"), 'service worker static cache must stay limited to safe assets.');
+assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'service worker must not cache the root HTML startup path.');
+assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'service worker must not cache index.html.');
+assert(serviceWorker.includes("if(!STATIC_ASSETS.includes(url.pathname)||url.search)return;"), 'service worker must refuse to cache non-asset routes and query-string responses.');
+assert(serviceWorker.includes("cache:'no-store'"), 'service worker must fetch startup HTML with no-store.');
 assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'service worker must not cache the retired standalone homeowner controller.');
 
 assert(html.includes("maxFiles:10"), 'V46 must enforce the 10-file upload limit in JavaScript.');
