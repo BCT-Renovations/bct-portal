@@ -666,6 +666,7 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 
 <section id="view-customer" class="view section hidden">
   <div id="bctClientPortalTitle" class="bct-portal-title" data-i18n="portal.client_title">CLIENT PORTAL</div>
+  <button type="button" id="bctClientBackHomeTop" class="secondary bct-portal-back" data-i18n="homeowner.back_home">← Back to Home</button>
   <div class="customer-hero">
     <div class="card">
       <span class="badge info" data-i18n="homeowner.portal_badge">BCT Client Portal</span>
@@ -3834,7 +3835,9 @@ body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!import
 <script>
 /* V46 PRIORITY SIGNUP ROUTER — direct, delegated and iPhone-safe */
 (function(){
- function homeSignup(){
+
+ document.getElementById('bctClientBackHomeTop')?.addEventListener('click',function(){window.bctReturnToPublicLanding?.();});
+  function homeSignup(){
    document.body.classList.add('bct-home-signup','bct-portal-entered','bct-entry-client');
    document.body.classList.remove('bct-entry-contractor','bct-entry-admin');
    document.getElementById('view-home')?.classList.add('hidden');
