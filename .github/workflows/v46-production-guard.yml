@@ -42,3 +42,5 @@ jobs:
         run: node tests/v46-production-200-checks-round10.mjs
       - name: Run eleventh 200 V46 role workflow safeguards
         run: node tests/v46-production-200-checks-round11.mjs
+      - name: Run twelfth 200 V46 status and upload safeguards
+        run: node tests/v46-production-200-checks-round12.mjs
