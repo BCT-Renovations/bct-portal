@@ -4152,49 +4152,70 @@ document.addEventListener("DOMContentLoaded",function(){var s=document.querySele
 <script>
 /* V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29 */
 (function(){
+  function top(){requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));}
   function route(kind){
+    document.body.classList.add('bct-portal-entered');
+    document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-home-signup','bct-contractor-signup');
     if(kind==='client'){
-      document.body.classList.add('bct-portal-entered','bct-entry-client');
-      document.body.classList.remove('bct-entry-contractor','bct-entry-admin');
+      document.body.classList.add('bct-entry-client');
       if(typeof setVisibleView==='function') setVisibleView('customer');
-      else document.getElementById('view-customer')?.classList.remove('hidden');
-      requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
-      return;
+      const v=document.getElementById('view-customer'); v?.classList.remove('hidden','bct-signedout-hidden');
+      document.getElementById('bctHomeownerSignupCard')?.classList.remove('hidden','bct-signedout-hidden');
+      document.getElementById('bctHomeownerLoginCard')?.classList.remove('hidden','bct-signedout-hidden');
+      top(); return;
     }
     if(kind==='contractor'){
-      document.body.classList.add('bct-portal-entered','bct-entry-contractor');
-      document.body.classList.remove('bct-entry-client','bct-entry-admin');
+      document.body.classList.add('bct-entry-contractor');
       if(typeof setVisibleView==='function') setVisibleView('status');
-      else document.getElementById('view-status')?.classList.remove('hidden');
-      requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
-      return;
+      const v=document.getElementById('view-status'); v?.classList.remove('hidden','bct-signedout-hidden');
+      document.getElementById('bctContractorSignupCard')?.classList.remove('hidden','bct-signedout-hidden');
+      document.querySelector('.bct-public-contractor-login')?.classList.remove('hidden','bct-signedout-hidden');
+      top(); return;
     }
     if(kind==='admin'){
-      document.body.classList.add('bct-portal-entered','bct-entry-admin');
-      document.body.classList.remove('bct-entry-client','bct-entry-contractor');
+      document.body.classList.add('bct-entry-admin');
       if(typeof setVisibleView==='function') setVisibleView('admin-login');
-      else document.getElementById('view-admin-login')?.classList.remove('hidden');
-      requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
+      document.getElementById('view-admin-login')?.classList.remove('hidden','bct-signedout-hidden');
+      top();
     }
+  }
+  function homeSignup(){
+    document.body.classList.add('bct-portal-entered','bct-entry-client','bct-home-signup');
+    document.body.classList.remove('bct-entry-contractor','bct-entry-admin');
+    if(typeof setVisibleView==='function') setVisibleView('customer');
+    const v=document.getElementById('view-customer'); v?.classList.remove('hidden','bct-signedout-hidden');
+    v?.querySelectorAll('[data-customer-page-panel="details"],#customerProjectForm').forEach(x=>x.classList.remove('hidden','bct-signedout-hidden'));
+    if(typeof showCustomerPage==='function') showCustomerPage('details');
+    top();
+  }
+  function contractorSignup(){
+    document.body.classList.add('bct-portal-entered','bct-entry-contractor','bct-contractor-signup');
+    document.body.classList.remove('bct-entry-client','bct-entry-admin');
+    if(typeof setVisibleView==='function') setVisibleView('apply');
+    const v=document.getElementById('view-apply'); v?.classList.remove('hidden','bct-signedout-hidden');
+    top();
   }
   document.addEventListener('click',function(e){
     const role=e.target.closest?.('[data-entry-login]');
     if(role && document.getElementById('bctSignedOutEntry')?.contains(role)){
       e.preventDefault(); e.stopImmediatePropagation(); route(role.dataset.entryLogin); return;
     }
+    const hs=e.target.closest?.('#bctHomeSignupBtn');
+    if(hs){e.preventDefault();e.stopImmediatePropagation();homeSignup();return;}
+    const cs=e.target.closest?.('#bctContractorSignupBtn');
+    if(cs){e.preventDefault();e.stopImmediatePropagation();contractorSignup();return;}
     const share=e.target.closest?.('#bctShareAppBtn');
     if(share){
       e.preventDefault(); e.stopImmediatePropagation();
       const url=location.origin+location.pathname+'?shared=1';
-      const text='BCT Renovations can help with your home-improvement project.';
+      const msg='BCT Renovations can help with your home-improvement project.';
       (async()=>{try{
-        if(navigator.share){await navigator.share({title:'BCT Renovations',text,url});return;}
-        if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text+' '+url);document.getElementById('bctShareAppStatus').textContent='BCT app link copied. You can paste it into a text or email.';return;}
-        location.href='mailto:?subject='+encodeURIComponent('BCT Renovations')+'&body='+encodeURIComponent(text+' '+url);
-      }catch(err){if(err?.name!=='AbortError') document.getElementById('bctShareAppStatus').textContent='Sharing did not open. Please try again.';}})();
+        if(navigator.share){await navigator.share({title:'BCT Renovations',text:msg,url});return;}
+        if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(msg+' '+url);const x=document.getElementById('bctShareAppStatus');if(x)x.textContent='BCT app link copied. You can paste it into a text or email.';return;}
+        location.href='mailto:?subject='+encodeURIComponent('BCT Renovations')+'&body='+encodeURIComponent(msg+' '+url);
+      }catch(err){if(err?.name!=='AbortError'){const x=document.getElementById('bctShareAppStatus');if(x)x.textContent='Sharing did not open. Please try again.';}}})();
     }
   },true);
-})();
-</script>
+})();</script>
 </body>
 </html>
