@@ -4075,26 +4075,6 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  requestAnimationFrame(apply);
 })();
 </script>
-<script id="bct-approved-commitment-20260929">
-document.addEventListener("DOMContentLoaded",function(){var s=document.querySelector("#view-home .bct-share-referral");if(s&&!document.querySelector("#view-home .bct-public-commitment")){var b=document.createElement("div");b.className="bct-public-commitment";b.innerHTML='<strong id="bctCommitmentTitle">Your Project, Your Home, Our Commitment.</strong><span id="bctCommitmentText">BCT Renovations stays with you from the beginning of your project through completion.</span>';s.insertAdjacentElement("afterend",b);}});
-</script>
-<script id="bct-commitment-translations-20260929">
-(function(){
- const T={
-  en:["Your Project, Your Home, Our Commitment.","BCT Renovations stays with you from the beginning of your project through completion."],
-  es:["Su proyecto. Su hogar. Nuestro compromiso.","BCT Renovations está con usted desde el comienzo de su proyecto hasta su finalización."],
-  fr:["Votre projet. Votre maison. Notre engagement.","BCT Renovations reste à vos côtés du début de votre projet jusqu’à son achèvement."],
-  ht:["Pwojè ou. Kay ou. Angajman nou.","BCT Renovations rete avèk ou depi nan kòmansman pwojè ou a jouk li fini."],
-  pt:["Seu projeto. Sua casa. Nosso compromisso.","A BCT Renovations acompanha você desde o início do projeto até a conclusão."],
-  vi:["Dự án của bạn. Ngôi nhà của bạn. Cam kết của chúng tôi.","BCT Renovations đồng hành cùng bạn từ khi bắt đầu dự án cho đến khi hoàn thành."],
-  zh:["您的项目。您的家。我们的承诺。","BCT Renovations 从项目开始到完工始终与您同行。"],
-  ar:["مشروعك. منزلك. التزامنا.","تبقى BCT Renovations معك من بداية مشروعك حتى اكتماله."],
-  ru:["Ваш проект. Ваш дом. Наше обязательство.","BCT Renovations сопровождает вас от начала проекта до его завершения."]
- };
- function sync(){const l=(localStorage.getItem(BCT_LANGUAGE_KEY)||document.documentElement.lang||"en").toLowerCase();const t=T[l]||T.en;const a=document.getElementById("bctCommitmentTitle"),b=document.getElementById("bctCommitmentText");if(a)a.textContent=t[0];if(b)b.textContent=t[1];}
- document.addEventListener("DOMContentLoaded",()=>{sync();document.getElementById("bctLoginLanguage")?.addEventListener("change",()=>setTimeout(sync,0));document.getElementById("bctLanguage")?.addEventListener("change",()=>setTimeout(sync,0));});
-})();
-</script>
 <script id="bct-commitment-render-failsafe-20260929">
 (function(){
  const COPY={
