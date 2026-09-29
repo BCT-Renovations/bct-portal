@@ -717,9 +717,9 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment spa
 
     <div class="bct-signin-heading" aria-hidden="true"><span data-login-signin-heading data-i18n="entry.signin">Sign In</span> / <span data-i18n="entry.signup">Sign Up</span></div>
     <div class="bct-entry-actions" id="bctEntryActions">
-      <a class="bct-native-portal-link" href="/?portal=client" data-entry-native="client" data-i18n="entry.client">Client / Homeowner</a>
-      <a class="bct-native-portal-link" href="/?portal=contractor" data-entry-native="contractor" data-i18n="entry.contractor">Contractor</a>
-      <a class="bct-native-portal-link" href="/?portal=admin" data-entry-native="admin" data-i18n="entry.admin">Admin</a>
+      <button type="button" data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>
+      <button type="button" data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>
+      <button type="button" data-entry-login="admin" data-i18n="entry.admin">Admin</button>
     </div>
     <div class="bct-share-referral">
       <button type="button" class="secondary" id="bctShareAppBtn" aria-describedby="bctShareAppHelp"><span class="bct-share-icon" aria-hidden="true">↗</span><span class="bct-share-label">Share App</span></button>
@@ -4060,21 +4060,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
 })();
 </script>
 
-<script id="bct-native-portal-boot-20260929">
-/* Native URL boot: portal entry survives dead/blocked landing click handlers. */
-(function(){
-  const kind=new URLSearchParams(location.search).get('portal');
-  if(!['client','contractor','admin'].includes(kind))return;
-  function open(){
-    if(typeof window.bctOpenEntry==='function'){window.bctOpenEntry(kind);return true;}
-    return false;
-  }
-  if(!open()){
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{if(!open())setTimeout(open,0)},{once:true});
-    else setTimeout(open,0);
-  }
-})();
-</script>
+
 
 <script>
 /* V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29 */
