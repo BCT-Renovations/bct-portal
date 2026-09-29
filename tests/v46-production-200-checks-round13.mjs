@@ -6,4 +6,19 @@ if(specs.length<1){console.error('Suite definition error: no launch-gap contract
 let passed=0;const failures=[];
 for(const s of specs){try{if(!html.includes(s.needle))throw new Error('launch-gap workflow contract missing or unexpectedly changed');passed++;}catch(e){failures.push(s.name+': '+e.message);}}
 if(failures.length){console.error('V46 round 13 failed ('+failures.length+'/'+specs.length+'):\n- '+failures.join('\n- '));process.exit(1);}
+
+
+/* 2026-09-29 iPhone portal-button regression guards */
+check('authoritative public landing tap router is present',html.includes('V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'));
+check('authoritative router handles public portal buttons',html.includes("[data-entry-login]")&&html.includes("route(role.dataset.entryLogin)"));
+check('authoritative router handles homeowner signup',html.includes("closest?.('#bctHomeSignupBtn')")&&html.includes('homeSignup()'));
+check('authoritative router handles contractor signup',html.includes("closest?.('#bctContractorSignupBtn')")&&html.includes('contractorSignup()'));
+check('authoritative router handles Share App',html.includes("closest?.('#bctShareAppBtn')")&&html.includes('navigator.share'));
+check('homeowner sign-in button remains unique',count(/id="bctHomeLoginBtn"/g)===1);
+check('homeowner signup button remains unique',count(/id="bctHomeSignupBtn"/g)===1);
+check('contractor sign-in button remains unique',count(/id="bctContractorLoginBtn"/g)===1);
+check('contractor signup button remains unique',count(/id="bctContractorSignupBtn"/g)===1);
+check('admin sign-in button remains unique',count(/id="adminLoginBtn"/g)===1);
+check('Share App button remains unique',count(/id="bctShareAppBtn"/g)===1);
+
 console.log(`BCT V46 round 13: ${passed}/${specs.length} launch-gap checks passed.`);
