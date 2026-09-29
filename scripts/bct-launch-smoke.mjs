@@ -41,7 +41,7 @@ const requiredMarkers = [
   ['contractor access lock message', 'Contractor access locked'],
   ['admin screening controls', 'bctAdminScreeningAction'],
   ['admin protected dashboard', 'BCT Admin Dashboard'],
-  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band"'],
+  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band-20260929a"'],
   ['full-width signed-out green logo band', 'body:not(.bct-authenticated) header .wrap{width:100%!important;max-width:none!important;margin:0!important;padding:16px 0 18px!important;background:#e1f9e6!important}'],
   ['larger signed-out logo sizing', 'width:clamp(330px,92vw,680px)!important;height:auto!important'],
   ['bolder general contractor slogan', 'body:not(.bct-authenticated) .bct-dynamic-slogan{font-weight:900!important'],
