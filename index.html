@@ -629,6 +629,18 @@ body.bct-entry-admin:not(.bct-authenticated) #adminLogoutBtn{display:none!import
  #bctContractorLoginCard .admin-project-actions button,#bctHomeownerLoginCard .admin-project-actions button{width:100%!important}
 }
 </style>
+<style>
+/* V46 LOGO VISIBILITY FAILSAFE */
+/* Never let the decorative crop mask cover the official logo. */
+body:not(.bct-authenticated) .bct-logo-crop::after{display:none!important;height:0!important}
+body:not(.bct-authenticated) .bct-logo-crop{min-height:0!important;overflow:visible!important}
+body:not(.bct-authenticated) .bct-logo-crop .brand-logo{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:2!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;z-index:3!important;display:block!important;margin:8px auto 14px!important;line-height:1.15!important}
+@media(max-width:480px){
+ body:not(.bct-authenticated) .bct-logo-crop{width:min(92vw,440px)!important}
+ body:not(.bct-authenticated) .bct-dynamic-slogan{font-size:clamp(20px,5.9vw,30px)!important;padding:0 4px!important}
+}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
