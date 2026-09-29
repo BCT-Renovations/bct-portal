@@ -2510,9 +2510,9 @@ window.addEventListener('popstate',()=>{
   const safe=document.getElementById('view-'+name)?name:'home';
   // Never expose a protected portal directly from browser history while signed out.
   if(!document.body.classList.contains('bct-authenticated')&&['customer','apply','status','jobs','admin'].includes(safe)){
-    if(safe==='customer')return document.querySelector('[data-entry-login="client"]')?.click();
-    if(['apply','status','jobs'].includes(safe))return document.querySelector('[data-entry-login="contractor"]')?.click();
-    return document.querySelector('[data-entry-login="admin"]')?.click();
+    if(safe==='customer')return window.bctOpenEntry?.('client');
+    if(['apply','status','jobs'].includes(safe))return window.bctOpenEntry?.('contractor');
+    return window.bctOpenEntry?.('admin');
   }
   setVisibleView(safe,{history:false});
 });
@@ -3885,8 +3885,8 @@ body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!import
 /* V46 signup back-button compatibility only. Signup routing is owned by the authoritative public landing router below. */
 (function(){
  document.getElementById('bctClientBackHomeTop')?.addEventListener('click',function(){window.bctReturnToPublicLanding?.();});
- document.getElementById('bctHomeSignupBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelector('[data-entry-login="client"]')?.click();});
- document.getElementById('bctNewClientBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.remove('active'));document.getElementById('bctHomeownerSignupCard')?.classList.add('active');document.getElementById('bctHomeownerLoginCard')?.classList.add('active');document.querySelector('[data-entry-login="client"]')?.click();requestAnimationFrame(()=>window.scrollTo(0,0));});
+ document.getElementById('bctHomeSignupBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');window.bctOpenEntry?.('client');});
+ document.getElementById('bctNewClientBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.remove('active'));document.getElementById('bctHomeownerSignupCard')?.classList.add('active');document.getElementById('bctHomeownerLoginCard')?.classList.add('active');window.bctOpenEntry?.('client');requestAnimationFrame(()=>window.scrollTo(0,0));});
 })();
 </script>
 <script>
