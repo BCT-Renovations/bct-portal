@@ -5,8 +5,8 @@
   "start_url": "/?bct_v46=visible",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#5fb8ad",
-  "theme_color": "#5fb8ad",
+  "background_color": "#0f5f63",
+  "theme_color": "#0f5f63",
   "description": "BCT Renovations homeowner, contractor, and admin project portal.",
   "icons": [
     {
