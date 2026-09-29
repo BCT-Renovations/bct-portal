@@ -666,6 +666,11 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment{mar
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-family:Georgia,"Times New Roman",serif!important;font-style:italic!important;font-weight:700!important;font-size:21px!important;line-height:1.35!important;letter-spacing:.01em!important;color:#173c3e!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment span{margin-top:8px!important;font-family:Arial,Helvetica,sans-serif!important;font-style:normal!important;font-size:14px!important}
 </style>
+<style id="bct-home-button-touch-lock-20260929">
+#bctEntryActions button,#bctShareAppBtn{pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(15,95,99,.16)}
+#bctEntryActions{position:relative;z-index:2}
+#bctShareAppBtn{position:relative;z-index:2}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -3624,7 +3629,13 @@ renderAll();
    view.style.display='block';
    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
  }
- document.querySelectorAll('[data-entry-login]').forEach(b=>b.addEventListener('click',()=>openEntry(b.dataset.entryLogin)));
+ window.bctOpenEntry=openEntry;
+ document.querySelectorAll('[data-entry-login]').forEach(b=>{
+   b.disabled=false;
+   b.style.pointerEvents='auto';
+   b.style.touchAction='manipulation';
+   b.onclick=()=>openEntry(b.dataset.entryLogin);
+ });
  window.addEventListener('popstate',()=>{
    const name=(location.hash||'#home').slice(1);
    if(name==='home'){
@@ -3736,7 +3747,7 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
   if(!btn)return;
   const publicUrl=()=>location.origin+location.pathname+'?shared=1';
   btn.addEventListener('click',async()=>{
-    const language=localStorage.getItem('bctLanguage')||document.documentElement.lang||'en';
+    const language=localStorage.getItem(typeof BCT_LANGUAGE_KEY==='string'?BCT_LANGUAGE_KEY:'bctPreferredLanguage')||document.documentElement.lang||'en';
     const t=(typeof BCT_SHARE_TRANSLATIONS!=='undefined'&&(BCT_SHARE_TRANSLATIONS[language]||BCT_SHARE_TRANSLATIONS.en))||{text:'BCT Renovations can help with your home-improvement project.',shared:'BCT app shared.',copied:'BCT app link copied. You can paste it into a text or email.',failed:'Sharing did not open. You can copy this page address from your browser.'};
     const data={title:'BCT Renovations',text:t.text,url:publicUrl()};
     try{
