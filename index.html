@@ -3899,38 +3899,12 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply{display:block!imp
 body.bct-contractor-signup:not(.bct-authenticated) #view-apply .card{display:block}
 body.bct-home-signup:not(.bct-authenticated) #view-customer{display:block!important}
 </style>
-<script>
-/* V46 PRIORITY SIGNUP ROUTER — direct, delegated and iPhone-safe */
+<script id="bct-v46-signup-back-compat-20260929">
+/* V46 signup back-button compatibility only. Signup routing is owned by the authoritative public landing router below. */
 (function(){
-
  document.getElementById('bctClientBackHomeTop')?.addEventListener('click',function(){window.bctReturnToPublicLanding?.();});
-  function homeSignup(){
-   document.body.classList.add('bct-home-signup','bct-portal-entered','bct-entry-client');
-   document.body.classList.remove('bct-entry-contractor','bct-entry-admin');
-   document.getElementById('view-home')?.classList.add('hidden');
-   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
-   const v=document.getElementById('view-customer'); if(v){v.classList.remove('hidden','bct-signedout-hidden');v.style.display='block';}
-   document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.toggle('active',p.dataset.customerPagePanel==='details'));
-   document.querySelectorAll('#view-customer [data-customer-page-panel="details"],#customerProjectForm').forEach(p=>{p.classList.remove('hidden','bct-signedout-hidden');p.style.display='block';});
-   history.pushState({bctView:'customer'},'','#customer');
-   requestAnimationFrame(()=>{window.scrollTo(0,0);document.getElementById('custFirst')?.focus({preventScroll:true});});
- }
- function contractorSignup(){
-   document.body.classList.add('bct-contractor-signup','bct-portal-entered','bct-entry-contractor');
-   document.body.classList.remove('bct-entry-client','bct-entry-admin');
-   document.getElementById('view-home')?.classList.add('hidden');
-   document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
-   const v=document.getElementById('view-apply'); if(v){v.classList.remove('hidden','bct-signedout-hidden');v.style.display='block';}
-   history.pushState({bctView:'apply'},'','#apply');
-   requestAnimationFrame(()=>{window.scrollTo(0,0);document.querySelector('#applicationForm input[name="legalName"]')?.focus({preventScroll:true});});
- }
- document.addEventListener('click',function(e){
-   const h=e.target.closest('#bctHomeSignupBtn'); if(h){e.preventDefault();e.stopImmediatePropagation();homeSignup();return;}
-   const k=e.target.closest('#bctContractorSignupBtn'); if(k){e.preventDefault();e.stopImmediatePropagation();contractorSignup();}
- },true);
  document.getElementById('bctHomeSignupBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelector('[data-entry-login="client"]')?.click();});
  document.getElementById('bctNewClientBackBtn')?.addEventListener('click',function(){document.body.classList.remove('bct-home-signup');document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.remove('active'));document.getElementById('bctHomeownerSignupCard')?.classList.add('active');document.getElementById('bctHomeownerLoginCard')?.classList.add('active');document.querySelector('[data-entry-login="client"]')?.click();requestAnimationFrame(()=>window.scrollTo(0,0));});
- window.bctOpenHomeSignup=homeSignup; window.bctOpenContractorSignup=contractorSignup;
 })();
 </script>
 <script>
