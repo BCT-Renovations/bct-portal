@@ -223,13 +223,13 @@ assert(html.includes('.bct-logo-crop::after') && html.includes('height:25%') && 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
 assert(html.includes("body:not(.bct-authenticated) header small.muted{display:none!important}"), 'Signed-out V46 must hide Launch Cutover label.');
 assert(html.includes("body:not(.bct-authenticated) #view-home .home-panel>h2"), 'Signed-out V46 must hide project marketing heading.');
-assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-login="contractor"')&&html.includes('data-entry-login="admin"'), 'Signed-out V46 must expose exactly the three role login entry actions.');
+assert(html.includes('href="/?portal=client" data-entry-native="client"')&&html.includes('href="/?portal=contractor" data-entry-native="contractor"')&&html.includes('href="/?portal=admin" data-entry-native="admin"'), 'Signed-out V46 must expose exactly the three native role entry actions.');
 
 
 const signedOutHome=(html.match(/<section id="view-home"[\s\S]*?<section id="view-customer"/)||[''])[0];
-assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all three role logins.');
-assert(signedOutHome.includes('>Client / Homeowner</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the three current V46 role actions.');
-assert((signedOutHome.match(/data-entry-login="/g)||[]).length === 3, 'Signed-out V46 must expose only the three role login buttons in the signed-out entry.');
+assert(signedOutHome.includes('data-entry-native="client"')&&signedOutHome.includes('data-entry-native="contractor"')&&signedOutHome.includes('data-entry-native="admin"'), 'Signed-out entry has all three native role links.');
+assert(signedOutHome.includes('>Client / Homeowner</a>')&&signedOutHome.includes('>Contractor</a>')&&signedOutHome.includes('>Admin</a>'), 'Signed-out entry must label the three current V46 native role actions.');
+assert((signedOutHome.match(/data-entry-native="/g)||[]).length === 3, 'Signed-out V46 must expose only the three native role links in the signed-out entry.');
 assert(!signedOutHome.includes('home-action-card'), 'Signed-out entry must not contain extra workflow cards.');
 assert(!signedOutHome.includes('home-quick-grid'), 'Old signed-out quick dashboard must not exist in entry DOM.');
 assert(!signedOutHome.includes('bctFinancingCard'), 'Financing card must not exist on signed-out entry DOM.');
