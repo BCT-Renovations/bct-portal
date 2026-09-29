@@ -2990,14 +2990,7 @@ function renderApps(){
 window.reviewContractorDoc=(appId,index,status)=>{const a=db.applications.find(x=>x.id===appId);if(!a||!a.documents?.[index])return;a.documents[index].reviewStatus=status;a.documents[index].reviewedAt=new Date().toISOString();save();};
 window.act=(id,action)=>{const a=db.applications.find(x=>x.id===id);if(!a)return;if(action==='approve'){const docs=a.documents||[];if(!docs.length||!docs.every(d=>d.reviewStatus==='Approved')){bctNotice('Required contractor documents must be submitted and approved before Final Approval.');return;}}nextStatus(a,action)}
 
-document.getElementById('jobForm').onsubmit=e=>{
-  e.preventDefault();
-  const f=new FormData(e.target);
-  const j={id:jobId(),created:new Date().toISOString(),bids:0};
-  for(const [k,v] of f.entries()){j[k]=v}
-  j.location=[j.city,j.jobState].filter(Boolean).join(', ');
-  db.jobs.unshift(j);save();e.target.reset();const jb=e.target.querySelector('button[type=submit]');if(jb){jb.textContent='✓ Job Published — '+j.id;jb.disabled=true;jb.classList.add('success');}bctNotice('BCT job published as '+j.id+'. Refresh or reopen BCT Admin when you are ready to create another separate job.');
-}
+/* Legacy demo jobForm submit removed: V46 real Supabase handler is authoritative. */
 function jobCardHtml(j,closed){
   const awarded=j.status==='Awarded';
   const source=j.sourceProjectId?db.customerProjects.find(p=>p.id===j.sourceProjectId):null;
@@ -3080,9 +3073,7 @@ const seedDemoBtn=document.getElementById('seedDemo'); if(seedDemoBtn)seedDemoBt
   save();
 }
 
-function serviceCallId(){return uniqueCode('SVC-',6,db.serviceCalls)}
-const serviceCallForm=document.getElementById('serviceCallForm');
-if(serviceCallForm)serviceCallForm.onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const job=String(f.get('jobNumber')||'').trim().toUpperCase();if(!db.jobs.some(j=>j.id===job)){bctNotice('Enter a valid existing BCT JOB number.');return;}const sc={id:serviceCallId(),jobNumber:job,type:f.get('type'),issue:f.get('issue'),status:'Open - BCT Service Review',created:new Date().toISOString()};db.serviceCalls.unshift(sc);save();e.target.reset();bctNotice('Service call '+sc.id+' created and linked to '+job+'.');};
+/* Legacy demo serviceCall submit removed: V46 real Supabase handler is authoritative. */
 function renderServiceCalls(){const el=document.getElementById('serviceCallList');if(!el)return;el.innerHTML=(db.serviceCalls||[]).map(sc=>`<div class="card"><div class="project-meta"><span class="badge good">${sc.id}</span><span class="badge info">${sc.jobNumber}</span><span class="badge warn">${sc.status}</span></div><b>${sc.type}</b><p>${sc.issue}</p><small>BCT service team review required before responsibility or charges are determined.</small></div>`).join('')||'<div class="muted">No service calls yet.</div>'; }
 function renderAll(){
   const apps=db.applications, jobs=db.jobs, bids=db.bids;
