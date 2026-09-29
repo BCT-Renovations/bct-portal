@@ -21,9 +21,12 @@ jobs:
         run: |
           set -euo pipefail
           node tests/v46-production-200-checks-round13.mjs
-          grep -q 'data-entry-login="client"' index.html
-          grep -q 'data-entry-login="contractor"' index.html
-          grep -q 'data-entry-login="admin"' index.html
+          grep -q 'href="/?portal=client" data-entry-native="client"' index.html
+          grep -q 'href="/?portal=contractor" data-entry-native="contractor"' index.html
+          grep -q 'href="/?portal=admin" data-entry-native="admin"' index.html
+          grep -q 'id="bct-native-portal-boot-20260929"' index.html
+          grep -q '"start_url": "/"' manifest.webmanifest
+          ! grep -q '"start_url": "/?bct_v46=visible"' manifest.webmanifest
           grep -q 'id="bctShareAppBtn"' index.html
           grep -q 'id="bctHomeLoginBtn"' index.html
           grep -q 'id="bctHomeSignupBtn"' index.html
