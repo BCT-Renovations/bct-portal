@@ -8,6 +8,9 @@ for(const s of specs){try{if(!html.includes(s.needle))throw new Error('launch-ga
 if(failures.length){console.error('V46 round 13 failed ('+failures.length+'/'+specs.length+'):\n- '+failures.join('\n- '));process.exit(1);}
 
 
+function check(name,condition){if(!condition){console.error('V46 round 13 regression failed: '+name);process.exit(1);}}
+function count(re){return (html.match(re)||[]).length;}
+
 /* 2026-09-29 iPhone portal-button regression guards */
 check('authoritative public landing tap router is present',html.includes('V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'));
 check('native portal boot is present',html.includes('bct-native-portal-boot-20260929'));
