@@ -3867,7 +3867,7 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
    if(cl)cl.style.display=signedIn?'':'none';if(hl)hl.style.display=signedIn?'':'none';
    if(!signedIn){const docs=document.getElementById('bctContractorDocsPanel'),projects=document.getElementById('bctHomeProjects'),status=document.getElementById('statusResult');if(docs)docs.innerHTML='';if(projects)projects.innerHTML='';if(status)status.innerHTML='';}
  }
- try{supabaseClient?.auth?.getSession?.().then(r=>sync(r?.data?.session));supabaseClient?.auth?.onAuthStateChange?.((_e,s)=>sync(s));}catch(_){}
+ try{supabaseClient?.auth?.getSession?.().then(r=>sync(r?.data?.session));}catch(_){}
 })();
 </script>
 <style>
