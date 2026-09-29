@@ -3625,7 +3625,7 @@ renderAll();
    b.disabled=false;
    b.style.pointerEvents='auto';
    b.style.touchAction='manipulation';
-   b.onclick=()=>openEntry(b.dataset.entryLogin);
+   b.onclick=()=>{try{window.bctPreparePortalAbout?.(b.dataset.entryLogin);}catch(_){} return openEntry(b.dataset.entryLogin);};
  });
  window.addEventListener('popstate',()=>{
    const name=(location.hash||'#home').slice(1);
@@ -3811,7 +3811,8 @@ body.bct-entry-admin:not(.bct-authenticated) .bct-portal-about{display:none!impo
    const lang=localStorage.getItem(BCT_LANGUAGE_KEY)||document.documentElement.lang||'en';
    try{applyBctLanguage(String(lang).toLowerCase());}catch(_){}
  }
- document.querySelectorAll('[data-entry-login]').forEach(btn=>btn.addEventListener('click',()=>prepare(btn.dataset.entryLogin),true));
+ /* Portal About preparation is invoked by the single authoritative entry path. */
+ window.bctPreparePortalAbout=prepare;
  const langSel=document.getElementById('bctLoginLanguage');
  if(langSel)langSel.addEventListener('change',()=>setTimeout(()=>{try{applyBctLanguage(langSel.value);}catch(_){}},0));
 })();
