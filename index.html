@@ -651,7 +651,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-logo-crop .brand-logo
 body:not(.bct-authenticated):not(.bct-portal-entered) header .bct-login-language{align-self:flex-start!important;width:190px!important;max-width:52vw!important;margin:2px 0 8px!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) header .bct-login-language label{font-size:12px!important;margin:0 0 3px!important;line-height:1.15!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) header .bct-login-language select{width:190px!important;max-width:100%!important;min-height:38px!important;height:38px!important;padding:5px 30px 5px 9px!important;border-radius:9px!important;font-size:14px!important}
-body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{width:100%!important;margin:12px 0 0!important;padding-top:12px!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{width:100%!important;margin:8px 0 0!important;padding-top:8px!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppBtn{width:100%!important;max-width:none!important;min-height:58px!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;font-size:19px!important;font-weight:900!important;background:#cfeedd!important;color:#07383b!important;border:2px solid #82b99b!important;border-radius:10px!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppBtn .bct-share-icon{font-size:23px!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppHelp{max-width:540px!important;margin:12px auto 5px!important;font-size:16px!important;line-height:1.4!important}
@@ -4085,7 +4085,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
 })();
 </script>
 <script id="bct-approved-commitment-20260929">
-document.addEventListener("DOMContentLoaded",function(){var s=document.querySelector("#view-home .bct-share-referral"),l=document.querySelector("#view-home .bct-public-license-bar");if(s&&l&&!document.querySelector("#view-home .bct-public-commitment")){var b=document.createElement("div");b.className="bct-public-commitment";b.innerHTML="<strong>Your Project. Your Home. Our Commitment.</strong><span>BCT Renovations stays with you from the beginning of your project through completion.</span>";l.parentNode.insertBefore(b,l);}});
+document.addEventListener("DOMContentLoaded",function(){var s=document.querySelector("#view-home .bct-share-referral");if(s&&!document.querySelector("#view-home .bct-public-commitment")){var b=document.createElement("div");b.className="bct-public-commitment";b.innerHTML="<strong>Your Project. Your Home. Our Commitment.</strong><span>BCT Renovations stays with you from the beginning of your project through completion.</span>";s.insertAdjacentElement("afterend",b);}});
 </script>
 </body>
 </html>
