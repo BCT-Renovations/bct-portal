@@ -3759,7 +3759,7 @@ window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-h
   document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));
   if(typeof setVisibleView==='function')setVisibleView('home');
   else if(typeof showView==='function')showView('home');
-  const lang=(localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase();
+  const lang=(localStorage.getItem(typeof BCT_LANGUAGE_KEY==='string'?BCT_LANGUAGE_KEY:'bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase();
   if(typeof syncBrandSlogan==='function') syncBrandSlogan(lang);
   window.scrollTo({top:0,behavior:'auto'});
 };
