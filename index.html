@@ -641,6 +641,36 @@ body:not(.bct-authenticated) .bct-dynamic-slogan{position:relative!important;lef
  body:not(.bct-authenticated) .bct-dynamic-slogan{font-size:clamp(20px,5.9vw,30px)!important;padding:0 4px!important}
 }
 </style>
+<style>
+/* V46 OFFICIAL LOGO VISIBILITY LOCK */
+body:not(.bct-authenticated) header .brand{display:block!important;visibility:visible!important;opacity:1!important;height:auto!important;min-height:0!important}
+body:not(.bct-authenticated) .bct-dynamic-brand{display:block!important;visibility:visible!important;opacity:1!important;height:auto!important;min-height:0!important}
+body:not(.bct-authenticated) .bct-logo-crop{display:flex!important;flex-direction:column!important;align-items:center!important;width:min(92vw,520px)!important;height:auto!important;min-height:0!important;margin:0 auto!important;overflow:visible!important;background:#e8f5ec!important}
+body:not(.bct-authenticated) .bct-logo-crop .brand-logo{display:block!important;visibility:visible!important;opacity:1!important;width:min(86vw,480px)!important;max-width:100%!important;height:auto!important;max-height:360px!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important;position:relative!important;z-index:2!important}
+body:not(.bct-authenticated) .bct-logo-crop::after{display:none!important;content:none!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{display:block!important;position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;width:100%!important;margin:8px auto 12px!important;padding:0 4px!important;white-space:normal!important;text-align:center!important;z-index:3!important}
+@media(max-width:480px){
+ body:not(.bct-authenticated) .bct-logo-crop{width:94vw!important}
+ body:not(.bct-authenticated) .bct-logo-crop .brand-logo{width:min(90vw,430px)!important;max-height:320px!important}
+}
+</style>
+<script>
+/* V46 OFFICIAL LOGO VISIBILITY LOCK */
+(function(){
+ function lockOfficialLogo(){
+  const img=document.querySelector('.bct-logo-crop .brand-logo');
+  if(!img)return;
+  const official='/bct-logo-master.png?v=official-bct-logo-v46-green-band-r3';
+  if(img.getAttribute('src')!==official)img.setAttribute('src',official);
+  img.alt='BCT Renovations logo';
+  img.hidden=false;
+  img.removeAttribute('width');img.removeAttribute('height');
+ }
+ document.addEventListener('DOMContentLoaded',lockOfficialLogo,{once:true});
+ window.addEventListener('pageshow',lockOfficialLogo);
+ lockOfficialLogo();
+})();
+</script>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
