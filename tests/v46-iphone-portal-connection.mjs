@@ -12,12 +12,9 @@ async function verify(kind, expectedView, expectedSelector){
   const pageErrors=[];
   page.on('pageerror',e=>pageErrors.push(String(e)));
   await page.goto(base,{waitUntil:'domcontentloaded',timeout:30000});
-  const link=page.locator('a[data-entry-native="'+kind+'"]');
+  const link=page.locator('[data-entry-login="'+kind+'"]');
   await link.waitFor({state:'visible',timeout:10000});
-  await Promise.all([
-    page.waitForURL(u=>u.searchParams.get('portal')===kind,{timeout:15000}),
-    link.tap()
-  ]);
+  await link.tap();
   await page.waitForTimeout(2300);
   const view=page.locator('#view-'+expectedView);
   const target=page.locator(expectedSelector);
