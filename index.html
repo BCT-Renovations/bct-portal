@@ -594,11 +594,8 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
       caches.keys().then(function(keys){
         return Promise.all(keys.filter(function(k){return /^bct-portal-shell-/.test(k)&&k!==cacheName}).map(function(k){return caches.delete(k)}));
       }).then(function(){
-        if(!sessionStorage.getItem(resetKey)){
-          sessionStorage.setItem(resetKey,'1');
-          var sep=location.search?'&':'?';
-          if(!/[?&]bct_v46=visible/.test(location.search)) location.replace(location.pathname+location.search+sep+'bct_v46=visible'+location.hash);
-        }
+        /* Do not rewrite the iPhone/PWA URL. Safari and Home Screen now share the same production entry path. */
+        try{sessionStorage.setItem(resetKey,'1');}catch(_){}
       });
     }
   }catch(_){}
