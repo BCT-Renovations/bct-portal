@@ -14,7 +14,16 @@ async function verify(kind, expectedView, expectedSelector){
   await page.goto(base,{waitUntil:'domcontentloaded',timeout:30000});
   const link=page.locator('[data-entry-login="'+kind+'"]');
   await link.waitFor({state:'visible',timeout:10000});
-  await link.tap();
+  const box=await link.boundingBox();
+  if(!box) failures.push(kind+': control has no tappable bounding box');
+  const hit=await page.evaluate((sel)=>{
+    const el=document.querySelector(sel); if(!el)return {ok:false,reason:'missing'};
+    const r=el.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2;
+    const top=document.elementFromPoint(x,y);
+    return {ok:top===el||el.contains(top),top:top?.id||top?.getAttribute?.('data-entry-login')||top?.tagName||null,x,y,w:r.width,h:r.height};
+  },'[data-entry-login="'+kind+'"]');
+  if(!hit.ok) failures.push(kind+': touch center is covered by '+hit.top);
+  await link.tap({timeout:10000});
   await page.waitForTimeout(2300);
   const view=page.locator('#view-'+expectedView);
   const target=page.locator(expectedSelector);
