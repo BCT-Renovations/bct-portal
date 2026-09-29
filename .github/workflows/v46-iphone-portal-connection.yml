@@ -1,0 +1,32 @@
+name: BCT V46 iPhone Portal Connection
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - '.github/workflows/v46-iphone-portal-connection.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  iphone-webkit-portals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright@latest
+          npx playwright install --with-deps webkit
+      - name: Test live V46 portal connections in WebKit
+        env:
+          BCT_URL: https://bctsecureadminv45emailfieldfixed.vercel.app
+        run: node tests/v46-iphone-portal-connection.mjs
