@@ -629,6 +629,23 @@ body.bct-entry-admin:not(.bct-authenticated) #adminLogoutBtn{display:none!import
  #bctContractorLoginCard .admin-project-actions button,#bctHomeownerLoginCard .admin-project-actions button{width:100%!important}
 }
 </style>
+
+<style>
+/* V46 2026-09-29 FINAL PUBLIC LANDING VISUAL LOCK — preserve portal logic */
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctSignedOutEntry{width:100%!important;max-width:100%!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{width:100%!important;margin:14px 0 0!important;padding-top:14px!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppBtn{display:flex!important;width:100%!important;max-width:none!important;min-height:54px!important;margin:0!important;background:#cfeedd!important;color:#07383b!important;border:2px solid #82b99b!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppHelp{max-width:100%!important;margin:13px 4px 4px!important}
+.bct-public-license-bar{display:none}
+body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-license-bar{display:block!important;width:100%!important;max-width:100%!important;margin:14px 0 0!important;padding:17px 10px!important;background:#0f5f63!important;color:#fff!important;text-align:center!important;font-weight:900!important;letter-spacing:.08em!important;border-radius:10px!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{display:none!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) .bct-logo-crop .brand-logo{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;height:auto!important;object-fit:contain!important}
+@media(max-width:480px){
+ body:not(.bct-authenticated):not(.bct-portal-entered) header .bct-login-language{align-self:flex-start!important;margin-left:12px!important;margin-right:12px!important;width:calc(100% - 24px)!important;max-width:360px!important}
+ body:not(.bct-authenticated):not(.bct-portal-entered) #bctSignedOutEntry{padding:14px!important}
+}
+</style>
+
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -649,7 +666,7 @@ body.bct-entry-admin:not(.bct-authenticated) #adminLogoutBtn{display:none!import
       </select>
     </div>
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band-20260929a" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -683,6 +700,7 @@ body.bct-entry-admin:not(.bct-authenticated) #adminLogoutBtn{display:none!import
       <div id="bctShareAppStatus" class="muted" role="status" aria-live="polite"></div>
     </div>
   </div>
+  <div id="bctPublicLicenseBar" class="bct-public-license-bar" data-i18n="about.licensed">Licensed • Bonded • Insured</div>
 
   <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle">
     <h2 id="bctAboutTitle" class="bct-about-title" data-i18n="about.title">About BCT Renovations</h2>
