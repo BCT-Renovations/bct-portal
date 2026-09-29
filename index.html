@@ -4109,5 +4109,33 @@ document.addEventListener("DOMContentLoaded",function(){var s=document.querySele
  document.addEventListener("DOMContentLoaded",()=>{sync();document.getElementById("bctLoginLanguage")?.addEventListener("change",()=>setTimeout(sync,0));document.getElementById("bctLanguage")?.addEventListener("change",()=>setTimeout(sync,0));});
 })();
 </script>
+<script id="bct-commitment-render-failsafe-20260929">
+(function(){
+ const COPY={
+  en:["Your Project, Your Home, Our Commitment.","BCT Renovations stays with you from the beginning of your project through completion."],
+  es:["Su proyecto, su hogar, nuestro compromiso.","BCT Renovations está con usted desde el comienzo de su proyecto hasta su finalización."],
+  fr:["Votre projet, votre maison, notre engagement.","BCT Renovations reste à vos côtés du début de votre projet jusqu’à son achèvement."],
+  ht:["Pwojè ou, kay ou, angajman nou.","BCT Renovations rete avèk ou depi nan kòmansman pwojè ou a jouk li fini."],
+  pt:["Seu projeto, sua casa, nosso compromisso.","A BCT Renovations acompanha você desde o início do projeto até a conclusão."],
+  vi:["Dự án của bạn, ngôi nhà của bạn, cam kết của chúng tôi.","BCT Renovations đồng hành cùng bạn từ khi bắt đầu dự án cho đến khi hoàn thành."],
+  zh:["您的项目，您的家，我们的承诺。","BCT Renovations 从项目开始到完工始终与您同行。"],
+  ar:["مشروعك، منزلك، التزامنا.","تبقى BCT Renovations معك من بداية مشروعك حتى اكتماله."],
+  ru:["Ваш проект, ваш дом, наше обязательство.","BCT Renovations сопровождает вас от начала проекта до его завершения."]
+ };
+ function lang(){return (localStorage.getItem("bct_language")||localStorage.getItem("bctLanguage")||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
+ function render(){
+  const share=document.querySelector("#view-home .bct-share-referral");
+  if(!share)return;
+  let box=document.querySelector("#view-home .bct-public-commitment");
+  if(!box){box=document.createElement("div");box.className="bct-public-commitment";share.insertAdjacentElement("afterend",box)}
+  const t=COPY[lang()]||COPY.en;
+  box.innerHTML='<strong id="bctCommitmentTitle"></strong><span id="bctCommitmentText"></span>';
+  box.querySelector("strong").textContent=t[0];box.querySelector("span").textContent=t[1];
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render);else render();
+ document.addEventListener("change",e=>{if(e.target&&["bctLoginLanguage","bctLanguage"].includes(e.target.id))setTimeout(render,0)});
+ window.addEventListener("pageshow",render);
+})();
+</script>
 </body>
 </html>
