@@ -3740,23 +3740,7 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
 </style>
 
 <script>
-/* BCT V46 SHARE APP REFERRAL */
-(function(){
-  const btn=document.getElementById('bctShareAppBtn');
-  const status=document.getElementById('bctShareAppStatus');
-  if(!btn)return;
-  const publicUrl=()=>location.origin+location.pathname+'?shared=1';
-  btn.addEventListener('click',async()=>{
-    const language=localStorage.getItem(typeof BCT_LANGUAGE_KEY==='string'?BCT_LANGUAGE_KEY:'bctPreferredLanguage')||document.documentElement.lang||'en';
-    const t=(typeof BCT_SHARE_TRANSLATIONS!=='undefined'&&(BCT_SHARE_TRANSLATIONS[language]||BCT_SHARE_TRANSLATIONS.en))||{text:'BCT Renovations can help with your home-improvement project.',shared:'BCT app shared.',copied:'BCT app link copied. You can paste it into a text or email.',failed:'Sharing did not open. You can copy this page address from your browser.'};
-    const data={title:'BCT Renovations',text:t.text,url:publicUrl()};
-    try{
-      if(navigator.share){await navigator.share(data);if(status)status.textContent=t.shared;return;}
-      if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(t.text+' '+publicUrl());if(status)status.textContent=t.copied;return;}
-      const box=document.createElement('textarea');box.value=t.text+' '+publicUrl();box.setAttribute('readonly','');box.style.position='fixed';box.style.opacity='0';document.body.appendChild(box);box.select();document.execCommand('copy');box.remove();if(status)status.textContent=t.copied;
-    }catch(e){if(e?.name!=='AbortError'&&status)status.textContent=t.failed;}
-  });
-})();
+/* BCT V46 SHARE APP REFERRAL — click routing consolidated in authoritative landing router */
 /* BCT V46 AUTHORITATIVE SIGN-OUT RESET */
 window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-home-signup','bct-contractor-signup');
   try{history.replaceState({bctView:'home'},'',location.pathname+location.search+'#home');}catch(_){}
@@ -4208,12 +4192,14 @@ document.addEventListener("DOMContentLoaded",function(){var s=document.querySele
     if(share){
       e.preventDefault(); e.stopImmediatePropagation();
       const url=location.origin+location.pathname+'?shared=1';
-      const msg='BCT Renovations can help with your home-improvement project.';
+      const language=localStorage.getItem(typeof BCT_LANGUAGE_KEY==='string'?BCT_LANGUAGE_KEY:'bctPreferredLanguage')||document.documentElement.lang||'en';
+      const tr=(typeof BCT_SHARE_TRANSLATIONS!=='undefined'&&(BCT_SHARE_TRANSLATIONS[language]||BCT_SHARE_TRANSLATIONS.en))||{text:'BCT Renovations can help with your home-improvement project.',shared:'BCT app shared.',copied:'BCT app link copied. You can paste it into a text or email.',failed:'Sharing did not open. Please try again.'};
+      const msg=tr.text;
       (async()=>{try{
-        if(navigator.share){await navigator.share({title:'BCT Renovations',text:msg,url});return;}
-        if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(msg+' '+url);const x=document.getElementById('bctShareAppStatus');if(x)x.textContent='BCT app link copied. You can paste it into a text or email.';return;}
+        if(navigator.share){await navigator.share({title:'BCT Renovations',text:msg,url});const x=document.getElementById('bctShareAppStatus');if(x)x.textContent=tr.shared;return;}
+        if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(msg+' '+url);const x=document.getElementById('bctShareAppStatus');if(x)x.textContent=tr.copied;return;}
         location.href='mailto:?subject='+encodeURIComponent('BCT Renovations')+'&body='+encodeURIComponent(msg+' '+url);
-      }catch(err){if(err?.name!=='AbortError'){const x=document.getElementById('bctShareAppStatus');if(x)x.textContent='Sharing did not open. Please try again.';}}})();
+      }catch(err){if(err?.name!=='AbortError'){const x=document.getElementById('bctShareAppStatus');if(x)x.textContent=tr.failed;}}})();
     }
   },true);
 })();</script>
