@@ -3654,7 +3654,14 @@ renderAll();
  try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{
    try{window.bctHandlePortalAuthState?.(_event,session)}catch(_){};
    if(_event==='SIGNED_OUT'){
-     entryIntent=null;
+     // A deliberate portal entry must remain on its signed-out login/signup screen.
+     if(entryIntent){
+       setAuthShell(null);
+       if(entryIntent==='admin')setVisibleView('admin-login');
+       else if(entryIntent==='contractor')setVisibleView('status');
+       else setVisibleView('customer');
+       return;
+     }
      window.bctReturnToPublicLanding?.();
      return;
    }
