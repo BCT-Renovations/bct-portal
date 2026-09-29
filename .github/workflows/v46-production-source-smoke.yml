@@ -1,0 +1,33 @@
+name: V46 production source smoke checks
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v46-source-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify V46 production source
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/v46-production-200-checks-round13.mjs
+          grep -q 'data-entry-login="client"' index.html
+          grep -q 'data-entry-login="contractor"' index.html
+          grep -q 'data-entry-login="admin"' index.html
+          grep -q 'id="bctShareAppBtn"' index.html
+          grep -q 'id="bctHomeLoginBtn"' index.html
+          grep -q 'id="bctHomeSignupBtn"' index.html
+          grep -q 'id="bctContractorLoginBtn"' index.html
+          grep -q 'id="bctContractorSignupBtn"' index.html
+          grep -q 'id="adminLoginBtn"' index.html
+          grep -q 'V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29' index.html
