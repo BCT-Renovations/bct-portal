@@ -10,7 +10,11 @@ if(failures.length){console.error('V46 round 13 failed ('+failures.length+'/'+sp
 
 /* 2026-09-29 iPhone portal-button regression guards */
 check('authoritative public landing tap router is present',html.includes('V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'));
-check('authoritative router handles public portal buttons',html.includes("[data-entry-login]")&&html.includes("route(role.dataset.entryLogin)"));
+check('native portal boot is present',html.includes('bct-native-portal-boot-20260929'));
+check('native client portal link is present',html.includes('href="/?portal=client" data-entry-native="client"'));
+check('native contractor portal link is present',html.includes('href="/?portal=contractor" data-entry-native="contractor"'));
+check('native admin portal link is present',html.includes('href="/?portal=admin" data-entry-native="admin"'));
+check('legacy landing role buttons are absent',!html.includes('data-entry-login="client"')&&!html.includes('data-entry-login="contractor"')&&!html.includes('data-entry-login="admin"'));
 check('authoritative router handles homeowner signup',html.includes("closest?.('#bctHomeSignupBtn')")&&html.includes('homeSignup()'));
 check('authoritative router handles contractor signup',html.includes("closest?.('#bctContractorSignupBtn')")&&html.includes('contractorSignup()'));
 check('authoritative router handles Share App',html.includes("closest?.('#bctShareAppBtn')")&&html.includes('navigator.share'));
