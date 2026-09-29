@@ -3214,7 +3214,7 @@ renderAll();
       if(activeUser){project=await rpc('bct_submit_homeowner_project',{p_payload:projectPayload});await loadHomeownerState();projectNumber=project.project_number||'';}
       else{
         const requestedNumber=canonicalNumber('BCT');
-        const metadata={bct_homeowner_submission:'true',project_number:requestedNumber,preferred_language:$('bctLanguage')?.value||'en',first_name:first,last_name:last,phone,...projectPayload};
+        const metadata={bct_homeowner_submission:'true',project_number:requestedNumber,preferred_language:$('bctLoginLanguage')?.value||localStorage.getItem(BCT_LANGUAGE_KEY)||'en',first_name:first,last_name:last,phone,...projectPayload};
         const {data,error}=await supabaseClient.auth.signUp({email,password:p1,options:{data:metadata,emailRedirectTo:`${window.location.origin}/#customer`}});if(error)throw error;if(!data?.user)throw new Error('BCT could not create the homeowner account.');if(isObfuscatedSignup(data))throw new Error('A new homeowner submission could not be started. If you already began one, sign in above or use Forgot Password / Resend Confirmation Email.');
         needsEmailConfirmation=!data.session;
         if(data.session){await loadHomeownerState();project=(homeownerState?.projects||[]).find(p=>p.project_number===requestedNumber)||(homeownerState?.projects||[])[0]||null;projectNumber=project?.project_number||requestedNumber;}
