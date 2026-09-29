@@ -669,9 +669,12 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment str
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment span{margin-top:8px!important;font-family:Arial,Helvetica,sans-serif!important;font-style:normal!important;font-size:14px!important}
 </style>
 <style id="bct-home-button-touch-lock-20260929">
+/* Keep the approved landing appearance while guaranteeing the real controls own the touch surface. */
+#bctSignedOutEntry{position:relative!important;z-index:50!important}
+#bctEntryActions,#bctShareAppBtn{position:relative!important;z-index:60!important}
 #bctEntryActions button,#bctShareAppBtn{pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(15,95,99,.16)}
-#bctEntryActions{position:relative;z-index:2}
-#bctShareAppBtn{position:relative;z-index:2}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctPublicLicenseBar,
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:relative!important;z-index:1!important}
 </style>
 </head>
 <body>
