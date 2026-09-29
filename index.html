@@ -572,6 +572,11 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm{display:block!
 body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!important}
 @media(max-width:820px){.bct-portal-title{font-size:20px;margin-left:-12px;width:calc(100% + 24px);border-radius:0 0 12px 12px}}
 </style>
+<style>
+/* V46 NATIVE PORTAL NAVIGATION — browser-owned taps, independent of SPA click handlers */
+#bctEntryActions .bct-native-portal-link{display:flex!important;align-items:center;justify-content:center;width:100%!important;min-height:54px;border:none;border-radius:10px;padding:11px 14px;font-weight:800;text-decoration:none;background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(15,95,99,.12);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@media(max-width:480px){#bctEntryActions .bct-native-portal-link{min-height:52px!important;font-size:1rem}}
+</style>
 
 <script>
 /* BCT V46 iPhone startup cache reset: clears older PWA shells that can make the app look unchanged. */
@@ -715,9 +720,9 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment spa
 
     <div class="bct-signin-heading" aria-hidden="true"><span data-login-signin-heading data-i18n="entry.signin">Sign In</span> / <span data-i18n="entry.signup">Sign Up</span></div>
     <div class="bct-entry-actions" id="bctEntryActions">
-      <button type="button" data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>
-      <button type="button" data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>
-      <button type="button" data-entry-login="admin" data-i18n="entry.admin">Admin</button>
+      <a class="bct-native-portal-link" href="/?portal=client" data-entry-native="client" data-i18n="entry.client">Client / Homeowner</a>
+      <a class="bct-native-portal-link" href="/?portal=contractor" data-entry-native="contractor" data-i18n="entry.contractor">Contractor</a>
+      <a class="bct-native-portal-link" href="/?portal=admin" data-entry-native="admin" data-i18n="entry.admin">Admin</a>
     </div>
     <div class="bct-share-referral">
       <button type="button" class="secondary" id="bctShareAppBtn" aria-describedby="bctShareAppHelp"><span class="bct-share-icon" aria-hidden="true">↗</span><span class="bct-share-label">Share App</span></button>
@@ -4048,6 +4053,22 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render);else render();
  document.addEventListener("change",e=>{if(e.target&&["bctLoginLanguage","bctLanguage"].includes(e.target.id))setTimeout(render,0)});
  window.addEventListener("pageshow",render);
+})();
+</script>
+
+<script id="bct-native-portal-boot-20260929">
+/* Native URL boot: portal entry survives dead/blocked landing click handlers. */
+(function(){
+  const kind=new URLSearchParams(location.search).get('portal');
+  if(!['client','contractor','admin'].includes(kind))return;
+  function open(){
+    if(typeof window.bctOpenEntry==='function'){window.bctOpenEntry(kind);return true;}
+    return false;
+  }
+  if(!open()){
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{if(!open())setTimeout(open,0)},{once:true});
+    else setTimeout(open,0);
+  }
 })();
 </script>
 
