@@ -3843,19 +3843,19 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
 #view-status.bct-public-entry,#view-customer.bct-public-entry{margin-top:0!important}
 @media(max-width:820px){body.bct-portal-entered main.wrap{padding:6px 12px 18px}.bct-public-contractor-login,#bctHomeownerLoginCard{margin-top:6px!important}}
 </style>
-<script>
-/* BCT V46 LOCKED PORTAL ENTRY FLOW 2026-09-28 */
+<script id="bct-v46-portal-layout-only-20260929">
+/* Portal layout normalization only. Portal taps are owned exclusively by window.bctOpenEntry / authoritative landing router. */
 (function(){
  const contractorView=document.getElementById('view-status');
  const contractorLogin=document.getElementById('bctContractorLoginBtn')?.closest('.card');
  const contractorAbout=document.getElementById('bctContractorAbout');
- if(contractorLogin){contractorLogin.classList.add('bct-public-contractor-login');}
+ if(contractorLogin)contractorLogin.classList.add('bct-public-contractor-login');
  const contractorSignup=document.getElementById('bctContractorSignupCard');
  const contractorTitle=document.getElementById('bctContractorPortalTitle');
  if(contractorView&&contractorTitle)contractorView.prepend(contractorTitle);
  if(contractorView&&contractorSignup)contractorTitle?.after(contractorSignup);
  if(contractorView&&contractorLogin)contractorSignup?.after(contractorLogin);
- if(contractorAbout&&contractorLogin&&contractorView){contractorLogin.after(contractorAbout);}
+ if(contractorAbout&&contractorLogin&&contractorView)contractorLogin.after(contractorAbout);
  const homeView=document.getElementById('view-customer'),homeLogin=document.getElementById('bctHomeownerLoginCard'),homeSignup=document.getElementById('bctHomeownerSignupCard'),homeAbout=document.getElementById('bctAboutPublic');
  const homeTitle=document.getElementById('bctClientPortalTitle'),homePublicAbout=document.getElementById('bctClientPublicAbout'),homeBack=document.getElementById('bctClientBackHomeTop');
  if(homeView&&homeTitle)homeView.prepend(homeTitle);
@@ -3864,34 +3864,6 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
  if(homeBack&&homeSignup)homeBack.after(homeSignup);
  if(homeSignup&&homeLogin)homeSignup.after(homeLogin);
  if(homeAbout)homeAbout.style.display='none';
- function entered(kind){
-   document.body.classList.add('bct-portal-entered');
-   document.body.classList.toggle('bct-entry-client',kind==='client');
-   document.body.classList.toggle('bct-entry-contractor',kind==='contractor');
-   document.body.classList.toggle('bct-entry-admin',kind==='admin');
-   const landing=document.getElementById('view-home');
-   if(landing){landing.classList.add('hidden');landing.setAttribute('aria-hidden','true');}
-   requestAnimationFrame(()=>{window.scrollTo({top:0,left:0,behavior:'auto'});document.getElementById('bctMain')?.focus({preventScroll:true});});
- }
- document.querySelectorAll('[data-entry-login]').forEach(btn=>btn.addEventListener('click',()=>{entered(btn.dataset.entryLogin);if(btn.dataset.entryLogin==='contractor')contractorView?.classList.add('bct-public-entry');if(btn.dataset.entryLogin==='client')homeView?.classList.add('bct-public-entry');},true));
- const oldReturn=window.bctReturnToPublicLanding;
- window.bctReturnToPublicLanding=function(){
-   document.body.classList.remove('bct-portal-entered');
-   contractorView?.classList.remove('bct-public-entry');homeView?.classList.remove('bct-public-entry');
-   const landing=document.getElementById('view-home');if(landing){landing.removeAttribute('aria-hidden');}
-   const result=oldReturn?.();
-   requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
-   return result;
- };
- function sync(session){
-   const signedIn=!!session?.user;
-   document.body.classList.toggle('bct-authenticated',signedIn);
-   document.body.classList.toggle('bct-signed-out',!signedIn);
-   const cl=document.getElementById('bctContractorLogoutBtn'),hl=document.getElementById('bctHomeLogoutBtn');
-   if(cl)cl.style.display=signedIn?'':'none';if(hl)hl.style.display=signedIn?'':'none';
-   if(!signedIn){const docs=document.getElementById('bctContractorDocsPanel'),projects=document.getElementById('bctHomeProjects'),status=document.getElementById('statusResult');if(docs)docs.innerHTML='';if(projects)projects.innerHTML='';if(status)status.innerHTML='';}
- }
- try{supabaseClient?.auth?.getSession?.().then(r=>sync(r?.data?.session));}catch(_){}
 })();
 </script>
 <style>
