@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#e8f5ec" />
+<meta name="theme-color" content="#5fb8ad" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BCT Renovations" />
-<link rel="apple-touch-icon" href="/bct-logo-master.png?v=official-bct-logo-v46-green-band" />
+<link rel="apple-touch-icon" sizes="512x512" href="/bct-app-icon-v46.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="/bct-app-icon-v46.png" />
 <link rel="manifest" href="/manifest.webmanifest" />
 <!-- V28: comprehensive French UI sweep -->
 <!-- BCT V32: full translation sweep for vi/zh/ar/ru -->
@@ -575,7 +576,7 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 <script>
 /* BCT V46 iPhone startup cache reset: clears older PWA shells that can make the app look unchanged. */
 (function(){
-  var cacheName='bct-portal-shell-v26-visible-landing-cache-reset', resetKey='bct-v46-visible-landing-reset-v26';
+  var cacheName='bct-portal-shell-v27-app-icon-cache-reset', resetKey='bct-v46-app-icon-reset-v27';
   try{
     if('serviceWorker' in navigator){
       navigator.serviceWorker.getRegistrations().then(function(regs){
@@ -648,7 +649,7 @@ body.bct-entry-admin:not(.bct-authenticated) #adminLogoutBtn{display:none!import
       </select>
     </div>
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band-r2" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         

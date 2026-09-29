@@ -1,3 +1,4 @@
+// bct-app-icon-v46-hotfix refreshes the dedicated teal-green iPhone/PWA icon without replacing the master logo.
 // bct-admin-login-hotfix; previous rollout marker: bct-portal-shell-v7-mobile-home-cleanup
 // bct-command-center-hotfix keeps the V46 public/admin typeahead shell fresh on phones.
 // bct-clean-signin-hotfix forces phones to load the minimal three-button sign-in screen.
@@ -7,8 +8,8 @@
 // bct-green-logo-band-hotfix forces installed/mobile clients to load the full-width mint logo band.
 // bct-startup-cache-reset stops old cached HTML from replacing the correct V46 iPhone startup screen.
 // bct-visible-landing-reset forces the final visible iPhone landing CSS and cache reset.
-const CACHE_NAME='bct-portal-shell-v26-visible-landing-cache-reset';
-const STATIC_ASSETS=['/bct-logo-master.png'];
+const CACHE_NAME='bct-portal-shell-v27-app-icon-cache-reset';
+const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 self.addEventListener('install',event=>event.waitUntil(
   caches.open(CACHE_NAME)

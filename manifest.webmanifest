@@ -5,15 +5,21 @@
   "start_url": "/?bct_v46=visible",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#e8f5ec",
-  "theme_color": "#e8f5ec",
+  "background_color": "#5fb8ad",
+  "theme_color": "#5fb8ad",
   "description": "BCT Renovations homeowner, contractor, and admin project portal.",
   "icons": [
     {
-      "src": "/bct-logo-master.png?v=official-bct-logo-v46-green-band",
-      "sizes": "any",
+      "src": "/bct-app-icon-v46.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/bct-app-icon-v46.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
