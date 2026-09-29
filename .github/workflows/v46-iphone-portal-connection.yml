@@ -2,6 +2,8 @@ name: BCT V46 iPhone Portal Connection
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * 0'
   push:
     branches: [main]
     paths:
