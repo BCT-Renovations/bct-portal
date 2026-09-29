@@ -2,7 +2,7 @@
   "name": "BCT Renovations Project Network",
   "short_name": "BCT Renovations",
   "id": "/",
-  "start_url": "/?bct_v46=visible",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0f5f63",
@@ -27,13 +27,13 @@
       "name": "Start a Project",
       "short_name": "New Project",
       "description": "Open BCT Renovations to start or review a homeowner project.",
-      "url": "/?bct_v46=visible#homeowner"
+      "url": "/#homeowner"
     },
     {
       "name": "Contractor Portal",
       "short_name": "Contractor",
       "description": "Open the BCT contractor portal.",
-      "url": "/?bct_v46=visible#contractor"
+      "url": "/#contractor"
     }
   ],
   "categories": [
