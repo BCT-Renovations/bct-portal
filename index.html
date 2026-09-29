@@ -4100,7 +4100,10 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
   document.addEventListener('click',function(e){
     const role=e.target.closest?.('[data-entry-login]');
     if(role && document.getElementById('bctSignedOutEntry')?.contains(role)){
-      e.preventDefault(); e.stopImmediatePropagation(); route(role.dataset.entryLogin); return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      try{window.bctPreparePortalAbout?.(role.dataset.entryLogin);}catch(_){}
+      if(typeof window.bctOpenEntry==='function'){window.bctOpenEntry(role.dataset.entryLogin);return;}
+      route(role.dataset.entryLogin); return;
     }
     const hs=e.target.closest?.('#bctHomeSignupBtn');
     if(hs){e.preventDefault();e.stopImmediatePropagation();homeSignup();return;}
