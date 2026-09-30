@@ -4161,5 +4161,38 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
     }
   },true);
 })();</script>
+
+<style>
+/* V46 AUDIENCE-SPECIFIC WHY BCT LOCK 2026-09-29 */
+.bct-audience-about{max-width:760px;margin:10px auto 14px;padding:15px 17px;border:1px solid #9bc7aa;border-radius:14px;background:#f5fbf7}
+.bct-audience-about h2{margin:0 0 8px;color:#0a4549;font-size:21px}
+.bct-audience-about p{margin:7px 0;line-height:1.45}
+body.bct-authenticated .bct-audience-about{display:none!important}
+body:not(.bct-home-signup) #bctNewClientWhyBCT{display:none!important}
+body:not(.bct-contractor-signup) #bctContractorApplicantWhyBCT{display:none!important}
+body.bct-home-signup #bctClientPublicAbout{display:none!important}
+</style>
+<script>
+/* V46 AUDIENCE-SPECIFIC WHY BCT LOCK 2026-09-29 */
+(function(){
+ const COPY={
+  en:{ch:"Why Choose BCT Renovations?",cb:"BCT Renovations is your general contractor, not just a name-and-number referral. We coordinate your project, work with verified contractors, monitor progress, protect your project information, and stay involved through completion.",cc:"Your project. Your home. Our commitment.",th:"Why Join the BCT Contractor Network?",tb:"BCT gives qualified contractors opportunities to work on BCT-managed projects with organized project information, coordinated customer communication, and a clear path from application and approval to authorized job opportunities.",tc:"Build your relationship with BCT. Focus on quality work. Grow through qualified opportunities."},
+  es:{ch:"¿Por qué elegir BCT Renovations?",cb:"BCT Renovations es su contratista general, no solo un servicio de referencias. Coordinamos su proyecto, trabajamos con contratistas verificados, supervisamos el progreso, protegemos la información del proyecto y permanecemos involucrados hasta finalizarlo.",cc:"Su proyecto. Su hogar. Nuestro compromiso.",th:"¿Por qué unirse a la Red de Contratistas de BCT?",tb:"BCT ofrece a contratistas calificados oportunidades en proyectos administrados por BCT, con información organizada, comunicación coordinada con el cliente y un proceso claro desde la solicitud y aprobación hasta trabajos autorizados.",tc:"Construya su relación con BCT. Enfóquese en un trabajo de calidad. Crezca con oportunidades calificadas."},
+  fr:{ch:"Pourquoi choisir BCT Renovations ?",cb:"BCT Renovations est votre entrepreneur général, pas simplement un service de mise en relation. Nous coordonnons votre projet, travaillons avec des entrepreneurs vérifiés, suivons l’avancement, protégeons vos informations et restons impliqués jusqu’à l’achèvement.",cc:"Votre projet. Votre maison. Notre engagement.",th:"Pourquoi rejoindre le réseau d’entrepreneurs BCT ?",tb:"BCT offre aux entrepreneurs qualifiés des occasions de travailler sur des projets gérés par BCT, avec des informations organisées, une communication client coordonnée et un parcours clair de la candidature à l’approbation puis aux travaux autorisés.",tc:"Développez votre relation avec BCT. Concentrez-vous sur la qualité. Progressez grâce à des occasions qualifiées."}
+ };
+ function lang(){return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}
+ function ensure(){
+  const clientAnchor=document.getElementById('bctClientBackHomeTop');
+  if(clientAnchor&&!document.getElementById('bctNewClientWhyBCT')){const x=document.createElement('section');x.id='bctNewClientWhyBCT';x.className='bct-audience-about';clientAnchor.insertAdjacentElement('beforebegin',x)}
+  const apply=document.getElementById('view-apply');
+  if(apply&&!document.getElementById('bctContractorApplicantWhyBCT')){const x=document.createElement('section');x.id='bctContractorApplicantWhyBCT';x.className='bct-audience-about';const title=document.getElementById('bctContractorApplyPortalTitle');(title||apply.firstElementChild)?.insertAdjacentElement('afterend',x)}
+  render();
+ }
+ function render(){const t=COPY[lang()]||COPY.en, c=document.getElementById('bctNewClientWhyBCT'),k=document.getElementById('bctContractorApplicantWhyBCT');if(c)c.innerHTML='<h2>'+t.ch+'</h2><p>'+t.cb+'</p><p><strong>'+t.cc+'</strong></p>';if(k)k.innerHTML='<h2>'+t.th+'</h2><p>'+t.tb+'</p><p><strong>'+t.tc+'</strong></p>'}
+ document.addEventListener('change',e=>{if(e.target.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(render)},true);
+ document.addEventListener('click',e=>{if(e.target.closest?.('#bctHomeSignupBtn,#bctContractorSignupBtn'))requestAnimationFrame(ensure)},true);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
+})();
+</script>
 </body>
 </html>
