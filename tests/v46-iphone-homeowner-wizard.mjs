@@ -52,19 +52,28 @@ async function fillVisibleRequired(page){
     if(!(await f.evaluate(el=>el.required))) continue;
     const tag=await f.evaluate(el=>el.tagName.toLowerCase());
     const type=((await f.getAttribute('type'))||'text').toLowerCase();
+    const name=((await f.getAttribute('name'))||'').toLowerCase();
+    const autocomplete=((await f.getAttribute('autocomplete'))||'').toLowerCase();
+    const inputmode=((await f.getAttribute('inputmode'))||'').toLowerCase();
+    const pattern=(await f.getAttribute('pattern'))||'';
     if(tag==='select'){
       const value=await f.locator('option').evaluateAll(opts=>(opts.find(o=>o.value)||{}).value||'');
       if(value) await f.selectOption(value);
     }else if(type==='checkbox'||type==='radio'){
       await f.check({force:true}).catch(()=>{});
-    }else if(type==='email') await f.fill('wizard-test@example.com');
-    else if(type==='tel') await f.fill('3175550101');
-    else if(type==='number') await f.fill('1');
+    }else if(type==='email'||autocomplete==='email') await f.fill('wizard-test@example.com');
+    else if(type==='tel'||autocomplete==='tel'||inputmode==='tel'||name.includes('phone')) await f.fill('3175550101');
+    else if(name==='zip'||name.includes('postal')||autocomplete==='postal-code'||(inputmode==='numeric'&&/0-9|\\d/.test(pattern))) await f.fill('46240');
+    else if(type==='number'||inputmode==='numeric') await f.fill('1');
     else if(type==='date') await f.fill('2026-10-15');
     else if(type==='password') await f.fill('Wizard123!');
     else if(type==='url') await f.fill('https://example.com');
     else await f.fill('Test');
   }
+}
+
+async function invalidVisibleRequired(page){
+  return page.locator('#customerProjectForm .bct-form-step.bct-step-active input:visible, #customerProjectForm .bct-form-step.bct-step-active select:visible, #customerProjectForm .bct-form-step.bct-step-active textarea:visible').evaluateAll(fields=>fields.filter(el=>el.required&&!el.disabled&&!el.checkValidity()).map(el=>({name:el.name,type:el.type,value:el.value,pattern:el.pattern,message:el.validationMessage})));
 }
 
 async function verifyEnglishWizard(){
@@ -81,15 +90,20 @@ async function verifyEnglishWizard(){
   if(!/Step\s*1\s*(?:of|\/)\s*7/i.test(progress)) failures.push('wizard: empty required fields should keep Step 1, got '+progress);
 
   await fillVisibleRequired(page);
+  const invalid=await invalidVisibleRequired(page);
+  console.log('WIZARD english filled validation',JSON.stringify(invalid));
+  if(invalid.length) failures.push('wizard: test data left invalid required fields: '+JSON.stringify(invalid));
   await physicalTap(page,'#customerProjectForm [data-bct-next]','wizard Continue filled');
   await page.waitForTimeout(500);
   progress=await progressText(page);
   if(!/Step\s*2\s*(?:of|\/)\s*7/i.test(progress)) failures.push('wizard: Continue did not advance to Step 2, got '+progress);
 
-  await physicalTap(page,'#customerProjectForm [data-bct-back]','wizard Back');
-  await page.waitForTimeout(400);
-  progress=await progressText(page);
-  if(!/Step\s*1\s*(?:of|\/)\s*7/i.test(progress)) failures.push('wizard: Back did not return to Step 1, got '+progress);
+  if(/Step\s*2\s*(?:of|\/)\s*7/i.test(progress)){
+    await physicalTap(page,'#customerProjectForm [data-bct-back]','wizard Back');
+    await page.waitForTimeout(400);
+    progress=await progressText(page);
+    if(!/Step\s*1\s*(?:of|\/)\s*7/i.test(progress)) failures.push('wizard: Back did not return to Step 1, got '+progress);
+  }
 
   await physicalTap(page,'#bctClientBackHomeTop','wizard Back to Home');
   await page.waitForTimeout(500);
