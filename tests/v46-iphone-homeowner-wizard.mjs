@@ -49,7 +49,7 @@ async function fillVisibleRequired(page){
   const count=await fields.count();
   for(let i=0;i<count;i++){
     const f=fields.nth(i);
-    if(!(await f.getAttribute('required'))) continue;
+    if(!(await f.evaluate(el=>el.required))) continue;
     const tag=await f.evaluate(el=>el.tagName.toLowerCase());
     const type=((await f.getAttribute('type'))||'text').toLowerCase();
     if(tag==='select'){
