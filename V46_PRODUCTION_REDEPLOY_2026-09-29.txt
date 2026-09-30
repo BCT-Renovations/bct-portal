@@ -1,3 +1,5 @@
 BCT V46 production redeploy marker.
 Purpose: force Vercel to redeploy the restored intact main branch after recovery from a transient truncated index.html commit.
 No application behavior is changed by this marker.
+
+2026-09-30: redeploy trigger for merged Our Work gallery from The Big Dog checkpoint. No application logic changed by this marker.
