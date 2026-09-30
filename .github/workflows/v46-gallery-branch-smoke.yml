@@ -1,0 +1,59 @@
+name: V46 Gallery Branch Smoke
+
+on:
+  push:
+    branches: [v46-gallery-from-big-dog]
+    paths:
+      - 'bct-home-gallery.js'
+      - 'bct-admin-sections.js'
+      - 'index.html'
+      - 'tests/v46-home-gallery.mjs'
+      - 'tests/v46-iphone-home-gallery.mjs'
+      - '.github/workflows/v46-gallery-branch-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v46-gallery-from-big-dog
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Gallery JavaScript syntax
+        run: |
+          node --check bct-home-gallery.js
+          node --check tests/v46-iphone-home-gallery.mjs
+      - name: Isolated gallery smoke
+        run: node tests/v46-home-gallery.mjs
+      - name: Confirm protected Big Dog landing controls remain
+        run: |
+          grep -q 'id="bctSignedOutEntry"' index.html
+          grep -q 'id="bctEntryActions"' index.html
+          grep -q 'id="bctShareAppBtn"' index.html
+          grep -q 'id="bctPublicLicenseBar"' index.html
+          test "$(grep -o '/bct-home-gallery.js?v=20260930-1' index.html | wc -l)" -eq 1
+      - name: Confirm only one gallery source is active
+        run: |
+          test ! -f bct-public-gallery.js
+          ! grep -q 'bct-public-gallery.js' bct-admin-sections.js
+          grep -q 'bct-home-gallery.js' index.html
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright@latest
+          npx playwright install --with-deps webkit
+      - name: Start local V46 gallery branch
+        run: |
+          python3 -m http.server 4173 >/tmp/bct-gallery-server.log 2>&1 &
+          sleep 2
+          curl --fail http://127.0.0.1:4173/ >/dev/null
+      - name: Test gallery on iPhone WebKit
+        env:
+          BCT_URL: http://127.0.0.1:4173
+        run: node tests/v46-iphone-home-gallery.mjs
