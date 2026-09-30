@@ -8,6 +8,7 @@ on:
       - 'bct-admin-sections.js'
       - 'index.html'
       - 'tests/v46-home-gallery.mjs'
+      - 'tests/v46-iphone-home-gallery.mjs'
       - '.github/workflows/v46-gallery-branch-smoke.yml'
   workflow_dispatch:
 
@@ -17,6 +18,7 @@ permissions:
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,7 +27,9 @@ jobs:
         with:
           node-version: 22
       - name: Gallery JavaScript syntax
-        run: node --check bct-home-gallery.js
+        run: |
+          node --check bct-home-gallery.js
+          node --check tests/v46-iphone-home-gallery.mjs
       - name: Isolated gallery smoke
         run: node tests/v46-home-gallery.mjs
       - name: Confirm protected Big Dog landing controls remain
@@ -40,3 +44,16 @@ jobs:
           test ! -f bct-public-gallery.js
           ! grep -q 'bct-public-gallery.js' bct-admin-sections.js
           grep -q 'bct-home-gallery.js' index.html
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright@latest
+          npx playwright install --with-deps webkit
+      - name: Start local V46 gallery branch
+        run: |
+          python3 -m http.server 4173 >/tmp/bct-gallery-server.log 2>&1 &
+          sleep 2
+          curl --fail http://127.0.0.1:4173/ >/dev/null
+      - name: Test gallery on iPhone WebKit
+        env:
+          BCT_URL: http://127.0.0.1:4173
+        run: node tests/v46-iphone-home-gallery.mjs
