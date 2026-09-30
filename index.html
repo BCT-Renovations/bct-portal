@@ -3656,6 +3656,13 @@ renderAll();
  sessionNow().then(setAuthShell);
  try{supabaseClient?.auth?.onAuthStateChange?.((_event,session)=>{
    try{window.bctHandlePortalAuthState?.(_event,session)}catch(_){};
+   // Do not let a late signed-out/initial-session callback knock a contractor out of the application they just opened.
+   if(!session && document.body.classList.contains('bct-contractor-signup')){
+     setAuthShell(null);
+     setVisibleView('apply');
+     document.getElementById('view-apply')?.classList.remove('hidden','bct-signedout-hidden');
+     return;
+   }
    if(_event==='SIGNED_OUT'){
      // A deliberate portal entry must remain on its signed-out login/signup screen.
      if(entryIntent){
