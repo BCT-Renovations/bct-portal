@@ -10,7 +10,8 @@
 // bct-visible-landing-reset forces the final visible iPhone landing CSS and cache reset.
 // bct-signup-home-nav-hotfix keeps Back to Home visible while a new client moves through the 7-step project form.
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
-const CACHE_NAME='bct-portal-shell-v29-runtime-guardrails';
+// bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
+const CACHE_NAME='bct-portal-shell-v30-admin-mobile-controls';
 const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
@@ -154,6 +155,18 @@ const BCT_RUNTIME_GUARDRAIL_PATCH=`
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadFlags);else loadFlags();
 })();
 <\/script>`;
+const BCT_ADMIN_MOBILE_PATCH=`
+<style id="bct-admin-mobile-controls-hotfix-style">
+body.bct-authenticated #view-admin:not(.hidden){position:relative!important;z-index:120!important;pointer-events:auto!important;isolation:isolate!important}
+body.bct-authenticated #view-admin:not(.hidden) button,
+body.bct-authenticated #view-admin:not(.hidden) a,
+body.bct-authenticated #view-admin:not(.hidden) input,
+body.bct-authenticated #view-admin:not(.hidden) select,
+body.bct-authenticated #view-admin:not(.hidden) textarea{pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(15,95,99,.16)}
+body.bct-authenticated #view-home.hidden,
+body.bct-authenticated #view-admin-login.hidden{pointer-events:none!important}
+</style>
+<script id="bct-admin-mobile-controls-hotfix-script" src="/bct-admin-mobile-fix.js?v=20260930-1"><\/script>`;
 self.addEventListener('install',event=>event.waitUntil(
   caches.open(CACHE_NAME)
     .then(cache=>cache.addAll(STATIC_ASSETS))
@@ -188,6 +201,7 @@ self.addEventListener('fetch',event=>{
       let patched=await response.text();
       if(!patched.includes('bct-signup-home-nav-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_SIGNUP_HOME_NAV_PATCH+'\n</body>'):patched+BCT_SIGNUP_HOME_NAV_PATCH;
       if(!patched.includes('bct-runtime-guardrails-20260929'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_RUNTIME_GUARDRAIL_PATCH+'\n</body>'):patched+BCT_RUNTIME_GUARDRAIL_PATCH;
+      if(!patched.includes('bct-admin-mobile-controls-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_ADMIN_MOBILE_PATCH+'\n</body>'):patched+BCT_ADMIN_MOBILE_PATCH;
       const headers=new Headers(response.headers);
       headers.delete('content-length');
       headers.set('cache-control','no-store');
