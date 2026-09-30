@@ -1,4 +1,4 @@
-name: V46 Fix Contractor Signup Auth Override
+name: V46 Fix Contractor Signup Visibility
 
 on:
   workflow_dispatch:
@@ -17,24 +17,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Keep signed-out contractor application open
+      - name: Exempt active contractor application from generic signed-out view gate
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old="try{window.bctHandlePortalAuthState?.(_event,session)}catch(_){};\n   if(_event==='SIGNED_OUT'){"
-          new="try{window.bctHandlePortalAuthState?.(_event,session)}catch(_){};\n   // Do not let a late signed-out/initial-session callback knock a contractor out of the application they just opened.\n   if(!session && document.body.classList.contains('bct-contractor-signup')){\n     setAuthShell(null);\n     setVisibleView('apply');\n     document.getElementById('view-apply')?.classList.remove('hidden','bct-signedout-hidden');\n     return;\n   }\n   if(_event==='SIGNED_OUT'){"
+          old="body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status){display:none!important}"
+          new="body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status):not(#view-apply){display:none!important}"
           count=s.count(old)
           if count != 1:
-              raise SystemExit(f'Expected exactly one auth-state insertion point, found {count}')
+              raise SystemExit(f'Expected exactly one signed-out view gate, found {count}')
           p.write_text(s.replace(old,new),encoding='utf-8')
           PY
-      - name: Commit contractor signup auth fix
+      - name: Commit contractor application visibility fix
         run: |
           git config user.name 'BCT-Renovations'
           git config user.email 'myproject@bctrenovations.com'
           git add index.html
           git diff --cached --check
-          git commit -m 'V46 keep contractor signup open during signed-out auth callbacks'
+          git commit -m 'V46 allow signed-out contractor application view to display'
           git push origin main
