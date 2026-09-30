@@ -55,6 +55,31 @@ with checks as (
   union all
 
   select
+    'hoa_revocation_trigger_not_client_executable',
+    not has_function_privilege('anon', 'public.bct_hoa_revocation_alert()', 'EXECUTE')
+      and not has_function_privilege('authenticated', 'public.bct_hoa_revocation_alert()', 'EXECUTE')
+      and not has_function_privilege('public', 'public.bct_hoa_revocation_alert()', 'EXECUTE'),
+    'The HOA revocation trigger must remain internal and not directly executable by browser roles.'
+
+  union all
+
+  select
+    'hoa_revocation_trigger_attached',
+    exists (
+      select 1
+      from information_schema.triggers
+      where event_object_schema = 'public'
+        and event_object_table = 'bct_hoa_authorizations'
+        and trigger_name = 'trg_bct_hoa_revocation_alert'
+        and action_timing = 'AFTER'
+        and event_manipulation = 'INSERT'
+        and action_statement ilike '%bct_hoa_revocation_alert%'
+    ),
+    'The hardened HOA revocation function must remain attached to authorization inserts.'
+
+  union all
+
+  select
     'unexpected_security_definer_count_zero',
     not exists (
       select 1
@@ -69,7 +94,8 @@ with checks as (
           'bct_emit_notification',
           'bct_sync_public_launch_config',
           'bct_validate_password_not_recent',
-          'bct_record_password_history'
+          'bct_record_password_history',
+          'bct_hoa_revocation_alert'
         )
     ),
     'Only allow-listed internal BCT functions should be SECURITY DEFINER.'
