@@ -32,6 +32,9 @@ jobs:
       - name: PWA cold-launch restored-session regression
         run: node tests/v46-pwa-cold-launch-source.mjs
 
+      - name: Admin section navigation regression
+        run: node tests/v46-admin-section-navigation.mjs
+
       - name: Launch dry run smoke
         run: node scripts/bct-launch-dry-run-smoke.mjs
 
