@@ -1,7 +1,7 @@
 /* BCT V46 admin mobile controls + Spanish admin translation stability patch. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-admin-mobile-2';
+  const VERSION='V46-2026.09.30-admin-mobile-3-loopguard';
   const ROOT_ID='view-admin';
   const ORIGINAL_TEXT=new WeakMap();
   const ORIGINAL_PLACEHOLDER=new WeakMap();
@@ -227,7 +227,8 @@
       const ph=el.getAttribute('placeholder');
       if(ph&&ES_PLACEHOLDERS[ph]){
         if(!ORIGINAL_PLACEHOLDER.has(el))ORIGINAL_PLACEHOLDER.set(el,ph);
-        el.setAttribute('placeholder',ES_PLACEHOLDERS[ph]);
+        const target=ES_PLACEHOLDERS[ph];
+        if(ph!==target)el.setAttribute('placeholder',target);
       }
       return;
     }
@@ -238,10 +239,11 @@
     if(!text)return;
     if(!ORIGINAL_TEXT.has(el))ORIGINAL_TEXT.set(el,text);
     const source=ORIGINAL_TEXT.get(el);
-    if(ES[source])el.textContent=ES[source];
-    else if(source.startsWith('BCT Admin backend load failed:'))el.textContent='Falló la carga del backend de administración de BCT:'+source.slice('BCT Admin backend load failed:'.length);
-    else if(source.startsWith('Launch controls refresh failed:'))el.textContent='Falló la actualización de los controles de lanzamiento:'+source.slice('Launch controls refresh failed:'.length);
-    else if(source.startsWith('Operational readiness refresh failed:'))el.textContent='Falló la actualización de la preparación operativa:'+source.slice('Operational readiness refresh failed:'.length);
+    let target=ES[source]||'';
+    if(!target&&source.startsWith('BCT Admin backend load failed:'))target='Falló la carga del backend de administración de BCT:'+source.slice('BCT Admin backend load failed:'.length);
+    else if(!target&&source.startsWith('Launch controls refresh failed:'))target='Falló la actualización de los controles de lanzamiento:'+source.slice('Launch controls refresh failed:'.length);
+    else if(!target&&source.startsWith('Operational readiness refresh failed:'))target='Falló la actualización de la preparación operativa:'+source.slice('Operational readiness refresh failed:'.length);
+    if(target&&text!==target)el.textContent=target;
   }
   function applySpanish(){
     if(translating||language()!=='es')return;
@@ -249,7 +251,8 @@
     translating=true;
     try{
       root.querySelectorAll('h2,h3,h4,p,small,label,button,th,option,b,span,a,.notice,.command-empty,input,textarea').forEach(translateNode);
-      const tabs=root.querySelector('.portal-tabs'); if(tabs)tabs.setAttribute('aria-label','Páginas del panel de administración de BCT');
+      const tabs=root.querySelector('.portal-tabs');
+      if(tabs&&tabs.getAttribute('aria-label')!=='Páginas del panel de administración de BCT')tabs.setAttribute('aria-label','Páginas del panel de administración de BCT');
       filterCommands();
     }finally{translating=false}
   }
