@@ -1,0 +1,39 @@
+name: V46 Lock Commitment Teal
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/v46-lock-commitment-teal.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-commitment-color:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply approved BCT teal to commitment line only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-family:Georgia,"Times New Roman",serif!important;font-style:italic!important;font-weight:700!important;font-size:21px!important;line-height:1.35!important;letter-spacing:.01em!important;color:#173c3e!important}'
+          new='body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-family:Georgia,"Times New Roman",serif!important;font-style:italic!important;font-weight:700!important;font-size:21px!important;line-height:1.35!important;letter-spacing:.01em!important;color:#0f5f63!important}'
+          count=s.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one approved commitment style, found {count}')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
+      - name: Commit approved color lock
+        run: |
+          git config user.name 'BCT-Renovations'
+          git config user.email 'myproject@bctrenovations.com'
+          git add index.html
+          git diff --cached --check
+          git commit -m 'Lock V46 commitment line to BCT teal'
+          git push origin main
