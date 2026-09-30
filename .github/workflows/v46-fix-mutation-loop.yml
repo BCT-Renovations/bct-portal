@@ -1,11 +1,7 @@
-name: V46 Fix Contractor Signup Visibility
+name: V46 Manual Contractor Signup Visibility Repair
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/v46-fix-mutation-loop.yml'
 
 permissions:
   contents: write
