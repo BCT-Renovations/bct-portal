@@ -1,0 +1,40 @@
+name: V46 Fix Blocking Mutation Loop
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/v46-fix-mutation-loop.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Remove self-triggering homeowner translation observer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="new MutationObserver(apply).observe(document.getElementById('view-customer')||document.body,{childList:true,subtree:true});\n requestAnimationFrame(apply);"
+          new="/* Translation navigation is refreshed on signup open and language changes. Do not observe and rewrite the same subtree: that can starve iPhone/WebKit touch events. */\n requestAnimationFrame(apply);"
+          count=s.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one blocking observer, found {count}')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
+      - name: Commit portal responsiveness fix
+        run: |
+          git config user.name 'BCT-Renovations'
+          git config user.email 'myproject@bctrenovations.com'
+          git add index.html
+          git diff --cached --check
+          git commit -m 'V46 stop self-triggering translation mutation loop'
+          git push origin main
