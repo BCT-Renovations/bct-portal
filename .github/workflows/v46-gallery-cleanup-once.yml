@@ -1,0 +1,39 @@
+name: V46 Gallery Cleanup Once
+
+on:
+  push:
+    branches: [v46-gallery-from-big-dog]
+    paths:
+      - '.github/workflows/v46-gallery-cleanup-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v46-gallery-from-big-dog
+          fetch-depth: 0
+      - name: Restore protected Admin loader and remove duplicate gallery experiment
+        run: |
+          git fetch origin v46-the-big-dog-checkpoint
+          git checkout origin/v46-the-big-dog-checkpoint -- bct-admin-sections.js
+          rm -f bct-public-gallery.js
+          rm -f .github/workflows/v46-wire-gallery-branch.yml
+          rm -f .github/workflows/v46-gallery-cleanup-once.yml
+      - name: Verify one gallery source of truth
+        run: |
+          test -f bct-home-gallery.js
+          test ! -f bct-public-gallery.js
+          ! grep -q 'bct-public-gallery.js' bct-admin-sections.js
+          grep -q '/bct-home-gallery.js?v=20260930-1' index.html
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Keep one isolated gallery source on test branch"
+          git push origin HEAD:v46-gallery-from-big-dog
