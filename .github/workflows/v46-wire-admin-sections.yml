@@ -1,3 +1,4 @@
+# One-time trigger for guarded Admin section wiring.
 name: V46 Wire Admin Sections Once
 
 on:
