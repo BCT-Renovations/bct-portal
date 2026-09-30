@@ -39,7 +39,7 @@ jobs:
       - name: Run ninth 200 V46 resilience and state safeguards
         run: node tests/v46-production-200-checks-round9.mjs
       - name: Run tenth 200 V46 translation privacy safeguards
-        run: node tests/v46-production-200-checks-round10.mjs
+        run: node tests/v46-production-200-checks-round10-current.mjs
       - name: Run eleventh 200 V46 role workflow safeguards
         run: node tests/v46-production-200-checks-round11.mjs
       - name: Run twelfth 200 V46 status and upload safeguards
