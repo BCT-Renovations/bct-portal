@@ -27,7 +27,7 @@ jobs:
         run: node scripts/bct-source-integrity-smoke-current.mjs
 
       - name: Launch smoke
-        run: node scripts/bct-launch-smoke.mjs
+        run: node scripts/bct-launch-smoke-current.mjs
 
       - name: Launch dry run smoke
         run: node scripts/bct-launch-dry-run-smoke.mjs
