@@ -3626,6 +3626,7 @@ renderAll();
    requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
  }
  window.bctOpenEntry=openEntry;
+  try{window.bctApplyAuthEntryTranslations?.();}catch(_){} 
  document.querySelectorAll('[data-entry-login]').forEach(b=>{
    b.disabled=false;
    b.style.pointerEvents='auto';
@@ -4037,6 +4038,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  };
  const map={'contractor.email':'ce','contractor.password':'cp','contractor.signin_button':'si','contractor.forgot_password':'fp','contractor.back_home':'bh','contractor.signout_button':'so','contractor.resend_confirmation':'rc','admin.show_password':'sp','admin.forgot_password':'fp'};
  function apply(){const l=localStorage.getItem('bctPreferredLanguage')||'en';if(l==='en'||!A[l])return;for(const [key,k] of Object.entries(map))document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>el.textContent=A[l][k]);}
+ window.bctApplyAuthEntryTranslations=apply;
  document.addEventListener('change',e=>{if(e.target.matches('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(apply)},true);
  requestAnimationFrame(apply);
 })();
