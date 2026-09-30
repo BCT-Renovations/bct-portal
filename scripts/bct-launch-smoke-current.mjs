@@ -7,7 +7,7 @@ const sourceUrl = new URL('./bct-launch-smoke.mjs', import.meta.url);
 let source = fs.readFileSync(sourceUrl, 'utf8');
 const simpleReplacements = [
   ["['native iPhone portal boot', 'bct-native-portal-boot-20260929'],", "['authoritative iPhone portal router', 'V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'],"],
-  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v33-public-home-auth-shell']
+  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v34-source-public-home']
 ];
 for (const [stale,current] of simpleReplacements) {
   if (!source.includes(stale)) throw new Error('Launch-smoke current wrapper could not find retired marker: '+stale);
@@ -15,8 +15,11 @@ for (const [stale,current] of simpleReplacements) {
 }
 
 const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
-if (!serviceWorker.includes('bct-portal-shell-v33-public-home-auth-shell')) throw new Error('Current V46 cache generation is missing.');
-if (!serviceWorker.includes('patchPublicHomeAuthShell')) throw new Error('Cold-launch public-home auth-shell correction is missing.');
+const indexHtml = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const sourceGuard = "const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;";
+if (!serviceWorker.includes('bct-portal-shell-v34-source-public-home')) throw new Error('Current V46 cache generation is missing.');
+if (serviceWorker.includes('patchPublicHomeAuthShell')) throw new Error('Retired service-worker auth-shell source rewrite must not be reintroduced.');
+if (!indexHtml.includes(sourceGuard)) throw new Error('Source-level cold-launch public-home auth-shell correction is missing.');
 if (serviceWorker.includes('bct-startup-home-state-hotfix-script')) throw new Error('Retired late startup-home patch must not be reintroduced.');
 
 const startMarker = `assert(html.includes('href="/?portal=client" data-entry-native="client"')`;
