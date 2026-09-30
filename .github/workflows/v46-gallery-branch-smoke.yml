@@ -1,0 +1,36 @@
+name: V46 Gallery Branch Smoke
+
+on:
+  push:
+    branches: [v46-gallery-from-big-dog]
+    paths:
+      - 'bct-home-gallery.js'
+      - 'index.html'
+      - 'tests/v46-home-gallery.mjs'
+      - '.github/workflows/v46-gallery-branch-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v46-gallery-from-big-dog
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Gallery JavaScript syntax
+        run: node --check bct-home-gallery.js
+      - name: Isolated gallery smoke
+        run: node tests/v46-home-gallery.mjs
+      - name: Confirm protected Big Dog landing controls remain
+        run: |
+          grep -q 'id="bctSignedOutEntry"' index.html
+          grep -q 'id="bctEntryActions"' index.html
+          grep -q 'id="bctShareAppBtn"' index.html
+          grep -q 'id="bctPublicLicenseBar"' index.html
+          test "$(grep -o '/bct-home-gallery.js?v=20260930-1' index.html | wc -l)" -eq 1
