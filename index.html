@@ -3989,7 +3989,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  document.addEventListener('click',e=>{if(e.target.closest('#bctHomeSignupBtn'))requestAnimationFrame(()=>setTimeout(apply,0));},true);
  document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(apply));
  document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(apply));
- new MutationObserver(apply).observe(document.getElementById('view-customer')||document.body,{childList:true,subtree:true});
+ /* Translation navigation is refreshed on signup open and language changes. Do not observe and rewrite the same subtree: that can starve iPhone/WebKit touch events. */
  requestAnimationFrame(apply);
 })();
 </script>
