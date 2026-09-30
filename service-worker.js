@@ -12,16 +12,9 @@
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
 // bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
 // bct-public-home-auth-shell-fix keeps the public landing visually signed out until a portal is deliberately entered.
-const CACHE_NAME='bct-portal-shell-v33-public-home-auth-shell';
+const CACHE_NAME='bct-portal-shell-v34-source-public-home';
 const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
-const BCT_AUTH_SHELL_SOURCE=`function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const signedIn=!!session?.user;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}`;
-const BCT_AUTH_SHELL_PUBLIC_HOME=`function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}`;
-function patchPublicHomeAuthShell(html){
-  if(html.includes("const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')"))return html;
-  if(!html.includes(BCT_AUTH_SHELL_SOURCE))return html;
-  return html.replace(BCT_AUTH_SHELL_SOURCE,BCT_AUTH_SHELL_PUBLIC_HOME);
-}
 const BCT_SIGNUP_HOME_NAV_PATCH=`
 <style id="bct-signup-home-nav-hotfix-style">
 body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-controls .bct-wizard-home-sticky{
@@ -208,7 +201,6 @@ self.addEventListener('fetch',event=>{
       const type=response.headers.get('content-type')||'';
       if(!type.includes('text/html'))return response;
       let patched=await response.text();
-      patched=patchPublicHomeAuthShell(patched);
       if(!patched.includes('bct-signup-home-nav-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_SIGNUP_HOME_NAV_PATCH+'\n</body>'):patched+BCT_SIGNUP_HOME_NAV_PATCH;
       if(!patched.includes('bct-runtime-guardrails-20260929'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_RUNTIME_GUARDRAIL_PATCH+'\n</body>'):patched+BCT_RUNTIME_GUARDRAIL_PATCH;
       if(!patched.includes('bct-admin-mobile-controls-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_ADMIN_MOBILE_PATCH+'\n</body>'):patched+BCT_ADMIN_MOBILE_PATCH;
