@@ -11,6 +11,7 @@ on:
       - 'service-worker.js'
       - 'manifest.webmanifest'
       - 'tests/v46-iphone-portal-connection.mjs'
+      - 'tests/v46-iphone-homeowner-wizard.mjs'
       - '.github/workflows/v46-iphone-portal-connection.yml'
 
 permissions:
@@ -19,7 +20,7 @@ permissions:
 jobs:
   iphone-webkit-portals:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,3 +34,7 @@ jobs:
         env:
           BCT_URL: https://bctsecureadminv45emailfieldfixed.vercel.app
         run: node tests/v46-iphone-portal-connection.mjs
+      - name: Test live V46 homeowner 7-step wizard in WebKit
+        env:
+          BCT_URL: https://bctsecureadminv45emailfieldfixed.vercel.app
+        run: node tests/v46-iphone-homeowner-wizard.mjs
