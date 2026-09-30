@@ -40,6 +40,8 @@ async function forceAdminView(){
 async function tap(selector,label){
   const el=page.locator(selector).first();
   await el.waitFor({state:'visible',timeout:10000});
+  await el.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(150);
   const box=await el.boundingBox();
   if(!box){failures.push(label+': no bounding box');return;}
   const x=box.x+box.width/2,y=box.y+box.height/2;
@@ -67,13 +69,13 @@ if(!(await page.locator('#adminHomeownerProjects').evaluate(el=>el.classList.con
 await tap('[data-admin-page-tab="jobs"]','Jobs & Progress tab');
 if(!(await page.locator('#jobHealthDashboard').evaluate(el=>el.classList.contains('active')).catch(()=>false))) failures.push('Jobs tab did not activate job health');
 
-await tap('#bctCommandCenter [data-admin-jump="adminServiceCalls"]','Command Center Service Calls');
-if(!(await page.locator('#adminServiceCalls').evaluate(el=>el.classList.contains('active')).catch(()=>false))) failures.push('Command Center did not jump to Service Calls');
-
+await page.locator('#bctCommandSearch').scrollIntoViewIfNeeded();
 await page.locator('#bctCommandSearch').fill('service');
-await page.waitForTimeout(250);
+await page.waitForTimeout(300);
 const visibleCommands=await page.locator('#bctCommandResults [data-admin-jump]:visible').count();
 if(visibleCommands<1) failures.push('Command Center search returned no visible result for service');
+await tap('#bctCommandCenter [data-admin-jump="adminServiceCalls"]:visible','Command Center Service Calls');
+if(!(await page.locator('#adminServiceCalls').evaluate(el=>el.classList.contains('active')).catch(()=>false))) failures.push('Command Center did not jump to Service Calls');
 
 await page.evaluate(()=>{
   localStorage.setItem('bctPreferredLanguage','es');
