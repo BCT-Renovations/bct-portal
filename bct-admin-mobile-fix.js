@@ -1,7 +1,7 @@
 /* BCT V46 admin mobile controls + Spanish admin translation stability patch. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-admin-mobile-1';
+  const VERSION='V46-2026.09.30-admin-mobile-2';
   const ROOT_ID='view-admin';
   const ORIGINAL_TEXT=new WeakMap();
   const ORIGINAL_PLACEHOLDER=new WeakMap();
@@ -214,6 +214,10 @@
       if(el.disabled||el.getAttribute('aria-disabled')==='true')return;
       el.style.pointerEvents='auto';
       el.style.touchAction='manipulation';
+    });
+    root.querySelectorAll('#bctCommandResults [data-admin-jump]').forEach(btn=>{
+      btn.style.color='#e0f2fe';
+      btn.querySelectorAll('*').forEach(child=>child.style.color='inherit');
     });
   }
   function translateNode(el){
