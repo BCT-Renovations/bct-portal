@@ -23,7 +23,7 @@ jobs:
       - name: Run first 200 V46 production safeguards
         run: node tests/v46-production-200-checks.mjs
       - name: Run second 200 V46 production safeguards
-        run: node tests/v46-production-200-checks-round2.mjs
+        run: node tests/v46-production-200-checks-round2-current.mjs
       - name: Run third 200 V46 production safeguards
         run: node tests/v46-production-200-checks-round3.mjs
       - name: Run 500 new V46 interactive integrity safeguards
@@ -44,5 +44,5 @@ jobs:
         run: node tests/v46-production-200-checks-round11.mjs
       - name: Run twelfth 200 V46 status and upload safeguards
         run: node tests/v46-production-200-checks-round12.mjs
-      - name: Run thirteenth 200 V46 launch-gap safeguards
-        run: node tests/v46-production-200-checks-round13.mjs
+      - name: Run thirteenth V46 launch-gap safeguards
+        run: node tests/v46-production-200-checks-round13-current.mjs

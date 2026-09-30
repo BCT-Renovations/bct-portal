@@ -24,7 +24,7 @@ jobs:
           node-version: '22'
 
       - name: Source integrity guard
-        run: node scripts/bct-source-integrity-smoke.mjs
+        run: node scripts/bct-source-integrity-smoke-current.mjs
 
       - name: Launch smoke
         run: node scripts/bct-launch-smoke.mjs
