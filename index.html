@@ -676,6 +676,20 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment spa
 body:not(.bct-authenticated):not(.bct-portal-entered) #bctPublicLicenseBar,
 body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:relative!important;z-index:1!important}
 </style>
+
+<style id="bct-admin-mint-actions-20260929">
+#view-admin-login #adminForgotBtn.bct-mint-action,
+#view-admin-login #adminBackBtn.bct-mint-action{
+  background:#cfeee0!important;
+  color:#064d50!important;
+  border:2px solid #7fb89f!important;
+  box-shadow:none!important;
+}
+#view-admin-login #adminForgotBtn.bct-mint-action:active,
+#view-admin-login #adminBackBtn.bct-mint-action:active{
+  transform:translateY(1px);
+}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -1061,8 +1075,8 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
       </div>
       <div class="admin-gate-actions">
         <button type="button" id="adminLoginBtn" data-i18n="admin.sign_in">Sign In to BCT Admin</button>
-        <button id="adminForgotBtn" class="secondary" type="button" data-i18n="admin.forgot_password">Forgot Password?</button>
-        <button type="button" id="adminBackBtn" class="secondary" data-i18n="admin.back_home">Back to Home</button>
+        <button id="adminForgotBtn" class="secondary bct-mint-action" type="button" data-i18n="admin.forgot_password">Forgot Password?</button>
+        <button type="button" id="adminBackBtn" class="secondary bct-mint-action" data-i18n="admin.back_home">Back to Home</button>
       </div>
       <div id="adminAuthStatus" class="admin-auth-status"></div>
       <div class="privacy-note" style="margin-top:14px"><b data-i18n="admin.security_label">Security:</b> <span data-i18n="admin.security_message">The password is sent directly to Supabase Authentication and is not stored in this HTML file.</span></div>
