@@ -11,7 +11,7 @@
 // bct-signup-home-nav-hotfix keeps Back to Home visible while a new client moves through the 7-step project form.
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
 // bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
-const CACHE_NAME='bct-portal-shell-v30-admin-mobile-controls';
+const CACHE_NAME='bct-portal-shell-v31-signup-mutation-stability';
 const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
@@ -50,7 +50,8 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
       });
       controls.prepend(button);
     }
-    button.textContent=labels[lang()]||labels.en;
+    const next=labels[lang()]||labels.en;
+    if(button.textContent!==next)button.textContent=next;
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
   document.addEventListener('click',()=>requestAnimationFrame(ensure),true);
