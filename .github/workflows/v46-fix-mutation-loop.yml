@@ -1,4 +1,4 @@
-name: V46 Fix Blocking Mutation Loop
+name: V46 Fix Contractor Signup Auth Override
 
 on:
   workflow_dispatch:
@@ -17,24 +17,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Remove self-triggering homeowner translation observer
+      - name: Keep signed-out contractor application open
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text()
-          old="new MutationObserver(apply).observe(document.getElementById('view-customer')||document.body,{childList:true,subtree:true});\n requestAnimationFrame(apply);"
-          new="/* Translation navigation is refreshed on signup open and language changes. Do not observe and rewrite the same subtree: that can starve iPhone/WebKit touch events. */\n requestAnimationFrame(apply);"
+          old="try{window.bctHandlePortalAuthState?.(_event,session)}catch(_){};\n   if(_event==='SIGNED_OUT'){"
+          new="try{window.bctHandlePortalAuthState?.(_event,session)}catch(_){};\n   // Do not let a late signed-out/initial-session callback knock a contractor out of the application they just opened.\n   if(!session && document.body.classList.contains('bct-contractor-signup')){\n     setAuthShell(null);\n     setVisibleView('apply');\n     document.getElementById('view-apply')?.classList.remove('hidden','bct-signedout-hidden');\n     return;\n   }\n   if(_event==='SIGNED_OUT'){"
           count=s.count(old)
           if count != 1:
-              raise SystemExit(f'Expected exactly one blocking observer, found {count}')
+              raise SystemExit(f'Expected exactly one auth-state insertion point, found {count}')
           p.write_text(s.replace(old,new),encoding='utf-8')
           PY
-      - name: Commit portal responsiveness fix
+      - name: Commit contractor signup auth fix
         run: |
           git config user.name 'BCT-Renovations'
           git config user.email 'myproject@bctrenovations.com'
           git add index.html
           git diff --cached --check
-          git commit -m 'V46 stop self-triggering translation mutation loop'
+          git commit -m 'V46 keep contractor signup open during signed-out auth callbacks'
           git push origin main
