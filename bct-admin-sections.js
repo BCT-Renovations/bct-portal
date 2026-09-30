@@ -258,3 +258,14 @@
   script.defer=true;
   document.head.appendChild(script);
 })();
+
+
+/* BCT V46 guarded Admin job page-flip loader. */
+(function(){
+  if(document.querySelector('script[data-bct-admin-job-pages]'))return;
+  const script=document.createElement('script');
+  script.src='/bct-admin-job-pages.js?v=20260930-1';
+  script.dataset.bctAdminJobPages='1';
+  script.defer=true;
+  document.head.appendChild(script);
+})();
