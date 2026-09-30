@@ -3,13 +3,14 @@ name: BCT V46 iPhone Portal Connection
 on:
   workflow_dispatch:
   schedule:
-    - cron: '19 3 * * 0'
+    - cron: '20 3 * * 0'
   push:
     branches: [main]
     paths:
       - 'index.html'
       - 'service-worker.js'
       - 'manifest.webmanifest'
+      - 'tests/v46-iphone-portal-connection.mjs'
       - '.github/workflows/v46-iphone-portal-connection.yml'
 
 permissions:
