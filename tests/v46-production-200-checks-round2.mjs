@@ -205,7 +205,7 @@ check('no javascript URLs',()=>!/(?:href|src)\s*=\s*["']javascript:/i.test(html)
 check('new-tab links protected',()=>[...html.matchAll(/<a\b[^>]*target=["']_blank["'][^>]*>/gi)].every(m=>/\brel=["'][^"']*(noopener|noreferrer)/i.test(m[0])));
 check('password inputs present',()=>/type=["']password["']/i.test(html));
 check('file upload inputs present',()=>/type=["']file["']/i.test(html));
-check('three native public role entries',()=>['client','contractor','admin'].every(x=>html.includes('data-entry-native="'+x+'"')));
+check('three public role entry buttons',()=>['client','contractor','admin'].every(x=>html.includes('data-entry-login="'+x+'"')));
 check('Share App control',()=>html.includes('id="bctShareAppBtn"'));
 check('native device sharing',()=>html.includes('navigator.share'));
 check('share copy fallback',()=>html.includes('navigator.clipboard'));
