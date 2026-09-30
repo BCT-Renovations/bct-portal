@@ -1,0 +1,35 @@
+name: V46 Live Verification and Admin Pages Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'bct-live-project-verification.js'
+      - 'bct-admin-job-pages.js'
+      - 'bct-admin-sections.js'
+      - 'tests/v46-live-project-verification.mjs'
+      - 'tests/v46-admin-job-pages.mjs'
+      - 'supabase/migrations/20260930165200_add_live_project_verification.sql'
+      - '.github/workflows/v46-live-admin-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: JavaScript syntax checks
+        run: |
+          node --check bct-live-project-verification.js
+          node --check bct-admin-job-pages.js
+          node --check bct-admin-sections.js
+      - name: Live verification smoke
+        run: node tests/v46-live-project-verification.mjs
+      - name: Admin job page-flip smoke
+        run: node tests/v46-admin-job-pages.mjs
