@@ -11,8 +11,7 @@
 // bct-signup-home-nav-hotfix keeps Back to Home visible while a new client moves through the 7-step project form.
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
 // bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
-// bct-portal-entry-stability clears a stale local auth session before a fresh signed-out role entry can be overridden by it.
-const CACHE_NAME='bct-portal-shell-v31-entry-session-stability';
+const CACHE_NAME='bct-portal-shell-v30-admin-mobile-controls';
 const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
@@ -168,43 +167,6 @@ body.bct-authenticated #view-home.hidden,
 body.bct-authenticated #view-admin-login.hidden{pointer-events:none!important}
 </style>
 <script id="bct-admin-mobile-controls-hotfix-script" src="/bct-admin-mobile-fix.js?v=20260930-1"><\/script>`;
-const BCT_PORTAL_ENTRY_STABILITY_PATCH=`
-<script id="bct-portal-entry-stability-20260930">
-(function(){
-  if(window.__bctPortalEntryStabilityInstalled)return;
-  window.__bctPortalEntryStabilityInstalled=true;
-  function auth(){
-    try{return typeof supabaseClient!=='undefined'&&supabaseClient&&supabaseClient.auth?supabaseClient.auth:null}catch(_){return null}
-  }
-  function install(){
-    const current=window.bctOpenEntry;
-    if(typeof current!=='function')return false;
-    if(current.__bctStableEntry)return true;
-    const stable=async function(kind){
-      const freshPublicEntry=document.body.classList.contains('bct-signed-out')&&!document.body.classList.contains('bct-authenticated');
-      if(freshPublicEntry){
-        const a=auth();
-        if(a){
-          try{
-            const result=await a.getSession();
-            if(result&&result.data&&result.data.session)await a.signOut({scope:'local'});
-          }catch(_){}
-        }
-      }
-      return current(kind);
-    };
-    stable.__bctStableEntry=true;
-    stable.__bctOriginal=current;
-    window.bctOpenEntry=stable;
-    return true;
-  }
-  if(!install()){
-    let tries=0;
-    const timer=setInterval(function(){if(install()||++tries>=80)clearInterval(timer)},25);
-  }
-  window.addEventListener('pageshow',install);
-})();
-<\/script>`;
 self.addEventListener('install',event=>event.waitUntil(
   caches.open(CACHE_NAME)
     .then(cache=>cache.addAll(STATIC_ASSETS))
@@ -240,7 +202,6 @@ self.addEventListener('fetch',event=>{
       if(!patched.includes('bct-signup-home-nav-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_SIGNUP_HOME_NAV_PATCH+'\n</body>'):patched+BCT_SIGNUP_HOME_NAV_PATCH;
       if(!patched.includes('bct-runtime-guardrails-20260929'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_RUNTIME_GUARDRAIL_PATCH+'\n</body>'):patched+BCT_RUNTIME_GUARDRAIL_PATCH;
       if(!patched.includes('bct-admin-mobile-controls-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_ADMIN_MOBILE_PATCH+'\n</body>'):patched+BCT_ADMIN_MOBILE_PATCH;
-      if(!patched.includes('bct-portal-entry-stability-20260930'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_PORTAL_ENTRY_STABILITY_PATCH+'\n</body>'):patched+BCT_PORTAL_ENTRY_STABILITY_PATCH;
       const headers=new Headers(response.headers);
       headers.delete('content-length');
       headers.set('cache-control','no-store');

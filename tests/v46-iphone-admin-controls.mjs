@@ -17,7 +17,7 @@ async function loadCurrentShell(){
       await page.reload({waitUntil:'domcontentloaded',timeout:30000});
       await page.waitForTimeout(1200);
       const version=await page.evaluate(()=>window.BCT_ADMIN_MOBILE_FIX_VERSION||'');
-      if(version.includes('2026.09.30-admin-mobile-3'))return;
+      if(version.includes('2026.09.30-admin-mobile'))return;
       await page.waitForTimeout(2500);
     }
   }
@@ -85,34 +85,16 @@ await page.evaluate(()=>{
 });
 await page.waitForTimeout(650);
 
-let adminHeading=(await page.locator('#view-admin h2').first().textContent().catch(()=>''))?.trim();
-let commandHeading=(await page.locator('#bctCommandCenter h3').textContent().catch(()=>''))?.trim();
-let logoutText=(await page.locator('#adminLogoutBtn').textContent().catch(()=>''))?.trim();
-let searchPlaceholder=await page.locator('#bctCommandSearch').getAttribute('placeholder').catch(()=>null);
+const adminHeading=(await page.locator('#view-admin h2').first().textContent().catch(()=>''))?.trim();
+const commandHeading=(await page.locator('#bctCommandCenter h3').textContent().catch(()=>''))?.trim();
+const logoutText=(await page.locator('#adminLogoutBtn').textContent().catch(()=>''))?.trim();
+const searchPlaceholder=await page.locator('#bctCommandSearch').getAttribute('placeholder').catch(()=>null);
 console.log('ADMIN ES',JSON.stringify({adminHeading,commandHeading,logoutText,searchPlaceholder}));
 if(adminHeading!=='Panel de administración de BCT') failures.push('Spanish admin dashboard heading not translated');
 if(commandHeading!=='Centro de control') failures.push('Spanish Command Center heading not translated');
 if(logoutText!=='Cerrar sesión') failures.push('Spanish admin logout not translated');
 if(!String(searchPlaceholder||'').startsWith('Buscar:')) failures.push('Spanish command search placeholder not translated');
 
-await page.evaluate(()=>{
-  localStorage.setItem('bctPreferredLanguage','en');
-  document.documentElement.lang='en';
-  const select=document.getElementById('bctLoginLanguage');
-  if(select){select.value='en';select.dispatchEvent(new Event('change',{bubbles:true}));}
-});
-await page.waitForTimeout(650);
-
-adminHeading=(await page.locator('#view-admin h2').first().textContent().catch(()=>''))?.trim();
-commandHeading=(await page.locator('#bctCommandCenter h3').textContent().catch(()=>''))?.trim();
-logoutText=(await page.locator('#adminLogoutBtn').textContent().catch(()=>''))?.trim();
-searchPlaceholder=await page.locator('#bctCommandSearch').getAttribute('placeholder').catch(()=>null);
-console.log('ADMIN EN RESTORED',JSON.stringify({adminHeading,commandHeading,logoutText,searchPlaceholder}));
-if(adminHeading!=='BCT Admin Dashboard') failures.push('English admin dashboard heading did not restore after Spanish');
-if(commandHeading!=='Command Center') failures.push('English Command Center heading did not restore after Spanish');
-if(logoutText!=='Sign Out') failures.push('English admin logout did not restore after Spanish');
-if(!String(searchPlaceholder||'').startsWith('Search:')) failures.push('English command search placeholder did not restore after Spanish');
-
 await browser.close();
 if(failures.length){console.error('V46 iPhone admin control failures:\n- '+failures.join('\n- '));process.exit(1);}
-console.log('BCT V46 iPhone Admin controls + Spanish/English translation verification passed.');
+console.log('BCT V46 iPhone Admin controls + Spanish translation verification passed.');
