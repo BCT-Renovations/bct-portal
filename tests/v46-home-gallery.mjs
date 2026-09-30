@@ -20,3 +20,4 @@ for (const protectedId of ['bctSignedOutEntry','bctEntryActions','bctShareAppBtn
 }
 
 console.log('V46 isolated home gallery smoke checks passed.');
+// Re-run marker after duplicate-loader cleanup.
