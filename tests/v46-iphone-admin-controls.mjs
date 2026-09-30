@@ -74,7 +74,7 @@ await page.locator('#bctCommandSearch').fill('service');
 await page.waitForTimeout(300);
 const visibleCommands=await page.locator('#bctCommandResults [data-admin-jump]:visible').count();
 if(visibleCommands<1) failures.push('Command Center search returned no visible result for service');
-await tap('#bctCommandCenter [data-admin-jump="adminServiceCalls"]:visible','Command Center Service Calls');
+await tap('#bctCommandCenter [data-admin-jump="adminServiceCalls"]','Command Center Service Calls');
 if(!(await page.locator('#adminServiceCalls').evaluate(el=>el.classList.contains('active')).catch(()=>false))) failures.push('Command Center did not jump to Service Calls');
 
 await page.evaluate(()=>{
