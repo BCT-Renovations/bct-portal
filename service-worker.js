@@ -9,7 +9,8 @@
 // bct-startup-cache-reset stops old cached HTML from replacing the correct V46 iPhone startup screen.
 // bct-visible-landing-reset forces the final visible iPhone landing CSS and cache reset.
 // bct-signup-home-nav-hotfix keeps Back to Home visible while a new client moves through the 7-step project form.
-const CACHE_NAME='bct-portal-shell-v28-signup-home-nav';
+// bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
+const CACHE_NAME='bct-portal-shell-v29-runtime-guardrails';
 const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
@@ -56,6 +57,103 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
   new MutationObserver(()=>requestAnimationFrame(ensure)).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
 })();
 <\/script>`;
+const BCT_RUNTIME_GUARDRAIL_PATCH=`
+<script id="bct-runtime-guardrails-20260929">
+(function(){
+  const BUILD='V46-2026.09.29-guardrails-1';
+  const SAFE_MODE_KEY='bctAdminSafeMode';
+  const OPTIONAL_FEATURES=['weather_external_provider_enabled','electronic_signatures_enabled','ai_estimating_external_engine_enabled'];
+  let flags={};
+  let lastErrorKey='';
+  let lastErrorAt=0;
+  window.BCT_BUILD=BUILD;
+  window.BCT_FEATURE_FLAGS=flags;
+  function safeMode(){try{return localStorage.getItem(SAFE_MODE_KEY)==='1'}catch(_){return false}}
+  window.bctFeatureEnabled=function(name,fallback){
+    const value=window.BCT_FEATURE_FLAGS&&Object.prototype.hasOwnProperty.call(window.BCT_FEATURE_FLAGS,name)?window.BCT_FEATURE_FLAGS[name]:!!fallback;
+    return safeMode()&&OPTIONAL_FEATURES.includes(name)?false:!!value;
+  };
+  function statusBadge(on){return '<span class="badge '+(on?'good':'warn')+'">'+(on?'ON':'OFF')+'</span>'}
+  function render(){
+    const host=document.getElementById('launchControlList');
+    if(!host)return;
+    let card=document.getElementById('bctRuntimeGuardrailsCard');
+    if(!card){
+      card=document.createElement('div');
+      card.id='bctRuntimeGuardrailsCard';
+      card.className='card';
+      host.prepend(card);
+    }
+    const f=window.BCT_FEATURE_FLAGS||{};
+    const safe=safeMode();
+    const api=f.frontend_api_version||'not loaded';
+    const weather=window.bctFeatureEnabled('weather_external_provider_enabled',false);
+    const errors=window.bctFeatureEnabled('client_error_tracking_enabled',true);
+    const ai=window.bctFeatureEnabled('ai_estimating_enabled',true);
+    card.innerHTML='<div class="toolbar"><div><h3>Runtime Safety & Build</h3><p class="muted">Protective controls only; this does not change project, payment, or approval data.</p></div><button type="button" class="secondary" id="bctToggleAdminSafeMode">'+(safe?'Turn Safe Mode Off':'Turn Safe Mode On')+'</button></div>'+
+      '<div class="grid grid-2 section">'+
+      '<div class="stage"><b>Build</b><br><small>'+BUILD+'<br>API '+String(api).replace(/[<>&]/g,'')+'</small></div>'+
+      '<div class="stage"><b>Admin Safe Mode</b><br>'+statusBadge(safe)+'<br><small>On this device, optional integrations are held off while core portals remain available.</small></div>'+
+      '<div class="stage"><b>AI Estimating</b><br>'+statusBadge(ai)+'</div>'+
+      '<div class="stage"><b>Live Weather Provider</b><br>'+statusBadge(weather)+'<br><small>'+(f.weather_provider||'Provider not reported')+'</small></div>'+
+      '<div class="stage"><b>Client Error Tracking</b><br>'+statusBadge(errors)+'</div>'+
+      '<div class="stage"><b>External AI Engine</b><br>'+statusBadge(window.bctFeatureEnabled('ai_estimating_external_engine_enabled',false))+'</div>'+
+      '</div>';
+  }
+  async function loadFlags(){
+    try{
+      if(typeof supabaseClient==='undefined'||!supabaseClient)return render();
+      const result=await supabaseClient.rpc('bct_frontend_feature_flags');
+      if(result.error)throw result.error;
+      flags=result.data||{};
+      window.BCT_FEATURE_FLAGS=flags;
+    }catch(_){
+      flags={};
+      window.BCT_FEATURE_FLAGS=flags;
+    }
+    render();
+  }
+  async function logClientError(kind,message,code){
+    try{
+      if(!window.bctFeatureEnabled('client_error_tracking_enabled',true))return;
+      if(typeof supabaseClient==='undefined'||!supabaseClient)return;
+      const clean=String(message||'Unknown client error').slice(0,1000);
+      const key=kind+'|'+clean+'|'+location.pathname;
+      const now=Date.now();
+      if(key===lastErrorKey&&now-lastErrorAt<15000)return;
+      lastErrorKey=key;lastErrorAt=now;
+      const userResult=await supabaseClient.auth.getUser();
+      if(!userResult.data||!userResult.data.user)return;
+      await supabaseClient.rpc('bct_log_client_error',{
+        p_source:'frontend',
+        p_severity:'error',
+        p_error_code:String(code||kind).slice(0,120),
+        p_message:clean,
+        p_route:(location.pathname+location.hash).slice(0,300),
+        p_action_name:null,
+        p_context:{build:BUILD,online:navigator.onLine}
+      });
+    }catch(_){}
+  }
+  window.addEventListener('error',function(event){logClientError('window_error',event.message||event.error?.message||'Window error','window_error')});
+  window.addEventListener('unhandledrejection',function(event){
+    const reason=event.reason;
+    logClientError('unhandled_rejection',reason&&reason.message?reason.message:String(reason||'Unhandled promise rejection'),'unhandled_rejection');
+  });
+  document.addEventListener('click',function(event){
+    const button=event.target&&event.target.closest?event.target.closest('#bctToggleAdminSafeMode'):null;
+    if(button){
+      event.preventDefault();
+      try{localStorage.setItem(SAFE_MODE_KEY,safeMode()?'0':'1')}catch(_){}
+      render();
+      return;
+    }
+    setTimeout(render,0);
+  });
+  window.addEventListener('pageshow',function(){loadFlags();render()});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadFlags);else loadFlags();
+})();
+<\/script>`;
 self.addEventListener('install',event=>event.waitUntil(
   caches.open(CACHE_NAME)
     .then(cache=>cache.addAll(STATIC_ASSETS))
@@ -87,8 +185,9 @@ self.addEventListener('fetch',event=>{
       if(!response.ok)return response;
       const type=response.headers.get('content-type')||'';
       if(!type.includes('text/html'))return response;
-      const html=await response.text();
-      const patched=html.includes('bct-signup-home-nav-hotfix-script')?html:(html.includes('</body>')?html.replace('</body>',BCT_SIGNUP_HOME_NAV_PATCH+'\n</body>'):html+BCT_SIGNUP_HOME_NAV_PATCH);
+      let patched=await response.text();
+      if(!patched.includes('bct-signup-home-nav-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_SIGNUP_HOME_NAV_PATCH+'\n</body>'):patched+BCT_SIGNUP_HOME_NAV_PATCH;
+      if(!patched.includes('bct-runtime-guardrails-20260929'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_RUNTIME_GUARDRAIL_PATCH+'\n</body>'):patched+BCT_RUNTIME_GUARDRAIL_PATCH;
       const headers=new Headers(response.headers);
       headers.delete('content-length');
       headers.set('cache-control','no-store');
