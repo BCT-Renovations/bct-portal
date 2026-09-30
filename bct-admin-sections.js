@@ -269,14 +269,3 @@
   script.defer=true;
   document.head.appendChild(script);
 })();
-
-
-/* BCT V46 guarded public Our Work gallery loader — gallery branch only. */
-(function(){
-  if(document.querySelector('script[data-bct-public-gallery]'))return;
-  const script=document.createElement('script');
-  script.src='/bct-public-gallery.js?v=20260930-1';
-  script.dataset.bctPublicGallery='1';
-  script.defer=true;
-  document.head.appendChild(script);
-})();
