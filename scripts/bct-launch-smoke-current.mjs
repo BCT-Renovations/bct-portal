@@ -7,7 +7,7 @@ const sourceUrl = new URL('./bct-launch-smoke.mjs', import.meta.url);
 let source = fs.readFileSync(sourceUrl, 'utf8');
 const simpleReplacements = [
   ["['native iPhone portal boot', 'bct-native-portal-boot-20260929'],", "['authoritative iPhone portal router', 'V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'],"],
-  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v31-client-translation']
+  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v30-admin-mobile-controls']
 ];
 for (const [stale,current] of simpleReplacements) {
   if (!source.includes(stale)) throw new Error('Launch-smoke current wrapper could not find retired marker: '+stale);
