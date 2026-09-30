@@ -247,3 +247,14 @@
   new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','lang','aria-hidden','inert']});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
 })();
+
+
+/* BCT V46 guarded Live Project Verification loader. */
+(function(){
+  if(document.querySelector('script[data-bct-live-project-verification]'))return;
+  const script=document.createElement('script');
+  script.src='/bct-live-project-verification.js?v=20260930-1';
+  script.dataset.bctLiveProjectVerification='1';
+  script.defer=true;
+  document.head.appendChild(script);
+})();
