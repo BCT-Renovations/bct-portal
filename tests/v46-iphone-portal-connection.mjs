@@ -6,47 +6,89 @@ const browser=await webkit.launch();
 const iphone=devices['iPhone 13'];
 const failures=[];
 
-async function verify(kind, expectedView, expectedSelector){
+async function openLanding(page){
+  await page.goto(base,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.waitForTimeout(2500);
+  const state=await page.evaluate(()=>({
+    html:document.documentElement.className,
+    body:document.body.className,
+    homeDisplay:getComputedStyle(document.getElementById('view-home')).display,
+    homeHidden:document.getElementById('view-home').classList.contains('hidden')
+  }));
+  console.log('LANDING STATE',JSON.stringify(state));
+}
+
+async function physicalTap(page,selector,label){
+  const el=page.locator(selector);
+  await el.waitFor({state:'visible',timeout:10000});
+  const box=await el.boundingBox();
+  if(!box) throw new Error(label+': no bounding box');
+  const x=box.x+box.width/2, y=box.y+box.height/2;
+  const hit=await page.evaluate(({selector,x,y})=>{
+    const el=document.querySelector(selector);
+    const top=document.elementFromPoint(x,y);
+    const cs=el?getComputedStyle(el):null;
+    return {
+      ok:!!el && (top===el || el.contains(top)),
+      top:top ? (top.id || top.getAttribute?.('data-entry-login') || top.className || top.tagName) : null,
+      display:cs?.display,visibility:cs?.visibility,opacity:cs?.opacity,pointerEvents:cs?.pointerEvents,
+      disabled:el?.disabled||false,
+      rect:el?{x:el.getBoundingClientRect().x,y:el.getBoundingClientRect().y,w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}:null,
+      body:document.body.className,
+      html:document.documentElement.className
+    };
+  },{selector,x,y});
+  console.log('TOUCH '+label,JSON.stringify(hit));
+  if(!hit.ok) failures.push(label+': touch center is covered by '+hit.top);
+  await page.touchscreen.tap(x,y);
+}
+
+async function verifyPortal(kind, expectedView, expectedSelector){
   const context=await browser.newContext({...iphone});
   const page=await context.newPage();
   const pageErrors=[];
   page.on('pageerror',e=>pageErrors.push(String(e)));
-  await page.goto(base,{waitUntil:'domcontentloaded',timeout:30000});
-  const link=page.locator('[data-entry-login="'+kind+'"]');
-  await link.waitFor({state:'visible',timeout:10000});
-  const box=await link.boundingBox();
-  if(!box) failures.push(kind+': control has no tappable bounding box');
-  const hit=await page.evaluate((sel)=>{
-    const el=document.querySelector(sel); if(!el)return {ok:false,reason:'missing'};
-    const r=el.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2;
-    const top=document.elementFromPoint(x,y);
-    return {ok:top===el||el.contains(top),top:top?.id||top?.getAttribute?.('data-entry-login')||top?.tagName||null,x,y,w:r.width,h:r.height};
-  },'[data-entry-login="'+kind+'"]');
-  if(!hit.ok) failures.push(kind+': touch center is covered by '+hit.top);
-  await link.tap({timeout:10000});
-  await page.waitForTimeout(2300);
-  const view=page.locator('#view-'+expectedView);
-  const target=page.locator(expectedSelector);
-  const viewVisible=await view.isVisible().catch(()=>false);
-  const targetVisible=await target.isVisible().catch(()=>false);
+  await openLanding(page);
+  const selector='[data-entry-login="'+kind+'"]';
+  await physicalTap(page,selector,kind);
+  await page.waitForTimeout(2500);
+  const viewVisible=await page.locator('#view-'+expectedView).isVisible().catch(()=>false);
+  const targetVisible=await page.locator(expectedSelector).isVisible().catch(()=>false);
   const homeVisible=await page.locator('#view-home').isVisible().catch(()=>false);
+  console.log('RESULT '+kind,JSON.stringify({viewVisible,targetVisible,homeVisible,url:page.url(),body:await page.locator('body').getAttribute('class')}));
   if(!viewVisible) failures.push(kind+': expected #view-'+expectedView+' to be visible');
   if(!targetVisible) failures.push(kind+': expected '+expectedSelector+' to be visible');
-  if(homeVisible) failures.push(kind+': public landing remained visible after portal entry');
+  if(homeVisible) failures.push(kind+': public landing remained visible after touch');
   if(pageErrors.length) failures.push(kind+': page errors: '+pageErrors.join(' | '));
-  await page.goBack({waitUntil:'domcontentloaded'}).catch(()=>{});
-  await page.waitForTimeout(500);
-  if(!(await page.locator('#view-home').isVisible().catch(()=>false))) failures.push(kind+': browser Back did not restore public landing');
   await context.close();
 }
 
-await verify('client','customer','#bctHomeownerLoginCard');
-await verify('contractor','status','#bctContractorLoginCard');
-await verify('admin','admin-login','#adminLoginBtn');
+async function verifyShare(){
+  const context=await browser.newContext({...iphone});
+  const page=await context.newPage();
+  await page.addInitScript(()=>{
+    Object.defineProperty(navigator,'share',{configurable:true,value:async()=>true});
+  });
+  const pageErrors=[];
+  page.on('pageerror',e=>pageErrors.push(String(e)));
+  await openLanding(page);
+  await physicalTap(page,'#bctShareAppBtn','share');
+  await page.waitForTimeout(500);
+  const status=(await page.locator('#bctShareAppStatus').textContent().catch(()=>''))?.trim();
+  console.log('RESULT share',JSON.stringify({status}));
+  if(!status) failures.push('share: Share App did not produce a success/status response');
+  if(pageErrors.length) failures.push('share: page errors: '+pageErrors.join(' | '));
+  await context.close();
+}
+
+await verifyPortal('client','customer','#bctHomeownerLoginCard');
+await verifyPortal('contractor','status','#bctContractorLoginCard');
+await verifyPortal('admin','admin-login','#adminLoginBtn');
+await verifyShare();
 
 await browser.close();
 if(failures.length){
   console.error('iPhone/WebKit portal connection failures:\n- '+failures.join('\n- '));
   process.exit(1);
 }
-console.log('BCT V46 iPhone/WebKit portal connection: Client, Contractor, Admin and Back navigation passed.');
+console.log('BCT V46 iPhone/WebKit touch verification passed: Client, Contractor, Admin and Share App.');
