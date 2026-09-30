@@ -37,8 +37,10 @@ assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must f
 assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
 assert(serviceWorker.includes('bct-official-logo-hotfix'), 'service worker must force the selected official logo rollout.');
 assert(serviceWorker.includes('bct-green-logo-band-hotfix'), 'service worker must force the full-width green logo band rollout.');
-assert(serviceWorker.includes("const CACHE_NAME='bct-portal-shell-v27-app-icon-cache-reset'"), 'service worker must use the current V46 iPhone/PWA cache generation.');
+assert(serviceWorker.includes("const CACHE_NAME='bct-portal-shell-v30-admin-mobile-controls'"), 'service worker must use the current V46 iPhone/PWA cache generation.');
 assert(serviceWorker.includes('bct-portal-entry-hotfix'), 'service worker must preserve repaired Client and Contractor portal entry rendering.');
+assert(serviceWorker.includes('bct-admin-mobile-controls-hotfix'), 'service worker must preserve the signed-in Admin touch-surface protection.');
+assert(serviceWorker.includes('/bct-admin-mobile-fix.js?v=20260930-1'), 'service worker must inject the current Admin mobile/Spanish stability script.');
 assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']"), 'service worker static cache must stay limited to the official logo and app icon.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'service worker must not cache the root HTML startup path.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'service worker must not cache index.html.');
@@ -62,6 +64,5 @@ try {
 } catch (error) {
   throw new Error(`service-worker.js failed to parse: ${error.message}`);
 }
-
 
 console.log('BCT source integrity smoke passed.');
