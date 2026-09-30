@@ -1,0 +1,51 @@
+name: V46 Wire Gallery Branch
+
+on:
+  push:
+    branches: [v46-gallery-from-big-dog]
+    paths:
+      - '.github/workflows/v46-wire-gallery-branch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v46-gallery-from-big-dog
+      - name: Add one guarded gallery loader only
+        shell: python
+        run: |
+          from pathlib import Path
+          path=Path('index.html')
+          text=path.read_text()
+          marker='/bct-home-gallery.js?v=20260930-1'
+          if marker in text:
+              print('Gallery loader already wired.')
+          else:
+              insert='\n<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20260930-1" defer></script>\n'
+              if '</body>' not in text:
+                  raise SystemExit('Expected closing body tag not found; refusing to modify index.html')
+              text=text.replace('</body>',insert+'</body>',1)
+              path.write_text(text)
+      - name: Verify protected landing markers remain
+        run: |
+          grep -q 'id="bctSignedOutEntry"' index.html
+          grep -q 'id="bctEntryActions"' index.html
+          grep -q 'id="bctShareAppBtn"' index.html
+          grep -q 'id="bctPublicLicenseBar"' index.html
+          grep -q '/bct-home-gallery.js?v=20260930-1' index.html
+      - name: Commit isolated wiring
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No wiring change needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Wire isolated Our Work gallery on test branch"
+          git push origin HEAD:v46-gallery-from-big-dog
