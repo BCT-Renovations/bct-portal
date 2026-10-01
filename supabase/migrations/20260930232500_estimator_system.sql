@@ -16,7 +16,8 @@ create table if not exists public.bct_estimator_applications (
   background_status text not null default 'pending',
   approval_status text not null default 'pending' check (approval_status in ('pending','background_screening','approved','denied','hold')),
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  unique (email)
 );
 
 create table if not exists public.bct_estimator_profiles (
@@ -37,6 +38,7 @@ create table if not exists public.bct_estimator_profiles (
 create table if not exists public.bct_site_assessments (
   id uuid primary key default gen_random_uuid(),
   project_id uuid not null,
+  unique (project_id),
   estimator_user_id uuid references auth.users(id),
   status text not null default 'assessment_required' check (status in (
     'assessment_required','payment_pending','paid','estimator_assigned','scheduled',
@@ -87,6 +89,47 @@ begin
     raise exception 'BCT separation of duties: project estimator cannot bid on or perform the same project';
   end if;
 end $$;
+
+create or replace function public.bct_estimator_transition_allowed(p_from text,p_to text)
+returns boolean language sql immutable as $
+  select case p_from
+    when 'assessment_required' then p_to='payment_pending'
+    when 'payment_pending' then p_to='paid'
+    when 'paid' then p_to='estimator_assigned'
+    when 'estimator_assigned' then p_to='scheduled'
+    when 'scheduled' then p_to='site_assessment_completed'
+    when 'site_assessment_completed' then p_to='assessment_submitted'
+    when 'assessment_submitted' then p_to='bct_review'
+    when 'bct_review' then p_to='bct_approved'
+    when 'bct_approved' then p_to='contractor_bidding'
+    when 'contractor_bidding' then p_to='credited_to_project'
+    else false end;
+$;
+
+create or replace function public.bct_enforce_estimator_assessment_transition()
+returns trigger language plpgsql set search_path=public as $
+begin
+  if new.status is distinct from old.status and not public.bct_estimator_transition_allowed(old.status,new.status) then
+    raise exception 'Invalid BCT site-assessment status transition: % -> %',old.status,new.status;
+  end if;
+  if new.status in ('scheduled','site_assessment_completed','assessment_submitted','bct_review','bct_approved','contractor_bidding','credited_to_project')
+     and new.fee_paid_at is null then
+    raise exception 'Assessment fee must be paid before scheduling or field work';
+  end if;
+  if new.status in ('bct_approved','contractor_bidding','credited_to_project')
+     and not new.bct_accepted_complete then
+    raise exception 'BCT must accept the complete assessment package before approval/bidding';
+  end if;
+  if new.extra_travel_amount>0 and not new.extra_travel_preapproved then
+    raise exception 'Additional estimator travel compensation requires advance BCT approval';
+  end if;
+  return new;
+end $;
+
+drop trigger if exists bct_estimator_assessment_transition_guard on public.bct_site_assessments;
+create trigger bct_estimator_assessment_transition_guard
+before update on public.bct_site_assessments
+for each row execute function public.bct_enforce_estimator_assessment_transition();
 
 -- Estimator intake is public-insert only; applicants cannot read the application table.
 drop policy if exists "estimator_application_public_insert" on public.bct_estimator_applications;
