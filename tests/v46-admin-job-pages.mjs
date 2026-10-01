@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const pages=fs.readFileSync('bct-admin-job-pages.js','utf8');
 const admin=fs.readFileSync('bct-admin-sections.js','utf8');
 
-assert.ok(admin.includes('/bct-admin-job-pages.js?v=20260930-1'),'Admin job-page loader missing');
+assert.match(admin, /\/bct-admin-job-pages\.js\?v=\d{8}-\d+/, 'Admin job-page loader missing');
 assert.ok(pages.includes('bctJobPageSelect'),'job-management selector missing');
 assert.ok(pages.includes('bctJobPagePrev'),'Previous control missing');
 assert.ok(pages.includes('bctJobPageNext'),'Next control missing');
