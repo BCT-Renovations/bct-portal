@@ -62,9 +62,12 @@ on storage.objects for all to authenticated
 using (bucket_id='bct-gallery' and (select public.is_bct_admin()))
 with check (bucket_id='bct-gallery' and (select public.is_bct_admin()));
 
-create or replace function public.bct_gallery_enforce_home_limit()
-returns trigger language plpgsql set search_path=public as $$
+create or replace function public.bct_gallery_enforce_limits()
+returns trigger language plpgsql set search_path=public as $
 begin
+  if tg_op='INSERT' and (select count(*) from public.bct_gallery_photos) >= 1000 then
+    raise exception 'BCT gallery library is limited to 1,000 photos';
+  end if;
   if new.show_on_home and new.is_published then
     if (select count(*) from public.bct_gallery_photos
         where show_on_home and is_published and id <> new.id) >= 30 then
@@ -74,9 +77,9 @@ begin
   new.updated_at=now();
   return new;
 end $$;
-revoke execute on function public.bct_gallery_enforce_home_limit() from public, anon, authenticated;
+revoke execute on function public.bct_gallery_enforce_limits() from public, anon, authenticated;
 
 drop trigger if exists bct_gallery_enforce_home_limit_trigger on public.bct_gallery_photos;
 create trigger bct_gallery_enforce_home_limit_trigger
 before insert or update on public.bct_gallery_photos
-for each row execute function public.bct_gallery_enforce_home_limit();
+for each row execute function public.bct_gallery_enforce_limits();
