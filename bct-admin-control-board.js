@@ -172,7 +172,10 @@
   }
 
   function categoryForPanel(panel){
+    const forced=panel?.dataset?.bctUrgentCategory;
+    if(forced==='jobs'||forced==='contractors'||forced==='clients')return forced;
     const hay=(panelPage(panel)+' '+(panel?.id||'')+' '+panelTitle(panel)).toLowerCase();
+    if(/estimator|assessment/.test(hay))return 'jobs';
     if(/contractor|applicant|safety|training|crew|credential|insurance|bond|license|workers.? comp|compliance/.test(hay))return 'contractors';
     if(/client|customer|homeowner|resident|property account/.test(hay))return 'clients';
     if(/job|project|service call|post job|bid|estimate|change order|approval|completion|schedule|weather|material|inspection|verification|payment|escrow|financ/.test(hay))return 'jobs';
