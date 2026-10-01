@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const loader=fs.readFileSync('bct-admin-sections.js','utf8');
 const js=fs.readFileSync('bct-admin-control-board.js','utf8');
 
-assert(loader.includes('/bct-admin-control-board.js?v=20260930-1'),'Admin navigation loader must load the new control board.');
+assert(loader.includes('/bct-admin-control-board.js?v=20260930-2'),'Admin navigation loader must load the new control board.');
 assert(js.includes("const ROOT_ID='view-admin'"),'Admin control board must stay scoped to the signed-in Admin view.');
 assert(js.includes("const BOARD_ID='bctAdminControlBoard'"),'Admin control board landing must exist.');
 assert(js.includes("const URGENT_ID='bctAdminUrgentView'"),'Urgent detail view must exist.');
