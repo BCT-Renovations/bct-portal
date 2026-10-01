@@ -72,6 +72,8 @@ with check (bucket_id='bct-gallery' and (select public.is_bct_admin()));
 create or replace function public.bct_gallery_enforce_limits()
 returns trigger language plpgsql set search_path=public as $
 begin
+  -- Serialize limit checks so concurrent Admin uploads cannot race past the 1,000/30 caps.
+  perform pg_advisory_xact_lock(hashtextextended('bct_gallery_limits',0));
   if tg_op='INSERT' and (select count(*) from public.bct_gallery_photos) >= 1000 then
     raise exception 'BCT gallery library is limited to 1,000 photos';
   end if;
