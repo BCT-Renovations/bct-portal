@@ -52,10 +52,7 @@ assert(!sql.includes('create policy "estimator_assessment_self_update"'));
 assert(sql.includes('No estimator-side table INSERT/UPDATE/DELETE policies are granted.'));
 assert(sql.includes('bct_estimator_payment_eligible'));
 assert(!sql.includes('\nend $;\n'));
-assert(sql.includes('as $bct
-assert(!admin.includes('bct-admin-urgent-grid'), 'Estimator Management must not add a fourth urgent panel.');
-console.log('V46 Estimator system policy + separation-of-duties regression: PASS');
-));
+assert(sql.includes('as $bct$'));
 assert(sql.includes('end $bct$;'));
 assert(!admin.includes('bct-admin-urgent-grid'), 'Estimator Management must not add a fourth urgent panel.');
 console.log('V46 Estimator system policy + separation-of-duties regression: PASS');
