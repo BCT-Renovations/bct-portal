@@ -9,7 +9,10 @@ begin
   from public.bct_contractors c
   where c.id=new.contractor_id and c.active;
   if v_user_id is null then raise exception 'Active contractor account required'; end if;
-  perform public.bct_assert_no_estimator_project_conflict(new.job_id,v_user_id);
+  perform public.bct_assert_no_estimator_project_conflict(
+    (select j.project_id from public.bct_jobs j where j.id=new.job_id),
+    v_user_id
+  );
   return new;
 end $$;
 
@@ -28,7 +31,7 @@ language sql stable set search_path=public,auth as $$
  and exists(select 1 from public.bct_contractors c where c.auth_user_id=auth.uid() and c.active
    and j.trade=any(c.trade_capabilities) and j.required_language=any(c.spoken_languages)
    and public.bct_contractor_required_credentials_current(c.id,j.trade,j.public_location))
- and not public.bct_estimator_conflict(j.id,auth.uid())
+ and not public.bct_estimator_conflict(j.project_id,auth.uid())
  order by j.published_at desc nulls last,j.created_at desc;
 $$;
 revoke execute on function public.bct_my_available_jobs_safe() from public;
