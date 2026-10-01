@@ -158,7 +158,7 @@ declare a public.bct_site_assessments;
 begin
   select * into a from public.bct_site_assessments where project_id=p_project_id for update;
   if a.id is null or a.estimator_user_id is distinct from auth.uid() then raise exception 'Assessment assignment not authorized'; end if;
-  if a.status not in ('scheduled','site_assessment_completed') then raise exception 'Assessment is not ready for field submission'; end if;
+  if a.status <> 'site_assessment_completed' then raise exception 'Site assessment must be marked completed before package submission'; end if;
   if a.fee_paid_at is null then raise exception 'Assessment fee payment is required'; end if;
   if not (p_site_visit_complete and p_photos_complete and p_measurements_complete and p_documentation_complete) then raise exception 'Complete assessment documentation is required'; end if;
   update public.bct_site_assessments set
