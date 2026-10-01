@@ -294,8 +294,7 @@
   },true);
 
   document.addEventListener('change',event=>{if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(refreshBoard,0)},true);
-  window.addEventListener('pageshow',schedule);
-  window.addEventListener('hashchange',schedule);
+  // Admin state changes are explicit; avoid lifecycle/hash refresh loops that can fight iPhone navigation.
 
   window.BCT_ADMIN_CONTROL_BOARD_OPEN_PANEL=function(target){
     const panel=typeof target==='string'?$(target):(target?.matches?.('[data-admin-page-panel]')?target:target?.closest?.('[data-admin-page-panel]'));
@@ -314,7 +313,6 @@
       });
       if(meaningful)schedule();
     });observer.observe(r,{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-hidden','data-status','data-state','data-severity']})}
-    const bodyObserver=new MutationObserver(schedule);bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
     schedule();
   }
 
