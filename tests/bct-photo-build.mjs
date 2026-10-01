@@ -14,3 +14,5 @@ console.log('BCT PHOTO BUILD static deployment gate passed');
 assert.match(migration,/bct-gallery/);assert.match(migration,/p\.is_published/);assert.doesNotMatch(pub,/object\/public\/bct-gallery/);assert.doesNotMatch(admin,/object\/public\/bct-gallery/);
 
 assert.match(admin,/createSignedUrl\(path,900\)/);assert.match(migration,/public=excluded\.public/);assert.match(migration,/p\.thumbnail_path=storage\.objects\.name/);
+
+assert.match(pub,/Intl\.DateTimeFormat/);assert.match(pub,/figure\.tabIndex=0/);assert.match(pub,/FULL\.findIndex/);
