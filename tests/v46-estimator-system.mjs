@@ -9,6 +9,7 @@ const board=fs.readFileSync('bct-admin-control-board.js','utf8');
 const loader=fs.readFileSync('bct-admin-sections.js','utf8');
 const sql=fs.readFileSync('supabase/migrations/20260930232500_estimator_system.sql','utf8');
 const bidGuard=fs.readFileSync('supabase/migrations/20261001001500_estimator_contractor_conflict_guard.sql','utf8');
+const assignmentGuard=fs.readFileSync('supabase/migrations/20261001195000_estimator_performing_contractor_assignment_guard.sql','utf8');
 const credentialSql=fs.readFileSync('supabase/migrations/20260930224500_contractor_credentials_board.sql','utf8');
 
 assert(core.includes("basis:'per_completed_assignment'"));
@@ -49,6 +50,10 @@ assert(bidGuard.includes('bct_guard_estimator_bid_conflict'));
 assert(bidGuard.includes('perform public.bct_assert_no_estimator_project_conflict(new.job_id,v_user_id)'));
 assert(bidGuard.includes('before insert or update of contractor_id,job_id on public.bct_bids'));
 assert(bidGuard.includes('not public.bct_estimator_conflict(j.id,auth.uid())'));
+assert(assignmentGuard.includes('bct_guard_assignment_estimator_separation'));
+assert(assignmentGuard.includes('perform public.bct_assert_no_estimator_project_conflict(new.project_id, v_contractor_user_id)'));
+assert(assignmentGuard.includes('before insert or update of contractor_id,project_id on public.bct_assignments'));
+assert(assignmentGuard.includes('revoke all on function public.bct_guard_assignment_estimator_separation() from public,anon,authenticated'));
 assert(sql.includes('enable row level security'));
 assert(sql.includes('estimator_application_public_insert'));
 assert(sql.includes('estimator_profile_self_read'));
