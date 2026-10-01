@@ -3,7 +3,7 @@
 const VERSION='BCT-PHOTO-BUILD-2026.10.01-admin-2-control-button';window.BCT_PHOTO_BUILD_ADMIN_VERSION=VERSION;
 const $=id=>document.getElementById(id);let rows=[],page=0,total=0;const PAGE=24;
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function url(path){const base=(window.SUPABASE_URL||window.supabaseUrl||'').replace(/\/$/,'');return base?base+'/storage/v1/object/public/bct-gallery/'+String(path||'').split('/').map(encodeURIComponent).join('/'):''}
+function url(path){const base=(window.SUPABASE_URL||window.supabaseUrl||'').replace(/\/$/,'');return base?base+'/storage/v1/object/bct-gallery/'+String(path||'').split('/').map(encodeURIComponent).join('/'):''}
 function css(){if($('bct-photo-admin-style'))return;const s=document.createElement('style');s.id='bct-photo-admin-style';s.textContent=`
 #bctPhotoAdmin{margin:12px 0;padding:14px;border:1px solid #d7e0e1;border-radius:16px;background:#fff}
 #bctPhotoAdmin .bct-photo-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
