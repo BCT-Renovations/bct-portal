@@ -325,14 +325,16 @@ body:not(.bct-authenticated) header .wrap{padding-bottom:14px}
 body:not(.bct-authenticated) header .brand{margin-bottom:10px}
 .bct-entry-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
 .bct-entry-actions button{min-height:52px;font-weight:800}
-body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status):not(#view-apply){display:none!important}
+body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status):not(#view-apply):not(#view-estimator){display:none!important}
 body:not(.bct-authenticated) #view-customer.hidden,
 body:not(.bct-authenticated) #view-status.hidden{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #view-home,
 body.bct-entry-contractor:not(.bct-authenticated) #view-home,
-body.bct-entry-admin:not(.bct-authenticated) #view-home{display:none!important}
+body.bct-entry-admin:not(.bct-authenticated) #view-home,
+body.bct-entry-estimator:not(.bct-authenticated) #view-home{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer{display:block!important}
 body.bct-entry-contractor:not(.bct-authenticated) #view-status{display:block!important}
+body.bct-entry-estimator:not(.bct-authenticated) #view-estimator{display:block!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer.hidden,
 body.bct-entry-contractor:not(.bct-authenticated) #view-status.hidden{display:block!important}
 @media(max-width:700px){.bct-entry-actions{grid-template-columns:1fr}}
@@ -535,7 +537,7 @@ body:not(.bct-authenticated) #bctAboutPublic{background:#eef7f1!important;border
 body:not(.bct-authenticated) #bctAboutPublic>*:not(.bct-about-licensed){padding-left:16px!important;padding-right:16px!important}
 body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed{box-sizing:border-box!important;display:block!important;width:100%!important;max-width:none!important;background:#0f5f63!important;color:#fff!important;margin:22px 0 0!important;padding:17px 10px!important;border:0!important;border-radius:0 0 17px 17px!important;text-align:center!important;font-weight:900!important;letter-spacing:.08em!important}
 html.bct-session-resolved body.bct-signed-out #view-home{display:block!important}
-html.bct-session-resolved body.bct-signed-out:not(.bct-entry-client):not(.bct-entry-contractor):not(.bct-entry-admin) main>.view:not(#view-home){display:none!important}
+html.bct-session-resolved body.bct-signed-out:not(.bct-entry-client):not(.bct-entry-contractor):not(.bct-entry-admin):not(.bct-entry-estimator) main>.view:not(#view-home){display:none!important}
 @media(max-width:480px){body:not(.bct-authenticated) header .wrap{padding-left:0!important;padding-right:0!important}body:not(.bct-authenticated) .bct-logo-crop{width:100vw!important;max-width:100vw!important}body:not(.bct-authenticated) main.wrap{padding-left:12px!important;padding-right:12px!important}}
 
 
@@ -3592,13 +3594,13 @@ renderAll();
  const publicShareMode=new URLSearchParams(location.search).get('shared')==='1';
  let entryIntent=null;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
- function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
+ function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
    // Authoritative portal transition: remove the public landing immediately, before any async auth work.
    document.body.classList.add('bct-portal-entered');
-   document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');
+   document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');
    document.body.classList.add('bct-entry-'+kind);
    const landing=document.getElementById('view-home');
    if(landing){landing.classList.add('hidden');landing.setAttribute('aria-hidden','true');landing.style.setProperty('display','none','important');}
@@ -3669,7 +3671,7 @@ renderAll();
    const name=(location.hash||'#home').slice(1);
    if(name==='home'){
      entryIntent=null;
-     document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');
+     document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');
      sessionNow().then(setAuthShell);
    }
  });
