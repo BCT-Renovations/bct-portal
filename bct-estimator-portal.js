@@ -1,13 +1,14 @@
 /* BCT V46 Estimator Portal — separate role, application, sign in, assignments and assessment package */
 (function(){
 'use strict';
-const VERSION='V46-2026.10.01-estimator-portal-1';
+const VERSION='V46-2026.10.01-estimator-portal-2-mobile';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function setView(name){ if(typeof window.setVisibleView==='function')return window.setVisibleView(name); document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$('view-'+name)?.classList.remove('hidden'); }
 function status(msg,type='notice'){const x=$('bctEstimatorStatus');if(x)x.innerHTML='<div class="'+type+'">'+esc(msg)+'</div>'}
 function ensure(){
  if($('view-estimator'))return;
+ if(!$('bct-estimator-mobile-style')){const st=document.createElement('style');st.id='bct-estimator-mobile-style';st.textContent=`#view-estimator,#view-estimator *{box-sizing:border-box}#view-estimator{width:100%;max-width:100%;overflow-x:hidden}#view-estimator .card,#view-estimator .grid,#view-estimator .grid>div,#view-estimator input,#view-estimator select,#view-estimator textarea{min-width:0;max-width:100%}#view-estimator input,#view-estimator select,#view-estimator textarea{width:100%}@media(max-width:820px){#view-estimator .grid-2{grid-template-columns:minmax(0,1fr)}#view-estimator .portal-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}#view-estimator .portal-tabs button{min-width:0;white-space:normal}}@media(max-width:390px){#view-estimator .portal-tabs{grid-template-columns:minmax(0,1fr)}}`;document.head.appendChild(st);}
  const main=$('bctMain')||document.querySelector('main');if(!main)return;
  const s=document.createElement('section');s.id='view-estimator';s.className='view section hidden';
  s.innerHTML=`
@@ -16,7 +17,7 @@ function ensure(){
  <p class="muted">BCT first attempts a free remote estimate. Approved estimators are assigned only when BCT determines a professional site assessment is required.</p>
  <div class="portal-tabs"><button type="button" data-estimator-page="signin" class="active">Sign In / Apply</button><button type="button" data-estimator-page="assignments">Assignments</button><button type="button" data-estimator-page="assessment">Assessment Package</button><button type="button" data-estimator-page="account">Account</button></div></div>
  <div class="card section" data-estimator-panel="signin">
-  <div class="grid grid-2"><div><h3>Existing Estimator — Sign In</h3><label>Email</label><input id="bctEstimatorEmail" type="email" autocomplete="email"><label>Password</label><input id="bctEstimatorPassword" type="password" autocomplete="current-password"><button type="button" id="bctEstimatorSignIn" style="margin-top:10px">Sign In</button></div>
+  <div class="grid grid-2"><div><h3>Existing Estimator — Sign In</h3><label data-i18n="estimator.email">Email</label><input id="bctEstimatorEmail" type="email" autocomplete="email"><label>Password</label><input id="bctEstimatorPassword" type="password" autocomplete="current-password"><button type="button" id="bctEstimatorSignIn" style="margin-top:10px">Sign In</button></div>
   <div><h3>New Estimator — Apply</h3><p class="muted">Create an estimator application for BCT verification and approval.</p><button type="button" id="bctEstimatorApplyOpen">Start Estimator Application</button></div></div>
   <form id="bctEstimatorApplication" class="section hidden">
    <div class="grid grid-2"><div><label>Legal Name</label><input name="legal_name" required></div><div><label>Business / Company (optional)</label><input name="business_name"></div><div><label>Phone</label><input name="phone" type="tel" required></div><div><label>Email</label><input name="email" type="email" required></div><div><label>Construction / Estimating Experience</label><textarea name="experience" required></textarea></div><div><label>Qualified Trades</label><textarea name="trades" required placeholder="Example: roofing, siding, drywall"></textarea></div><div><label>Service Areas / Jurisdictions</label><textarea name="jurisdictions" required></textarea></div><div><label>References</label><textarea name="references" required></textarea></div><div><label>Credentials / Documents</label><input name="credentials" type="file" multiple></div><div><label>Background Screening</label><select name="background_consent" required><option value="">Select</option><option value="yes">I understand BCT verification/background screening is required.</option></select></div></div>
