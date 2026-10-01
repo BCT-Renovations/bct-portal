@@ -10,3 +10,5 @@ assert.doesNotMatch(pub,/Project 1/);assert.match(pub,/PROJECTS=\[\]/);assert.ma
 assert.match(migration,/bct_gallery_photos/);assert.match(migration,/between 1 and 30/);assert.match(migration,/is_bct_admin/);assert.match(migration,/bct-gallery/);
 assert.match(migration,/show_on_home and is_published/);assert.match(migration,/limited to 30/);assert.match(migration,/limited to 1,000 photos/);
 console.log('BCT PHOTO BUILD static deployment gate passed');
+// Privacy gate: gallery storage is private and object reads require published metadata.
+assert.match(migration,/bct-gallery/);assert.match(migration,/p\.is_published/);assert.doesNotMatch(pub,/object\/public\/bct-gallery/);assert.doesNotMatch(admin,/object\/public\/bct-gallery/);
