@@ -85,5 +85,5 @@ assert(credentialSql.includes('bct_admin_review_contractor_credential'));
 assert(credentialSql.includes("if not public.is_bct_admin() then raise exception 'BCT Admin access required'"));
 assert(html.includes("rpc('bct_admin_contractor_credentials_board')"));
 assert(html.includes("rpc('bct_admin_review_contractor_credential'"));
-assert(html.includes("data-credential-review=\\"verified\\""));
+assert(html.includes('data-credential-review="verified"'));
 console.log('V46 Estimator system policy + separation-of-duties regression: PASS');
