@@ -12,3 +12,5 @@ assert.match(migration,/show_on_home and is_published/);assert.match(migration,/
 console.log('BCT PHOTO BUILD static deployment gate passed');
 // Privacy gate: gallery storage is private and object reads require published metadata.
 assert.match(migration,/bct-gallery/);assert.match(migration,/p\.is_published/);assert.doesNotMatch(pub,/object\/public\/bct-gallery/);assert.doesNotMatch(admin,/object\/public\/bct-gallery/);
+
+assert.match(admin,/createSignedUrl\(path,900\)/);assert.match(migration,/public=excluded\.public/);assert.match(migration,/p\.thumbnail_path=storage\.objects\.name/);
