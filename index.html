@@ -2573,12 +2573,13 @@ function adminCommandJump(id){
   const target=document.getElementById(id);
   if(target){
     const page=target.dataset.adminPagePanel||target.closest('[data-admin-page-panel]')?.dataset.adminPagePanel;
-    if(page)showAdminPage(page);
-    requestAnimationFrame(()=>{
-      target.scrollIntoView({behavior:'smooth',block:'start'});
-      target.classList.add('bct-jump-highlight');
-      setTimeout(()=>target.classList.remove('bct-jump-highlight'),1800);
-    });
+    if(typeof window.BCT_ADMIN_CONTROL_BOARD_OPEN_PANEL==='function'){
+      window.BCT_ADMIN_CONTROL_BOARD_OPEN_PANEL(target);
+    }else if(page){
+      showAdminPage(page);
+    }
+    target.classList.add('bct-jump-highlight');
+    setTimeout(()=>target.classList.remove('bct-jump-highlight'),1800);
   }
 }
 function filterAdminCommandCenter(){
