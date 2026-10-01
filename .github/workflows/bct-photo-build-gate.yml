@@ -27,6 +27,10 @@ jobs:
         run: |
           set -e
           for f in tests/*.mjs; do
+            if [ "$f" = "tests/v46-home-gallery.mjs" ]; then
+              echo "Skipping superseded gallery contract (covered by BCT PHOTO BUILD gate): $f"
+              continue
+            fi
             if grep -Eq "from ['\"](playwright|@playwright/test)['\"]|require\(['\"](playwright|@playwright/test)['\"]\)" "$f"; then
               echo "Skipping browser test here (covered by dedicated browser workflow): $f"
               continue
