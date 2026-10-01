@@ -58,6 +58,34 @@ $$;
 revoke execute on function public.bct_admin_contractor_credentials_board() from public;
 grant execute on function public.bct_admin_contractor_credentials_board() to authenticated;
 
+-- Contractor-safe credential meter. Returns only the signed-in contractor's own records.
+-- Verification remains BCT-controlled; this RPC is read-only.
+create or replace function public.bct_my_contractor_credentials()
+returns table(
+ id uuid, credential_type text, trade text, jurisdiction text, credential_number text,
+ issued_at date, expires_at date, verification_status text, health text,
+ days_to_expiration integer, status_label text
+)
+language sql stable security definer set search_path=public,auth as $
+ select cr.id,cr.credential_type,cr.trade,cr.jurisdiction,cr.credential_number,
+ cr.issued_at,cr.expires_at,cr.verification_status,
+ public.bct_credential_health(cr.expires_at,cr.verification_status),
+ case when cr.expires_at is null then null else cr.expires_at-current_date end,
+ case
+   when cr.verification_status='pending' then 'PENDING VERIFICATION'
+   when cr.verification_status='rejected' then 'ACTION REQUIRED'
+   when cr.expires_at is not null and cr.expires_at<current_date then 'EXPIRED'
+   when cr.expires_at is not null and cr.expires_at<=current_date+30 then 'EXPIRING SOON'
+   else 'CURRENT' end
+ from public.bct_contractor_credentials cr
+ join public.bct_contractors c on c.id=cr.contractor_id
+ where c.auth_user_id=auth.uid() and c.active
+ order by case cr.credential_type when 'general_liability' then 0 when 'bond' then 1 when 'license_registration' then 2 else 3 end,
+ cr.expires_at nulls last;
+$;
+revoke execute on function public.bct_my_contractor_credentials() from public,anon;
+grant execute on function public.bct_my_contractor_credentials() to authenticated;
+
 create or replace function public.bct_contractor_required_credentials_current(p_contractor_id uuid,p_trade text,p_jurisdiction text)
 returns boolean language sql stable security definer set search_path=public,auth as $$
  select
