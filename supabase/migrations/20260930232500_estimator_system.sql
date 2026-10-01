@@ -91,7 +91,7 @@ begin
 end $$;
 
 create or replace function public.bct_estimator_transition_allowed(p_from text,p_to text)
-returns boolean language sql immutable as $
+returns boolean language sql immutable as $bct$
   select case p_from
     when 'assessment_required' then p_to='payment_pending'
     when 'payment_pending' then p_to='paid'
@@ -104,10 +104,10 @@ returns boolean language sql immutable as $
     when 'bct_approved' then p_to='contractor_bidding'
     when 'contractor_bidding' then p_to='credited_to_project'
     else false end;
-$;
+$bct$;
 
 create or replace function public.bct_enforce_estimator_assessment_transition()
-returns trigger language plpgsql set search_path=public as $
+returns trigger language plpgsql set search_path=public as $bct$
 begin
   if new.status is distinct from old.status and not public.bct_estimator_transition_allowed(old.status,new.status) then
     raise exception 'Invalid BCT site-assessment status transition: % -> %',old.status,new.status;
@@ -153,7 +153,7 @@ for select to authenticated using (estimator_user_id=auth.uid());
 create or replace function public.bct_submit_assessment_package(
   p_project_id uuid,p_package jsonb,p_site_visit_complete boolean,p_photos_complete boolean,
   p_measurements_complete boolean,p_documentation_complete boolean
-) returns void language plpgsql security definer set search_path=public as $
+) returns void language plpgsql security definer set search_path=public as $bct$
 declare a public.bct_site_assessments;
 begin
   select * into a from public.bct_site_assessments where project_id=p_project_id for update;
