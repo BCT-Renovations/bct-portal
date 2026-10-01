@@ -17,20 +17,10 @@
     ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',slot:'Фото проекта BCT'}
   };
 
-  /* Replace image paths only when approved BCT project photos are supplied.
-     Empty image values render safe placeholders on the gallery test branch. */
-  const PROJECTS=[
-    {image:'',caption:'Project 1'},
-    {image:'',caption:'Project 2'},
-    {image:'',caption:'Project 3'},
-    {image:'',caption:'Project 4'},
-    {image:'',caption:'Project 5'},
-    {image:'',caption:'Project 6'},
-    {image:'',caption:'Project 7'},
-    {image:'',caption:'Project 8'}
-  ];
+  let PROJECTS=[]; // Loaded from the secure BCT gallery table; never create empty placeholders.
 
   let expanded=false;
+  let loaded=false;
   const $=id=>document.getElementById(id);
   function language(){try{return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}catch(_){return 'en'}}
   function copy(){return COPY[language()]||COPY.en}
@@ -72,14 +62,10 @@
       img.loading=index<4?'eager':'lazy';
       img.decoding='async';
       frame.appendChild(img);
-    }else{
-      frame.setAttribute('role','img');
-      frame.setAttribute('aria-label',`${c.slot} ${index+1}`);
-      frame.textContent=`${c.slot} ${index+1}`;
-    }
+    }else{return document.createDocumentFragment();}
 
     const caption=document.createElement('figcaption');
-    caption.textContent=project.caption||`${c.slot} ${index+1}`;
+    caption.textContent=[project.caption,project.project_work_date].filter(Boolean).join(' • ')||c.slot;
     figure.append(frame,caption);
     return figure;
   }
@@ -93,8 +79,23 @@
     const grid=$('bctHomeGalleryGrid');
     grid.replaceChildren(...PROJECTS.map(card));
     const toggle=$('bctGalleryToggle');
+    toggle.hidden=PROJECTS.length<=4;
     toggle.textContent=expanded?c.less:c.more;
     toggle.setAttribute('aria-expanded',String(expanded));
+    section.hidden=loaded&&PROJECTS.length===0;
+  }
+
+  async function loadProjects(){
+    if(!window.supabaseClient){loaded=true;PROJECTS=[];render();return}
+    const {data,error}=await window.supabaseClient.from('bct_gallery_photos')
+      .select('id,storage_path,thumbnail_path,caption,alt_text,project_work_date,category,home_order')
+      .eq('is_published',true).eq('show_on_home',true).order('home_order',{ascending:true}).limit(30);
+    loaded=true;
+    if(error){PROJECTS=[];render();return}
+    const base=String(window.SUPABASE_URL||window.supabaseUrl||'').replace(/\/$/,'');
+    const objectUrl=p=>base?base+'/storage/v1/object/public/bct-gallery/'+String(p||'').split('/').map(encodeURIComponent).join('/'):'';
+    PROJECTS=(data||[]).filter(x=>x.storage_path).map(x=>({image:objectUrl(x.thumbnail_path||x.storage_path),caption:x.caption,alt:x.alt_text,project_work_date:x.project_work_date,category:x.category,id:x.id}));
+    render();
   }
 
   function ensure(){
@@ -110,7 +111,7 @@
     section.innerHTML='<h2 id="bctHomeGalleryTitle"></h2><p class="bct-gallery-lead"></p><div id="bctHomeGalleryGrid"></div><button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false"></button>';
     license.insertAdjacentElement('beforebegin',section);
     section.querySelector('#bctGalleryToggle').addEventListener('click',()=>{expanded=!expanded;render()});
-    render();
+    loadProjects();
   }
 
   document.addEventListener('change',event=>{
