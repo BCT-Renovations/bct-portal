@@ -76,6 +76,8 @@ assert(credentialSql.includes("'PENDING VERIFICATION'"));
 assert(credentialSql.includes("'EXPIRING SOON'"));
 assert(credentialSql.includes("'EXPIRED'"));
 assert(credentialSql.includes('revoke execute on function public.bct_my_contractor_credentials() from public,anon'));
+assert(credentialSql.includes("x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date)"), 'Verified credentials must remain eligible through their expiration date.');
+assert(!credentialSql.includes("bct_credential_health(x.expires_at,x.verification_status)='green'"), 'Yellow expiring-soon credentials are warnings, not premature bidding blocks.');
 assert(html.includes('bct-credential-green'));
 assert(html.includes('bct-credential-yellow'));
 assert(html.includes('bct-credential-red'));
