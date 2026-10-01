@@ -37,7 +37,8 @@ assert(serviceWorker.includes('bct-runtime-guardrails'), 'service worker must pr
 assert(serviceWorker.includes('bct-admin-mobile-controls-hotfix'), 'service worker must preserve signed-in Admin touch protection.');
 const cacheMatch = serviceWorker.match(/const CACHE_NAME='bct-portal-shell-v(\d+)-[^']+'/);
 assert(cacheMatch && Number(cacheMatch[1]) >= 30, 'service worker must use the current V46 iPhone/PWA cache generation.');
-assert(serviceWorker.includes('/bct-admin-mobile-fix.js?v=20260930-1'), 'current Admin mobile and Spanish stability script must be injected.');
+assert(serviceWorker.includes('/bct-admin-mobile-fix.js?v=20260930-4'), 'current Admin mobile and Spanish stability script must be injected.');
+assert(index.includes('/bct-admin-control-board.js?v=20260930-2'), 'Admin Control Board must be wired into the live Admin document.');
 assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']"), 'service worker static cache must stay limited to the official logo and app icon.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'service worker must not cache the root HTML startup path.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'service worker must not cache index.html.');
