@@ -181,8 +181,8 @@
 
   function severity(text){
     const s=String(text||'').toLowerCase();
-    if(/critical|failed|blocked|dispute|emergency|security failure/.test(s))return 'critical';
-    if(/expired|delayed|overdue|needs attention|action required|pending approval|pending review|on hold|missing|required action|failure/.test(s))return 'warning';
+    if(/critical|failed|blocked|dispute|emergency|security failure|serious delay|payment blocked|escrow hold|inspection failed|safety violation|background check failed/.test(s))return 'critical';
+    if(/expired|expiring|delayed|overdue|needs attention|action required|pending approval|pending review|awaiting approval|awaiting response|unanswered|on hold|missing|required action|failure|change order|inspection due|schedule issue|completion sign-off|financing pending|payment due|insurance due|training overdue|compliance hold/.test(s))return 'warning';
     return '';
   }
 
