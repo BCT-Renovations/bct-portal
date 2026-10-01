@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+
+const core=fs.readFileSync('bct-estimator-system.js','utf8');
+const admin=fs.readFileSync('bct-estimator-admin.js','utf8');
+const board=fs.readFileSync('bct-admin-control-board.js','utf8');
+const loader=fs.readFileSync('bct-admin-sections.js','utf8');
+const sql=fs.readFileSync('supabase/migrations/20260930232500_estimator_system.sql','utf8');
+
+assert(core.includes("basis:'per_completed_assignment'"));
+assert(core.includes('hourlyDefault:false'));
+assert(core.includes('constructionPercentage:false'));
+assert(core.includes('openEndedGasAllowance:false'));
+assert(core.includes('fullCreditIfProjectProceeds:true'));
+assert(core.includes('earnedNonrefundableAfterCompletedAssessment:true'));
+assert(core.includes("next:hasDescription&&hasMedia&&hasMeasurements&&hasPropertyInfo?'remote_estimate':'assessment_required'"));
+assert(core.includes("reason:'Separation of duties: the site estimator cannot bid on this project.'"));
+assert(core.includes("reason:'Separation of duties: the site estimator cannot perform this project.'"));
+assert(core.includes("reason:'Active BCT-verified credentials are required.'"));
+assert(core.includes("reason:'Required verified trade and jurisdiction credentials are required.'"));
+assert(core.includes("reason:'BCT must approve the assessment package before contractor bidding.'"));
+assert(admin.includes('Estimator Management'));
+assert(admin.includes("p.dataset.bctUrgentCategory='jobs'"));
+assert(board.includes("if(/estimator|assessment/.test(hay))return 'jobs';"));
+assert(loader.includes('/bct-estimator-system.js?v=20260930-1'));
+assert(loader.includes('/bct-estimator-admin.js?v=20260930-1'));
+assert(sql.includes('bct_assert_no_estimator_project_conflict'));
+assert(sql.includes('enable row level security'));
+assert(sql.includes('bct_estimator_payment_eligible'));
+assert(!admin.includes('bct-admin-urgent-grid'), 'Estimator Management must not add a fourth urgent panel.');
+console.log('V46 Estimator system policy + separation-of-duties regression: PASS');
