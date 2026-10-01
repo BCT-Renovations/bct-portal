@@ -57,6 +57,12 @@ await page.locator('#jobHealthDashboard [data-bct-board-homeboard]').click();
 assert.equal(await page.locator('#bctAdminControlBoard').isVisible(),true,'Admin Control Board button must return to the board.');
 assert.equal(await page.locator('[data-admin-page-panel]:visible').count(),0,'Returning to board must collapse Admin content again.');
 
+await page.locator('[data-bct-urgent-category="jobs"]').click();
+assert.equal(await page.locator('#bctAdminUrgentView').isVisible(),true,'Jobs urgent category must open its own detail view.');
+assert.match(await page.locator('#bctAdminUrgentView').innerText(),/Critical job delay/i,'Jobs urgent detail must contain the job issue.');
+assert.doesNotMatch(await page.locator('#bctAdminUrgentView').innerText(),/Insurance expired/i,'Jobs urgent detail must not mix contractor alerts.');
+await page.locator('#bctAdminUrgentView [data-bct-board-homeboard]').click();
+
 await page.locator('[data-bct-urgent-category="contractors"]').click();
 assert.equal(await page.locator('#bctAdminUrgentView').isVisible(),true,'Urgent category must open its own detail view.');
 assert.equal(await page.locator('#bctAdminUrgentView .bct-admin-urgent-item').count(),1,'Contractor urgent view must show only contractor urgent items in this fixture.');
@@ -64,6 +70,12 @@ assert.match(await page.locator('#bctAdminUrgentView').innerText(),/Insurance ex
 assert.doesNotMatch(await page.locator('#bctAdminUrgentView').innerText(),/Critical job delay/i,'Contractor urgent detail must not mix in job alerts.');
 assert.doesNotMatch(await page.locator('#bctAdminUrgentView').innerText(),/Email delivery failed/i,'Contractor urgent detail must not mix in system alerts.');
 
+await page.locator('#bctAdminUrgentView [data-bct-board-homeboard]').click();
+await page.locator('[data-bct-urgent-category="clients"]').click();
+assert.equal(await page.locator('#bctAdminUrgentView').isVisible(),true,'Client/Homeowner urgent category must open its own detail view.');
+assert.match(await page.locator('#bctAdminUrgentView').innerText(),/Customer approval waiting/i,'Client/Homeowner urgent detail must contain the client issue.');
+assert.doesNotMatch(await page.locator('#bctAdminUrgentView').innerText(),/Insurance expired/i,'Client/Homeowner urgent detail must not mix contractor alerts.');
+assert.doesNotMatch(await page.locator('#bctAdminUrgentView').innerText(),/Critical job delay/i,'Client/Homeowner urgent detail must not mix job alerts.');
 await page.locator('#bctAdminUrgentView [data-bct-board-homeboard]').click();
 await page.locator('#bctAdminControlBoard [data-bct-board-publichome]').click();
 assert.equal(await page.evaluate(()=>document.body.dataset.lastView),'home','Back to Home must call the existing public-landing routine.');
