@@ -16,7 +16,7 @@
     credited_to_project:'Credited to Project'
   };
   const COMPLETE_REQUIREMENTS=['site_visit','photos','measurements','documentation','assessment_package'];
-  const roleOf=user=>String(user?.app_metadata?.bct_role||user?.user_metadata?.bct_role||'').toLowerCase();
+  const roleOf=user=>String(user?.app_metadata?.role||user?.app_metadata?.bct_role||'').trim().toLowerCase();
 
   function canEstimatorAccess(user){return roleOf(user)==='estimator'}
   function canAdminAccess(user){return roleOf(user)==='admin'}
@@ -24,6 +24,13 @@
     const i=WORKFLOW.indexOf(current);
     return i<0?WORKFLOW[0]:(WORKFLOW[i+1]||current);
   }
+  function validTransition(from,to){
+    const a=WORKFLOW.indexOf(from),b=WORKFLOW.indexOf(to);
+    return a>=0&&b===a+1;
+  }
+  function canSchedule(assessment){return assessment?.status==='paid'&&Number(assessment?.homeowner_fee||0)>=0&&!!assessment?.fee_paid_at}
+  function canReleaseForBidding(assessment){return assessment?.status==='bct_approved'&&assessment?.bct_accepted_complete===true&&!!assessment?.bct_approved_at}
+  function projectCredit(assessment,homeownerProceeds){return homeownerProceeds?Number(assessment?.homeowner_fee||0):0}
   function paymentEligible(pkg){
     return COMPLETE_REQUIREMENTS.every(k=>pkg?.[k]===true)&&pkg?.bct_accepted===true;
   }
@@ -69,7 +76,7 @@
   }
 
   window.BCT_ESTIMATOR_SYSTEM={
-    VERSION,WORKFLOW,LABELS,COMPLETE_REQUIREMENTS,canEstimatorAccess,canAdminAccess,nextStatus,
+    VERSION,WORKFLOW,LABELS,COMPLETE_REQUIREMENTS,canEstimatorAccess,canAdminAccess,nextStatus,validTransition,canSchedule,canReleaseForBidding,projectCredit,
     paymentEligible,assignmentTravel,mayContractorBid,mayPerformProject,homeownerAssessmentTerms,remoteEstimateFirst,
     compensation:{basis:'per_completed_assignment',hourlyDefault:false,constructionPercentage:false,openEndedGasAllowance:false},
     contractorTravel:{standardGasAllowance:false,normalTravelInBid:true,exceptionalTravelRequiresAdvanceApproval:true},
