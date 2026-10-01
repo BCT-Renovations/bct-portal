@@ -74,9 +74,12 @@ async function verifyAdminScrollStability(label){
     const max=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
     const target=Math.min(360,max);
     window.scrollTo({top:target,left:0,behavior:'auto'});
-    await new Promise(r=>setTimeout(r,180));
+    // WebKit may finish a programmatic/manual scroll over several frames even with
+    // behavior:auto. Let that requested movement settle before measuring whether
+    // the app itself causes continued Admin-page drift.
+    await new Promise(r=>setTimeout(r,700));
     const before=window.scrollY;
-    await new Promise(r=>setTimeout(r,1400));
+    await new Promise(r=>setTimeout(r,1800));
     const after=window.scrollY;
     spacer?.remove();
     return {max,target,before,after,touch:getComputedStyle(admin).touchAction};
