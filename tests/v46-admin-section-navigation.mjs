@@ -32,6 +32,14 @@ assert(js.includes("typeof window.bctReturnToPublicLanding==='function'"),'Back 
 assert(js.includes('window.bctReturnToPublicLanding();'),'Back to Home must return to public Home without clearing the Supabase session.');
 assert(js.includes("if(!category)return;"),'Unrelated system/launch alerts must not be silently mixed into Jobs urgency.');
 assert(js.includes("return '';"),'Unmatched Admin panels must remain outside Jobs/Contractors/Clients urgent counts.');
+assert(js.includes('escrow hold'),'Urgent detection must include escrow holds.');
+assert(js.includes('payment due'),'Urgent detection must include payment due items.');
+assert(js.includes('change order'),'Urgent detection must include change-order decisions.');
+assert(js.includes('completion sign-off'),'Urgent detection must include completion sign-off.');
+assert(js.includes('expiring'),'Urgent detection must include expiring contractor credentials.');
+assert(js.includes('background check failed'),'Urgent detection must include contractor background/safety failures.');
+assert(js.includes('training overdue'),'Urgent detection must include overdue contractor training.');
+assert(js.includes('awaiting approval'),'Urgent detection must include waiting client approvals.');
 assert(!js.includes('supabaseClient'),'Admin organization layer must not alter Supabase data/auth behavior.');
 assert(!js.includes('signOut('),'Admin organization layer must not sign the Admin out.');
 assert(!js.includes('view-customer')&&!js.includes('view-status'),'Admin organization layer must not alter Client or Contractor portal views.');
