@@ -8,6 +8,7 @@ const html=fs.readFileSync('index.html','utf8');
 const board=fs.readFileSync('bct-admin-control-board.js','utf8');
 const loader=fs.readFileSync('bct-admin-sections.js','utf8');
 const sql=fs.readFileSync('supabase/migrations/20260930232500_estimator_system.sql','utf8');
+const bidGuard=fs.readFileSync('supabase/migrations/20261001001500_estimator_contractor_conflict_guard.sql','utf8');
 
 assert(core.includes("basis:'per_completed_assignment'"));
 assert(core.includes("app_metadata?.role||user?.app_metadata?.bct_role"));
@@ -40,6 +41,10 @@ assert(loader.includes('/bct-estimator-system.js?v=20260930-1'));
 assert(loader.includes('/bct-estimator-admin.js?v=20260930-1'));
 assert(sql.includes('bct_estimator_applications'));
 assert(sql.includes('bct_assert_no_estimator_project_conflict'));
+assert(bidGuard.includes('bct_guard_estimator_bid_conflict'));
+assert(bidGuard.includes('perform public.bct_assert_no_estimator_project_conflict(new.job_id,v_user_id)'));
+assert(bidGuard.includes('before insert or update of contractor_id,job_id on public.bct_bids'));
+assert(bidGuard.includes('not public.bct_estimator_conflict(j.id,auth.uid())'));
 assert(sql.includes('enable row level security'));
 assert(sql.includes('estimator_application_public_insert'));
 assert(sql.includes('estimator_profile_self_read'));
