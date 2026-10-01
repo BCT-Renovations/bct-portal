@@ -6,6 +6,10 @@ on:
     paths:
       - 'bct-admin-control-board.js'
       - 'bct-admin-sections.js'
+      - 'bct-estimator-system.js'
+      - 'bct-estimator-admin.js'
+      - 'supabase/migrations/*estimator*.sql'
+      - 'tests/v46-estimator-system.mjs'
       - 'tests/v46-admin-control-board-webkit.mjs'
       - 'tests/v46-admin-section-navigation.mjs'
       - '.github/workflows/v46-admin-control-board-branch.yml'
@@ -25,6 +29,8 @@ jobs:
           node-version: '22'
       - name: Static Admin control-board regression
         run: node tests/v46-admin-section-navigation.mjs
+      - name: Estimator workflow and separation regression
+        run: node tests/v46-estimator-system.mjs
       - name: Install Playwright WebKit
         run: |
           npm install --no-save playwright@latest
