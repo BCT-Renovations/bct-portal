@@ -13,7 +13,7 @@ if(start<0||end<0) throw new Error('Round 12 current guard could not parse the o
 const specs=Function('"use strict";return ('+source.slice(start+startToken.length,end)+')')();
 
 const currentNeedles=new Map([
-  ['status-upload-21','status):not(#view-apply){display:none!important}'],
+  ['status-upload-21','status):not(#view-apply):not(#view-estimator){display:none!important}'],
   ['status-upload-32',"'about.p1':'At BCT Renovations, LLC, homeowners deserve more than just a name and a phone number. You deserve to know who is working on your property, that they have been properly verified, and that someone is standing with you throughout the entire project.'"],
   ['status-upload-33',"'about.p2':'Contractors in our network go through the BCT verification process, including verification of required credentials and current insurance documentation before they are approved to perform work through our platform.'"]
 ]);
