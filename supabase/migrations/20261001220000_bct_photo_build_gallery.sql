@@ -45,7 +45,7 @@ using ((select public.is_bct_admin()))
 with check ((select public.is_bct_admin()));
 
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
-values ('bct-gallery','bct-gallery',true,15728640,array['image/jpeg','image/png','image/webp']::text[])
+values ('bct-gallery','bct-gallery',false,15728640,array['image/jpeg','image/png','image/webp']::text[])
 on conflict (id) do update set
   public=excluded.public,
   file_size_limit=excluded.file_size_limit,
@@ -54,7 +54,14 @@ on conflict (id) do update set
 drop policy if exists "Public reads BCT gallery objects" on storage.objects;
 create policy "Public reads BCT gallery objects"
 on storage.objects for select to public
-using (bucket_id='bct-gallery');
+using (
+  bucket_id='bct-gallery'
+  and exists (
+    select 1 from public.bct_gallery_photos p
+    where p.is_published
+      and (p.storage_path=storage.objects.name or p.thumbnail_path=storage.objects.name)
+  )
+);
 
 drop policy if exists "BCT admins manage gallery objects" on storage.objects;
 create policy "BCT admins manage gallery objects"
