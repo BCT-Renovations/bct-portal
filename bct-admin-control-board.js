@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const VERSION='V46-2026.09.30-admin-control-board-2-stable-urgent';
+  const VERSION='V46-2026.09.30-admin-control-board-3-home-category';
   const ROOT_ID='view-admin';
   const PANEL_HIDDEN='bct-admin-board-panel-hidden';
   const BOARD_ID='bctAdminControlBoard';
@@ -112,9 +112,12 @@
   }
 
   function goHome(){
-    const result=window.showView?.('home');
-    if(result&&typeof result.catch==='function')result.catch(()=>window.bctReturnToPublicLanding?.());
-    else if(typeof window.showView!=='function')window.bctReturnToPublicLanding?.();
+    if(typeof window.bctReturnToPublicLanding==='function'){
+      window.bctReturnToPublicLanding();
+      return;
+    }
+    if(typeof window.showView==='function')window.showView('home');
+    else location.hash='home';
   }
 
   function setPanelVisibility(selected){
@@ -172,7 +175,8 @@
     const hay=(panelPage(panel)+' '+(panel?.id||'')+' '+panelTitle(panel)).toLowerCase();
     if(/contractor|applicant|safety|training|crew/.test(hay))return 'contractors';
     if(/client|customer|homeowner|resident|property account/.test(hay))return 'clients';
-    return 'jobs';
+    if(/job|project|service call|post job|bid|estimate|change order|approval|completion|schedule|weather|material|inspection|verification|payment|escrow|financ/.test(hay))return 'jobs';
+    return '';
   }
 
   function severity(text){
@@ -188,6 +192,7 @@
     panels().forEach(panel=>{
       if(!boardEligible(panel)&&panel.id!=='jobManagementPanel')return;
       const category=categoryForPanel(panel);
+      if(!category)return;
       const candidates=panel.querySelectorAll('.badge.bad,.badge.warn,.backend-warn,[data-status],[data-state],[data-severity],[aria-label*="critical" i],[aria-label*="urgent" i]');
       candidates.forEach(node=>{
         const text=((node.getAttribute('data-status')||'')+' '+(node.getAttribute('data-state')||'')+' '+(node.getAttribute('data-severity')||'')+' '+(node.getAttribute('aria-label')||'')+' '+(node.textContent||'')).replace(/\s+/g,' ').trim();
