@@ -34,7 +34,7 @@ async function forceAdminView(){
     admin?.removeAttribute('aria-hidden');
     window.scrollTo(0,0);
   });
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(700);
 }
 
 async function tap(selector,label){
@@ -57,8 +57,57 @@ async function tap(selector,label){
   await page.waitForTimeout(300);
 }
 
+async function verifyAdminScrollStability(label){
+  const probe=await page.evaluate(async()=>{
+    const admin=document.getElementById('view-admin');
+    const host=admin?.querySelector('[data-admin-page-panel].active:not(.bct-admin-section-collapsed)')||admin;
+    let spacer=document.getElementById('bctAdminScrollProbe');
+    if(!spacer){
+      spacer=document.createElement('div');
+      spacer.id='bctAdminScrollProbe';
+      spacer.style.height='1400px';
+      spacer.style.pointerEvents='none';
+      spacer.setAttribute('aria-hidden','true');
+      host?.appendChild(spacer);
+    }
+    await new Promise(r=>setTimeout(r,350));
+    const max=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+    const target=Math.min(360,max);
+    window.scrollTo({top:target,left:0,behavior:'auto'});
+    await new Promise(r=>setTimeout(r,180));
+    const before=window.scrollY;
+    await new Promise(r=>setTimeout(r,1400));
+    const after=window.scrollY;
+    spacer?.remove();
+    return {max,target,before,after,touch:getComputedStyle(admin).touchAction};
+  });
+  console.log('ADMIN SCROLL '+label,JSON.stringify(probe));
+  if(probe.max>120&&probe.before<100) failures.push(label+': manual Admin scrolling did not move');
+  if(Math.abs(probe.after-probe.before)>8) failures.push(label+`: Admin page drifted automatically from ${probe.before} to ${probe.after}`);
+  if(!String(probe.touch||'').includes('pan-y')) failures.push(label+': Admin root does not preserve vertical touch scrolling');
+  await page.evaluate(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
+  await page.waitForTimeout(250);
+}
+
+async function verifyTealAdminNav(){
+  const back=page.locator('.bct-admin-back-btn').first();
+  await back.waitFor({state:'visible',timeout:10000});
+  const style=await back.evaluate(el=>{
+    const s=getComputedStyle(el);
+    return {background:s.backgroundColor,color:s.color,border:s.borderColor,minHeight:s.minHeight};
+  });
+  console.log('ADMIN TEAL',JSON.stringify(style));
+  if(style.background!=='rgb(15, 95, 99)') failures.push('Admin Back button is not BCT teal');
+  if(style.color!=='rgb(255, 255, 255)') failures.push('Admin Back button text is not white');
+  if(style.border!=='rgb(10, 69, 73)') failures.push('Admin Back button border is not dark teal');
+  if(parseFloat(style.minHeight)<44) failures.push('Admin Back button touch target is too small');
+  if(await page.locator('.bct-admin-home-btn').count()<1) failures.push('Back to Home control is missing inside signed-in Admin');
+}
+
 await loadCurrentShell();
 await forceAdminView();
+await verifyAdminScrollStability('initial Admin entry');
+await verifyTealAdminNav();
 
 await tap('[data-admin-page-tab="contractors"]','Contractors tab');
 if(!(await page.locator('#adminApplicantPipeline').evaluate(el=>el.classList.contains('active')).catch(()=>false))) failures.push('Contractors tab did not activate applicant pipeline');
@@ -68,6 +117,23 @@ if(!(await page.locator('#adminHomeownerProjects').evaluate(el=>el.classList.con
 
 await tap('[data-admin-page-tab="jobs"]','Jobs & Progress tab');
 if(!(await page.locator('#jobHealthDashboard').evaluate(el=>el.classList.contains('active')).catch(()=>false))) failures.push('Jobs tab did not activate job health');
+
+const visibleBack=page.locator('.bct-admin-back-btn:visible').first();
+await visibleBack.click();
+await page.waitForTimeout(300);
+
+const visibleDashboard=page.locator('.bct-admin-dashboard-btn:visible').first();
+await visibleDashboard.click();
+await page.waitForTimeout(350);
+if(!(await page.locator('[data-admin-page-tab="launch"]').evaluate(el=>el.classList.contains('active')).catch(()=>false))) failures.push('Admin Dashboard control did not return to Launch/Dashboard');
+
+const visibleHome=page.locator('.bct-admin-home-btn:visible').first();
+await visibleHome.click();
+await page.waitForTimeout(650);
+if(await page.locator('#view-home').evaluate(el=>el.classList.contains('hidden')).catch(()=>true)) failures.push('Back to Home did not open the public Home view');
+
+await forceAdminView();
+await verifyAdminScrollStability('Admin re-entry');
 
 await page.locator('#bctCommandSearch').scrollIntoViewIfNeeded();
 await page.locator('#bctCommandSearch').fill('service');
@@ -97,4 +163,4 @@ if(!String(searchPlaceholder||'').startsWith('Buscar:')) failures.push('Spanish 
 
 await browser.close();
 if(failures.length){console.error('V46 iPhone admin control failures:\n- '+failures.join('\n- '));process.exit(1);}
-console.log('BCT V46 iPhone Admin controls + Spanish translation verification passed.');
+console.log('BCT V46 iPhone Admin controls + scroll stability + teal navigation verification passed.');

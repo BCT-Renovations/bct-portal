@@ -2,7 +2,7 @@
    Keeps existing Admin job controls intact while showing one job-management section at a time. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-admin-job-pages-1';
+  const VERSION='V46-2026.09.30-admin-job-pages-2-teal';
   window.BCT_ADMIN_JOB_PAGES_VERSION=VERSION;
 
   const COPY={
@@ -41,7 +41,9 @@
       #bctJobPageNav{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:end;margin:12px 0;padding:12px;border:1px solid #cbdde0;border-radius:12px;background:#f8fbfc;position:sticky;top:96px;z-index:7}
       #bctJobPageNav label{margin:0}
       #bctJobPageNav select{min-height:46px}
-      #bctJobPagePrev,#bctJobPageNext{background:#2563a6!important;color:#fff!important;border:1px solid #1d4f8c!important;min-height:46px!important;border-radius:10px!important;font-weight:800!important;touch-action:manipulation!important}
+      #bctJobPagePrev,#bctJobPageNext{background:#0f5f63!important;color:#fff!important;border:1px solid #0a4549!important;min-height:46px!important;border-radius:10px!important;font-weight:800!important;touch-action:manipulation!important}
+      #bctJobPagePrev:active,#bctJobPageNext:active{background:#0a4549!important}
+      #bctJobPagePrev:focus-visible,#bctJobPageNext:focus-visible{outline:3px solid #9fd6d2!important;outline-offset:2px}
       #bctJobPagePrev:disabled,#bctJobPageNext:disabled{opacity:.45!important}
       @media(max-width:620px){#bctJobPageNav{grid-template-columns:1fr 1fr}#bctJobPageNav .bct-job-page-select-wrap{grid-column:1/-1}#bctJobPagePrev,#bctJobPageNext{width:100%}}
     `;document.head.appendChild(style);
@@ -71,7 +73,7 @@
     list.forEach(el=>el.classList.toggle('bct-job-page-hidden',el!==selected));
     renderNav(list);const select=$('bctJobPageSelect');if(select)select.value=selectedId;
     const index=list.indexOf(selected);if($('bctJobPagePrev'))$('bctJobPagePrev').disabled=index<=0;if($('bctJobPageNext'))$('bctJobPageNext').disabled=index>=list.length-1;
-    if(scroll)requestAnimationFrame(()=>$('bctJobPageNav')?.scrollIntoView({behavior:'smooth',block:'start'}));
+    if(scroll)requestAnimationFrame(()=>$('bctJobPageNav')?.scrollIntoView({behavior:'auto',block:'start'}));
   }
   function move(delta){const list=pages();if(!list.length)return;const index=Math.max(0,list.findIndex(el=>el.id===selectedId));const next=Math.min(list.length-1,Math.max(0,index+delta));show(list[next].id,true)}
   function sync(reset=false){

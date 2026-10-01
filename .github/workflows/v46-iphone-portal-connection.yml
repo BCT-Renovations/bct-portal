@@ -10,6 +10,8 @@ on:
       - 'index.html'
       - 'service-worker.js'
       - 'bct-admin-mobile-fix.js'
+      - 'bct-admin-sections.js'
+      - 'bct-admin-job-pages.js'
       - 'manifest.webmanifest'
       - 'tests/v46-iphone-portal-connection.mjs'
       - 'tests/v46-iphone-homeowner-wizard.mjs'
