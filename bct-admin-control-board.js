@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const VERSION='V46-2026.09.30-admin-control-board-3-home-category';
+  const VERSION='V46-2026.09.30-admin-control-board-4-credentials';
   const ROOT_ID='view-admin';
   const PANEL_HIDDEN='bct-admin-board-panel-hidden';
   const BOARD_ID='bctAdminControlBoard';
@@ -173,7 +173,7 @@
 
   function categoryForPanel(panel){
     const hay=(panelPage(panel)+' '+(panel?.id||'')+' '+panelTitle(panel)).toLowerCase();
-    if(/contractor|applicant|safety|training|crew/.test(hay))return 'contractors';
+    if(/contractor|applicant|safety|training|crew|credential|insurance|bond|license|workers.? comp|compliance/.test(hay))return 'contractors';
     if(/client|customer|homeowner|resident|property account/.test(hay))return 'clients';
     if(/job|project|service call|post job|bid|estimate|change order|approval|completion|schedule|weather|material|inspection|verification|payment|escrow|financ/.test(hay))return 'jobs';
     return '';
@@ -182,7 +182,7 @@
   function severity(text){
     const s=String(text||'').toLowerCase();
     if(/critical|failed|blocked|dispute|emergency|security failure|serious delay|payment blocked|escrow hold|inspection failed|safety violation|background check failed/.test(s))return 'critical';
-    if(/expired|expiring|delayed|overdue|needs attention|action required|pending approval|pending review|awaiting approval|awaiting response|unanswered|on hold|missing|required action|failure|change order|inspection due|schedule issue|completion sign-off|financing pending|payment due|insurance due|training overdue|compliance hold/.test(s))return 'warning';
+    if(/expired|expiring|expires|30.day|14.day|7.day|delayed|overdue|needs attention|action required|pending approval|pending review|awaiting approval|awaiting response|unanswered|on hold|missing|required action|failure|change order|inspection due|schedule issue|completion sign-off|financing pending|payment due|insurance due|bond due|license due|workers.? comp|credential|training overdue|compliance hold/.test(s))return 'warning';
     return '';
   }
 
