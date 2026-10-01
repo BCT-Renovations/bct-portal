@@ -31,8 +31,8 @@ jobs:
               echo "Skipping superseded gallery contract (covered by BCT PHOTO BUILD gate): $f"
               continue
             fi
-            if [ "$f" = "tests/v46-production-200-checks-round10.mjs" ]; then
-              echo "Skipping superseded Round 10 snapshot; current Round 10 guard runs separately: $f"
+            if [ "$f" = "tests/v46-production-200-checks-round10.mjs" ] || [ "$f" = "tests/v46-production-200-checks-round12.mjs" ]; then
+              echo "Skipping superseded production snapshot; current guard runs separately: $f"
               continue
             fi
             if grep -Eq "from ['\"](playwright|@playwright/test)['\"]|require\(['\"](playwright|@playwright/test)['\"]\)" "$f"; then
