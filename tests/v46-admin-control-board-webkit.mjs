@@ -19,11 +19,14 @@ body{margin:0;font-family:Arial,sans-serif}.hidden{display:none!important}.wrap{
     <button data-admin-page-tab="projects">Projects</button>
     <button data-admin-page-tab="jobs">Jobs</button>
   </div>
-  <section id="commandCenter" class="panel" data-admin-page-panel="launch"><h2>Command Center</h2><p>Launch controls</p></section>
+  <section id="commandCenter" class="panel" data-admin-page-panel="launch"><h2>Command Center</h2><p>Launch controls</p><span class="badge warn" data-status="failed">Email delivery failed</span></section>
   <section id="applicantPipeline" class="panel" data-admin-page-panel="contractors"><h2>Applicant Review</h2><span class="badge warn" data-status="expired">Insurance expired</span></section>
   <section id="homeownerProjectReview" class="panel" data-admin-page-panel="projects"><h2>Homeowner Projects</h2><span class="badge warn" data-status="pending approval">Customer approval waiting</span></section>
   <section id="jobHealthDashboard" class="panel" data-admin-page-panel="jobs"><h2>Job Health</h2><span class="badge bad" data-status="critical">Critical job delay</span></section>
-</main><script>window.showView=function(name){document.body.dataset.lastView=name;return Promise.resolve(name)};</script></body></html>`);
+</main><script>
+window.showView=function(name){document.body.dataset.fallbackView=name;return Promise.resolve(name)};
+window.bctReturnToPublicLanding=function(){document.body.dataset.lastView='home';document.body.dataset.publicLanding='1'};
+</script></body></html>`);
 await page.addScriptTag({path:'bct-admin-control-board.js'});
 await page.waitForSelector('#bctAdminControlBoard:not([hidden])');
 await page.waitForTimeout(150);
@@ -33,7 +36,7 @@ assert.equal(await page.locator('[data-admin-page-panel]:visible').count(),0,'No
 assert.equal(await page.locator('.bct-admin-urgent-card').count(),3,'Jobs, Contractors, and Clients urgent panels must be separate.');
 
 const counts=await page.locator('.bct-admin-urgent-card').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.bctUrgentCategory,n.querySelector('.bct-admin-alert-count')?.textContent])));
-assert.equal(counts.jobs,'1','Jobs alert count must be independent.');
+assert.equal(counts.jobs,'1','Jobs alert count must contain job alerts only and must not absorb Launch/System warnings.');
 assert.equal(counts.contractors,'1','Contractor alert count must be independent.');
 assert.equal(counts.clients,'1','Client/Homeowner alert count must be independent.');
 
@@ -59,10 +62,13 @@ assert.equal(await page.locator('#bctAdminUrgentView').isVisible(),true,'Urgent 
 assert.equal(await page.locator('#bctAdminUrgentView .bct-admin-urgent-item').count(),1,'Contractor urgent view must show only contractor urgent items in this fixture.');
 assert.match(await page.locator('#bctAdminUrgentView').innerText(),/Insurance expired/i,'Contractor urgent detail must contain the contractor issue.');
 assert.doesNotMatch(await page.locator('#bctAdminUrgentView').innerText(),/Critical job delay/i,'Contractor urgent detail must not mix in job alerts.');
+assert.doesNotMatch(await page.locator('#bctAdminUrgentView').innerText(),/Email delivery failed/i,'Contractor urgent detail must not mix in system alerts.');
 
 await page.locator('#bctAdminUrgentView [data-bct-board-homeboard]').click();
 await page.locator('#bctAdminControlBoard [data-bct-board-publichome]').click();
-assert.equal(await page.evaluate(()=>document.body.dataset.lastView),'home','Back to Home must use the existing Home route.');
+assert.equal(await page.evaluate(()=>document.body.dataset.lastView),'home','Back to Home must call the existing public-landing routine.');
+assert.equal(await page.evaluate(()=>document.body.dataset.publicLanding),'1','Back to Home must preserve the public landing behavior rather than using an Admin-local fallback.');
+assert.equal(await page.evaluate(()=>document.body.dataset.fallbackView||''),'','Back to Home must not use the fallback route when the public landing routine exists.');
 
 assert.equal(await page.evaluate(()=>window.scrollY),initialScroll,'Admin navigation must not force automatic page scrolling.');
 
