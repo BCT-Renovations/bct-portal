@@ -47,6 +47,7 @@ assert(sql.includes('estimator_assessment_self_read'));
 assert(sql.includes('bct_submit_assessment_package'));
 assert(sql.includes('bct_estimator_assessment_transition_guard'));
 assert(sql.includes('Assessment fee must be paid before scheduling or field work'));
+assert(sql.includes('Site assessment must be marked completed before package submission'));
 assert(sql.includes('Additional estimator travel compensation requires advance BCT approval'));
 assert(!sql.includes('create policy "estimator_assessment_self_update"'));
 assert(sql.includes('No estimator-side table INSERT/UPDATE/DELETE policies are granted.'));
