@@ -1,6 +1,24 @@
 -- BCT V46 Estimator System
 -- Additive schema only. Existing Big Dog 3 / contractor / homeowner structures are not replaced.
 
+create table if not exists public.bct_estimator_applications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  legal_name text not null,
+  business_name text,
+  phone text not null,
+  email text not null,
+  experience text not null,
+  trades text[] not null default '{}',
+  service_jurisdictions text[] not null default '{}',
+  references_data jsonb not null default '[]'::jsonb,
+  credentials jsonb not null default '[]'::jsonb,
+  background_status text not null default 'pending',
+  approval_status text not null default 'pending' check (approval_status in ('pending','background_screening','approved','denied','hold')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.bct_estimator_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   approval_status text not null default 'pending' check (approval_status in ('pending','background_screening','approved','denied','hold')),
@@ -44,6 +62,7 @@ create table if not exists public.bct_site_assessments (
   updated_at timestamptz not null default now()
 );
 
+alter table public.bct_estimator_applications enable row level security;
 alter table public.bct_estimator_profiles enable row level security;
 alter table public.bct_site_assessments enable row level security;
 
