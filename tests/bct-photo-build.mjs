@@ -16,3 +16,5 @@ assert.match(migration,/bct-gallery/);assert.match(migration,/p\.is_published/);
 assert.match(admin,/createSignedUrl\(path,900\)/);assert.match(migration,/public=excluded\.public/);assert.match(migration,/p\.thumbnail_path=storage\.objects\.name/);
 
 assert.match(pub,/Intl\.DateTimeFormat/);assert.match(pub,/figure\.tabIndex=0/);assert.match(pub,/FULL\.findIndex/);
+
+assert.match(pub,/createSignedUrl\(path,3600\)/);assert.match(pub,/createSignedUrl\(x\.storage_path,3600\)/);assert.doesNotMatch(pub,/\/storage\/v1\/object\/bct-gallery\//);assert.match(migration,/pg_advisory_xact_lock/);assert.match(pub,/priorCategory=fullCategory,priorIndex=fullIndex/);
