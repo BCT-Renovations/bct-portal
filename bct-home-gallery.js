@@ -94,7 +94,7 @@
     loaded=true;
     if(error){PROJECTS=[];render();return}
     const base=String(window.SUPABASE_URL||window.supabaseUrl||'').replace(/\/$/,'');
-    const objectUrl=p=>base?base+'/storage/v1/object/public/bct-gallery/'+String(p||'').split('/').map(encodeURIComponent).join('/'):'';
+    const objectUrl=p=>base?base+'/storage/v1/object/bct-gallery/'+String(p||'').split('/').map(encodeURIComponent).join('/'):'';
     PROJECTS=(data||[]).filter(x=>x.storage_path).map(x=>({image:objectUrl(x.thumbnail_path||x.storage_path),caption:x.caption,alt:x.alt_text,project_work_date:x.project_work_date,category:x.category,id:x.id}));
     render();
   }
