@@ -66,7 +66,7 @@ returns table(
  issued_at date, expires_at date, verification_status text, health text,
  days_to_expiration integer, status_label text
 )
-language sql stable security definer set search_path=public,auth as $
+language sql stable security definer set search_path=public,auth as $$
  select cr.id,cr.credential_type,cr.trade,cr.jurisdiction,cr.credential_number,
  cr.issued_at,cr.expires_at,cr.verification_status,
  public.bct_credential_health(cr.expires_at,cr.verification_status),
@@ -82,14 +82,14 @@ language sql stable security definer set search_path=public,auth as $
  where c.auth_user_id=auth.uid() and c.active
  order by case cr.credential_type when 'general_liability' then 0 when 'bond' then 1 when 'license_registration' then 2 else 3 end,
  cr.expires_at nulls last;
-$;
+$$;
 revoke execute on function public.bct_my_contractor_credentials() from public,anon;
 grant execute on function public.bct_my_contractor_credentials() to authenticated;
 
 -- BCT-only review action. Contractor uploads never self-verify a credential.
 create or replace function public.bct_admin_review_contractor_credential(
  p_credential_id uuid,p_verification_status text,p_notes text default null
-) returns void language plpgsql security definer set search_path=public,auth as $
+) returns void language plpgsql security definer set search_path=public,auth as $$
 begin
  if not public.is_bct_admin() then raise exception 'BCT Admin access required'; end if;
  if p_verification_status not in ('verified','rejected','pending') then raise exception 'Invalid credential verification status'; end if;
@@ -100,17 +100,17 @@ begin
    notes=coalesce(p_notes,notes),updated_at=now()
  where id=p_credential_id;
  if not found then raise exception 'Contractor credential not found'; end if;
-end $;
+end $$;
 revoke execute on function public.bct_admin_review_contractor_credential(uuid,text,text) from public,anon;
 grant execute on function public.bct_admin_review_contractor_credential(uuid,text,text) to authenticated;
 
 create or replace function public.bct_contractor_required_credentials_current(p_contractor_id uuid,p_trade text,p_jurisdiction text)
-returns boolean language sql stable security definer set search_path=public,auth as $
+returns boolean language sql stable security definer set search_path=public,auth as $$
  select
    exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='general_liability' and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date))
    and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='bond' and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date) and (x.jurisdiction is null or lower(x.jurisdiction)=lower(p_jurisdiction)))
    and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='license_registration' and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date) and (x.trade is null or lower(x.trade)=lower(p_trade)) and (x.jurisdiction is null or lower(x.jurisdiction)=lower(p_jurisdiction)))
    and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type in ('workers_comp','workers_comp_exemption') and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date));
-$;
+$$;
 revoke execute on function public.bct_contractor_required_credentials_current(uuid,text,text) from public;
 grant execute on function public.bct_contractor_required_credentials_current(uuid,text,text) to authenticated;
