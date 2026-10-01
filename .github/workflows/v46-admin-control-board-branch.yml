@@ -8,6 +8,7 @@ on:
       - 'bct-admin-sections.js'
       - 'bct-estimator-system.js'
       - 'bct-estimator-admin.js'
+      - 'bct-estimator-portal.js'
       - 'supabase/migrations/*estimator*.sql'
       - 'tests/v46-estimator-system.mjs'
       - 'tests/v46-admin-control-board-webkit.mjs'
