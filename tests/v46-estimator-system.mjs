@@ -49,7 +49,7 @@ assert(sql.includes('bct_estimator_assessment_transition_guard'));
 assert(sql.includes('Assessment fee must be paid before scheduling or field work'));
 assert(sql.includes('Additional estimator travel compensation requires advance BCT approval'));
 assert(!sql.includes('create policy "estimator_assessment_self_update"'));
-assert(sql.includes('No estimator-side INSERT/DELETE policies are granted.'));
+assert(sql.includes('No estimator-side table INSERT/UPDATE/DELETE policies are granted.'));
 assert(sql.includes('bct_estimator_payment_eligible'));
 assert(!admin.includes('bct-admin-urgent-grid'), 'Estimator Management must not add a fourth urgent panel.');
 console.log('V46 Estimator system policy + separation-of-duties regression: PASS');
