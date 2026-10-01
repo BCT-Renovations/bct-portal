@@ -1,5 +1,5 @@
 // Run the established Round 10 translation/privacy guard against current V46.
-// The original 200 contracts are preserved; only four retired implementation
+// The original 200 contracts are preserved; only current retired implementation
 // needles are mapped to the current signed-out/application routing.
 import fs from 'node:fs';
 
@@ -14,7 +14,9 @@ const specsText = source.slice(start + startToken.length, end);
 const specs = Function('"use strict";return (' + specsText + ')')();
 
 const currentNeedles = new Map([
-  ['contract-10-120','admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status):not(#view-apply){display:none!important}'],
+  ['contract-10-120','admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status):not(#view-apply):not(#view-estimator){display:none!important}'],
+  ['contract-10-122','admin:not(.bct-authenticated) #view-home,'],
+  ['contract-10-137','contractor):not(.bct-entry-admin):not(.bct-entry-estimator) main>.view:not(#view-home){display:none!important}'],
   ['contract-10-141','data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>'],
   ['contract-10-142','data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>'],
   ['contract-10-143','data-entry-login="admin" data-i18n="entry.admin">Admin</button>']

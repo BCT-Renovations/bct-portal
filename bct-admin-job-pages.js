@@ -2,7 +2,7 @@
    Keeps existing Admin job controls intact while showing one job-management section at a time. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-admin-job-pages-2-teal';
+  const VERSION='V46-2026.09.30-admin-job-pages-3-no-auto-scroll';
   window.BCT_ADMIN_JOB_PAGES_VERSION=VERSION;
 
   const COPY={
@@ -73,7 +73,7 @@
     list.forEach(el=>el.classList.toggle('bct-job-page-hidden',el!==selected));
     renderNav(list);const select=$('bctJobPageSelect');if(select)select.value=selectedId;
     const index=list.indexOf(selected);if($('bctJobPagePrev'))$('bctJobPagePrev').disabled=index<=0;if($('bctJobPageNext'))$('bctJobPageNext').disabled=index>=list.length-1;
-    if(scroll)requestAnimationFrame(()=>$('bctJobPageNav')?.scrollIntoView({behavior:'auto',block:'start'}));
+    // Never reposition the page automatically. iPhone finger scrolling remains fully user-controlled.
   }
   function move(delta){const list=pages();if(!list.length)return;const index=Math.max(0,list.findIndex(el=>el.id===selectedId));const next=Math.min(list.length-1,Math.max(0,index+delta));show(list[next].id,true)}
   function sync(reset=false){

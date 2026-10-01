@@ -12,7 +12,7 @@
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
 // bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
 // bct-public-home-auth-shell-fix keeps the public landing visually signed out until a portal is deliberately entered.
-const CACHE_NAME='bct-portal-shell-v34-source-public-home';
+const CACHE_NAME='bct-portal-shell-v35-admin-control-board';
 const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
@@ -168,7 +168,7 @@ body.bct-authenticated #view-admin:not(.hidden) textarea{pointer-events:auto!imp
 body.bct-authenticated #view-home.hidden,
 body.bct-authenticated #view-admin-login.hidden{pointer-events:none!important}
 </style>
-<script id="bct-admin-mobile-controls-hotfix-script" src="/bct-admin-mobile-fix.js?v=20260930-1"><\/script>`;
+<script id="bct-admin-mobile-controls-hotfix-script" src="/bct-admin-mobile-fix.js?v=20260930-4"><\/script>`;
 self.addEventListener('install',event=>event.waitUntil(
   caches.open(CACHE_NAME)
     .then(cache=>cache.addAll(STATIC_ASSETS))

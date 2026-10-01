@@ -7,7 +7,7 @@ const sourceUrl = new URL('./bct-launch-smoke.mjs', import.meta.url);
 let source = fs.readFileSync(sourceUrl, 'utf8');
 const simpleReplacements = [
   ["['native iPhone portal boot', 'bct-native-portal-boot-20260929'],", "['authoritative iPhone portal router', 'V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'],"],
-  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v34-source-public-home']
+  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v35-admin-control-board']
 ];
 for (const [stale,current] of simpleReplacements) {
   if (!source.includes(stale)) throw new Error('Launch-smoke current wrapper could not find retired marker: '+stale);
@@ -17,7 +17,7 @@ for (const [stale,current] of simpleReplacements) {
 const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
 const indexHtml = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const sourceGuard = "const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;";
-if (!serviceWorker.includes('bct-portal-shell-v34-source-public-home')) throw new Error('Current V46 cache generation is missing.');
+if (!serviceWorker.includes('bct-portal-shell-v35-admin-control-board')) throw new Error('Current V46 cache generation is missing.');
 if (serviceWorker.includes('patchPublicHomeAuthShell')) throw new Error('Retired service-worker auth-shell source rewrite must not be reintroduced.');
 if (!indexHtml.includes(sourceGuard)) throw new Error('Source-level cold-launch public-home auth-shell correction is missing.');
 if (serviceWorker.includes('bct-startup-home-state-hotfix-script')) throw new Error('Retired late startup-home patch must not be reintroduced.');
@@ -28,12 +28,12 @@ const start = source.indexOf(startMarker);
 const end = source.indexOf(endMarker, start);
 if (start < 0 || end < 0) throw new Error('Launch-smoke current wrapper could not locate the retired signed-out role-link block.');
 
-const currentRoleBlock = `assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-login="contractor"')&&html.includes('data-entry-login="admin"'), 'Signed-out V46 must expose exactly the three current role entry actions.');
+const currentRoleBlock = `assert(html.includes('data-entry-login="client"')&&html.includes('data-entry-login="contractor"')&&html.includes('data-entry-login="estimator"')&&html.includes('data-entry-login="admin"'), 'Signed-out V46 must expose the four approved role entry actions.');
 
 const signedOutHome=(html.match(/<section id="view-home"[\\s\\S]*?<section id="view-customer"/)||[''])[0];
-assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all three current role buttons.');
-assert(signedOutHome.includes('>Client / Homeowner</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the three current V46 role actions.');
-assert((signedOutHome.match(/data-entry-login="/g)||[]).length === 3, 'Signed-out V46 must expose only the three current role buttons in the signed-out entry.');
+assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="estimator"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all four approved role buttons.');
+assert(signedOutHome.includes('>Client / Homeowner</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>BCT Estimator</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the four approved V46 role actions.');
+assert((signedOutHome.match(/data-entry-login="/g)||[]).length === 4, 'Signed-out V46 must expose only the four approved role buttons in the signed-out entry.');
 `;
 source = source.slice(0,start) + currentRoleBlock + source.slice(end);
 

@@ -325,14 +325,16 @@ body:not(.bct-authenticated) header .wrap{padding-bottom:14px}
 body:not(.bct-authenticated) header .brand{margin-bottom:10px}
 .bct-entry-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
 .bct-entry-actions button{min-height:52px;font-weight:800}
-body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status):not(#view-apply){display:none!important}
+body:not(.bct-authenticated) main>.view:not(#view-home):not(#view-admin-login):not(#view-password-request):not(#view-password-reset):not(#view-customer):not(#view-status):not(#view-apply):not(#view-estimator){display:none!important}
 body:not(.bct-authenticated) #view-customer.hidden,
 body:not(.bct-authenticated) #view-status.hidden{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #view-home,
 body.bct-entry-contractor:not(.bct-authenticated) #view-home,
-body.bct-entry-admin:not(.bct-authenticated) #view-home{display:none!important}
+body.bct-entry-admin:not(.bct-authenticated) #view-home,
+body.bct-entry-estimator:not(.bct-authenticated) #view-home{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer{display:block!important}
 body.bct-entry-contractor:not(.bct-authenticated) #view-status{display:block!important}
+body.bct-entry-estimator:not(.bct-authenticated) #view-estimator{display:block!important}
 body.bct-entry-client:not(.bct-authenticated) #view-customer.hidden,
 body.bct-entry-contractor:not(.bct-authenticated) #view-status.hidden{display:block!important}
 @media(max-width:700px){.bct-entry-actions{grid-template-columns:1fr}}
@@ -535,7 +537,7 @@ body:not(.bct-authenticated) #bctAboutPublic{background:#eef7f1!important;border
 body:not(.bct-authenticated) #bctAboutPublic>*:not(.bct-about-licensed){padding-left:16px!important;padding-right:16px!important}
 body:not(.bct-authenticated) #bctAboutPublic .bct-about-licensed{box-sizing:border-box!important;display:block!important;width:100%!important;max-width:none!important;background:#0f5f63!important;color:#fff!important;margin:22px 0 0!important;padding:17px 10px!important;border:0!important;border-radius:0 0 17px 17px!important;text-align:center!important;font-weight:900!important;letter-spacing:.08em!important}
 html.bct-session-resolved body.bct-signed-out #view-home{display:block!important}
-html.bct-session-resolved body.bct-signed-out:not(.bct-entry-client):not(.bct-entry-contractor):not(.bct-entry-admin) main>.view:not(#view-home){display:none!important}
+html.bct-session-resolved body.bct-signed-out:not(.bct-entry-client):not(.bct-entry-contractor):not(.bct-entry-admin):not(.bct-entry-estimator) main>.view:not(#view-home){display:none!important}
 @media(max-width:480px){body:not(.bct-authenticated) header .wrap{padding-left:0!important;padding-right:0!important}body:not(.bct-authenticated) .bct-logo-crop{width:100vw!important;max-width:100vw!important}body:not(.bct-authenticated) main.wrap{padding-left:12px!important;padding-right:12px!important}}
 
 
@@ -737,6 +739,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
     <div class="bct-entry-actions" id="bctEntryActions">
       <button type="button" data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>
       <button type="button" data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>
+      <button type="button" data-entry-login="estimator">BCT Estimator</button>
       <button type="button" data-entry-login="admin" data-i18n="entry.admin">Admin</button>
     </div>
     <div class="bct-share-referral">
@@ -1195,6 +1198,18 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
     </table></div>
   </div>
 
+
+  <div class="card section" id="adminContractorCredentials" data-admin-section="contractor credentials insurance bond license workers comp compliance" data-admin-page-panel="contractors" data-bct-board-include="true">
+    <div class="toolbar"><div><h3>Contractor Credentials Board</h3><p class="muted">One BCT board for general liability, bond, license / registration, workers’ compensation or exemption, expiration monitoring, and BCT verification.</p></div><button type="button" class="secondary" id="refreshContractorCredentialsBtn">Refresh Credentials</button></div>
+    <div class="grid grid-4 section">
+      <div class="card"><div id="cred-green" class="metric">0</div><small>🟢 Current & Verified</small></div>
+      <div class="card"><div id="cred-yellow" class="metric">0</div><small>🟡 Approaching Expiration</small></div>
+      <div class="card"><div id="cred-red" class="metric">0</div><small>🔴 Action Required</small></div>
+      <div class="card"><div id="cred-paused" class="metric">0</div><small>Bidding Paused</small></div>
+    </div>
+    <div class="notice section"><b>Automatic protection:</b> Required expired, rejected, or unverified credentials pause eligible job visibility and bidding until the credential is updated and BCT-verified.</div>
+    <div id="adminContractorCredentialsList" class="grid section"><div class="notice">Open this board to load live credential status.</div></div>
+  </div>
 
   <div class="card section" id="adminSafetyTrainingCard" data-admin-section="contractor safety compliance" data-admin-page-panel="contractors">
     <div class="toolbar"><div><h3>Contractor Safety Compliance</h3><p class="muted">Training compliance controls eligibility for new BCT work. Separate Admin holds remain under BCT control.</p></div><div><button type="button" class="secondary" id="refreshSafetyAdminBtn">Refresh Safety</button> <button type="button" class="secondary" id="runSafetyCycleBtn">Run Safety Cycle</button></div></div>
@@ -2573,12 +2588,13 @@ function adminCommandJump(id){
   const target=document.getElementById(id);
   if(target){
     const page=target.dataset.adminPagePanel||target.closest('[data-admin-page-panel]')?.dataset.adminPagePanel;
-    if(page)showAdminPage(page);
-    requestAnimationFrame(()=>{
-      target.scrollIntoView({behavior:'smooth',block:'start'});
-      target.classList.add('bct-jump-highlight');
-      setTimeout(()=>target.classList.remove('bct-jump-highlight'),1800);
-    });
+    if(typeof window.BCT_ADMIN_CONTROL_BOARD_OPEN_PANEL==='function'){
+      window.BCT_ADMIN_CONTROL_BOARD_OPEN_PANEL(target);
+    }else if(page){
+      showAdminPage(page);
+    }
+    target.classList.add('bct-jump-highlight');
+    setTimeout(()=>target.classList.remove('bct-jump-highlight'),1800);
   }
 }
 function filterAdminCommandCenter(){
@@ -3297,13 +3313,17 @@ renderAll();
   function contractorAccessMessage(app){if(!app)return 'Create and confirm your basic pre-application login first.';if(!contractorScreeningPassed(app))return 'Your basic login is active, but jobs, bids, and assignments stay locked until your screening test is passed and recorded.';if(!contractorApproved(app))return 'Your screening is recorded. Jobs, bids, and assignments stay locked until BCT Admin approves your application.';return ''}
 
   async function loadContractorState(){
-    contractorState=await rpc('bct_frontend_contractor_state');const app=(contractorState?.application||[])[0];
+    contractorState=await rpc('bct_frontend_contractor_state');contractorState.credentials=await loadContractorCredentials();const app=(contractorState?.application||[])[0];
     note('bctContractorAuthStatus',app?`✓ Signed in — ${esc(app.application_number)} — ${esc(fmtStatus(app.status))}`:'Signed in. No contractor application was found for this account.');
     if(app&&contractorApproved(app))bctCelebrate('Congratulations!', 'You are now officially a verified BCT contractor. Your approved contractor access is active for authorized BCT jobs.', `bctCelebrationSeen:contractor:${app.application_number||app.id}`);
     if(app&&$('statusId'))$('statusId').value=app.application_number;
     renderContractorDocs();renderContractorSafetyTraining();renderContractorJobs();return contractorState;
   }
-  function renderContractorDocs(){const el=$('bctContractorDocsPanel'),app=(contractorState?.application||[])[0];if(!el)return;if(!app){el.innerHTML='';return}const docs=contractorState?.documents||[],access=contractorAccessMessage(app),screen=contractorScreeningPassed(app);el.innerHTML=`<div class="card backend-live"><b>${esc(app.application_number)}</b> — ${esc(fmtStatus(app.status))}<p class="muted">${esc(app.legal_name)} • ${esc(app.primary_trade)}</p><div class="section"><span class="badge ${screen?'good':'warn'}">${screen?'Screening Passed':'Screening / Admin Review Required'}</span>${access?`<div class="notice section">${esc(access)}</div>`:''}</div><div class="section"><b>Document Checklist</b>${documentChecklist(docs)}</div><label>Document Type</label><select id="bctContractorDocType"><option value="certificate_of_insurance">Certificate of Insurance</option><option value="w9">W-9</option><option value="work_photo">Work Photo</option><option value="supporting_document">Other Supporting Document</option></select><label>Upload Contractor Documents</label><div class="file-upload-ui"><input id="bctContractorDocFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"><label class="file-upload-button" for="bctContractorDocFiles">Choose Documents</label><span class="file-upload-name" id="bctContractorDocFilesStatus">No files selected</span></div><small class="muted">${bctUploadLimitSummary('contractorDocument')}</small><button type="button" id="bctContractorUploadDocs" style="margin-top:8px">Upload Documents Privately</button><div id="bctContractorUploadStatus" class="section"></div><div class="section"><b>Documents on file:</b>${docs.length?docs.map(d=>`<div><small>${esc(d.original_filename||d.document_type)} — ${esc(fmtStatus(d.review_status))}</small></div>`).join(''):'<div><small>None yet.</small></div>'}</div></div>`;const docInput=$('bctContractorDocFiles'),docStatus=$('bctContractorDocFilesStatus'),uploadStatus=$('bctContractorUploadStatus'),uploadButton=$('bctContractorUploadDocs');docInput?.addEventListener('change',()=>{try{const kind=$('bctContractorDocType')?.value==='work_photo'?'contractorPhoto':'contractorDocument';validateUploadFiles(docInput.files,kind);const n=docInput.files?.length||0;if(docStatus)docStatus.textContent=n?(n===1?'1 file selected':`${n} files selected`):'No files selected'}catch(e){if(docStatus)docStatus.textContent=`Upload blocked: ${e.message||e}`;docInput.value=''}});uploadButton.onclick=async()=>{try{const files=[...(docInput.files||[])];if(!files.length){if(uploadStatus)uploadStatus.innerHTML='<div class="notice">Choose one or more files first.</div>';return}uploadButton.disabled=true;uploadButton.textContent='Uploading…';const n=await uploadContractorFiles(files,$('bctContractorDocType').value);await loadContractorState();const refreshedStatus=$('bctContractorUploadStatus');if(refreshedStatus)refreshedStatus.innerHTML=`<div class="notice backend-live"><b>✓ ${n} document${n===1?'':'s'} uploaded to BCT.</b></div>`}catch(e){if(uploadStatus)uploadStatus.innerHTML=`<div class="notice"><b>Upload failed:</b> ${esc(e.message||e)}</div>`;else bctNotice(e.message||e);uploadButton.disabled=false;uploadButton.textContent='Upload Documents Privately'}}}
+  async function loadContractorCredentials(){try{return await rpc('bct_my_contractor_credentials')||[]}catch(e){return []}}
+  function credentialDisplayName(value){const key=String(value||'credential');return ({general_liability:'Insurance / General Liability',bond:'Bonding',license_registration:'License / Registration',workers_comp:'Workers Compensation',workers_comp_exemption:'Workers Compensation Exemption'})[key]||key.replaceAll('_',' ').replace(/\\b\\w/g,m=>m.toUpperCase())}
+  function credentialCard(cr){const health=['green','yellow','red'].includes(cr.health)?cr.health:'red',label=cr.status_label||'ACTION REQUIRED',type=credentialDisplayName(cr.credential_type),days=(cr.days_to_expiration===null||cr.days_to_expiration===undefined||cr.days_to_expiration==='')?null:(Number.isFinite(Number(cr.days_to_expiration))?Number(cr.days_to_expiration):null),expiry=cr.expires_at?esc(cr.expires_at):'No expiration date on file',detail=days===null?'':days<0?`Expired ${Math.abs(days)} day${Math.abs(days)===1?'':'s'} ago`:days===0?'Expires today':`${type} expires in ${days} day${days===1?'':'s'}.`;return `<div class="bct-credential-meter bct-credential-${health}"><div class="toolbar"><b>${esc(type)}</b><span class="badge ${health==='green'?'good':'warn'}">${esc(label)}</span></div><div class="muted">${detail||expiry}</div><small>Verification: ${esc(fmtStatus(cr.verification_status||'pending'))} • Expiration: ${expiry}</small></div>`}
+  function renderContractorCredentialMeter(credentials){const rows=Array.isArray(credentials)?credentials:[];if(!rows.length){const missing=['Insurance / General Liability','Bonding','License / Registration'].map(type=>`<div class="bct-credential-meter bct-credential-red"><div class="toolbar"><b>${type}</b><span class="badge warn">ACTION REQUIRED</span></div><div class="muted">Required credential is missing or not yet available for BCT verification.</div></div>`).join('');return `<div class="section"><h3>Credential Status</h3><div class="grid">${missing}</div></div>`}return `<div class="section"><h3>Credential Status</h3><p class="muted">Insurance, bonding, and license / registration are monitored independently. Uploading a document does not make it verified; BCT approval is required.</p><div class="grid">${rows.map(credentialCard).join('')}</div></div>`}
+  function renderContractorDocs(){const el=$('bctContractorDocsPanel'),app=(contractorState?.application||[])[0];if(!el)return;if(!app){el.innerHTML='';return}const docs=contractorState?.documents||[],credentials=contractorState?.credentials||[],access=contractorAccessMessage(app),screen=contractorScreeningPassed(app);el.innerHTML=`<div class="card backend-live">${renderContractorCredentialMeter(credentials)}<b>${esc(app.application_number)}</b> — ${esc(fmtStatus(app.status))}<p class="muted">${esc(app.legal_name)} • ${esc(app.primary_trade)}</p><div class="section"><span class="badge ${screen?'good':'warn'}">${screen?'Screening Passed':'Screening / Admin Review Required'}</span>${access?`<div class="notice section">${esc(access)}</div>`:''}</div><div class="section"><b>Document Checklist</b>${documentChecklist(docs)}</div><label>Document Type</label><select id="bctContractorDocType"><option value="certificate_of_insurance">Certificate of Insurance</option><option value="w9">W-9</option><option value="work_photo">Work Photo</option><option value="supporting_document">Other Supporting Document</option></select><label>Upload Contractor Documents</label><div class="file-upload-ui"><input id="bctContractorDocFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"><label class="file-upload-button" for="bctContractorDocFiles">Choose Documents</label><span class="file-upload-name" id="bctContractorDocFilesStatus">No files selected</span></div><small class="muted">${bctUploadLimitSummary('contractorDocument')}</small><button type="button" id="bctContractorUploadDocs" style="margin-top:8px">Upload Documents Privately</button><div id="bctContractorUploadStatus" class="section"></div><div class="section"><b>Documents on file:</b>${docs.length?docs.map(d=>`<div><small>${esc(d.original_filename||d.document_type)} — ${esc(fmtStatus(d.review_status))}</small></div>`).join(''):'<div><small>None yet.</small></div>'}</div></div>`;const docInput=$('bctContractorDocFiles'),docStatus=$('bctContractorDocFilesStatus'),uploadStatus=$('bctContractorUploadStatus'),uploadButton=$('bctContractorUploadDocs');docInput?.addEventListener('change',()=>{try{const kind=$('bctContractorDocType')?.value==='work_photo'?'contractorPhoto':'contractorDocument';validateUploadFiles(docInput.files,kind);const n=docInput.files?.length||0;if(docStatus)docStatus.textContent=n?(n===1?'1 file selected':`${n} files selected`):'No files selected'}catch(e){if(docStatus)docStatus.textContent=`Upload blocked: ${e.message||e}`;docInput.value=''}});uploadButton.onclick=async()=>{try{const files=[...(docInput.files||[])];if(!files.length){if(uploadStatus)uploadStatus.innerHTML='<div class="notice">Choose one or more files first.</div>';return}uploadButton.disabled=true;uploadButton.textContent='Uploading…';const n=await uploadContractorFiles(files,$('bctContractorDocType').value);await loadContractorState();const refreshedStatus=$('bctContractorUploadStatus');if(refreshedStatus)refreshedStatus.innerHTML=`<div class="notice backend-live"><b>✓ ${n} document${n===1?'':'s'} uploaded to BCT.</b></div>`}catch(e){if(uploadStatus)uploadStatus.innerHTML=`<div class="notice"><b>Upload failed:</b> ${esc(e.message||e)}</div>`;else bctNotice(e.message||e);uploadButton.disabled=false;uploadButton.textContent='Upload Documents Privately'}}}
   
   function renderContractorSafetyTraining(){
     const el=$('bctSafetyTrainingPanel');if(!el)return;
@@ -3443,8 +3463,10 @@ renderAll();
   if($('refreshOperationalReadinessBtn'))$('refreshOperationalReadinessBtn').onclick=async()=>{try{adminSuccess('Refreshing operational readiness...');await loadOperationalReadiness();adminSuccess('Operational readiness refreshed.');adminAuditEvent('Operational readiness refreshed','Admin reviewed final pilot workflow coverage.')}catch(e){adminError(e,'adminActionStatus','Operational readiness refresh failed')}};
   if($('clearAdminActivityAuditBtn'))$('clearAdminActivityAuditBtn').onclick=()=>{try{sessionStorage.removeItem(BCT_ADMIN_AUDIT_KEY)}catch(_){}renderAdminActivityAudit();adminSuccess('Local admin activity trail cleared.')};
   async function loadAdminState(){
-    try{adminState=await rpc('bct_frontend_admin_state');try{adminState.automation_health=await rpc('bct_frontend_admin_automation_health')}catch(_){adminState.automation_health={scheduler:'not_configured'}}try{adminState.notification_health=await rpc('bct_admin_notification_health')}catch(_){adminState.notification_health={queued:0,failed:0,stuck:0,max_attempts_reached:0}}const m=adminState.metrics||{};if($('a-apps'))$('a-apps').textContent=m.applications||0;if($('a-pending'))$('a-pending').textContent=m.applications_pending||0;if($('a-bg'))$('a-bg').textContent=(adminState.applications||[]).filter(a=>['background_check','background_cleared_documents_needed'].includes(a.status)).length;if($('a-approved'))$('a-approved').textContent=m.contractors_active||0;renderAdminApps();await loadAdminSafety();renderAdminProjects();renderAdminBids();renderAdminServices();fillAdminProjects();renderLaunchControls();renderAdminActivityAudit();await loadOperationalReadiness();await loadJobHealth()}catch(e){console.error(e);adminError(e,'adminActionStatus','BCT Admin backend load failed');throw e}
+    try{adminState=await rpc('bct_frontend_admin_state');try{adminState.automation_health=await rpc('bct_frontend_admin_automation_health')}catch(_){adminState.automation_health={scheduler:'not_configured'}}try{adminState.notification_health=await rpc('bct_admin_notification_health')}catch(_){adminState.notification_health={queued:0,failed:0,stuck:0,max_attempts_reached:0}}const m=adminState.metrics||{};if($('a-apps'))$('a-apps').textContent=m.applications||0;if($('a-pending'))$('a-pending').textContent=m.applications_pending||0;if($('a-bg'))$('a-bg').textContent=(adminState.applications||[]).filter(a=>['background_check','background_cleared_documents_needed'].includes(a.status)).length;if($('a-approved'))$('a-approved').textContent=m.contractors_active||0;renderAdminApps();await loadAdminCredentials();await loadAdminSafety();renderAdminProjects();renderAdminBids();renderAdminServices();fillAdminProjects();renderLaunchControls();renderAdminActivityAudit();await loadOperationalReadiness();await loadJobHealth()}catch(e){console.error(e);adminError(e,'adminActionStatus','BCT Admin backend load failed');throw e}
   }
+  async function loadAdminCredentials(){try{const rows=await rpc('bct_admin_contractor_credentials_board')||[],counts={green:0,yellow:0,red:0};rows.forEach(r=>counts[r.health]=(counts[r.health]||0)+1);if($('cred-green'))$('cred-green').textContent=counts.green||0;if($('cred-yellow'))$('cred-yellow').textContent=counts.yellow||0;if($('cred-red'))$('cred-red').textContent=counts.red||0;if($('cred-paused'))$('cred-paused').textContent=new Set(rows.filter(r=>r.health==='red').map(r=>r.contractor_id)).size;const el=$('adminContractorCredentialsList');if(el)el.innerHTML=rows.length?rows.map(r=>{const type=credentialDisplayName(r.credential_type),days=r.days_to_expiration,health=['green','yellow','red'].includes(r.health)?r.health:'red',label=health==='green'?'CURRENT':health==='yellow'?'EXPIRING SOON':r.verification_status==='pending'?'PENDING VERIFICATION':'ACTION REQUIRED',timing=days==null?'No expiration date on file':days<0?`Expired ${Math.abs(days)} day${Math.abs(days)===1?'':'s'} ago`:days===0?'Expires today':`Expires in ${days} day${days===1?'':'s'}`;return `<div class="bct-credential-meter bct-credential-${health}"><div class="toolbar"><div><b>${esc(r.contractor_name||'Contractor')}</b><div class="muted">${esc(type)}${r.trade?' • '+esc(r.trade):''}${r.jurisdiction?' • '+esc(r.jurisdiction):''}</div></div><span class="badge ${health==='green'?'good':'warn'}">${esc(label)}</span></div><small>${esc(timing)} • Verification: ${esc(fmtStatus(r.verification_status||'pending'))}</small><div class="admin-project-actions"><button type="button" class="success" data-credential-review="verified" data-credential-id="${esc(r.id)}">Verify</button><button type="button" class="secondary" data-credential-review="pending" data-credential-id="${esc(r.id)}">Pending</button><button type="button" class="danger" data-credential-review="rejected" data-credential-id="${esc(r.id)}">Reject</button></div></div>`}).join(''):'<div class="notice">No contractor credential records yet.</div>';el?.querySelectorAll('[data-credential-review]').forEach(btn=>btn.addEventListener('click',async()=>{try{btn.disabled=true;await rpc('bct_admin_review_contractor_credential',{p_credential_id:btn.dataset.credentialId,p_verification_status:btn.dataset.credentialReview,p_notes:null});adminSuccess('Contractor credential review updated.');await loadAdminCredentials()}catch(e){adminError(e,'adminActionStatus','Credential review failed')}finally{btn.disabled=false}}))}catch(e){adminError(e,'adminActionStatus','Contractor credentials failed to load')}}
+  if($('refreshContractorCredentialsBtn'))$('refreshContractorCredentialsBtn').onclick=loadAdminCredentials;
   async function loadAdminSafety(){try{const [data,history,config]=await Promise.all([rpc('bct_frontend_admin_safety_state'),rpc('bct_admin_safety_training_history',{p_contractor_id:null}),rpc('bct_admin_safety_configuration_state')]);const sf=$('adminSafetySettingsForm'),settings=config?.settings||{},mods=config?.modules||[];if(sf){sf.cadence.value=settings.cadence_days??30;sf.grace.value=settings.grace_days??1;sf.reminders.value=Array.isArray(settings.reminder_days)?settings.reminder_days.join(','):'7,3,1';sf.enabled.value=String(settings.enabled!==false)}if($('adminSafetySettingsState'))$('adminSafetySettingsState').textContent=settings.enabled===false?'Paused':`Every ${settings.cadence_days||30} days`;if($('adminSafetyModules'))$('adminSafetyModules').innerHTML=mods.length?mods.map(m=>`<div><b>${esc(m.title)}</b> <span class="badge ${m.active?'good':'warn'}">${m.active?'Active':'Inactive'}</span><br><small>${esc(m.module_type)}${m.trade_code?' • '+esc(m.trade_code):''} • Passing score ${Number(m.passing_score||80)}${m.quiz_required?' • Quiz required':''}</small></div>`).join(''):'<div class="muted">No training modules created yet.</div>';const summary=data?.summary||{},rows=data?.contractors||[];const box=$('adminSafetySummary'),list=$('adminSafetyContractors');if(box)box.innerHTML=[['Active Contractors',summary.active_contractors||0],['Eligible',summary.eligible_contractors||0],['Safety Restricted',summary.safety_restricted||0],['Admin Holds',summary.admin_holds||0],['Training Pending',summary.training_pending||0],['Training Overdue',summary.training_overdue||0],['Training Completed',summary.training_completed||0]].map(([label,value])=>`<div class="card"><div class="metric">${Number(value)}</div><small>${esc(label)}</small></div>`).join('');if(list)list.innerHTML=rows.length?rows.map(r=>`<div class="stage"><div class="toolbar"><div><b>${esc(r.legal_name||r.business_name||'Contractor')}</b><div class="muted">${esc(r.primary_trade||'')}</div></div><span class="badge ${r.workforce_eligible?'good':'bad'}">${r.workforce_eligible?'Eligible':'Restricted'}</span></div><div class="project-meta"><span class="badge ${Number(r.overdue_count)>0?'bad':'info'}">Overdue: ${Number(r.overdue_count||0)}</span><span class="badge info">Pending: ${Number(r.pending_count||0)}</span>${r.admin_hold?'<span class="badge bad">Admin Hold</span>':''}${r.safety_restricted?'<span class="badge warn">Safety Restriction</span>':''}</div><small>Next due: ${r.next_due_at?new Date(r.next_due_at).toLocaleString():'None'} • Last completed: ${r.last_completed_at?new Date(r.last_completed_at).toLocaleString():'None'}</small><div class="admin-project-actions"><button type="button" class="secondary" onclick="bctAdminSafetyHold('${esc(r.contractor_id)}',true)">Place Admin Hold</button>${r.admin_hold?`<button type="button" class="success" onclick="bctAdminSafetyHold('${esc(r.contractor_id)}',false)">Clear Admin Hold</button>`:''}</div></div>`).join(''):'<div class="muted">No active contractor safety records yet.</div>';const hist=$('adminSafetyHistory'),records=history?.records||[];if(hist)hist.innerHTML=records.length?records.map(r=>`<div class="stage"><div class="toolbar"><div><b>${esc(r.legal_name||r.business_name||'Contractor')}</b><div class="muted">${esc(r.module_title||'Safety training')} • ${esc(r.cycle_key||'')}</div></div><span class="badge ${r.status==='completed'?'good':r.status==='exempt'?'info':'warn'}">${esc(r.status||'pending')}</span></div><small>Assigned: ${r.assigned_at?new Date(r.assigned_at).toLocaleString():'—'} • Due: ${r.due_at?new Date(r.due_at).toLocaleString():'—'} • Grace: ${r.grace_until?new Date(r.grace_until).toLocaleString():'—'}</small><small>Completed: ${r.completed_at?new Date(r.completed_at).toLocaleString():'—'} • Acknowledged: ${r.acknowledged_at?new Date(r.acknowledged_at).toLocaleString():'—'} • Score: ${r.quiz_score??'—'} / ${r.passing_score??'—'} • Verified: ${r.completion_verified?'Yes':'No'}</small>${r.exemption_reason?`<small>Exemption: ${esc(r.exemption_reason)}</small>`:''}${r.admin_hold?`<small><b>Admin hold:</b> ${esc(r.admin_hold_reason||'Active')}</small>`:''}</div>`).join(''):'<div class="muted">No permanent training records yet.</div>';}catch(e){adminError(e,'adminActionStatus','Safety compliance load failed')}}
   window.bctAdminSafetyHold=async(contractorId,onHold)=>{try{let reason='';if(onHold){reason=await bctAskInput('Reason for BCT Admin hold:')||'';if(!reason.trim())return}await rpc('bct_admin_set_contractor_hold',{p_contractor_id:contractorId,p_on_hold:onHold,p_reason:onHold?reason:'BCT Admin cleared hold'});adminAuditEvent(onHold?'Contractor Admin hold placed':'Contractor Admin hold cleared',reason,contractorId);await loadAdminSafety();adminSuccess(onHold?'Admin hold placed.':'Admin hold cleared.')}catch(e){adminError(e)}};
   if($('refreshSafetyAdminBtn'))$('refreshSafetyAdminBtn').onclick=loadAdminSafety;
@@ -3574,17 +3596,17 @@ renderAll();
 <script>
 /* BCT V46 AUTH-ONLY ENTRY SHELL */
 (function(){
- const protectedViews=new Set(['customer','apply','status','jobs','admin']);
+ const protectedViews=new Set(['customer','apply','status','jobs','admin','estimator']);
  const publicShareMode=new URLSearchParams(location.search).get('shared')==='1';
  let entryIntent=null;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
- function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
+ function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
    // Authoritative portal transition: remove the public landing immediately, before any async auth work.
    document.body.classList.add('bct-portal-entered');
-   document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');
+   document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');
    document.body.classList.add('bct-entry-'+kind);
    const landing=document.getElementById('view-home');
    if(landing){landing.classList.add('hidden');landing.setAttribute('aria-hidden','true');landing.style.setProperty('display','none','important');}
@@ -3592,6 +3614,7 @@ renderAll();
    window.scrollTo({top:0,left:0,behavior:'auto'});
    // Admin must respond immediately on iPhone even if Supabase session recovery is slow.
    // Show the secure gate first, then upgrade to the dashboard only after an admin-role check.
+   if(kind==='estimator'){window.BCT_ESTIMATOR_PORTAL?.open?.();return;}
    if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});}
    const s=await Promise.race([
      sessionNow(),
@@ -3609,9 +3632,11 @@ renderAll();
        if(status)status.innerHTML='<div class="notice">This account is signed in, but it is not authorized for BCT Admin. Sign in with the BCT administrator account.</div>';
        return;
      }
+     if(kind==='estimator'){window.BCT_ESTIMATOR_PORTAL?.open?.();return;}
      if(kind==='contractor')setVisibleView('status');else setVisibleView('customer');return;
    }
    if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});return;}
+   if(kind==='estimator'){window.BCT_ESTIMATOR_PORTAL?.open?.();return;}
    if(kind==='contractor'){
      setVisibleView('status');
      const view=document.getElementById('view-status');
@@ -3652,7 +3677,7 @@ renderAll();
    const name=(location.hash||'#home').slice(1);
    if(name==='home'){
      entryIntent=null;
-     document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin');
+     document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');
      sessionNow().then(setAuthShell);
    }
  });
@@ -3874,6 +3899,7 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2}
 body.bct-entry-admin:not(.bct-authenticated) #view-admin{display:none!important}
 body.bct-entry-admin:not(.bct-authenticated) #bctAdminPortalTitle{display:block!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeProjects{display:none!important}
+.bct-credential-meter{padding:14px;border:1px solid rgba(15,95,99,.18);border-radius:12px;color:#173b3d}.bct-credential-green{background:rgba(55,160,90,.10)}.bct-credential-yellow{background:rgba(230,180,25,.14)}.bct-credential-red{background:rgba(205,60,60,.11)}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorDocsPanel{display:none!important}
 body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!important}
 #view-status.bct-public-entry,#view-customer.bct-public-entry{margin-top:0!important}
@@ -4196,6 +4222,8 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
 })();
 </script>
 <script src="/bct-admin-sections.js?v=20260930-1"></script>
+<script src="/bct-admin-control-board.js?v=20260930-2"></script>
+<script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
 
 <script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20260930-1" defer></script>
 </body>

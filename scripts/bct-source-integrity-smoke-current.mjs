@@ -37,7 +37,17 @@ assert(serviceWorker.includes('bct-runtime-guardrails'), 'service worker must pr
 assert(serviceWorker.includes('bct-admin-mobile-controls-hotfix'), 'service worker must preserve signed-in Admin touch protection.');
 const cacheMatch = serviceWorker.match(/const CACHE_NAME='bct-portal-shell-v(\d+)-[^']+'/);
 assert(cacheMatch && Number(cacheMatch[1]) >= 30, 'service worker must use the current V46 iPhone/PWA cache generation.');
-assert(serviceWorker.includes('/bct-admin-mobile-fix.js?v=20260930-1'), 'current Admin mobile and Spanish stability script must be injected.');
+assert(serviceWorker.includes('/bct-admin-mobile-fix.js?v=20260930-4'), 'current Admin mobile and Spanish stability script must be injected.');
+assert(html.includes('/bct-admin-control-board.js?v=20260930-2'), 'Admin Control Board must be wired into the live Admin document.');
+assert(html.indexOf('/bct-admin-control-board.js?v=20260930-2') < html.indexOf('/bct-admin-mobile-fix.js?v=20260930-4'), 'Admin Control Board must load before the mobile Admin compatibility layer.');
+const adminControlBoard = fs.readFileSync(new URL('../bct-admin-control-board.js', import.meta.url), 'utf8');
+const adminSections = fs.readFileSync(new URL('../bct-admin-sections.js', import.meta.url), 'utf8');
+assert(!adminControlBoard.includes('scrollIntoView('), 'Admin Control Board must not auto-scroll with scrollIntoView.');
+assert(!adminControlBoard.includes('scrollTo('), 'Admin Control Board must not auto-scroll with scrollTo.');
+assert(!adminControlBoard.includes("addEventListener('pageshow'"), 'Admin Control Board must not reposition on pageshow.');
+assert(!adminControlBoard.includes("addEventListener('hashchange'"), 'Admin Control Board must not reposition on hashchange.');
+assert(!adminControlBoard.includes('position:sticky'), 'Admin Control Board navigation must not use sticky positioning.');
+assert(adminSections.includes('script[src*="/bct-admin-control-board.js"]'), 'Admin section loader must prevent duplicate Control Board script loading.');
 assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']"), 'service worker static cache must stay limited to the official logo and app icon.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'service worker must not cache the root HTML startup path.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'service worker must not cache index.html.');

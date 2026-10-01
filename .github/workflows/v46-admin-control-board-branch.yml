@@ -1,0 +1,43 @@
+name: V46 Admin Control Board Branch Check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'bct-admin-control-board.js'
+      - 'bct-admin-sections.js'
+      - 'bct-estimator-system.js'
+      - 'bct-estimator-admin.js'
+      - 'bct-estimator-portal.js'
+      - 'supabase/migrations/*estimator*.sql'
+      - 'tests/v46-estimator-system.mjs'
+      - 'tests/v46-credential-eligibility.mjs'
+      - 'tests/v46-admin-control-board-webkit.mjs'
+      - 'tests/v46-admin-section-navigation.mjs'
+      - '.github/workflows/v46-admin-control-board-branch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  admin-control-board-webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static Admin control-board regression
+        run: node tests/v46-admin-section-navigation.mjs
+      - name: Estimator workflow and separation regression
+        run: node tests/v46-estimator-system.mjs
+      - name: Contractor credential eligibility regression
+        run: node tests/v46-credential-eligibility.mjs
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright@latest
+          npx playwright install --with-deps webkit
+      - name: iPhone WebKit Admin control-board regression
+        run: node tests/v46-admin-control-board-webkit.mjs
