@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const VERSION='V46-2026.09.30-admin-control-board-4-credentials';
+  const VERSION='V46-2026.09.30-admin-control-board-5-credentials-live';
   const ROOT_ID='view-admin';
   const PANEL_HIDDEN='bct-admin-board-panel-hidden';
   const BOARD_ID='bctAdminControlBoard';
@@ -269,6 +269,30 @@
     mode='urgent';setPanelVisibility(null);const board=$(BOARD_ID);if(board)board.hidden=true;view.hidden=false;
   }
 
+
+  async function loadCredentialsBoard(){
+    const panel=$('adminContractorCredentials'),list=$('adminContractorCredentialsList');
+    if(!panel||!list||!window.supabaseClient)return;
+    list.innerHTML='<div class="notice">Loading live contractor credentials…</div>';
+    try{
+      const {data,error}=await window.supabaseClient.rpc('bct_admin_contractor_credentials_board');
+      if(error)throw error;
+      const rows=Array.isArray(data)?data:[];
+      const green=rows.filter(x=>x.health==='green').length,yellow=rows.filter(x=>x.health==='yellow').length,red=rows.filter(x=>x.health==='red').length;
+      const contractors=new Set(rows.filter(x=>x.health==='red').map(x=>x.contractor_id));
+      if($('cred-green'))$('cred-green').textContent=green;if($('cred-yellow'))$('cred-yellow').textContent=yellow;if($('cred-red'))$('cred-red').textContent=red;if($('cred-paused'))$('cred-paused').textContent=contractors.size;
+      list.replaceChildren();
+      if(!rows.length){list.innerHTML='<div class="notice">No contractor credential records yet.</div>';return}
+      rows.forEach(row=>{
+        const card=document.createElement('div');card.className='card';
+        const icon=row.health==='green'?'🟢':row.health==='yellow'?'🟡':'🔴';
+        const expiry=row.expires_at?new Date(row.expires_at+'T00:00:00').toLocaleDateString():'No expiration date';
+        card.innerHTML='<div class="toolbar"><div><h4>'+icon+' '+String(row.contractor_name||'Contractor').replace(/[<>&]/g,'')+'</h4><small>'+String(row.credential_type||'').replaceAll('_',' ')+'</small></div><span class="badge '+(row.health==='green'?'good':row.health==='yellow'?'warn':'bad')+'" data-status="'+row.health+' credential '+String(row.alert_window||'')+'">'+String(row.verification_status||'pending')+'</span></div><p><b>Expires:</b> '+expiry+'<br><b>Trade:</b> '+String(row.trade||'All / general').replace(/[<>&]/g,'')+'<br><b>Jurisdiction:</b> '+String(row.jurisdiction||'General').replace(/[<>&]/g,'')+'</p>';
+        list.appendChild(card);
+      });
+    }catch(error){list.innerHTML='<div class="notice"><b>Credential board unavailable:</b> '+String(error?.message||error).replace(/[<>&]/g,'')+'</div>'}
+  }
+
   function syncVisibility(){
     scheduled=false;
     const visible=adminVisible();
@@ -282,7 +306,7 @@
     if(!adminVisible())return;
     const r=root();if(!r)return;
     const portal=event.target?.closest?.('[data-bct-open-panel]');
-    if(portal&&r.contains(portal)){event.preventDefault();event.stopPropagation();const panel=$(portal.dataset.bctOpenPanel);if(panel)openPanel(panel,true);return}
+    if(portal&&r.contains(portal)){event.preventDefault();event.stopPropagation();const panel=$(portal.dataset.bctOpenPanel);if(panel){openPanel(panel,true);if(panel.id==='adminContractorCredentials')loadCredentialsBoard()}return}
     const urgent=event.target?.closest?.('[data-bct-urgent-category]');
     if(urgent&&r.contains(urgent)){event.preventDefault();event.stopPropagation();showUrgent(urgent.dataset.bctUrgentCategory);return}
     const back=event.target?.closest?.('[data-bct-board-back]');
@@ -292,6 +316,8 @@
     const home=event.target?.closest?.('[data-bct-board-publichome]');
     if(home&&r.contains(home)){event.preventDefault();event.stopPropagation();goHome();return}
   },true);
+
+  document.getElementById('refreshContractorCredentialsBtn')?.addEventListener('click',loadCredentialsBoard);
 
   document.addEventListener('change',event=>{if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(refreshBoard,0)},true);
   // Admin state changes are explicit; avoid lifecycle/hash refresh loops that can fight iPhone navigation.
