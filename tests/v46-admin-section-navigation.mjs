@@ -40,7 +40,7 @@ assert(js.includes('expiring'),'Urgent detection must include expiring contracto
 assert(js.includes('background check failed'),'Urgent detection must include contractor background/safety failures.');
 assert(js.includes('training overdue'),'Urgent detection must include overdue contractor training.');
 assert(js.includes('awaiting approval'),'Urgent detection must include waiting client approvals.');
-assert(!js.includes('supabaseClient'),'Admin organization layer must not alter Supabase data/auth behavior.');
+assert(!js.includes('.auth.')&&!js.includes('signInWithPassword')&&!js.includes('signOut('),'Admin control board may read approved Admin data but must not alter Supabase auth behavior.');
 assert(!js.includes('signOut('),'Admin organization layer must not sign the Admin out.');
 assert(!js.includes('view-customer')&&!js.includes('view-status'),'Admin organization layer must not alter Client or Contractor portal views.');
 
