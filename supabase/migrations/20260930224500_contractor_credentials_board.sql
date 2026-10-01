@@ -86,6 +86,24 @@ $;
 revoke execute on function public.bct_my_contractor_credentials() from public,anon;
 grant execute on function public.bct_my_contractor_credentials() to authenticated;
 
+-- BCT-only review action. Contractor uploads never self-verify a credential.
+create or replace function public.bct_admin_review_contractor_credential(
+ p_credential_id uuid,p_verification_status text,p_notes text default null
+) returns void language plpgsql security definer set search_path=public,auth as $
+begin
+ if not public.is_bct_admin() then raise exception 'BCT Admin access required'; end if;
+ if p_verification_status not in ('verified','rejected','pending') then raise exception 'Invalid credential verification status'; end if;
+ update public.bct_contractor_credentials set
+   verification_status=p_verification_status,
+   verified_at=case when p_verification_status='verified' then now() else null end,
+   verified_by=case when p_verification_status='verified' then auth.uid() else null end,
+   notes=coalesce(p_notes,notes),updated_at=now()
+ where id=p_credential_id;
+ if not found then raise exception 'Contractor credential not found'; end if;
+end $;
+revoke execute on function public.bct_admin_review_contractor_credential(uuid,text,text) from public,anon;
+grant execute on function public.bct_admin_review_contractor_credential(uuid,text,text) to authenticated;
+
 create or replace function public.bct_contractor_required_credentials_current(p_contractor_id uuid,p_trade text,p_jurisdiction text)
 returns boolean language sql stable security definer set search_path=public,auth as $$
  select
