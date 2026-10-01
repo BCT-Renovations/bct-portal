@@ -6,7 +6,7 @@
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
-    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',slot:'BCT project photo'},
+    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',close:'Close',prev:'Previous',next:'Next',all:'All',slot:'BCT project photo'},
     es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',slot:'Foto de proyecto BCT'},
     fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',slot:'Photo de projet BCT'},
     ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',slot:'Foto pwojè BCT'},
@@ -21,6 +21,7 @@
 
   let expanded=false;
   let loaded=false;
+  let FULL=[];let fullIndex=0;let fullCategory='All';
   const $=id=>document.getElementById(id);
   function language(){try{return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}catch(_){return 'en'}}
   function copy(){return COPY[language()]||COPY.en}
@@ -40,7 +41,7 @@
       .bct-gallery-frame img{width:100%;height:100%;display:block;object-fit:cover}
       .bct-gallery-card figcaption{padding:9px 10px;font-size:13px;font-weight:700;color:#173c3e;text-align:center}
       .bct-gallery-extra[hidden]{display:none!important}
-      #bctGalleryToggle{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
+      #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}\n      #bctGalleryModal[hidden]{display:none!important}#bctGalleryModal{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.9);color:#fff;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));display:grid;grid-template-rows:auto 1fr auto}.bct-gallery-modal-head,.bct-gallery-modal-foot{display:flex;gap:8px;align-items:center;justify-content:space-between}.bct-gallery-modal-head button,.bct-gallery-modal-foot button,.bct-gallery-modal-head select{min-height:44px;border-radius:9px;padding:8px 12px}.bct-gallery-stage{display:grid;place-items:center;min-height:0}.bct-gallery-stage img{max-width:100%;max-height:68vh;object-fit:contain}.bct-gallery-modal-caption{text-align:center;margin-top:6px}
       #bctGalleryToggle:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
       @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
     `;
@@ -98,6 +99,12 @@
     render();
   }
 
+
+  function fullList(){return fullCategory==='All'?FULL:FULL.filter(x=>x.category===fullCategory)}
+  function showFull(){const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;$('bctGalleryModalCaption').textContent=[p.caption,p.category,p.project_work_date].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
+  function moveFull(n){const list=fullList();if(!list.length)return;fullIndex=(fullIndex+n+list.length)%list.length;showFull()}
+  async function loadFull(){if(!window.supabaseClient)return;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(0,999);if(error)return;const base=String(window.SUPABASE_URL||window.supabaseUrl||'').replace(/\/$/,'');const objectUrl=p=>base?base+'/storage/v1/object/public/bct-gallery/'+String(p||'').split('/').map(encodeURIComponent).join('/'):'';FULL=(data||[]).filter(x=>x.storage_path).map(x=>({...x,image:objectUrl(x.storage_path)}));const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory='All';fullIndex=0;showFull()}
+
   function ensure(){
     const home=$('view-home');
     const license=$('bctPublicLicenseBar');
@@ -108,9 +115,10 @@
     const section=document.createElement('section');
     section.id='bctHomeGallery';
     section.setAttribute('aria-labelledby','bctHomeGalleryTitle');
-    section.innerHTML='<h2 id="bctHomeGalleryTitle"></h2><p class="bct-gallery-lead"></p><div id="bctHomeGalleryGrid"></div><button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false"></button>';
+    section.innerHTML='<h2 id="bctHomeGalleryTitle"></h2><p class="bct-gallery-lead"></p><div id="bctHomeGalleryGrid"></div><button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false"></button><button type="button" id="bctGalleryFull">Open Full Gallery</button>';
     license.insertAdjacentElement('beforebegin',section);
-    section.querySelector('#bctGalleryToggle').addEventListener('click',()=>{expanded=!expanded;render()});
+    section.querySelector('#bctGalleryToggle').addEventListener('click',()=>{expanded=!expanded;render()});section.querySelector('#bctGalleryFull').addEventListener('click',loadFull);
+    if(!$('bctGalleryModal')){const m=document.createElement('div');m.id='bctGalleryModal';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">Close</button><label>Category <select id="bctGalleryCategory"><option>All</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← Previous</button><button id="bctGalleryNext" type="button">Next →</button></div>';document.body.appendChild(m);$('bctGalleryClose').onclick=()=>m.hidden=true;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')m.hidden=true;else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')moveFull(1)})}
     loadProjects();
   }
 
