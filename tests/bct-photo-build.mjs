@@ -1,0 +1,12 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const admin=fs.readFileSync('bct-photo-admin.js','utf8');
+const pub=fs.readFileSync('bct-home-gallery.js','utf8');
+const loader=fs.readFileSync('bct-admin-sections.js','utf8');
+const migration=fs.readFileSync('supabase/migrations/20261001220000_bct_photo_build_gallery.sql','utf8');
+assert.match(loader,/bct-photo-admin\.js/);
+assert.match(admin,/BCT PHOTO BUILD/);assert.match(admin,/1,000 photos/);assert.match(admin,/🟢/);assert.match(admin,/🔴/);
+assert.match(admin,/project_work_date/);assert.match(admin,/home_order/);assert.match(admin,/max="30"/);assert.match(admin,/storage\.from\('bct-gallery'\)/);
+assert.doesNotMatch(pub,/Project 1/);assert.match(pub,/PROJECTS=\[\]/);
+assert.match(migration,/bct_gallery_photos/);assert.match(migration,/between 1 and 30/);assert.match(migration,/is_bct_admin/);assert.match(migration,/bct-gallery/);
+assert.match(migration,/show_on_home and is_published/);assert.match(migration,/limited to 30/);
+console.log('BCT PHOTO BUILD static deployment gate passed');
