@@ -54,6 +54,8 @@ assert(sql.includes('estimator_profile_self_read'));
 assert(sql.includes('estimator_assessment_self_read'));
 assert(sql.includes('bct_submit_assessment_package'));
 assert(sql.includes('bct_complete_site_assessment'));
+assert(sql.includes('revoke all on function public.bct_estimator_conflict(uuid,uuid) from public,anon,authenticated'));
+assert(sql.includes('revoke all on function public.bct_assert_no_estimator_project_conflict(uuid,uuid) from public,anon,authenticated'));
 assert(sql.includes("if a.status <> 'scheduled' then raise exception 'Only a scheduled assessment can be marked site assessment completed'"));
 assert(sql.includes("revoke all on function public.bct_complete_site_assessment(uuid) from public,anon"));
 assert(sql.includes('bct_estimator_assessment_transition_guard'));
