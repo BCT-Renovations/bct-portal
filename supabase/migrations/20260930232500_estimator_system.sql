@@ -88,6 +88,30 @@ begin
   end if;
 end $$;
 
+-- Estimator intake is public-insert only; applicants cannot read the application table.
+drop policy if exists "estimator_application_public_insert" on public.bct_estimator_applications;
+create policy "estimator_application_public_insert" on public.bct_estimator_applications
+for insert to anon, authenticated with check (
+  approval_status='pending' and background_status='pending'
+);
+
+-- Estimators may read their own approved profile only.
+drop policy if exists "estimator_profile_self_read" on public.bct_estimator_profiles;
+create policy "estimator_profile_self_read" on public.bct_estimator_profiles
+for select to authenticated using (user_id=auth.uid());
+
+-- Assigned estimators may read their own assessments and update field-package data only while assigned.
+drop policy if exists "estimator_assessment_self_read" on public.bct_site_assessments;
+create policy "estimator_assessment_self_read" on public.bct_site_assessments
+for select to authenticated using (estimator_user_id=auth.uid());
+
+drop policy if exists "estimator_assessment_self_update" on public.bct_site_assessments;
+create policy "estimator_assessment_self_update" on public.bct_site_assessments
+for update to authenticated using (estimator_user_id=auth.uid())
+with check (estimator_user_id=auth.uid());
+
+-- No estimator-side INSERT/DELETE policies are granted. BCT creates assignments and controls review/payment state.
+
 comment on table public.bct_site_assessments is
 'BCT V46 paid professional site assessments. Remote estimate remains free first. Completed assessment fee is credited in full if homeowner proceeds; otherwise completed assessment fee remains earned/nonrefundable.';
 
