@@ -17,4 +17,6 @@
   if(!document.querySelector('script[src*="/bct-admin-control-board.js"]')) loadOnce('/bct-admin-control-board.js?v=20260930-2','data-bct-admin-control-board');
   loadOnce('/bct-live-project-verification.js?v=20260930-1','data-bct-live-project-verification');
   loadOnce('/bct-admin-job-pages.js?v=20260930-2','data-bct-admin-job-pages');
+  loadOnce('/bct-estimator-system.js?v=20260930-1','data-bct-estimator-system');
+  loadOnce('/bct-estimator-admin.js?v=20260930-1','data-bct-estimator-admin');
 })();
