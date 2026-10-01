@@ -148,12 +148,30 @@ drop policy if exists "estimator_assessment_self_read" on public.bct_site_assess
 create policy "estimator_assessment_self_read" on public.bct_site_assessments
 for select to authenticated using (estimator_user_id=auth.uid());
 
-drop policy if exists "estimator_assessment_self_update" on public.bct_site_assessments;
-create policy "estimator_assessment_self_update" on public.bct_site_assessments
-for update to authenticated using (estimator_user_id=auth.uid())
-with check (estimator_user_id=auth.uid());
+-- Direct estimator UPDATE is intentionally not granted. Field submission uses the constrained RPC below
+-- so estimators cannot change fees, payment state, BCT approval, assignment ownership, or travel compensation.
+create or replace function public.bct_submit_assessment_package(
+  p_project_id uuid,p_package jsonb,p_site_visit_complete boolean,p_photos_complete boolean,
+  p_measurements_complete boolean,p_documentation_complete boolean
+) returns void language plpgsql security definer set search_path=public as $
+declare a public.bct_site_assessments;
+begin
+  select * into a from public.bct_site_assessments where project_id=p_project_id for update;
+  if a.id is null or a.estimator_user_id is distinct from auth.uid() then raise exception 'Assessment assignment not authorized'; end if;
+  if a.status not in ('scheduled','site_assessment_completed') then raise exception 'Assessment is not ready for field submission'; end if;
+  if a.fee_paid_at is null then raise exception 'Assessment fee payment is required'; end if;
+  if not (p_site_visit_complete and p_photos_complete and p_measurements_complete and p_documentation_complete) then raise exception 'Complete assessment documentation is required'; end if;
+  update public.bct_site_assessments set
+    status='assessment_submitted',site_visit_complete=p_site_visit_complete,photos_complete=p_photos_complete,
+    measurements_complete=p_measurements_complete,documentation_complete=p_documentation_complete,
+    assessment_package=coalesce(p_package,'{}'::jsonb),assessment_completed_at=coalesce(assessment_completed_at,now()),updated_at=now()
+  where id=a.id;
+end $;
 
--- No estimator-side INSERT/DELETE policies are granted. BCT creates assignments and controls review/payment state.
+revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon;
+grant execute on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) to authenticated;
+
+-- No estimator-side table INSERT/UPDATE/DELETE policies are granted. BCT creates assignments and controls review/payment state.
 
 comment on table public.bct_site_assessments is
 'BCT V46 paid professional site assessments. Remote estimate remains free first. Completed assessment fee is credited in full if homeowner proceeds; otherwise completed assessment fee remains earned/nonrefundable.';
