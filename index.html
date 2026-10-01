@@ -1196,6 +1196,18 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
   </div>
 
 
+  <div class="card section" id="adminContractorCredentials" data-admin-section="contractor credentials insurance bond license workers comp compliance" data-admin-page-panel="contractors" data-bct-board-include="true">
+    <div class="toolbar"><div><h3>Contractor Credentials Board</h3><p class="muted">One BCT board for general liability, bond, license / registration, workers’ compensation or exemption, expiration monitoring, and BCT verification.</p></div><button type="button" class="secondary" id="refreshContractorCredentialsBtn">Refresh Credentials</button></div>
+    <div class="grid grid-4 section">
+      <div class="card"><div id="cred-green" class="metric">0</div><small>🟢 Current & Verified</small></div>
+      <div class="card"><div id="cred-yellow" class="metric">0</div><small>🟡 Approaching Expiration</small></div>
+      <div class="card"><div id="cred-red" class="metric">0</div><small>🔴 Action Required</small></div>
+      <div class="card"><div id="cred-paused" class="metric">0</div><small>Bidding Paused</small></div>
+    </div>
+    <div class="notice section"><b>Automatic protection:</b> Required expired, rejected, or unverified credentials pause eligible job visibility and bidding until the credential is updated and BCT-verified.</div>
+    <div id="adminContractorCredentialsList" class="grid section"><div class="notice">Open this board to load live credential status.</div></div>
+  </div>
+
   <div class="card section" id="adminSafetyTrainingCard" data-admin-section="contractor safety compliance" data-admin-page-panel="contractors">
     <div class="toolbar"><div><h3>Contractor Safety Compliance</h3><p class="muted">Training compliance controls eligibility for new BCT work. Separate Admin holds remain under BCT control.</p></div><div><button type="button" class="secondary" id="refreshSafetyAdminBtn">Refresh Safety</button> <button type="button" class="secondary" id="runSafetyCycleBtn">Run Safety Cycle</button></div></div>
     <div id="adminSafetySummary" class="grid grid-4 section"></div>
