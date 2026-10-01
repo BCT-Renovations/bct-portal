@@ -171,6 +171,24 @@ end $bct$;
 revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon;
 grant execute on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) to authenticated;
 
+-- Estimators may advance only their own paid, scheduled assignment to field-work complete.
+-- They cannot schedule themselves, alter fees, reassign ownership, approve BCT review, or skip workflow states.
+create or replace function public.bct_complete_site_assessment(p_project_id uuid)
+returns void language plpgsql security definer set search_path=public as $bct$
+declare a public.bct_site_assessments;
+begin
+  select * into a from public.bct_site_assessments where project_id=p_project_id for update;
+  if a.id is null or a.estimator_user_id is distinct from auth.uid() then raise exception 'Assessment assignment not authorized'; end if;
+  if a.status <> 'scheduled' then raise exception 'Only a scheduled assessment can be marked site assessment completed'; end if;
+  if a.fee_paid_at is null then raise exception 'Assessment fee payment is required'; end if;
+  if a.scheduled_for is null then raise exception 'Assessment schedule is required'; end if;
+  update public.bct_site_assessments set status='site_assessment_completed',site_visit_complete=true,
+    assessment_completed_at=coalesce(assessment_completed_at,now()),updated_at=now() where id=a.id;
+end $bct$;
+
+revoke all on function public.bct_complete_site_assessment(uuid) from public,anon;
+grant execute on function public.bct_complete_site_assessment(uuid) to authenticated;
+
 -- No estimator-side table INSERT/UPDATE/DELETE policies are granted. BCT creates assignments and controls review/payment state.
 
 comment on table public.bct_site_assessments is
