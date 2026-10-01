@@ -84,6 +84,10 @@ assert(!credentialSql.includes("bct_credential_health(x.expires_at,x.verificatio
 assert(html.includes('bct-credential-green'));
 assert(html.includes('bct-credential-yellow'));
 assert(html.includes('bct-credential-red'));
+assert(html.includes("general_liability:'Insurance / General Liability'"));
+assert(html.includes("new Set(rows.filter(r=>r.health==='red').map(r=>r.contractor_id)).size"), 'Bidding Paused must count unique contractors, not red credential rows.');
+assert(html.includes("cr.days_to_expiration===null||cr.days_to_expiration===undefined||cr.days_to_expiration===''"), 'Missing expiration dates must not render as Expires today.');
+assert(html.includes("['Insurance / General Liability','Bonding','License / Registration']"), 'Missing required credentials must render independently.');
 assert(html.includes("rpc('bct_my_contractor_credentials')"));
 assert(html.includes('Uploading a document does not make it verified; BCT approval is required.'));
 assert(credentialSql.includes('bct_admin_review_contractor_credential'));
