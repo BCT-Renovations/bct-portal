@@ -28,7 +28,10 @@ assert(!js.includes('window.scrollTo('),'Admin control board must not force page
 assert(!js.includes("behavior:'smooth'"),'Admin control board must not introduce smooth-scroll loops.');
 assert(js.includes('observer.observe(r,'),'Admin mutation observer must be scoped to the Admin root.');
 assert(!js.includes('observe(document.documentElement'),'Admin control board must not watch the full document for mutations.');
-assert(js.includes("window.showView?.('home')"),'Back to Home must use the existing Home route without intentionally signing Admin out.');
+assert(js.includes("typeof window.bctReturnToPublicLanding==='function'"),'Back to Home must prefer the proven public-landing routine.');
+assert(js.includes('window.bctReturnToPublicLanding();'),'Back to Home must return to public Home without clearing the Supabase session.');
+assert(js.includes("if(!category)return;"),'Unrelated system/launch alerts must not be silently mixed into Jobs urgency.');
+assert(js.includes("return '';"),'Unmatched Admin panels must remain outside Jobs/Contractors/Clients urgent counts.');
 assert(!js.includes('supabaseClient'),'Admin organization layer must not alter Supabase data/auth behavior.');
 assert(!js.includes('signOut('),'Admin organization layer must not sign the Admin out.');
 assert(!js.includes('view-customer')&&!js.includes('view-status'),'Admin organization layer must not alter Client or Contractor portal views.');
