@@ -90,6 +90,11 @@ begin
   end if;
 end $$;
 
+-- Internal separation helpers are SECURITY DEFINER because bid/assignment guards need a reliable
+-- cross-table answer. They are not client APIs and must not be executable by browser roles.
+revoke all on function public.bct_estimator_conflict(uuid,uuid) from public,anon,authenticated;
+revoke all on function public.bct_assert_no_estimator_project_conflict(uuid,uuid) from public,anon,authenticated;
+
 create or replace function public.bct_estimator_transition_allowed(p_from text,p_to text)
 returns boolean language sql immutable as $bct$
   select case p_from
