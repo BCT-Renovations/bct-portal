@@ -2,26 +2,27 @@
    Organizes the existing Admin Portal without changing data, auth, RLS, or public portals. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-admin-sections-1';
+  const VERSION='V46-2026.09.30-admin-sections-2-scrollfix-teal';
   const ROOT_ID='view-admin';
   const COLLAPSED='bct-admin-section-collapsed';
   const historyStack=[];
   const selectedByPage=new Map();
   let scheduled=false;
   let applying=false;
+  let observer=null;
 
   window.BCT_ADMIN_SECTIONS_VERSION=VERSION;
 
   const COPY={
-    en:{back:'← Back',dashboard:'Admin Dashboard',sections:'Admin sections'},
-    es:{back:'← Volver',dashboard:'Panel de administración',sections:'Secciones de administración'},
-    fr:{back:'← Retour',dashboard:'Tableau de bord admin',sections:'Sections administrateur'},
-    ht:{back:'← Retounen',dashboard:'Tablo Administrasyon',sections:'Seksyon administrasyon'},
-    pt:{back:'← Voltar',dashboard:'Painel Administrativo',sections:'Seções administrativas'},
-    vi:{back:'← Quay lại',dashboard:'Bảng điều khiển quản trị',sections:'Mục quản trị'},
-    zh:{back:'← 返回',dashboard:'管理员控制面板',sections:'管理部分'},
-    ar:{back:'رجوع ←',dashboard:'لوحة الإدارة',sections:'أقسام الإدارة'},
-    ru:{back:'← Назад',dashboard:'Панель администратора',sections:'Разделы администратора'}
+    en:{back:'← Back',dashboard:'Admin Dashboard',home:'Back to Home',sections:'Admin sections'},
+    es:{back:'← Volver',dashboard:'Panel de administración',home:'Volver al inicio',sections:'Secciones de administración'},
+    fr:{back:'← Retour',dashboard:'Tableau de bord admin',home:'Retour à l’accueil',sections:'Sections administrateur'},
+    ht:{back:'← Retounen',dashboard:'Tablo Administrasyon',home:'Retounen lakay',sections:'Seksyon administrasyon'},
+    pt:{back:'← Voltar',dashboard:'Painel Administrativo',home:'Voltar ao início',sections:'Seções administrativas'},
+    vi:{back:'← Quay lại',dashboard:'Bảng điều khiển quản trị',home:'Về trang chủ',sections:'Mục quản trị'},
+    zh:{back:'← 返回',dashboard:'管理员控制面板',home:'返回主页',sections:'管理部分'},
+    ar:{back:'رجوع ←',dashboard:'لوحة الإدارة',home:'العودة إلى الرئيسية',sections:'أقسام الإدارة'},
+    ru:{back:'← Назад',dashboard:'Панель администратора',home:'На главную',sections:'Разделы администратора'}
   };
 
   function root(){return document.getElementById(ROOT_ID)}
@@ -71,24 +72,26 @@
     const style=document.createElement('style');
     style.id='bct-admin-section-navigation-style';
     style.textContent=`
+      #view-admin{touch-action:pan-y!important;overflow:visible!important}
       #view-admin .${COLLAPSED}{display:none!important}
       #view-admin .bct-admin-panel-nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
-      #view-admin .bct-admin-back-btn,#view-admin .bct-admin-dashboard-btn,#bctAdminBackHome{
-        background:#2563a6!important;color:#fff!important;border:1px solid #1d4f8c!important;
+      #view-admin .bct-admin-back-btn,#view-admin .bct-admin-dashboard-btn,#view-admin .bct-admin-home-btn,#bctAdminBackHome{
+        background:#0f5f63!important;color:#fff!important;border:1px solid #0a4549!important;
         min-height:46px!important;padding:10px 14px!important;border-radius:10px!important;
-        font-weight:800!important;box-shadow:0 3px 10px rgba(37,99,166,.18)!important;
+        font-weight:800!important;box-shadow:0 3px 10px rgba(15,95,99,.18)!important;
         touch-action:manipulation!important;pointer-events:auto!important
       }
-      #view-admin .bct-admin-back-btn:focus-visible,#view-admin .bct-admin-dashboard-btn:focus-visible,#bctAdminBackHome:focus-visible{outline:3px solid #93c5fd!important;outline-offset:2px}
-      #view-admin #bctAdminSectionSwitcher{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px;padding:10px;border:1px solid #cbdde0;border-radius:12px;background:#f8fbfc}
+      #view-admin .bct-admin-back-btn:active,#view-admin .bct-admin-dashboard-btn:active,#view-admin .bct-admin-home-btn:active,#bctAdminBackHome:active{background:#0a4549!important}
+      #view-admin .bct-admin-back-btn:focus-visible,#view-admin .bct-admin-dashboard-btn:focus-visible,#view-admin .bct-admin-home-btn:focus-visible,#bctAdminBackHome:focus-visible{outline:3px solid #9fd6d2!important;outline-offset:2px}
+      #view-admin #bctAdminSectionSwitcher{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px;padding:10px;border:1px solid #b9d7d3;border-radius:12px;background:#f8fbfc}
       #view-admin #bctAdminSectionSwitcher[hidden]{display:none!important}
-      #view-admin #bctAdminSectionSwitcher .bct-admin-section-choice{background:#fff!important;color:#174b78!important;border:1px solid #9fc4e8!important;box-shadow:none!important;min-height:44px}
-      #view-admin #bctAdminSectionSwitcher .bct-admin-section-choice.active{background:#2563a6!important;color:#fff!important;border-color:#1d4f8c!important}
+      #view-admin #bctAdminSectionSwitcher .bct-admin-section-choice{background:#fff!important;color:#0a4549!important;border:1px solid #8bbdc0!important;box-shadow:none!important;min-height:44px}
+      #view-admin #bctAdminSectionSwitcher .bct-admin-section-choice.active{background:#0f5f63!important;color:#fff!important;border-color:#0a4549!important}
       @media(max-width:820px){
         #view-admin #bctAdminSectionSwitcher{display:grid;grid-template-columns:1fr 1fr;position:sticky;top:148px;z-index:6}
         #view-admin #bctAdminSectionSwitcher .bct-admin-section-choice{width:100%;white-space:normal}
         #view-admin .bct-admin-panel-nav{position:sticky;top:96px;z-index:6;background:rgba(255,255,255,.96);padding:6px 0}
-        #view-admin .bct-admin-back-btn,#view-admin .bct-admin-dashboard-btn{flex:1;min-width:135px}
+        #view-admin .bct-admin-back-btn,#view-admin .bct-admin-dashboard-btn,#view-admin .bct-admin-home-btn{flex:1;min-width:135px}
       }
       @media(max-width:430px){#view-admin #bctAdminSectionSwitcher{grid-template-columns:1fr}}
     `;
@@ -108,7 +111,9 @@
   }
   function dashboard(){
     const r=root(); if(!r)return;
-    requestAnimationFrame(()=>r.scrollIntoView({behavior:'smooth',block:'start'}));
+    const page='launch';
+    applyPage(page,selectedByPage.get(page)||'',false);
+    requestAnimationFrame(()=>window.scrollTo({top:Math.max(0,r.offsetTop-80),left:0,behavior:'auto'}));
   }
   function restore(target,push=false){
     if(!target)return dashboard();
@@ -122,6 +127,11 @@
     }
     dashboard();
   }
+  function goHome(){
+    const result=window.showView?.('home');
+    if(result&&typeof result.catch==='function')result.catch(()=>window.bctReturnToPublicLanding?.());
+    else if(typeof window.showView!=='function')window.bctReturnToPublicLanding?.();
+  }
   function ensurePanelNav(panel){
     if(!panel||panel.querySelector(':scope > .bct-admin-panel-nav'))return;
     const nav=document.createElement('div');
@@ -130,7 +140,9 @@
     back.type='button';back.className='bct-admin-back-btn';back.dataset.bctAdminBack='1';
     const dash=document.createElement('button');
     dash.type='button';dash.className='bct-admin-dashboard-btn';dash.dataset.bctAdminDashboard='1';
-    nav.append(back,dash);
+    const home=document.createElement('button');
+    home.type='button';home.className='bct-admin-home-btn';home.dataset.bctAdminHome='1';
+    nav.append(back,dash,home);
     panel.prepend(nav);
   }
   function updateNavCopy(){
@@ -138,6 +150,7 @@
     const t=copy();
     r.querySelectorAll('.bct-admin-back-btn').forEach(btn=>{if(btn.textContent!==t.back)btn.textContent=t.back});
     r.querySelectorAll('.bct-admin-dashboard-btn').forEach(btn=>{if(btn.textContent!==t.dashboard)btn.textContent=t.dashboard});
+    r.querySelectorAll('.bct-admin-home-btn').forEach(btn=>{if(btn.textContent!==t.home)btn.textContent=t.home});
     const switcher=r.querySelector('#bctAdminSectionSwitcher');
     if(switcher&&switcher.getAttribute('aria-label')!==t.sections)switcher.setAttribute('aria-label',t.sections);
   }
@@ -146,6 +159,12 @@
     const list=usablePanels(page).filter(panel=>!panel.classList.contains('hidden'));
     const t=copy();
     switcher.setAttribute('aria-label',t.sections);
+    const key=[page,selectedId,language(),...list.map((panel,index)=>`${index}:${panel.id}:${panelTitle(panel)}`)].join('|');
+    if(switcher.dataset.bctRenderKey===key){
+      switcher.hidden=list.length<=1;
+      return;
+    }
+    switcher.dataset.bctRenderKey=key;
     switcher.replaceChildren();
     if(list.length<=1){switcher.hidden=true;return}
     switcher.hidden=false;
@@ -186,10 +205,6 @@
       const next={page,panel:chosen?.id||''};
       if(push)remember(next);
       if(!historyStack.length)remember(next);
-      requestAnimationFrame(()=>{
-        const tabs=r.querySelector('.portal-tabs');
-        (tabs||r).scrollIntoView({behavior:'smooth',block:'start'});
-      });
     }finally{applying=false}
   }
   function choosePanel(page,panelId,push=true){
@@ -205,6 +220,19 @@
     applyPage(page,selectedByPage.get(page)||'',false);
   }
   function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(sync)}
+  function startObserver(){
+    if(observer)return;
+    const r=root(); if(!r)return;
+    observer=new MutationObserver(records=>{
+      const relevant=records.some(record=>{
+        const target=record.target;
+        if(target?.closest?.('#bctAdminSectionSwitcher,.bct-admin-panel-nav'))return false;
+        return true;
+      });
+      if(relevant)schedule();
+    });
+    observer.observe(r,{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-hidden','inert']});
+  }
 
   document.addEventListener('click',event=>{
     if(!signedInAdmin())return;
@@ -213,6 +241,8 @@
     if(back&&r.contains(back)){event.preventDefault();goBack();return}
     const dash=event.target?.closest?.('[data-bct-admin-dashboard]');
     if(dash&&r.contains(dash)){event.preventDefault();dashboard();return}
+    const home=event.target?.closest?.('[data-bct-admin-home]');
+    if(home&&r.contains(home)){event.preventDefault();goHome();return}
     const section=event.target?.closest?.('[data-bct-admin-section]');
     if(section&&r.contains(section)){
       event.preventDefault();
@@ -244,8 +274,8 @@
   },true);
   window.addEventListener('pageshow',schedule);
   window.addEventListener('hashchange',schedule);
-  new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','lang','aria-hidden','inert']});
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  function init(){startObserver();schedule()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 
 
