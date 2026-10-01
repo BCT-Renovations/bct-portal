@@ -105,12 +105,12 @@ revoke execute on function public.bct_admin_review_contractor_credential(uuid,te
 grant execute on function public.bct_admin_review_contractor_credential(uuid,text,text) to authenticated;
 
 create or replace function public.bct_contractor_required_credentials_current(p_contractor_id uuid,p_trade text,p_jurisdiction text)
-returns boolean language sql stable security definer set search_path=public,auth as $$
+returns boolean language sql stable security definer set search_path=public,auth as $
  select
-   exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='general_liability' and public.bct_credential_health(x.expires_at,x.verification_status)='green')
-   and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='bond' and public.bct_credential_health(x.expires_at,x.verification_status)='green' and (x.jurisdiction is null or lower(x.jurisdiction)=lower(p_jurisdiction)))
-   and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='license_registration' and public.bct_credential_health(x.expires_at,x.verification_status)='green' and (x.trade is null or lower(x.trade)=lower(p_trade)) and (x.jurisdiction is null or lower(x.jurisdiction)=lower(p_jurisdiction)))
-   and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type in ('workers_comp','workers_comp_exemption') and public.bct_credential_health(x.expires_at,x.verification_status)='green');
-$$;
+   exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='general_liability' and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date))
+   and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='bond' and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date) and (x.jurisdiction is null or lower(x.jurisdiction)=lower(p_jurisdiction)))
+   and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type='license_registration' and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date) and (x.trade is null or lower(x.trade)=lower(p_trade)) and (x.jurisdiction is null or lower(x.jurisdiction)=lower(p_jurisdiction)))
+   and exists(select 1 from public.bct_contractor_credentials x where x.contractor_id=p_contractor_id and x.credential_type in ('workers_comp','workers_comp_exemption') and x.verification_status='verified' and (x.expires_at is null or x.expires_at>=current_date));
+$;
 revoke execute on function public.bct_contractor_required_credentials_current(uuid,text,text) from public;
 grant execute on function public.bct_contractor_required_credentials_current(uuid,text,text) to authenticated;
