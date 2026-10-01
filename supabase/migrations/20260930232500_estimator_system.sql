@@ -124,7 +124,7 @@ begin
     raise exception 'Additional estimator travel compensation requires advance BCT approval';
   end if;
   return new;
-end $;
+end $bct$;
 
 drop trigger if exists bct_estimator_assessment_transition_guard on public.bct_site_assessments;
 create trigger bct_estimator_assessment_transition_guard
@@ -166,7 +166,7 @@ begin
     measurements_complete=p_measurements_complete,documentation_complete=p_documentation_complete,
     assessment_package=coalesce(p_package,'{}'::jsonb),assessment_completed_at=coalesce(assessment_completed_at,now()),updated_at=now()
   where id=a.id;
-end $;
+end $bct$;
 
 revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon;
 grant execute on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) to authenticated;
