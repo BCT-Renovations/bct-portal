@@ -23,9 +23,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: '20'}
-      - run: |
+      - name: Run dependency-free V46 regression checks
+        run: |
           set -e
           for f in tests/*.mjs; do
+            if grep -Eq "from ['\"](playwright|@playwright/test)['\"]|require\(['\"](playwright|@playwright/test)['\"]\)" "$f"; then
+              echo "Skipping browser test here (covered by dedicated browser workflow): $f"
+              continue
+            fi
             echo "Running $f"
             node "$f"
           done
