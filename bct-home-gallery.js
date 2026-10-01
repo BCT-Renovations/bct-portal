@@ -36,7 +36,7 @@
       #bctHomeGallery h2{margin:0;text-align:center;color:#0a4549;font-size:clamp(24px,6vw,32px)}
       #bctHomeGallery .bct-gallery-lead{text-align:center;margin:6px 0 14px;color:#5f6f73;line-height:1.4}
       #bctHomeGalleryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-      .bct-gallery-card{margin:0;border:1px solid #d7e0e1;border-radius:12px;overflow:hidden;background:#f7faf9;min-width:0}
+      .bct-gallery-card{margin:0;cursor:pointer;border:1px solid #d7e0e1;border-radius:12px;overflow:hidden;background:#f7faf9;min-width:0}
       .bct-gallery-frame{aspect-ratio:4/3;background:linear-gradient(145deg,#e7f3f3,#f7fbf8);display:flex;align-items:center;justify-content:center;overflow:hidden;color:#0f5f63;font-weight:800;text-align:center;padding:14px}
       .bct-gallery-frame img{width:100%;height:100%;display:block;object-fit:cover}
       .bct-gallery-card figcaption{padding:9px 10px;font-size:13px;font-weight:700;color:#173c3e;text-align:center}
@@ -48,6 +48,7 @@
     document.head.appendChild(style);
   }
 
+  function formatDate(value){if(!value)return '';const d=new Date(value+'T12:00:00');return Number.isNaN(d.getTime())?value:new Intl.DateTimeFormat(language(),{year:'numeric',month:'short',day:'numeric'}).format(d)}
   function card(project,index){
     const c=copy();
     const figure=document.createElement('figure');
@@ -66,8 +67,8 @@
     }else{return document.createDocumentFragment();}
 
     const caption=document.createElement('figcaption');
-    caption.textContent=[project.caption,project.project_work_date].filter(Boolean).join(' • ')||c.slot;
-    figure.append(frame,caption);
+    caption.textContent=[project.caption,formatDate(project.project_work_date)].filter(Boolean).join(' • ')||c.slot;
+    figure.tabIndex=0;figure.setAttribute('role','button');figure.setAttribute('aria-label',(project.alt||c.slot)+' — '+formatDate(project.project_work_date));const open=async()=>{await loadFull(true);const i=FULL.findIndex(x=>x.id===project.id);if(i>=0){fullIndex=i;showFull()}};figure.addEventListener('click',open);figure.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});figure.append(frame,caption);
     return figure;
   }
 
@@ -101,7 +102,7 @@
 
 
   function fullList(){return fullCategory==='All'?FULL:FULL.filter(x=>x.category===fullCategory)}
-  function showFull(){const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;$('bctGalleryModalCaption').textContent=[p.caption,p.category,p.project_work_date].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
+  function showFull(){const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;$('bctGalleryModalCaption').textContent=[p.caption,p.category,formatDate(p.project_work_date)].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
   function moveFull(n){const list=fullList();if(!list.length)return;fullIndex=(fullIndex+n+list.length)%list.length;showFull()}
   async function loadFull(reset=true){if(!window.supabaseClient)return;if(reset){FULL=[];fullPage=0}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error)return;const base=String(window.SUPABASE_URL||window.supabaseUrl||'').replace(/\/$/,'');const objectUrl=p=>base?base+'/storage/v1/object/public/bct-gallery/'+String(p||'').split('/').map(encodeURIComponent).join('/'):'';const batch=(data||[]).filter(x=>x.storage_path).map(x=>({...x,image:objectUrl(x.storage_path)}));FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory='All';fullIndex=0;showFull();if($('bctGalleryMore'))$('bctGalleryMore').hidden=!fullHasMore}
 
