@@ -63,7 +63,7 @@ async function submitAssessment(e){
  if(!window.BCT_ESTIMATOR_SYSTEM?.canEstimatorAccess(user))return status('Estimator sign in is required.','notice');
  const payload={project_id:projectId,estimator_user_id:user.id,status:'assessment_submitted',site_visit_complete:true,photos_complete:true,measurements_complete:!!String(f.get('measurements')||'').trim(),documentation_complete:true,assessment_package:{visit_date:f.get('visit_date'),measurements:f.get('measurements'),conditions:f.get('conditions'),scope:f.get('scope'),notes:f.get('notes'),additional_inspection:f.get('additional_inspection'),inspection_details:f.get('inspection_details')}};
  try{
-  const r=await window.supabaseClient?.from?.('bct_site_assessments')?.update?.(payload)?.eq?.('project_id',projectId)?.eq?.('estimator_user_id',user.id);if(r?.error)throw r.error;
+  const r=await window.supabaseClient?.rpc?.('bct_submit_assessment_package',{p_project_id:projectId,p_package:payload.assessment_package,p_site_visit_complete:true,p_photos_complete:true,p_measurements_complete:payload.measurements_complete,p_documentation_complete:true});if(r?.error)throw r.error;
   status('Assessment package submitted. Status: BCT Review. Contractors cannot use it until BCT approves it.');
  }catch(err){status(err.message||'Assessment package could not be submitted.','notice')}
 }
