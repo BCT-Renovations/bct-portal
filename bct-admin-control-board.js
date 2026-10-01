@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const VERSION='V46-2026.09.30-admin-control-board-1';
+  const VERSION='V46-2026.09.30-admin-control-board-2-stable-urgent';
   const ROOT_ID='view-admin';
   const PANEL_HIDDEN='bct-admin-board-panel-hidden';
   const BOARD_ID='bctAdminControlBoard';
@@ -177,8 +177,8 @@
 
   function severity(text){
     const s=String(text||'').toLowerCase();
-    if(/critical|expired|failed|blocked|dispute|emergency|security failure/.test(s))return 'critical';
-    if(/delayed|overdue|needs attention|action required|pending approval|pending review|on hold|missing|required action|failure/.test(s))return 'warning';
+    if(/critical|failed|blocked|dispute|emergency|security failure/.test(s))return 'critical';
+    if(/expired|delayed|overdue|needs attention|action required|pending approval|pending review|on hold|missing|required action|failure/.test(s))return 'warning';
     return '';
   }
 
@@ -205,6 +205,12 @@
     const t=copy(),data=collectUrgent();
     const defs=[['jobs',t.jobs,t.noJobs],['contractors',t.contractors,t.noContractors],['clients',t.clients,t.noClients]];
     const grid=board.querySelector('.bct-admin-urgent-grid');if(!grid)return;
+    const renderKey=defs.map(([key,label,empty])=>{
+      const items=data[key];
+      return `${key}:${label}:${items.length}:${urgentLevel(items)}:${items.length?`${items.length} ${t.urgent}`:empty}`;
+    }).join('|');
+    if(grid.dataset.renderKey===renderKey)return;
+    grid.dataset.renderKey=renderKey;
     grid.replaceChildren(...defs.map(([key,label,empty])=>{
       const items=data[key];const button=document.createElement('button');button.type='button';button.className='bct-admin-urgent-card';button.dataset.bctUrgentCategory=key;button.dataset.level=urgentLevel(items);
       button.innerHTML=`<strong>${label}</strong><span class="bct-admin-alert-count">${items.length}</span><small>${items.length?`${items.length} ${t.urgent}`:empty}</small>`;
