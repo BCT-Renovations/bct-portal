@@ -14,7 +14,9 @@ assert.ok(pages.includes("jobScheduleForm:'Schedule'"),'Schedule page missing');
 assert.ok(pages.includes("bctLiveVerificationForm:'Live Project Verification'"),'Live Verification page missing');
 assert.ok(pages.includes("jobFinanceForm:'Financing'"),'Financing page missing');
 assert.ok(pages.includes("jobEscrowForm:'Escrow'"),'Escrow page missing');
-assert.ok(pages.includes('background:#2563a6'),'blue page-navigation controls missing');
+assert.ok(pages.includes('background:#0f5f63'),'BCT teal page-navigation controls missing');
+assert.ok(pages.includes('border:1px solid #0a4549'),'dark-teal page-navigation border missing');
+assert.ok(!pages.includes('background:#2563a6'),'old blue Admin job navigation must not return');
 assert.ok(pages.includes('min-height:46px'),'iPhone touch target protection missing');
 
 console.log('V46 Admin job page-flip smoke checks passed.');
