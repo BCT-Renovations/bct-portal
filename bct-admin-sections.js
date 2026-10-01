@@ -2,7 +2,7 @@
    Big Dog 3 derived branch: the long-scroll Admin section controller is replaced by the portal-style Admin Control Board. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-admin-control-board-loader-1';
+  const VERSION='V46-2026.09.30-admin-control-board-loader-2-dedupe';
   window.BCT_ADMIN_SECTIONS_VERSION=VERSION;
 
   function loadOnce(src,marker){
@@ -14,7 +14,7 @@
     document.head.appendChild(script);
   }
 
-  loadOnce('/bct-admin-control-board.js?v=20260930-1','data-bct-admin-control-board');
+  if(!document.querySelector('script[src*="/bct-admin-control-board.js"]')) loadOnce('/bct-admin-control-board.js?v=20260930-2','data-bct-admin-control-board');
   loadOnce('/bct-live-project-verification.js?v=20260930-1','data-bct-live-project-verification');
   loadOnce('/bct-admin-job-pages.js?v=20260930-2','data-bct-admin-job-pages');
 })();
