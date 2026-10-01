@@ -1,0 +1,31 @@
+name: BCT Photo Build Gate
+on:
+  pull_request:
+    paths:
+      - 'bct-photo-admin.js'
+      - 'bct-home-gallery.js'
+      - 'bct-admin-sections.js'
+      - 'supabase/migrations/**'
+      - 'tests/bct-photo-build.mjs'
+  push:
+    branches: [bct-photo-build]
+jobs:
+  photo-build-static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: node tests/bct-photo-build.mjs
+  v46-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: |
+          set -e
+          for f in tests/*.mjs; do
+            echo "Running $f"
+            node "$f"
+          done
