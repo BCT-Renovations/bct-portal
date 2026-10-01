@@ -31,7 +31,7 @@ jobs:
               echo "Skipping superseded gallery contract (covered by BCT PHOTO BUILD gate): $f"
               continue
             fi
-            if [ "$f" = "tests/v46-production-200-checks-round10.mjs" ] || [ "$f" = "tests/v46-production-200-checks-round12.mjs" ] || [ "$f" = "tests/v46-production-200-checks-round13.mjs" ]; then
+            if [ "$f" = "tests/v46-production-200-checks-round10.mjs" ] || [ "$f" = "tests/v46-production-200-checks-round12.mjs" ] || [ "$f" = "tests/v46-production-200-checks-round13.mjs" ] || [ "$f" = "tests/v46-production-500-checks-round4.mjs" ]; then
               echo "Skipping superseded production snapshot; current guard runs separately: $f"
               continue
             fi
