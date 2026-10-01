@@ -2,7 +2,7 @@
    Isolated add-on: does not replace existing landing controls or portal logic. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-home-gallery-1';
+  const VERSION='BCT-PHOTO-BUILD-2026.10.01-public-foundation-2';
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
