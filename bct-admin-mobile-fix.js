@@ -1,7 +1,7 @@
 /* BCT V46 admin mobile controls + Spanish admin translation stability patch. */
 (function(){
   'use strict';
-  const VERSION='V46-2026.09.30-admin-mobile-3-loopguard';
+  const VERSION='V46-2026.09.30-admin-mobile-4-no-auto-scroll';
   const ROOT_ID='view-admin';
   const ORIGINAL_TEXT=new WeakMap();
   const ORIGINAL_PLACEHOLDER=new WeakMap();
@@ -178,12 +178,13 @@
     const root=adminRoot(); if(!root)return;
     const target=document.getElementById(id); if(!target||!root.contains(target))return;
     const page=target.dataset.adminPagePanel||target.closest('[data-admin-page-panel]')?.dataset.adminPagePanel;
-    if(page)showPage(page);
-    requestAnimationFrame(()=>{
-      target.scrollIntoView({behavior:'smooth',block:'start'});
-      target.classList.add('bct-jump-highlight');
-      setTimeout(()=>target.classList.remove('bct-jump-highlight'),1800);
-    });
+    if(typeof window.BCT_ADMIN_CONTROL_BOARD_OPEN_PANEL==='function'){
+      window.BCT_ADMIN_CONTROL_BOARD_OPEN_PANEL(target);
+    }else if(page){
+      showPage(page);
+    }
+    target.classList.add('bct-jump-highlight');
+    setTimeout(()=>target.classList.remove('bct-jump-highlight'),1800);
   }
   function filterCommands(){
     const root=adminRoot(); if(!root)return;
@@ -284,8 +285,7 @@
   document.addEventListener('change',function(event){
     if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(refresh,0);
   },true);
-  window.addEventListener('pageshow',refresh);
-  window.addEventListener('hashchange',refresh);
-  new MutationObserver(()=>requestAnimationFrame(refresh)).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','lang','aria-hidden','inert']});
+  // Deliberately avoid pageshow/hashchange/MutationObserver scroll-adjacent refresh loops.
+  // Admin Control Board owns Admin view transitions; this layer only refreshes on explicit UI changes.
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh);else refresh();
 })();
