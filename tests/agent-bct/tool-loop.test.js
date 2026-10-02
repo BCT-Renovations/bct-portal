@@ -118,3 +118,9 @@ test("high-risk mode allows at most one high-risk read per sequence",async()=>{
   const r=await boundedToolSequence({calls:[{name:"payment_status",arguments:"{}"},{name:"escrow_status",arguments:"{}"}],role:"homeowner",maxRisk:"high",executeRpc:async()=>{count++;return[];}});
   assert.equal(r.ok,false);assert.equal(r.error,"too_many_high_risk_tools");assert.equal(count,1);
 });
+
+test("estimator model execution stays disabled until authoritative backend role is reconciled",async()=>{
+  let count=0;
+  const r=await executeModelToolCall({call:{name:"project_list",arguments:"{}"},role:"estimator",executeRpc:async()=>{count++;return[];}});
+  assert.equal(r.error,"tool_role_denied");assert.equal(count,0);
+});
