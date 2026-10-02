@@ -36,7 +36,8 @@ export async function executeModelToolCall({call,role,executeRpc,maxRisk="medium
 }
 
 export async function boundedToolSequence({calls,role,executeRpc,maxRisk="medium"}){
-  const source=Array.isArray(calls)?calls:[];
+  if(!Array.isArray(calls))return{ok:false,error:"invalid_tool_sequence",results:[]};
+  const source=calls;
   if(source.length>MAX_TOOL_STEPS)return{ok:false,error:"too_many_tool_steps",results:[]};
   const signatures=new Set();
   for(const call of source){
