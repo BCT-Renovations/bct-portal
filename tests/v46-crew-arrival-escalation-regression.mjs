@@ -1,6 +1,7 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';
 const sql=fs.readFileSync('supabase/migrations/20261002132000_v46_crew_arrival_escalation.sql','utf8');
-const recovery=fs.readFileSync('supabase/migrations/20261002133000_v46_crew_arrival_recovery.sql','utf8');\nconst b2=fs.readFileSync('supabase/migrations/20261002083000_v46_field_controls_extension_batch2.sql','utf8');
+const recovery=fs.readFileSync('supabase/migrations/20261002133000_v46_crew_arrival_recovery.sql','utf8');
+const b2=fs.readFileSync('supabase/migrations/20261002083000_v46_field_controls_extension_batch2.sql','utf8');
 for(const x of ['bct_refresh_crew_arrival_attention','bct_admin_crew_arrival_status','crew_late_arrival','crew_no_show','expected_arrival_start','expected_arrival_end','checked_in_at','arrival_status'])assert.ok(sql.includes(x),'arrival escalation missing '+x);
 for(const x of ['expected_arrival_start','expected_arrival_end','arrival_status','bct_check_in_project_crew'])assert.ok(b2.includes(x),'canonical crew control missing '+x);
 assert.ok(sql.includes('public.is_bct_admin()'),'BCT Admin guard missing');
