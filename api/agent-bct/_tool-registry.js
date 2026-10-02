@@ -45,7 +45,9 @@ function pick(object, keys) {
 }
 function identityPermissions(value) {
   if (!value || typeof value !== "object") return { role: "unknown", permissions: [] };
-  return { role: typeof value.role === "string" ? value.role : "unknown", permissions: Array.isArray(value.permissions) ? value.permissions : [] };
+  const role=["homeowner","contractor","admin"].includes(value.role)?value.role:"unknown";
+  const permissions=Array.isArray(value.permissions)?value.permissions.filter(x=>typeof x==="string"&&/^[a-z0-9._:-]{1,80}$/i.test(x)).slice(0,100):[];
+  return { role, permissions };
 }
 function serviceSafe(row) {
   return pick(row, ["code","display_name","category","sort_order"]);
@@ -93,7 +95,7 @@ export class ToolInputError extends Error {
 export function listAgentBctTools(role) {
   return Object.entries(TOOL_REGISTRY)
     .filter(([, spec]) => !role || spec.roles.includes(role))
-    .map(([name, spec]) => ({ name, roles: spec.roles, risk: spec.risk, write: spec.write }));
+    .map(([name, spec]) => ({ name, roles: spec.roles, risk: spec.risk, write: spec.write, rpc: spec.rpc }));
 }
 export function resolveAgentBctTool(name, role, input) {
   const tool = TOOL_REGISTRY[name];
