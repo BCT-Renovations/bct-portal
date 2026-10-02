@@ -18,3 +18,6 @@ if((project.match(/create or replace function public\.bct_project_readiness_bloc
 console.log('V46 project readiness reconciliation regression checks passed');
 
 for(const x of ['bct_hidden_conditions','bct_material_substitutions','bct_utility_interruptions','bct_project_checklists']) need(project,x,'canonical readiness source missing');
+
+need(project,'bct_code_corrections','failed-inspection readiness must inspect correction clearance');
+need(project,'cc.cleared_at is null','cleared inspection corrections must release readiness blocker');
