@@ -3157,6 +3157,7 @@ renderAll();
   function setupPasswordPair(first,second,status){const a=$(first),b=$(second),out=$(status);if(!a||!b||!out)return;const check=()=>{const policy=passwordPolicyError(a.value),matches=Boolean(a.value&&b.value&&a.value===b.value),message=policy||(!b.value?'Confirm the password.':(!matches?'Passwords do not match.':'✓ Passwords match and meet BCT requirements.'));out.textContent=message;out.className=`password-check ${!policy&&matches?'good':a.value&&b.value?'bad':''}`;a.setCustomValidity(policy);b.setCustomValidity(!policy&&b.value&&!matches?'Passwords do not match.':'');return !policy&&matches};a.addEventListener('input',check);b.addEventListener('input',check);check();}
   function validMatchingPassword(password,confirmation){const error=passwordPolicyError(password);if(error)throw new Error(error);if(password!==confirmation)throw new Error('Passwords do not match.');}
   async function rpc(name,args={}){const {data,error}=await supabaseClient.rpc(name,args);if(error)throw error;return data}
+  window.bctContractSigningRpc=rpc;
   async function user(){const {data,error}=await supabaseClient.auth.getUser();if(error)throw error;return data.user}
   function note(id,html,kind='notice'){const el=$(id);if(el)el.innerHTML=`<div class="${kind}">${html}</div>`}
   function bctCelebrate(title,message,storageKey=''){
@@ -3255,6 +3256,7 @@ renderAll();
   const bctWhoComingStyle=document.createElement('style');bctWhoComingStyle.textContent='.bct-whos-coming-photo{width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #0f766e;flex:0 0 auto}.bct-whos-coming .toolbar{align-items:center}.bct-whos-coming .card{min-width:0}@media(max-width:560px){.bct-whos-coming-photo{width:56px;height:56px}}';document.head.appendChild(bctWhoComingStyle);
 
   async function loadHomeownerState(){
+    window.bctContractSigningReload=async role=>{if(role==='homeowner')return loadHomeownerState();if(role==='contractor')return loadContractorState();if(role==='admin')return loadAdminState()};
     homeownerState=await rpc('bct_frontend_homeowner_state');
     const projects=homeownerState?.projects||[];
     const tradeLeadEntries=await Promise.all(projects.map(async p=>{try{const leads=await rpc('bct_homeowner_project_trade_leads',{p_project_id:p.id})||[];const safeLeads=await Promise.all(leads.map(async l=>{if(!l.profile_photo_storage_path)return {...l,profile_photo_url:null};try{const authorizedPath=await rpc('bct_homeowner_contractor_profile_photo_path',{p_project_id:p.id,p_contractor_id:l.contractor_id});if(!authorizedPath||authorizedPath!==l.profile_photo_storage_path)return {...l,profile_photo_url:null};const {data:signed,error}=await supabaseClient.storage.from('bct-contractor-documents').createSignedUrl(authorizedPath,900);if(error||!signed?.signedUrl)return {...l,profile_photo_url:null};return {...l,profile_photo_url:signed.signedUrl}}catch{return {...l,profile_photo_url:null}}}));return [p.id,safeLeads]}catch{return [p.id,[]]}}));
