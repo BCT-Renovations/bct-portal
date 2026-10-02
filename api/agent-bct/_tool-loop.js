@@ -17,7 +17,8 @@ export async function executeModelToolCall({call,role,executeRpc}){
   try{args=typeof call.arguments==="string"?JSON.parse(call.arguments):call.arguments||{};}catch{return{ok:false,error:"invalid_tool_arguments"};}
   const resolved=resolveAgentBctTool(internal,role,args);
   if(!resolved.ok)return{ok:false,error:resolved.error};
-  const raw=await executeRpc(resolved.rpc,resolved.args);
+  let raw;
+  try{raw=await executeRpc(resolved.rpc,resolved.args);}catch{return{ok:false,error:"tool_execution_failed",internalTool:internal,risk:resolved.risk};}
   return{
     ok:true,
     internalTool:internal,
