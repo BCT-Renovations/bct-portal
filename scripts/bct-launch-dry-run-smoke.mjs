@@ -96,6 +96,8 @@ const dryRunMarkers = [
   ['service-call RPC', 'bct_admin_create_service_call'],
   ['operational readiness RPC', 'bct_admin_operational_readiness'],
   ['automation health RPC', 'bct_frontend_admin_automation_health'],
+  ['admin notification health RPC', 'bct_admin_notification_health'],
+  ['admin notification delivery state', 'notification_delivery'],
   ['automation health dashboard', 'Automation Health'],
   ['local demo data disabled after overlay', "localStorage.removeItem('bctPortalDataV1')"]
 ];
