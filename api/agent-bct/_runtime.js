@@ -11,6 +11,7 @@ function required(name){
 function boundedText(value,max){
   return typeof value==="string"?value.slice(0,max):"";
 }
+function safeUsage(value){const n=Number(value);return Number.isFinite(n)&&n>=0?Math.min(Math.floor(n),10_000_000):0;}
 export function runtimeConfig(){
   return {
     model:String(process.env.AGENT_BCT_MODEL||"").trim(),
@@ -56,6 +57,7 @@ export async function generateAgentBct({system,history=[],userMessage,requestId}
       const code=response.status===402?"budget_blocked":response.status===429?"rate_limited":"generation_failed";
       throw Object.assign(new Error(code),{code,status});
     }
+    if(!payload||typeof payload!=="object"||!Array.isArray(payload.choices)) throw Object.assign(new Error("invalid_generation_response"),{code:"invalid_generation_response",status:502});
     const answer=payload?.choices?.[0]?.message?.content;
     if(payload?.choices?.[0]?.message?.tool_calls?.length) throw Object.assign(new Error("unexpected_tool_call"),{code:"unexpected_tool_call",status:502});
     if(typeof answer!=="string"||!answer.trim()) throw Object.assign(new Error("empty_generation"),{code:"empty_generation",status:502});
@@ -64,9 +66,9 @@ export async function generateAgentBct({system,history=[],userMessage,requestId}
       model:typeof payload?.model==="string"?payload.model:model,
       finishReason:payload?.choices?.[0]?.finish_reason||null,
       usage:payload?.usage?{
-        promptTokens:Number(payload.usage.prompt_tokens)||0,
-        completionTokens:Number(payload.usage.completion_tokens)||0,
-        totalTokens:Number(payload.usage.total_tokens)||0,
+        promptTokens:safeUsage(payload.usage.prompt_tokens),
+        completionTokens:safeUsage(payload.usage.completion_tokens),
+        totalTokens:safeUsage(payload.usage.total_tokens),
       }:null,
     };
   }catch(error){
