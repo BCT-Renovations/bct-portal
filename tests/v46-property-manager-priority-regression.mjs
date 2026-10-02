@@ -19,6 +19,8 @@ need(b5,'grant execute on function public.bct_my_property_portfolio_priority() t
 need(pm,'bct_my_property_portfolio_summary','portfolio summary missing');
 need(pm,'bct_my_property_unit_project_summary','unit project summary missing');
 need(pm,'project access denied','unit project ownership denial missing');
+need(pm,"pu.property_id=(\n      select p.managed_property_id",'unit must bind to project managed property');
+need(pm,'and mp.active','unit property must remain active');
 need(pm,'resident_private_notes','privacy exclusion documentation missing');
 need(pm,'access_notes','access-note exclusion documentation missing');
 need(pm,'security definer','safe aggregate privilege missing');
