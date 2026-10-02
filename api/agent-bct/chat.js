@@ -2,6 +2,7 @@ import { buildAgentBctContext } from "./_context.js";
 import { generateAgentBct, runtimeConfig } from "./_runtime.js";
 import { checkLocalRateLimit } from "./_rate-limit.js";
 import { auditEvent, emitPreviewAudit } from "./_audit.js";
+import { inspectGeneratedResponse } from "./_response-guard.js";
 
 const MAX_BODY_BYTES=32*1024;
 function json(body,status=200,extra={}){return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff","referrer-policy":"no-referrer","permissions-policy":"camera=(), microphone=(), geolocation=()",...extra}});}
@@ -46,6 +47,8 @@ export default{async fetch(request){
     }
     emitPreviewAudit(auditEvent({requestId,event:"generation_started",role,status:200,durationMs:Date.now()-started}));
     const generated=await generateAgentBct({system:modelSystem(context),history:context.history,userMessage:context.userMessage,requestId});
+    const responseInspection=inspectGeneratedResponse(generated.text);
+    if(!responseInspection.safe)throw Object.assign(new Error("unsafe_generation"),{code:"unsafe_generation",status:502});
     emitPreviewAudit(auditEvent({requestId,event:"generation_completed",role,status:200,durationMs:Date.now()-started}));
     return json({ok:true,requestId,stage:"generation_preview",generationEnabled:true,liveToolLoopEnabled:false,role,riskSignals:context.riskSignals,answer:generated.text,model:generated.model,finishReason:generated.finishReason,usage:generated.usage,policyVersion:context.policyVersion});
   }catch(error){
