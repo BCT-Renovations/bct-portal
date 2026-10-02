@@ -68,20 +68,20 @@ export default {
     if (!token) return json({ ok: false, error: "authentication_required", requestId: id }, 401);
     const parsed = await smallJson(request);
     if (parsed.error) return json({ ok: false, error: parsed.error, requestId: id }, parsed.status);
+    if(!parsed.value||typeof parsed.value!=="object"||Array.isArray(parsed.value))return json({ok:false,error:"invalid_request",requestId:id},400);
+    const requestedInput=parsed.value?.input==null?{}:parsed.value.input;
+    if(typeof requestedInput!=="object"||Array.isArray(requestedInput))return json({ok:false,error:"invalid_tool_input",requestId:id},400);
 
     try {
       // Always resolve role/permissions from BCT backend first. Client-supplied role is ignored.
       const permissions = await rpc("bct_my_permissions", token, {});
       const role = normalizedRole(permissions);
-      if(!parsed.value||typeof parsed.value!=="object"||Array.isArray(parsed.value))return json({ok:false,error:"invalid_request",requestId:id},400);
       const toolName = typeof parsed.value?.tool === "string" ? parsed.value.tool.trim() : "";
       if (!toolName) {
         return json({ ok: true, requestId: id, role, tools: listAgentBctTools(role), writeToolsEnabled: false });
       }
 
-      const input=parsed.value?.input==null?{}:parsed.value.input;
-      if(typeof input!=="object"||Array.isArray(input))return json({ok:false,error:"invalid_tool_input",requestId:id},400);
-      const resolved = resolveAgentBctTool(toolName, role, input);
+      const resolved = resolveAgentBctTool(toolName, role, requestedInput);
       if (!resolved.ok) return json({ ok: false, error: resolved.error, requestId: id }, resolved.status);
 
       const raw = await rpc(resolved.rpc, token, resolved.args);
