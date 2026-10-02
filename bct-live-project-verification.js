@@ -21,8 +21,8 @@
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   function lang(){try{return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}catch(_){return 'en'}}
   function t(){return COPY[lang()]||COPY.en}
-  function callRpc(name,args={}){if(typeof rpc!=='function')return Promise.reject(new Error('BCT data connection is not ready.'));return rpc(name,args)}
-  function managedJob(){try{return typeof activeManagedJob!=='undefined'?activeManagedJob:null}catch(_){return null}}
+  function callRpc(name,args={}){const bridge=window.BCT_V46_BRIDGE;if(!bridge?.callRpc)return Promise.reject(new Error('BCT data connection is not ready.'));return bridge.callRpc(name,args)}
+  function managedJob(){try{return window.BCT_V46_BRIDGE?.getActiveManagedJob?.()||null}catch(_){return null}}
   function checkpointLabel(value,c=t()){return c[value]||value||''}
   function resultLabel(value,c=t()){
     const map={pending:c.pending,ready:'Ready',in_progress:c.started,accepted:c.pass,correction_required:c.correct,recheck_required:c.recheck,cancelled:'Cancelled'};
