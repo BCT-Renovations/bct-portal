@@ -24,7 +24,7 @@ export function auditEvent({requestId,event,outcome="ok",role="public",tool="",r
     tool:safeToken(tool,80),
     risk:safeToken(risk,20),
     status:Number.isInteger(Number(status))&&Number(status)>=100&&Number(status)<=599?Number(status):0,
-    durationMs:Math.max(0,Math.min(Number(durationMs)||0,300000)),
+    durationMs:Number.isFinite(Number(durationMs))?Math.max(0,Math.min(Number(durationMs),300000)):0,
     build:safeToken(build,80),
   };
 }
