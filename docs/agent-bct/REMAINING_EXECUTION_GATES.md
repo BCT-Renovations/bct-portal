@@ -8,10 +8,12 @@ This checklist tracks work that cannot be marked complete by design documents al
 - verify health reports non-production and all write/voice/estimator flags OFF;
 - verify no production alias changed.
 
-## Gate 2 — Executed automated tests
-- obtain CI or equivalent executed Node test evidence for the exact SHA;
-- failures are fixed on agent-bct only;
-- BLOCKED is not PASS.
+## Gate 2 — Executed automated tests — PASS for candidate 755ed046554be0523b2ede1c26078b129a38ebe3
+- GitHub Agent BCT Security Tests passed on push and pull_request;
+- Node suite executed 128 tests: 128 passed, 0 failed;
+- BCT V46 Smoke Checks passed on the same candidate;
+- BCT V46 Production Guard passed on the same candidate;
+- any later code change requires a fresh exact-SHA pass.
 
 ## Gate 3 — Phase A generation
 - configure a current approved model in preview only;
