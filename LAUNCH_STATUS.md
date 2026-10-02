@@ -130,6 +130,13 @@ The production launch-control table was re-read without mutation. `frontend_roll
 - The same migration adds a non-recursive Admin SELECT policy for the singleton security-settings row, aligns the MFA setting UPDATE policy with canonical BCT Admin identities, requires AAL2 before marking the MFA UI ready, and preserves the owner-email Admin path.
 - The V46 add-on integration smoke now covers the Admin MFA module and the master launch dry-run guards the canonical AAL2 enforcement migration.
 
+### 2026-10-02 email-provider evidence
+
+- Resend account inspection confirms the BCT sending domain is verified and sending-enabled, and BCT/Supabase mail API credentials exist.
+- Resend delivery history contains multiple password-reset messages accepted by the provider and marked delivered; Resend API logs show successful SMTP-originated `POST /emails` requests.
+- Connected mailbox evidence confirms password-reset mail has reached the business mailbox in prior testing.
+- This closes the question of whether the underlying Resend/Supabase Auth provider can send mail. The remaining email launch gap is narrower: run a fresh production confirmation flow and prove one separate `bct-notification-dispatch` delivery with a provider message ID and mailbox receipt.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
