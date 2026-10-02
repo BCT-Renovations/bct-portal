@@ -34,6 +34,12 @@ export async function executeModelToolCall({call,role,executeRpc}){
 
 export async function boundedToolSequence({calls,role,executeRpc}){
   const source=Array.isArray(calls)?calls:[];
+  const signatures=new Set();
+  for(const call of source){
+    const signature=call&&typeof call==="object"&&!Array.isArray(call)?`${String(call.name||"")}:${typeof call.arguments==="string"?call.arguments:JSON.stringify(call.arguments||{})}`:"invalid";
+    if(signatures.has(signature))return{ok:false,error:"duplicate_tool_call",results:[]};
+    signatures.add(signature);
+  }
   if(source.length===0)return{ok:true,results:[]};
   if(source.length>MAX_TOOL_STEPS)return{ok:false,error:"too_many_tool_steps",results:[]};
   const results=[];
