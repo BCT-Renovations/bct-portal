@@ -180,3 +180,31 @@ language sql stable security definer set search_path=public,auth as $$
 $$;
 revoke execute on function public.bct_homeowner_project_trade_leads(uuid) from public,anon;
 grant execute on function public.bct_homeowner_project_trade_leads(uuid) to authenticated;
+
+
+-- Resolve one homeowner-authorized profile-photo path only after all identity,
+-- document-review, assignment, release, and project-ownership gates pass.
+create or replace function public.bct_homeowner_contractor_profile_photo_path(
+  p_project_id uuid,p_contractor_id uuid
+) returns text
+language sql stable security definer set search_path=public,auth as $$
+  select d.storage_path
+  from public.bct_project_trade_leads l
+  join public.bct_assignments a
+    on a.project_id=l.project_id and a.contractor_id=l.contractor_id and a.status<>'cancelled'
+  join public.bct_contractor_identity_profiles ip
+    on ip.contractor_id=l.contractor_id and ip.profile_photo_status='approved'
+  join public.bct_contractor_documents d
+    on d.id=ip.profile_photo_document_id
+    and d.document_type='profile_photo'
+    and d.review_status='approved'
+  join public.bct_projects p on p.id=l.project_id
+  join public.bct_customers cu on cu.id=p.customer_id
+  where l.project_id=p_project_id
+    and l.contractor_id=p_contractor_id
+    and l.homeowner_visible
+    and cu.auth_user_id=auth.uid()
+  limit 1;
+$$;
+revoke execute on function public.bct_homeowner_contractor_profile_photo_path(uuid,uuid) from public,anon;
+grant execute on function public.bct_homeowner_contractor_profile_photo_path(uuid,uuid) to authenticated;
