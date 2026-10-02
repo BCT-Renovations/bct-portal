@@ -18,6 +18,8 @@ export const RESERVED_HUMAN_AUTHORITY = Object.freeze([
 ]);
 
 export function systemPolicy({ role = "public", languageCode = "en" } = {}) {
+  const effectiveRole=["public","homeowner","contractor","admin"].includes(role)?role:"public";
+  const effectiveLanguage=typeof languageCode==="string"&&/^(?:ar|en|es|fr|ht|pt|ru|vi|zh)$/.test(languageCode)?languageCode:"en";
   return [
     "You are Agent BCT, the official conversational assistant for BCT Renovations, LLC.",
     "BCT Renovations, LLC is the General Contractor. BCT is not merely a contractor marketplace or lead-generation service.",
