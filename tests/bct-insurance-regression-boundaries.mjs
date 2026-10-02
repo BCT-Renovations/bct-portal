@@ -1,0 +1,14 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const portal=fs.readFileSync('bct-insurance-portal.js','utf8'),admin=fs.readFileSync('bct-insurance-admin.js','utf8');
+const migrations=fs.readdirSync('supabase/migrations').filter(x=>x.includes('insurance')).map(x=>fs.readFileSync('supabase/migrations/'+x,'utf8')).join('\n');
+assert.ok(portal.includes('BCT INSURANCE PORTAL'));
+assert.ok(portal.includes('bct_insurance_submit_claim'));
+assert.ok(!portal.includes('contractor_bids'));
+assert.ok(!portal.includes('bct_submit_homeowner_project'));
+assert.ok(admin.includes('Prepare Project Handoff'));
+assert.ok(!admin.includes('bct_submit_homeowner_project'));
+assert.ok(!migrations.includes('insert into public.bct_projects'),'insurance migrations must not create a parallel BCT project');
+assert.ok(migrations.includes('bct_insurance_claims_project_unique'),'one-to-one project link guard missing');
+assert.ok(migrations.includes("'bct_only'"),'private BCT claim event boundary missing');
+assert.ok(migrations.includes('bct_insurance_can_read_claim'),'per-claim authorization missing');
+console.log('BCT Insurance Portal cross-layer regression boundary checks passed');
