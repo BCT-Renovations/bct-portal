@@ -298,7 +298,7 @@ begin
     raise exception 'Required contractor identity documents must be BCT-approved before application approval';
   end if;
   return new;
-end $;
+end $$;
 
 drop trigger if exists trg_bct_contractor_application_identity_approval_guard on public.bct_contractor_applications;
 create trigger trg_bct_contractor_application_identity_approval_guard
@@ -341,7 +341,7 @@ begin
        and l.homeowner_visible;
   end if;
   delete from public.bct_contractor_documents where id=v_doc.id;
-end $;
+end $$;
 revoke all on function public.bct_admin_retire_contractor_identity_document(uuid) from public,anon,authenticated;
 grant execute on function public.bct_admin_retire_contractor_identity_document(uuid) to authenticated;
 
