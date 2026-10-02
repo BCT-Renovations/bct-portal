@@ -89,7 +89,7 @@ begin
   select distinct
     jm.project_id,
     'material_shortage',
-    concat('Material shortage risk: ',coalesce(jm.material_name,jm.description,'project material')),
+    concat('Material shortage risk: ',coalesce(jm.item_name,'project material')),
     se.starts_at,
     'high',
     'open',
@@ -98,15 +98,14 @@ begin
   join public.bct_schedule_events se on se.project_id=jm.project_id
   where se.starts_at between now() and now()+interval '7 days'
     and (
-      coalesce(jm.quantity_on_hand,0) < coalesce(jm.quantity_required,0)
-      or lower(coalesce(jm.status,'')) in ('short','shortage','backordered','unavailable')
+      lower(coalesce(jm.status,'')) in ('short','shortage','backordered','unavailable')
     )
     and not exists(
       select 1 from public.bct_action_inbox ai
        where ai.project_id=jm.project_id
          and ai.action_type='material_shortage'
          and ai.status='open'
-         and ai.title=concat('Material shortage risk: ',coalesce(jm.material_name,jm.description,'project material'))
+         and ai.title=concat('Material shortage risk: ',coalesce(jm.item_name,'project material'))
     );
   get diagnostics v_created=row_count;
   return jsonb_build_object('created',v_created,'refreshed_at',now());
