@@ -41,3 +41,15 @@ Live BCT supports exactly these active language codes at verification:
 `en, ar, zh, fr, ht, pt, ru, es, vi`.
 
 Agent must accept only an active BCT language code. Unsupported language input falls back to BCT's established language behavior rather than creating a second preference system.
+
+
+## Service catalog verification — 2026-10-01
+
+The live backend already has an authoritative active service catalog and localized read RPC:
+`bct_active_services_localized(language_code)`.
+
+Verified active English services include gutters/drainage, roofing, siding, windows/doors, drywall, painting, flooring, kitchen remodeling, bathroom remodeling, decks/porches, electrical, plumbing, carpentry, water/flood damage, full renovation, handyman services and other.
+
+Decision: Agent BCT must query/reuse this service catalog for current supported-service answers instead of hardcoding a second service list into the model prompt. The RPC is SECURITY INVOKER, stable, pins search_path, and returns only code/display_name/category/sort_order.
+
+Service descriptions, eligibility details and pricing are NOT implied by catalog membership. The Agent must not invent those details.
