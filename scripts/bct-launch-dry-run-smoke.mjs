@@ -212,6 +212,12 @@ for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contr
 assert(contractSigningJs.includes('p_consent:true'), 'Contract signing UI must send explicit electronic-signature consent.');
 assert(contractSigningJs.includes('typedName'), 'Contract signing UI must require a typed signer name.');
 assert(indexHtml.includes('bct-contract-signing.js'), 'V46 must load the contract-signing module.');
+assert(indexHtml.includes('bctContractSigningBridge'), 'V46 must expose the narrow signing bridge from its private state wrapper.');
+assert(contractSigningJs.includes('bctContractSigningBridge'), 'Contract signing module must use the V46 signing bridge.');
+assert(!contractSigningJs.includes('await rpc('), 'Contract signing module must not assume access to the private V46 rpc binding.');
+assert(!contractSigningJs.includes('await loadHomeownerState()'), 'Contract signing module must not assume access to private homeowner loader.');
+assert(!contractSigningJs.includes('await loadContractorState()'), 'Contract signing module must not assume access to private contractor loader.');
+assert(!contractSigningJs.includes('await loadAdminState()'), 'Contract signing module must not assume access to private Admin loader.');
 assert(indexHtml.includes('bctRenderHomeownerContracts'), 'Homeowner state load must render contract signatures.');
 assert(indexHtml.includes('bctRenderContractorContracts'), 'Contractor state load must render contract acknowledgments.');
 assert(indexHtml.includes('bctRenderAdminContracts'), 'Admin state load must render BCT contract signatures.');
