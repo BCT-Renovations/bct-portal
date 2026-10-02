@@ -6,10 +6,10 @@ export function projectEscalationReceipt(value){
     caseId:safe(value.id,80),
     caseNumber:safe(value.case_number,80),
     projectId:safe(value.project_id,80),
-    caseType:safe(value.case_type,20),
+    caseType,
     category:safe(value.category,40),
-    severity:safe(value.severity,20),
-    status:safe(value.status,30),
+    severity,
+    status,
     createdAt:safe(value.created_at,80),
   });
 }
