@@ -65,6 +65,10 @@ jobs:
       - name: Phase 1 workflow boundary smoke
         run: node scripts/bct-phase1-workflow-boundary-smoke.mjs
 
+      - name: V46 regression syntax preflight
+        run: |
+          for f in tests/v46-*.mjs; do node --check "$f"; done
+
       - name: V46 field controls regression bundle
         run: |
           node tests/v46-sql-delimiter-regression.mjs
