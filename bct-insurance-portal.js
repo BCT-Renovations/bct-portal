@@ -38,7 +38,7 @@ async function signIn(){
  const email=$('bctInsuranceEmail')?.value.trim(),password=$('bctInsurancePassword')?.value||'';
  if(!email||!password)return status('Enter your email and password.','error');
  const {error}=await sb.auth.signInWithPassword({email,password});if(error)return status(error.message,'error');
- const {data:member,error:memberError}=await sb.from('bct_insurance_members').select('id,organization_id,member_role,active').eq('user_id',(await sb.auth.getUser()).data.user?.id).eq('active',true).limit(1).maybeSingle();
+ const {data:member,error:memberError}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',(await sb.auth.getUser()).data.user?.id).eq('status','active').limit(1).maybeSingle();
  if(memberError||!member){await sb.auth.signOut();return status('This account is not authorized for the BCT Insurance Portal.','error')}
  window.BCT_INSURANCE_MEMBER=member;status('Insurance partner signed in.','success');show('claims');await loadClaims();
 }
@@ -46,15 +46,15 @@ async function submitClaim(e){
  e.preventDefault();const sb=window.supabaseClient;if(!sb)return status('Secure claim submission is not available.','error');
  const {data:{user}}=await sb.auth.getUser();if(!user)return status('Sign in before submitting a claim.','error');
  const f=new FormData(e.currentTarget),organization_id=String(f.get('organization_id')||'').trim();
- const payload={organization_id,claim_number:String(f.get('claim_number')||'').trim(),policyholder_name:String(f.get('policyholder_name')||'').trim(),property_address:String(f.get('property_address')||'').trim(),property_city:String(f.get('property_city')||'').trim(),property_state:String(f.get('property_state')||'').trim(),property_zip:String(f.get('property_zip')||'').trim()||null,loss_type:String(f.get('loss_type')||'').trim(),loss_date:f.get('loss_date')||null,carrier_scope:{notes:String(f.get('scope_notes')||'').trim()},submitted_by:user.id,status:'submitted',authorization_status:'pending'};
- const {error}=await sb.from('bct_insurance_claims').insert(payload);if(error)return status(error.message,'error');
+ const property_address={street:String(f.get('property_address')||'').trim(),city:String(f.get('property_city')||'').trim(),state:String(f.get('property_state')||'').trim(),zip:String(f.get('property_zip')||'').trim()};
+ const {error}=await sb.rpc('bct_insurance_submit_claim',{p_organization_id:organization_id,p_claim_number:String(f.get('claim_number')||'').trim(),p_policyholder_name:String(f.get('policyholder_name')||'').trim(),p_property_address:property_address,p_loss_type:String(f.get('loss_type')||'').trim(),p_date_of_loss:f.get('loss_date')||null,p_carrier_scope:{notes:String(f.get('scope_notes')||'').trim()},p_carrier_estimate:{},p_documents:[],p_photos:[]});if(error)return status(error.message,'error');
  e.currentTarget.reset();status('Claim submitted to BCT Review. No construction job has been authorized yet.','success');show('claims');await loadClaims();
 }
 async function loadClaims(){
  const sb=window.supabaseClient;if(!sb)return;const box=$('bctInsuranceClaims');if(!box)return;
- const {data,error}=await sb.from('bct_insurance_claims').select('id,claim_number,policyholder_name,property_address,property_city,property_state,loss_type,loss_date,status,authorization_status,created_at').order('created_at',{ascending:false}).limit(100);
+ const {data,error}=await sb.from('bct_insurance_claims').select('id,claim_number,policyholder_name,property_address,loss_type,date_of_loss,status,created_at').order('created_at',{ascending:false}).limit(100);
  if(error){box.innerHTML='<div class="error">'+esc(error.message)+'</div>';return}
- box.innerHTML=(data||[]).length?(data||[]).map(c=>`<article class="card"><strong>Claim ${esc(c.claim_number)}</strong><p>${esc(c.policyholder_name)} · ${esc(c.loss_type)}</p><p class="muted">${esc(c.property_address)}, ${esc(c.property_city)}, ${esc(c.property_state)}</p><p>Status: <strong>${esc(c.status)}</strong> · Authorization: <strong>${esc(c.authorization_status)}</strong></p></article>`).join(''):'<div class="notice">No authorized claims found.</div>';
+ box.innerHTML=(data||[]).length?(data||[]).map(c=>`<article class="card"><strong>Claim ${esc(c.claim_number)}</strong><p>${esc(c.policyholder_name)} · ${esc(c.loss_type)}</p><p class="muted">${esc(c.property_address?.street||'')}, ${esc(c.property_address?.city||'')}, ${esc(c.property_address?.state||'')}</p><p>Status: <strong>${esc(c.status)}</strong></p></article>`).join(''):'<div class="notice">No authorized claims found.</div>';
 }
 window.BCT_INSURANCE_PORTAL_VERSION=VERSION;window.bctOpenInsurancePortal=()=>{ensure();setView('insurance')};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure,{once:true});else ensure();
 })();
