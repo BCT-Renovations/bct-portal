@@ -30,4 +30,4 @@ jobs:
         with:
           node-version: "20"
       - name: Run Agent BCT security tests
-        run: npm run test:agent-bct
+        run: |\n          npm run test:agent-bct\n          node scripts/agent-bct-mobile-smoke.mjs
