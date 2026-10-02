@@ -29,3 +29,12 @@ test("audit role cannot be elevated by arbitrary role text",()=>{
 test("audit never accepts unknown event names as log structure",()=>{
   assert.throws(()=>auditEvent({requestId:"r",event:"user_prompt"}),/invalid_audit_event/);
 });
+
+test("audit outcome and status cannot become arbitrary log fields",()=>{
+  const e=auditEvent({requestId:"r",event:"tool_failed",outcome:"user supplied success",status:999});
+  assert.equal(e.outcome,"failed");
+  assert.equal(e.status,0);
+});
+test("audit accepts bounded known outcome vocabulary",()=>{
+  for(const outcome of ["ok","denied","failed","blocked","unavailable"])assert.equal(auditEvent({event:"tool_failed",outcome,status:502}).outcome,outcome);
+});
