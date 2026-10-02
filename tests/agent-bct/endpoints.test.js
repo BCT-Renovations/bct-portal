@@ -62,9 +62,11 @@ test("tool endpoint rejects array tool input",async()=>{
   }finally{globalThis.fetch=original;}
 });
 
-test("session rejects array JSON body before authentication",async()=>{
-  const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json"},body:"[]"}));
-  assert.equal(res.status,401);
+test("session rejects malformed JSON shapes before authentication or backend access",async()=>{
+  for(const body of ["[]","123","null"]){
+    const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer fake"},body}));
+    assert.equal(res.status,400);assert.equal((await res.json()).error,"invalid_request");
+  }
 });
 test("health does not advertise production-only capabilities",async()=>{
   const res=await health.fetch(req("https://example.test/api/agent-bct/health"));
