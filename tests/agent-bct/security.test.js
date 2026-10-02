@@ -194,3 +194,10 @@ test("no registered model tool exposes a write path or estimator role",()=>{
     }
   }
 });
+
+test("identity projection rejects invented roles and malformed permission labels",()=>{
+  const tool=resolveAgentBctTool("identity.permissions","homeowner",{});
+  const projected=tool.project({role:"owner-admin",permissions:["project.read","bad permission","x".repeat(100),7]});
+  assert.equal(projected.role,"unknown");
+  assert.deepEqual(projected.permissions,["project.read"]);
+});
