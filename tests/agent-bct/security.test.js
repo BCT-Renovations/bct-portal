@@ -159,3 +159,9 @@ test("all currently registered Agent tools remain read-only",()=>{
     for(const tool of listAgentBctTools(role))assert.equal(tool.write,false);
   }
 });
+
+test("row-returning tools cap projected results",()=>{
+  const tool=resolveAgentBctTool("notification.list","homeowner",{});
+  const rows=Array.from({length:200},(_,i)=>({id:String(i),subject:"n"}));
+  assert.equal(tool.project(rows).length,50);
+});
