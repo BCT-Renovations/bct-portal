@@ -38,3 +38,9 @@ test("additional unconfirmed reserved completion variants are blocked",()=>{
     assert.ok(inspectGeneratedResponse(text).findings.includes("unconfirmed_reserved_action_claim"));
   }
 });
+
+test("more first-person human identity variants are blocked",()=>{
+  for(const text of ["I'm Ty and I approved it.","I’m Tyrone Perry.","I am the general contractor for your project."]){
+    assert.ok(inspectGeneratedResponse(text).findings.includes("human_impersonation_claim"));
+  }
+});
