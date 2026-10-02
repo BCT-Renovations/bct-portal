@@ -40,7 +40,7 @@ function optionalUuid(value) {
   return value;
 }
 function pick(object, keys) {
-  if (!object || typeof object !== "object") return {};
+  if (!object || typeof object !== "object" || Array.isArray(object)) return {};
   return Object.fromEntries(keys.filter(key => Object.hasOwn(object, key)).map(key => [key, object[key]]));
 }
 function identityPermissions(value) {
