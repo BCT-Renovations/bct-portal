@@ -115,3 +115,10 @@ test("risk detector flags bid leakage and reserved approval decisions",()=>{
   assert.ok(detectHighRiskRequest("Approve this contractor right now").includes("approval_authority"));
   assert.ok(detectHighRiskRequest("Resolve this dispute in my favor").includes("legal_or_dispute_authority"));
 });
+
+test("system policy forbids unconfirmed action claims and human impersonation",()=>{
+  const policy=systemPolicy({role:"homeowner",languageCode:"en"});
+  assert.match(policy,/unless an authorized BCT tool confirms/i);
+  assert.match(policy,/Never impersonate Ty Perry/i);
+  assert.match(policy,/emergency services/i);
+});
