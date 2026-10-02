@@ -39,5 +39,6 @@ for(const t of forbidden) if((b4+'\n'+b5).includes(t)) throw new Error('Duplicat
 
 if(!b4.includes("if not public.is_bct_admin()")) throw new Error('Insurance intake admin boundary missing');
 if(!b5.includes("c.auth_user_id=auth.uid()")) throw new Error('Homeowner ownership check missing');
+if(!b5.includes("mp.id=p.managed_property_id") || !b5.includes("mp.property_account_id=pa.id")) throw new Error('Property portfolio ownership scope missing');
 if(b5.includes('resident_private_notes') || b5.includes('access_instructions')) throw new Error('Private household/access data leaked into homeowner snapshot');
 console.log('V46 portal enforcement batches 4-5 smoke checks passed');
