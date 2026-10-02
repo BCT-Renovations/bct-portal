@@ -12,9 +12,12 @@ alter table public.bct_contractor_documents
       'government_id_back',
       'contractor_trade_license',
       'certificate_of_insurance',
+      'insurance',
       'w9',
+      'license_registration',
       'work_photo',
-      'supporting_document'
+      'supporting_document',
+      'background_check_authorization'
     )
   ) not valid;
 
@@ -187,6 +190,7 @@ language sql stable security definer set search_path=public,auth as $$
   join public.bct_contractor_identity_profiles ip on ip.contractor_id=c.id
     and ip.profile_photo_status='approved'
   join public.bct_contractor_documents d on d.id=ip.profile_photo_document_id
+    and d.application_id=c.application_id
     and d.document_type='profile_photo'
     and d.review_status='approved'
   where l.project_id=p_project_id and l.homeowner_visible
@@ -218,8 +222,10 @@ language sql stable security definer set search_path=public,auth as $$
     on a.project_id=l.project_id and a.contractor_id=l.contractor_id and a.status in ('assigned','scheduled','in_progress','quality_review')
   join public.bct_contractor_identity_profiles ip
     on ip.contractor_id=l.contractor_id and ip.profile_photo_status='approved'
+  join public.bct_contractors c on c.id=l.contractor_id and c.active
   join public.bct_contractor_documents d
     on d.id=ip.profile_photo_document_id
+    and d.application_id=c.application_id
     and d.document_type='profile_photo'
     and d.review_status='approved'
   join public.bct_projects p on p.id=l.project_id
