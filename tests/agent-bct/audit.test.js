@@ -14,3 +14,10 @@ test("audit event normalizes role and bounds scalar metadata",()=>{
   assert.equal(e.tool,"sql.execute");
   assert.equal(Object.hasOwn(e,"prompt"),false);
 });
+
+test("audit metadata rejects prompt-like free text",()=>{
+  const e=auditEvent({requestId:"req-1",event:"tool_failed",tool:"project.status\nAuthorization: Bearer secret",risk:"medium user said password",build:"sha ok but secret"});
+  assert.equal(e.tool,"redacted");
+  assert.equal(e.risk,"redacted");
+  assert.equal(e.build,"redacted");
+});
