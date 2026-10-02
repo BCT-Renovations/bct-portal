@@ -48,4 +48,7 @@ assert(sql.includes("profile_photo_status='pending'"),'Revoked profile-photo rev
 assert(sql.includes("old.review_status='approved' and new.review_status is distinct from 'approved'"),'Profile-photo review withdrawal must trigger revocation.');
 assert(sql.includes("and c.active"),'Homeowner trade leads must exclude inactive contractors.');
 assert(sql.includes("p_project_id,p_contractor_id,lower(btrim(p_trade))"),'Trade-lead keys must be normalized before persistence.');
+['insurance','license_registration','background_check_authorization'].forEach(x=>assert(sql.includes("'"+x+"'"),'Identity migration must preserve legacy contractor document type: '+x));
+assert(sql.includes("d.application_id=c.application_id"),'Homeowner profile-photo reads must bind the photo to the contractor’s canonical application.');
+assert(!/storage\.objects|create policy[\s\S]{0,100}bct-contractor-documents/i.test(sql),'Identity migration must not broaden private storage access.');
 console.log('BCT contractor identity/trade-lead smoke passed.');
