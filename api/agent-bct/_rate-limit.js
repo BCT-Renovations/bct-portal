@@ -17,7 +17,10 @@ function sweep(at){
 }
 
 function now(){return Date.now();}
-function keyPart(value){return String(value||"anonymous").slice(0,160);}
+function keyPart(value){
+  const raw=String(value||"anonymous").slice(0,160);
+  return /^[a-z0-9:_-]+$/i.test(raw)?raw:"anonymous";
+}
 
 export function checkLocalRateLimit({identity="anonymous",authenticated=false,at=now()}={}) {
   sweep(at);
