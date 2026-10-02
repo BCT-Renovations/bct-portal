@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {prepareEscalation,escalationLabels,escalationFingerprint} from "../../api/agent-bct/_escalation.js";
+import {prepareEscalation,escalationLabels,escalationFingerprint,escalationRpcArgs} from "../../api/agent-bct/_escalation.js";
 test("escalation preparation requires explicit confirmation",()=>assert.equal(prepareEscalation({label:"project_question",subject:"Question",description:"Need help"}).error,"confirmation_required"));
 test("Agent labels map only to existing BCT case enums",()=>{
   for(const label of escalationLabels()){
@@ -28,4 +28,10 @@ test("different project changes escalation fingerprint",()=>{
 test("unsafe project and job identifiers are not carried into prepared payload",()=>{
   const r=prepareEscalation({confirmed:true,subject:"Question",description:"Review",projectId:"id\nsecret",jobId:"id:bad"});
   assert.equal(r.projectId,"");assert.equal(r.jobId,"");
+});
+
+test("escalation RPC arguments contain only the narrow existing case contract",()=>{
+  const prepared=prepareEscalation({confirmed:true,label:"schedule_issue",severity:"high",subject:"Schedule",description:"Please review",projectId:"abc",jobId:"job_1"});
+  assert.deepEqual(Object.keys(escalationRpcArgs(prepared)).sort(),["p_case_type","p_category","p_description","p_job_id","p_project_id","p_severity","p_subject"].sort());
+  assert.equal(escalationRpcArgs({ok:false}),null);
 });
