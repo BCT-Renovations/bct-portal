@@ -54,7 +54,7 @@ export default{async fetch(request){
     return json({ok:true,requestId,stage:"generation_preview",generationEnabled:true,liveToolLoopEnabled:false,role,provenance:classifyProvenance({hasGeneral:context.knowledge.length>0,riskSignals:context.riskSignals}),riskSignals:context.riskSignals,answer:generated.text,model:generated.model,finishReason:generated.finishReason,usage:generated.usage,policyVersion:context.policyVersion});
   }catch(error){
     const status=Number(error?.status)||400;const code=error?.code||"invalid_request";
-    try{emitPreviewAudit(auditEvent({requestId,event:code==="rate_limited"?"rate_limited":code==="budget_blocked"?"budget_blocked":"generation_failed",outcome:code,role,status,durationMs:Date.now()-started}));}catch{}
+    try{emitPreviewAudit(auditEvent({requestId,event:code==="rate_limited"?"rate_limited":code==="budget_blocked"?"budget_blocked":"generation_failed",outcome:status===429?"blocked":status>=500?"failed":status===403?"denied":"failed",role,status,durationMs:Date.now()-started}));}catch{}
     return json({ok:false,error:status===401?"authentication_required":status===403?"access_denied":status===503?"service_unavailable":status===504?"generation_timeout":status===429?"rate_limited":status===402?"budget_blocked":code,requestId},status);
   }
 }};
