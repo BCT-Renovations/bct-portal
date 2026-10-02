@@ -32,7 +32,8 @@ function score(query, entry) {
 }
 export function retrieveApprovedKnowledge({ query, role = "public", languageCode = "en", limit = 4 }) {
   const safeQuery=typeof query==="string"?query.slice(0,2000):"";
-  const numericLimit=Number(limit);\n  const safeLimit = Number.isFinite(numericLimit)&&numericLimit>0 ? Math.max(1,Math.min(Math.floor(numericLimit),8)) : 4;
+  const numericLimit=Number(limit);
+  const safeLimit = Number.isFinite(numericLimit)&&numericLimit>0 ? Math.max(1,Math.min(Math.floor(numericLimit),8)) : 4;
   const allowedRole = ["public","homeowner","contractor","estimator","admin","property_manager"].includes(role) ? role : "public";
   return KNOWLEDGE
     .filter(entry => entry.status === "approved" && entry.audience.includes(allowedRole))
