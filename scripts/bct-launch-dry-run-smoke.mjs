@@ -187,6 +187,10 @@ for (const field of ['target_subcontract_amount', 'project_id']) {
   assert(!safeJobsFunction.includes(field), `Contractor-safe available jobs must not expose ${field}.`);
 }
 
+for (const marker of ['bct_validate_password_not_recent','bct_record_password_history','last five']) {
+  assert(indexHtml.includes(marker), `Password recovery must preserve: ${marker}`);
+}
+
 const externalGateMarkers = [
   'Supabase backups/PITR verified',
   'Leaked-password protection enabled',
