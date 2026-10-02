@@ -16,6 +16,10 @@ const contractorJobSafetySql = fs.readFileSync(new URL('../supabase/migrations/2
 const safetyTrainingSmoke = fs.readFileSync(new URL('./bct-safety-training-smoke.mjs', import.meta.url), 'utf8');
 const contractorSafetyUiSmoke = fs.readFileSync(new URL('./bct-contractor-safety-ui-smoke.mjs', import.meta.url), 'utf8');
 const contractorOnboardingSmoke = fs.readFileSync(new URL('./bct-contractor-onboarding-smoke.mjs', import.meta.url), 'utf8');
+const contractorIdentitySmoke = fs.readFileSync(new URL('./bct-contractor-identity-smoke.mjs', import.meta.url), 'utf8');
+assert(contractorIdentitySmoke.includes('BCT contractor identity/trade-lead smoke passed.'), 'Launch dry run must include the contractor identity/trade-lead regression suite.');
+assert(contractorIdentitySmoke.includes('government IDs must never share homeowner storage access'), 'Launch dry run must retain the homeowner/government-ID privacy guard.');
+
 const safetyCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260926114500_contractor_safety_training_automation.sql', import.meta.url), 'utf8');
 const safetyAdminSql = fs.readFileSync(new URL('../supabase/migrations/20260926115500_safety_training_admin_automation.sql', import.meta.url), 'utf8');
 const automation100Sql = fs.readFileSync(new URL('../supabase/migrations/20260926122000_launch_automation_engine_100.sql', import.meta.url), 'utf8');
