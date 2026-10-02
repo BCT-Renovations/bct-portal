@@ -60,8 +60,11 @@ begin
        and lower(coalesce(pd.status,'')) not in ('satisfied','complete','completed','resolved','waived','cancelled'))
     union all
     select 'permit','A required project permit is not ready'
-     where exists(select 1 from public.bct_permits pm where pm.project_id=p_project_id
-       and lower(coalesce(pm.status,'')) not in ('issued','approved','active','complete','completed','closed','not_required','waived','cancelled'))
+     where exists(select 1 from public.bct_permit_responsibilities pr where pr.project_id=p_project_id
+       and lower(coalesce(pr.status,'')) not in ('complete','completed','not_required','waived','cancelled')
+       and not exists(select 1 from public.bct_permits pm where pm.project_id=p_project_id
+         and lower(coalesce(pm.permit_type,''))=lower(coalesce(pr.permit_type,''))
+         and lower(coalesce(pm.status,'')) in ('issued','approved','active','complete','completed','closed')))
     union all
     select 'failed_inspection','A project inspection requires correction or reinspection'
      where exists(select 1 from public.bct_inspections i where i.project_id=p_project_id
@@ -69,7 +72,8 @@ begin
     union all
     select 'customer_material','Homeowner-supplied material is not verified'
      where exists(select 1 from public.bct_customer_materials cm where cm.project_id=p_project_id
-       and lower(coalesce(cm.verification_status,'')) not in ('verified','accepted','approved','not_required','waived','cancelled'))
+       and coalesce(cm.quantity_claimed,0)>0
+       and (cm.verification_status is null or lower(cm.verification_status) not in ('verified','accepted','approved','not_required','waived','cancelled')))
   )
   select jsonb_build_object(
     'project_id',p_project_id,
