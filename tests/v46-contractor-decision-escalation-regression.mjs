@@ -1,7 +1,7 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';
 const sql=fs.readFileSync('supabase/migrations/20261002120000_v46_contractor_decision_escalation.sql','utf8');
 const batch2=fs.readFileSync('supabase/migrations/20261002083000_v46_field_controls_extension_batch2.sql','utf8');
-const ui=fs.readFileSync('index.html','utf8');
+const ui=fs.readFileSync('index.html','utf8');\nconst readback=fs.readFileSync('supabase/migrations/20261002121000_v46_contractor_decision_readback.sql','utf8');\nconst adminResolve=fs.readFileSync('supabase/migrations/20261002121500_v46_admin_contractor_decision_resolution.sql','utf8');
 for(const x of ['bct_contractor_need_bct_decision','bct_contractor_report_cannot_perform','bct_field_questions','bct_scope_items','bct_action_inbox'])assert.ok(sql.includes(x),'missing '+x);
 for(const x of ['decision_requested_at','affected_scope_item_id','cannot_perform_reason','cannot_perform_reported_at','cannot_perform_reported_by'])assert.ok(batch2.includes(x),'existing extension field missing '+x);
 assert.ok(sql.includes('Active project assignment required'),'contractor assignment guard missing');
@@ -11,3 +11,8 @@ for(const x of ['Need BCT Decision','Cannot Perform Assigned Scope','bctContract
 assert.ok(ui.includes('BCT will control the project decision'),'BCT control language missing');
 assert.ok(ui.includes('Do not change the scope or substitute work unless BCT authorizes it.'),'scope authority warning missing');
 console.log('V46 contractor decision escalation regression checks passed');
+assert.ok(readback.includes('bct_my_contractor_decisions'),'contractor decision readback RPC missing');
+assert.ok(readback.includes('q.asked_by=auth.uid()'),'decision readback caller boundary missing');
+assert.ok(adminResolve.includes('bct_admin_resolve_contractor_decision'),'Admin resolution RPC missing');
+assert.ok(adminResolve.includes('public.is_bct_admin()'),'Admin resolution authorization missing');
+for(const x of ['My BCT Decision Requests','BCT decision:','Waiting for BCT decision.'])assert.ok(ui.includes(x),'decision readback UI missing '+x);
