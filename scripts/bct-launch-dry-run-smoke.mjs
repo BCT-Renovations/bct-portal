@@ -212,7 +212,13 @@ for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contr
 assert(contractSigningJs.includes('p_consent:true'), 'Contract signing UI must send explicit electronic-signature consent.');
 assert(contractSigningJs.includes('typedName'), 'Contract signing UI must require a typed signer name.');
 assert(indexHtml.includes('bct-contract-signing.js'), 'V46 must load the contract-signing module.');
-assert(indexHtml.includes('bctContractSigningBridge'), 'V46 must expose the narrow signing bridge from its private state wrapper.');
+assert(indexHtml.includes('window.supabaseClient=supabaseClient'), 'V46 must expose the shared Supabase client to isolated add-ons.');
+assert(indexHtml.includes('window.SUPABASE_URL=SUPABASE_URL'), 'V46 must expose the public Supabase URL used by isolated add-ons.');
+assert(indexHtml.includes('window.BCT_V46_BRIDGE'), 'V46 must expose the narrow shared bridge for private state/RPC operations.');
+assert(indexHtml.includes('bctContractSigningBridge'), 'V46 must preserve the contract-signing bridge alias.');
+assert(liveVerificationJs.includes('window.BCT_V46_BRIDGE'), 'Live verification must use the shared V46 bridge.');
+assert(!liveVerificationJs.includes("typeof rpc!=='function'"), 'Live verification must not depend on the private rpc lexical binding.');
+assert(!liveVerificationJs.includes("typeof activeManagedJob!=='undefined'"), 'Live verification must not depend on the private active-job lexical binding.');
 assert(contractSigningJs.includes('bctContractSigningBridge'), 'Contract signing module must use the V46 signing bridge.');
 assert(!contractSigningJs.includes('await rpc('), 'Contract signing module must not assume access to the private V46 rpc binding.');
 assert(!contractSigningJs.includes('await loadHomeownerState()'), 'Contract signing module must not assume access to private homeowner loader.');
