@@ -8,3 +8,8 @@ test("case receipt exposes only safe minimal fields",()=>{
   assert.equal(Object.hasOwn(r,"internal_notes"),false);
 });
 test("malformed case receipt input fails closed",()=>{assert.equal(projectEscalationReceipt(null),null);assert.equal(projectEscalationReceipt([]),null);});
+
+test("case receipt rejects malformed authority state instead of laundering it",()=>{
+  assert.equal(projectEscalationReceipt({id:"1",case_type:"admin",severity:"critical",status:"approved"}),null);
+  assert.equal(projectEscalationReceipt({id:"",case_type:"issue",severity:"normal",status:"open"}),null);
+});
