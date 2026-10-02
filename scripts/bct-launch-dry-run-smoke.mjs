@@ -201,6 +201,10 @@ for (const marker of [
 }
 assert(readinessSql.includes('customer_pilot_enabled') || launchStatus.includes('customer_pilot_enabled'), 'Customer pilot launch gate must remain explicit.');
 
+assert(indexHtml.includes('Manual Weather Log'), 'Admin weather workflow must remain explicitly manual.');
+assert(indexHtml.includes('Automatic weather-provider pulls are not enabled yet.'), 'Automatic weather must remain disabled in the current portal until approved.');
+assert(!indexHtml.includes('bct-weather-refresh') && !indexHtml.includes('bct-weather'), 'Current V46 portal must not silently invoke automatic weather Edge Functions.');
+
 const externalGateMarkers = [
   'Supabase backups/PITR verified',
   'Leaked-password protection enabled',
