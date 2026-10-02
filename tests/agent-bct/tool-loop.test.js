@@ -83,3 +83,11 @@ test("duplicate tool calls are rejected before executor work",async()=>{
   assert.equal(r.error,"duplicate_tool_call");
   assert.equal(count,0);
 });
+
+test("unserializable model tool arguments fail closed before executor",async()=>{
+  let count=0;
+  const cyclic={};cyclic.self=cyclic;
+  const r=await boundedToolSequence({calls:[{name:"project_list",arguments:cyclic}],role:"homeowner",executeRpc:async()=>{count++;return[];}});
+  assert.equal(r.error,"invalid_tool_call");
+  assert.equal(count,0);
+});
