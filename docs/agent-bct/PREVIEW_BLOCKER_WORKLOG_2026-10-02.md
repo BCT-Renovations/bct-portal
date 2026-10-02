@@ -29,3 +29,13 @@ Several intermediate commits failed CI because source-edit tooling inserted lite
 
 ## Production safety
 No production merge, production Agent deployment, production database migration, Agent write activation, estimator live-tool activation, or voice activation occurred.
+
+
+## 2026-10-02 exact-head preview follow-up
+- Current branch head before this documentation update: `25b9b437301045b6fce0b39bfa4bfaa8699b9450`.
+- Exact-head CI: Agent BCT Security Tests PASS; BCT V46 Smoke Checks PASS; BCT V46 Production Guard PASS.
+- Branch comparison: 290 commits ahead of main, 0 behind, 97 changed files.
+- Vercel is accepting preview deployments again, but the newest READY Agent BCT preview observed is `ffae7480e55dd93eda679ab9646115889251b486`, not the current exact candidate.
+- Other repository branches are currently producing READY previews, so the old global deployment-rate-limit condition is no longer the active explanation.
+- Do not use an older READY preview as evidence for the current candidate.
+- No production deployment or merge was triggered.
