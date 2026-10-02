@@ -5,6 +5,7 @@ const index=read('index.html');
 const adminSections=read('bct-admin-sections.js');
 const liveVerification=read('bct-live-project-verification.js');
 const contractSigning=read('bct-contract-signing.js');
+const contractorCloseout=read('bct-contractor-closeout.js');
 const gallery=read('bct-home-gallery.js');
 const photoAdmin=read('bct-photo-admin.js');
 const estimatorPortal=read('bct-estimator-portal.js');
@@ -19,7 +20,7 @@ assert(index.includes('window.SUPABASE_URL=SUPABASE_URL'),'Shared public Supabas
 assert(index.includes('window.BCT_V46_BRIDGE'),'Private V46 state/RPC bridge must exist.');
 assert(index.includes('bct-contract-signing.js'),'Contract-signing add-on must be loaded.');
 
-for(const file of ['bct-admin-sections.js','bct-admin-control-board.js','bct-admin-mobile-fix.js','bct-home-gallery.js','bct-contract-signing.js']){
+for(const file of ['bct-admin-sections.js','bct-admin-control-board.js','bct-admin-mobile-fix.js','bct-home-gallery.js','bct-contract-signing.js','bct-contractor-closeout.js']){
   assert(fs.existsSync(new URL('../'+file,import.meta.url)),`Missing index add-on: ${file}`);
 }
 for(const file of ['bct-live-project-verification.js','bct-admin-job-pages.js','bct-estimator-system.js','bct-estimator-portal.js','bct-estimator-admin.js','bct-photo-admin.js','bct-admin-mfa.js']){
@@ -38,6 +39,12 @@ assert(liveVerification.includes('window.BCT_V46_BRIDGE'),'Live verification mus
 assert(!liveVerification.includes("typeof rpc!=='function'"),'Live verification must not access the private rpc binding.');
 assert(!liveVerification.includes("typeof activeManagedJob!=='undefined'"),'Live verification must not access the private active-job binding.');
 assert(contractSigning.includes('bctContractSigningBridge'),'Contract signing must use the approved bridge alias.');
+assert(contractorCloseout.includes('bct_completion_requests'),'Contractor closeout must reuse the existing completion-request table.');
+assert(contractorCloseout.includes('bct_contractor_cancel_completion_request'),'Contractor closeout must use the canonical cancellation RPC.');
+assert(contractorCloseout.includes('bct_submit_completion_rating'),'Contractor closeout must use the canonical rating RPC.');
+assert(contractorCloseout.includes('window.BCT_V46_BRIDGE'),'Contractor closeout must use the shared V46 bridge.');
+assert(index.includes('bct-contractor-closeout.js'),'V46 must load the contractor closeout add-on.');
+assert(index.includes('bctRenderContractorCloseout'),'Contractor state load must render closeout controls.');
 assert(!contractSigning.includes('await rpc('),'Contract signing must not access private rpc directly.');
 
 for(const [name,source] of [
