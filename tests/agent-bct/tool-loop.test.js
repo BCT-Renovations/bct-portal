@@ -46,3 +46,17 @@ test("empty tool sequence is a safe no-op",async()=>{
   const r=await boundedToolSequence({calls:[],role:"homeowner",executeRpc:async()=>{throw new Error("should not run");}});
   assert.equal(r.ok,true);assert.deepEqual(r.results,[]);
 });
+
+test("tool execution fails closed for unknown role",async()=>{
+  let called=false;
+  const r=await executeModelToolCall({call:{name:"service_list",arguments:"{}"},role:"superadmin",executeRpc:async()=>{called=true;return[];}});
+  assert.equal(r.error,"tool_role_denied");assert.equal(called,false);
+});
+test("tool execution fails closed without an executor",async()=>{
+  const r=await executeModelToolCall({call:{name:"project_list",arguments:"{}"},role:"homeowner"});
+  assert.equal(r.error,"tool_executor_unavailable");
+});
+test("array-shaped model tool call is rejected",async()=>{
+  const r=await executeModelToolCall({call:[],role:"homeowner",executeRpc:async()=>[]});
+  assert.equal(r.error,"invalid_tool_call");
+});
