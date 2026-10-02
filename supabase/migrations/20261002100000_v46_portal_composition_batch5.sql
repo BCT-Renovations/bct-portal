@@ -165,7 +165,7 @@ create or replace function public.bct_my_property_portfolio_priority()
 returns table(project_id uuid,project_number text,property_name text,building_number text,unit_number text,
               workflow_status text,priority text,requires_manager_action boolean,open_attention bigint)
 language plpgsql stable security definer set search_path=public,auth,pg_temp
-as $
+as $$
 begin
   if auth.uid() is null then raise exception 'Authentication required'; end if;
 
@@ -194,6 +194,6 @@ begin
     case when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='critical') then 0
          when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='high') then 1 else 2 end,
     p.updated_at desc;
-end $;
+end $$;
 revoke all on function public.bct_my_property_portfolio_priority() from public,anon,authenticated;
 grant execute on function public.bct_my_property_portfolio_priority() to authenticated;
