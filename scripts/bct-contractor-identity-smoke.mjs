@@ -74,4 +74,16 @@ assert(migration.includes("l.homeowner_visible"), 'homeowner storage access requ
 assert(migration.includes("cu.auth_user_id=(select auth.uid())"), 'homeowner storage access must bind to the owning customer account');
 assert(!migration.includes("document_type in ('profile_photo','government_id_front','government_id_back')\n      and cu.auth_user_id"), 'government IDs must never share homeowner storage access');
 
+
+assert(credentialBoardSql.includes('bct_contractor_required_credentials_current'), 'identity work must retain the existing credential-current gate.');
+assert(credentialBoardSql.includes("verification_status='verified'"), 'credential-current gate must remain BCT-verified.');
+assert(credentialBidGuardSql.includes('bct_contractor_required_credentials_current(new.contractor_id,v_trade,v_jurisdiction)'), 'bid insertion must retain credential eligibility enforcement.');
+assert(credentialBidGuardSql.includes('Bidding paused: required BCT-verified contractor credentials'), 'bid guard must retain explicit credential failure boundary.');
+assert(estimatorBidGuardSql.includes('bct_assert_no_estimator_project_conflict'), 'identity work must retain estimator/bid separation.');
+assert(estimatorBidGuardSql.includes('not public.bct_estimator_conflict(j.project_id,auth.uid())'), 'available-job discovery must retain estimator conflict filtering.');
+assert(estimatorAssignmentGuardSql.includes('bct_assert_no_estimator_project_conflict(new.project_id, v_contractor_user_id)'), 'performing-contractor assignment must retain estimator separation.');
+assert(migration.includes("join public.bct_contractors c on c.id=l.contractor_id and c.active"), 'Who’s Coming must retain active-contractor filtering.');
+assert(migration.includes("a.status in ('assigned','scheduled','in_progress','quality_review')"), 'Who’s Coming must retain active assignment filtering.');
+assert(!migration.includes("create table if not exists public.bct_contractor_credentials"), 'identity migration must not duplicate the contractor credentials system.');
+
 console.log('BCT contractor identity/trade-lead smoke passed.');
