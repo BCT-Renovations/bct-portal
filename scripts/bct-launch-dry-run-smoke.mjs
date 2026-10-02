@@ -119,6 +119,10 @@ const dryRunMarkers = [
   ['admin warranty backend', 'bct_admin_warranties'],
   ['admin rating summary backend', 'bct_admin_rating_summary'],
   ['admin closeout overview', 'bctAdminCloseoutOverview'],
+  ['admin completion request review action', 'bct_admin_review_completion_request'],
+  ['admin accept completion for quality review', 'accepted_for_review'],
+  ['admin correction-required completion path', 'correction_needed'],
+  ['admin final completion decision', "data-closeout-review=\"completed\""],
   ['admin closeout control wording', 'BCT retains final approval over completion'],
   ['automation health dashboard', 'Automation Health'],
   ['local demo data disabled after overlay', "localStorage.removeItem('bctPortalDataV1')"]
