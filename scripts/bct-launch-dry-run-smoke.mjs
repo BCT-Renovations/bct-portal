@@ -35,6 +35,7 @@ const closeoutGuardSql = fs.readFileSync(new URL('../supabase/migrations/2026092
 const signatureImmutabilitySql = fs.readFileSync(new URL('../supabase/migrations/20260926161500_contract_signature_immutability.sql', import.meta.url), 'utf8');
 const gallerySql = fs.readFileSync(new URL('../supabase/migrations/20261001220000_bct_photo_build_gallery.sql', import.meta.url), 'utf8');
 const homeGalleryJs = fs.readFileSync(new URL('../bct-home-gallery.js', import.meta.url), 'utf8');
+const liveVerificationJs = fs.readFileSync(new URL('../bct-live-project-verification.js', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -202,6 +203,14 @@ for (const marker of [
   assert(indexHtml.includes(marker) || readinessSql.includes(marker), `Admin launch boundary must preserve: ${marker}`);
 }
 assert(readinessSql.includes('customer_pilot_enabled') || launchStatus.includes('customer_pilot_enabled'), 'Customer pilot launch gate must remain explicit.');
+
+assert(liveVerificationJs.includes('bct_admin_create_live_quality_check'), 'Live verification Admin creation must use the canonical quality-check workflow.');
+assert(liveVerificationJs.includes('bct_admin_live_quality_checks'), 'Live verification Admin list must use the canonical quality-check workflow.');
+assert(liveVerificationJs.includes('bct_contractor_live_quality_checks'), 'Contractor live verification must use the canonical scoped quality-check feed.');
+assert(liveVerificationJs.includes('bct_contractor_ack_live_quality_privacy'), 'Contractor live verification must preserve privacy acknowledgment.');
+assert(liveVerificationJs.includes('bct_contractor_update_live_quality_check'), 'Contractor live verification must preserve contractor-scoped status updates.');
+assert(!liveVerificationJs.includes('bct_admin_create_live_verification'), 'Legacy inspection-backed live verification creation must stay retired from the current UI.');
+assert(!liveVerificationJs.includes('bct_admin_update_live_verification'), 'Legacy inspection-backed live verification updates must stay retired from the current UI.');
 
 assert(gallerySql.includes("values ('bct-gallery','bct-gallery',false"), 'Gallery storage bucket must remain private.');
 assert(gallerySql.includes('using (is_published = true)'), 'Public gallery metadata must remain published-only.');
