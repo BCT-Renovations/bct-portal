@@ -67,3 +67,26 @@ Severity remains bounded to BCT-approved values; the Agent does not self-declare
 Agent may say a matter needs BCT/Admin review and prepare a concise escalation summary. It must ask for confirmation before creating the case unless an existing BCT workflow explicitly defines another behavior.
 
 Agent never promises the outcome, approval, refund, price, schedule change, assignment or response time merely because a case was opened.
+
+
+## Live case schema verification — 2026-10-01
+
+Verified constraints:
+- case_type is only `issue` or `dispute`;
+- category is only `scope, quality, schedule, payment, contractor, customer, materials, property_damage, communication, safety, other`;
+- severity is only `low, normal, high, critical`;
+- status is only `open, in_review, waiting_on_customer, waiting_on_contractor, resolved, closed`;
+- subject and description must be nonblank;
+- case_number is unique;
+- project access is protected by RLS;
+- only Admin may update cases under the current update policy.
+
+Therefore the earlier suggested Agent-facing categories are conversational labels only. A future wrapper must map them onto the existing case category enum rather than expanding or bypassing the production schema.
+
+### Duplicate handling finding
+
+The live case table has no uniqueness constraint for actor + project + category + open status. The existing `bct_open_case` RPC does not suppress duplicates. Agent write activation therefore remains blocked until duplicate/idempotency behavior is deliberately added.
+
+### Write activation decision
+
+Do not expose `bct_open_case` directly to the model. The future Agent wrapper must validate fixed enums, enforce length limits, require confirmation, add provenance/audit metadata safely, and return a minimized case receipt.
