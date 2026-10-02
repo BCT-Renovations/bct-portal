@@ -1,0 +1,12 @@
+{
+  "name": "bct-portal",
+  "private": true,
+  "version": "46.0.0-agent-bct-preview",
+  "type": "module",
+  "scripts": {
+    "test:agent-bct": "node --test tests/agent-bct/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
