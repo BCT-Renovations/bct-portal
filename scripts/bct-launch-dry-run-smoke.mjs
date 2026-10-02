@@ -61,6 +61,14 @@ const dryRunMarkers = [
   ['homeowner state RPC', 'bct_frontend_homeowner_state'],
   ['homeowner project RPC', 'bct_submit_homeowner_project'],
   ['homeowner private upload button', 'bctUploadHomeFiles'],
+  ['homeowner project message feed', 'bct_my_project_messages'],
+  ['homeowner project message send', 'bct_send_homeowner_message'],
+  ['homeowner notification feed', 'bct_my_notifications'],
+  ['homeowner notification read action', 'bct_mark_notification_read'],
+  ['homeowner completion certificate feed', 'bct_my_completion_certificates'],
+  ['homeowner completion signature action', 'bct_homeowner_sign_completion_certificate'],
+  ['homeowner messages live container', 'bctHomeownerMessages'],
+  ['homeowner completion live container', 'bctHomeownerCompletion'],
   ['homeowner duplicate lock', "f.dataset.submitted==='true'||f.dataset.pending==='true'"],
   ['contractor login flow', 'bctContractorLoginBtn'],
   ['contractor application RPC', 'bct_submit_contractor_application'],
@@ -90,6 +98,9 @@ const dryRunMarkers = [
 for (const [label, marker] of dryRunMarkers) {
   assert(indexHtml.includes(marker), `Missing ${label}: ${marker}`);
 }
+
+assert(indexHtml.includes("audience controls") || indexHtml.includes("BCT-mediated project communication"), 'Homeowner messaging must remain BCT-mediated.');
+assert(indexHtml.includes("This records your completion acknowledgment."), 'Completion signature UI must explicitly identify the acknowledgment action.');
 
 assertFinalHandler('homeForm', 'bct_submit_homeowner_project', 'Project submitted successfully.');
 assertFinalHandler('appForm', 'bct_submit_contractor_application', 'Basic Pre-Application Submitted');
