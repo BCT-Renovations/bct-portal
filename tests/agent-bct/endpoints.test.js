@@ -44,3 +44,18 @@ test("Agent endpoints use no-store and no-referrer privacy headers",async()=>{
   const t=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
   for(const res of [h,s,t]){assert.equal(res.headers.get("cache-control"),"no-store");assert.equal(res.headers.get("referrer-policy"),"no-referrer");}
 });
+
+test("tool endpoint rejects scalar JSON request bodies before tool execution",async()=>{
+  const original=globalThis.fetch;globalThis.fetch=async()=>new Response(JSON.stringify({role:"homeowner",permissions:[]}),{status:200});
+  try{
+    const res=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer fake"},body:"123"}));
+    assert.equal(res.status,400);assert.equal((await res.json()).error,"invalid_request");
+  }finally{globalThis.fetch=original;}
+});
+test("tool endpoint rejects array tool input",async()=>{
+  const original=globalThis.fetch;globalThis.fetch=async()=>new Response(JSON.stringify({role:"homeowner",permissions:[]}),{status:200});
+  try{
+    const res=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer fake"},body:JSON.stringify({tool:"project.list",input:[]})}));
+    assert.equal(res.status,400);assert.equal((await res.json()).error,"invalid_tool_input");
+  }finally{globalThis.fetch=original;}
+});
