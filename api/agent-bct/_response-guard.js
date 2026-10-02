@@ -8,7 +8,7 @@ const RESERVED_COMPLETION=[
   /\b(?:escrow|payment|refund|financing|payout|contractor|estimator|contract)\b.{0,60}\b(?:has been|is now)\s+(?:released|refunded|approved|assigned|rejected|amended|signed)\b/i,
   /\b(?:your|the)\s+(?:refund|payment|financing|payout|contractor|estimator|contract)\b.{0,40}\b(?:has been|is now)\s+(?:released|refunded|approved|assigned|rejected|amended|signed)\b/i,
 ];
-const HUMAN_CLAIM=/\bI\s+(?:am|am\s+actually|work\s+as)\s+(?:Ty|Tyrone(?:\s+Perry)?|a human|your general contractor)\b/i;
+const HUMAN_CLAIM=/\bI(?:\s*[’\x27`]m|\s+am|\s+am\s+actually|\s+work\s+as)\s+(?:actually\s+)?(?:Ty|Tyrone(?:\s+Perry)?|a human|your general contractor|the general contractor)\b/i;
 
 export function inspectGeneratedResponse(text,{confirmedActions=[]}={}){
   const value=typeof text==="string"?text:"";
