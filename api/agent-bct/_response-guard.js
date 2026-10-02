@@ -7,7 +7,7 @@ const RESERVED_COMPLETION=[
   /\bI\s+(?:have\s+)?(?:released|refunded|approved|assigned|rejected|amended|signed)\b.{0,60}\b(?:escrow|payment|refund|financing|payout|contractor|estimator|contract)\b/i,
   /\b(?:escrow|payment|refund|financing|payout|contractor|estimator|contract)\b.{0,60}\b(?:has been|is now)\s+(?:released|refunded|approved|assigned|rejected|amended|signed)\b/i,
 ];
-const HUMAN_CLAIM=/\bI\s+am\s+(?:Ty|Tyrone(?:\s+Perry)?|a human|your general contractor)\b/i;
+const HUMAN_CLAIM=/\bI\s+(?:am|am\s+actually|work\s+as)\s+(?:Ty|Tyrone(?:\s+Perry)?|a human|your general contractor)\b/i;
 
 export function inspectGeneratedResponse(text,{confirmedActions=[]}={}){
   const value=typeof text==="string"?text:"";
