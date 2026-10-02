@@ -73,13 +73,13 @@ begin
   if p_status not in ('pending','approved','rejected') then raise exception 'Invalid profile photo status'; end if;
   if not exists(
     select 1 from public.bct_contractor_documents d
-    where d.id=p_document_id and d.contractor_id=p_contractor_id and d.document_type='profile_photo'
+    where d.id=p_document_id and d.application_id=(select c.application_id from public.bct_contractors c where c.id=p_contractor_id) and d.document_type='profile_photo'
   ) then raise exception 'Profile photo document not found for contractor'; end if;
 
   if p_status='approved' and not exists(
     select 1 from public.bct_contractor_documents d
     where d.id=p_document_id
-      and d.contractor_id=p_contractor_id
+      and d.application_id=(select c.application_id from public.bct_contractors c where c.id=p_contractor_id)
       and d.document_type='profile_photo'
       and d.review_status='approved'
   ) then
@@ -264,18 +264,18 @@ alter table public.bct_contractor_applications
 
 -- Identity document cardinality: one current profile photo and one current ID side per contractor.
 create unique index if not exists bct_contractor_identity_doc_singleton
-  on public.bct_contractor_documents(contractor_id,document_type)
+  on public.bct_contractor_documents(application_id,document_type)
   where document_type in ('profile_photo','government_id_front','government_id_back');
 
 -- Central identity-completeness predicate for approval/workforce gates.
 create or replace function public.bct_contractor_identity_required_documents_ready(p_contractor_id uuid)
 returns boolean language sql stable security definer set search_path=public,auth as $$
   select
-    exists(select 1 from public.bct_contractor_documents d where d.contractor_id=p_contractor_id and d.document_type='profile_photo')
-    and exists(select 1 from public.bct_contractor_documents d where d.contractor_id=p_contractor_id and d.document_type='government_id_front')
+    exists(select 1 from public.bct_contractor_documents d where d.application_id=(select c.application_id from public.bct_contractors c where c.id=p_contractor_id) and d.document_type='profile_photo')
+    and exists(select 1 from public.bct_contractor_documents d where d.application_id=(select c.application_id from public.bct_contractors c where c.id=p_contractor_id) and d.document_type='government_id_front')
     and (
       not coalesce((select a.government_id_has_back from public.bct_contractor_applications a join public.bct_contractors c on c.auth_user_id=a.auth_user_id where c.id=p_contractor_id order by a.created_at desc limit 1),false)
-      or exists(select 1 from public.bct_contractor_documents d where d.contractor_id=p_contractor_id and d.document_type='government_id_back')
+      or exists(select 1 from public.bct_contractor_documents d where d.application_id=(select c.application_id from public.bct_contractors c where c.id=p_contractor_id) and d.document_type='government_id_back')
     );
 $$;
 revoke execute on function public.bct_contractor_identity_required_documents_ready(uuid) from public,anon;
@@ -299,7 +299,7 @@ begin
            released_at=null,
            released_by=null,
            updated_at=now()
-     where l.contractor_id=new.contractor_id
+     where l.contractor_id=(select c.id from public.bct_contractors c where c.application_id=new.application_id limit 1)
        and l.homeowner_visible
        and exists(select 1 from public.bct_contractor_identity_profiles ip where ip.contractor_id=l.contractor_id and ip.profile_photo_document_id=new.id);
   end if;
