@@ -58,13 +58,14 @@ export async function generateAgentBct({system,history=[],userMessage,requestId}
       throw Object.assign(new Error(code),{code,status});
     }
     if(!payload||typeof payload!=="object"||!Array.isArray(payload.choices)) throw Object.assign(new Error("invalid_generation_response"),{code:"invalid_generation_response",status:502});
+    if(payload.choices.length!==1) throw Object.assign(new Error("invalid_generation_response"),{code:"invalid_generation_response",status:502});
     const answer=payload?.choices?.[0]?.message?.content;
     if(payload?.choices?.[0]?.message?.tool_calls?.length) throw Object.assign(new Error("unexpected_tool_call"),{code:"unexpected_tool_call",status:502});
     if(typeof answer!=="string"||!answer.trim()) throw Object.assign(new Error("empty_generation"),{code:"empty_generation",status:502});
     return {
       text:answer.trim(),
-      model:typeof payload?.model==="string"?payload.model:model,
-      finishReason:payload?.choices?.[0]?.finish_reason||null,
+      model:typeof payload?.model==="string"&&ALLOWED_MODEL_ID.test(payload.model)?payload.model:model,
+      finishReason:typeof payload?.choices?.[0]?.finish_reason==="string"?boundedText(payload.choices[0].finish_reason,40):null,
       usage:payload?.usage?{
         promptTokens:safeUsage(payload.usage.prompt_tokens),
         completionTokens:safeUsage(payload.usage.completion_tokens),
