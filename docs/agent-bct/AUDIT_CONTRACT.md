@@ -61,3 +61,12 @@ Prefer counts, IDs already necessary for audit, status codes and hashes over raw
 4. decide durable storage and retention after checking existing BCT audit tables to avoid duplication;
 5. production audit storage must have appropriate RLS/access and Admin visibility;
 6. verify no secrets with automated tests.
+
+
+## Existing BCT audit integration finding
+
+Live database inspection confirmed the existing `bct_audit_events` subsystem and Admin read RPCs `bct_admin_audit_events(...)` and `bct_admin_recent_audit_events(...)`. Existing trigger functions also write to the same audit table.
+
+Decision: do not create a second durable Agent audit table. Design an Agent-specific, narrowly granted event-write function into the existing audit subsystem only after the existing `bct_audit_events` columns/RLS/grants and desired redaction fields are fully reviewed.
+
+Important: `bct_log_detailed_audit_event` records whole OLD/NEW rows for tables where its trigger is attached. Agent-specific events must not copy raw prompts, tokens, or sensitive tool payloads into that pattern.
