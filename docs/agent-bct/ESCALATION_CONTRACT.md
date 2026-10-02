@@ -90,3 +90,15 @@ The live case table has no uniqueness constraint for actor + project + category 
 ### Write activation decision
 
 Do not expose `bct_open_case` directly to the model. The future Agent wrapper must validate fixed enums, enforce length limits, require confirmation, add provenance/audit metadata safely, and return a minimized case receipt.
+
+
+## Non-writing preparation boundary
+
+A deterministic Agent-side preparation helper now exists for preview development. It:
+- requires explicit confirmation before producing a prepared escalation payload;
+- maps conversational labels onto the existing case type/category enums;
+- does not permit Agent self-declaration of critical severity;
+- bounds and sanitizes subject/description;
+- performs no database write.
+
+This does not activate escalation writes. Project/job authorization, duplicate/idempotency protection, durable audit and the narrow backend wrapper remain required before any case-creation tool is exposed.
