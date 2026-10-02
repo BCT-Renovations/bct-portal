@@ -239,6 +239,10 @@ assert(adminMfaEnforcementSql.includes("auth.jwt()->>'aal'"), 'Canonical Admin p
 assert(adminMfaEnforcementSql.includes("='aal2'"), 'Enforced Admin access must require AAL2.');
 assert(adminMfaEnforcementSql.includes('BCT security settings admin select'), 'Admin MFA enforcement must include a non-recursive Admin SELECT policy for the singleton security setting.');
 assert(adminMfaEnforcementSql.includes("in ('admin','bct_admin','owner')"), 'MFA security-setting visibility must use raw Admin identity claims, not recurse through is_bct_admin().');
+assert(adminMfaEnforcementSql.includes('bct_admin_set_mfa_ui_ready'), 'Source MFA hardening must preserve the Admin UI-readiness RPC.');
+assert(adminMfaEnforcementSql.includes('Complete MFA verification before marking the Admin MFA UI ready'), 'Admin MFA UI cannot be marked ready from an AAL1 session.');
+assert(adminMfaEnforcementSql.includes('bct_admin_enable_mfa_enforcement'), 'Source MFA hardening must preserve the enforcement RPC.');
+assert(adminMfaEnforcementSql.includes('myproject@bctrenovations.com'), 'MFA controls must preserve the canonical BCT owner-email Admin identity path.');
 
 assert(liveVerificationJs.includes('bct_admin_create_live_quality_check'), 'Live verification Admin creation must use the canonical quality-check workflow.');
 assert(liveVerificationJs.includes('bct_admin_live_quality_checks'), 'Live verification Admin list must use the canonical quality-check workflow.');
