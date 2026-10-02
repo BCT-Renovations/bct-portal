@@ -1,6 +1,7 @@
 const GATEWAY_BASE="https://ai-gateway.vercel.sh/v1";
 const DEFAULT_TIMEOUT_MS=25_000;
 const MAX_OUTPUT_TOKENS=900;
+const ALLOWED_MODEL_ID=/^[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._:-]*$/i;
 
 function required(name){
   const value=String(process.env[name]||"").trim();
@@ -23,6 +24,7 @@ export async function generateAgentBct({system,history=[],userMessage,requestId}
   if(!cfg.generationFlag) throw Object.assign(new Error("generation_disabled"),{code:"generation_disabled",status:503});
   const apiKey=required("AI_GATEWAY_API_KEY");
   const model=required("AGENT_BCT_MODEL");
+  if(!ALLOWED_MODEL_ID.test(model)) throw Object.assign(new Error("runtime_not_configured"),{code:"runtime_not_configured",status:503});
 
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),DEFAULT_TIMEOUT_MS);
@@ -55,6 +57,7 @@ export async function generateAgentBct({system,history=[],userMessage,requestId}
       throw Object.assign(new Error(code),{code,status});
     }
     const answer=payload?.choices?.[0]?.message?.content;
+    if(payload?.choices?.[0]?.message?.tool_calls?.length) throw Object.assign(new Error("unexpected_tool_call"),{code:"unexpected_tool_call",status:502});
     if(typeof answer!=="string"||!answer.trim()) throw Object.assign(new Error("empty_generation"),{code:"empty_generation",status:502});
     return {
       text:answer.trim(),
