@@ -9,11 +9,11 @@ const assert=(v,m)=>{if(!v)throw new Error(m)};
  'contractorTradeLicense','government_id_has_back','profile_photo','government_id_front','government_id_back',
  'contractor_trade_license',"One clear contractor profile photo is required.",
  "Government ID front is required.","Government ID back is required when your ID has information on the back.",
- 'Who’s Coming','Profile Photo','Government ID — Front','Contractor / Trade License'
+ 'Who’s Coming','Choose exactly one file for this identity document type.','Profile Photo','Government ID — Front','Contractor / Trade License'
 ].forEach(x=>assert(html.includes(x),'Missing contractor identity UI marker: '+x));
 
 [
- 'bct_contractor_identity_profiles','bct_project_trade_leads',
+ 'bct_contractor_identity_review_revocation_guard','trg_bct_identity_review_revocation','bct_contractor_identity_doc_singleton','bct_contractor_identity_profiles','bct_project_trade_leads',
  'bct_admin_review_contractor_profile_photo','bct_admin_set_project_trade_lead',
  'bct_homeowner_project_trade_leads','bct_homeowner_contractor_profile_photo_path',
  'bct_contractor_identity_required_documents_ready','trg_bct_assignment_trade_lead_visibility',
