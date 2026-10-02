@@ -75,7 +75,7 @@ returns boolean language sql immutable as $$
 $$;
 
 create or replace function public.bct_estimator_conflict(p_project_id uuid, p_user_id uuid)
-returns boolean language sql stable security definer set search_path=public as $$
+returns boolean language sql stable security definer set search_path=public,auth,pg_temp as $
   select exists(
     select 1 from public.bct_site_assessments
     where project_id=p_project_id and estimator_user_id=p_user_id
@@ -83,7 +83,7 @@ returns boolean language sql stable security definer set search_path=public as $
 $$;
 
 create or replace function public.bct_assert_no_estimator_project_conflict(p_project_id uuid,p_user_id uuid)
-returns void language plpgsql stable security definer set search_path=public as $$
+returns void language plpgsql stable security definer set search_path=public,auth,pg_temp as $
 begin
   if public.bct_estimator_conflict(p_project_id,p_user_id) then
     raise exception 'BCT separation of duties: project estimator cannot bid on or perform the same project';
@@ -112,7 +112,7 @@ returns boolean language sql immutable as $bct$
 $bct$;
 
 create or replace function public.bct_enforce_estimator_assessment_transition()
-returns trigger language plpgsql set search_path=public as $bct$
+returns trigger language plpgsql set search_path=public,auth,pg_temp as $bct$
 begin
   if new.status is distinct from old.status and not public.bct_estimator_transition_allowed(old.status,new.status) then
     raise exception 'Invalid BCT site-assessment status transition: % -> %',old.status,new.status;
@@ -158,7 +158,7 @@ for select to authenticated using (estimator_user_id=auth.uid());
 create or replace function public.bct_submit_assessment_package(
   p_project_id uuid,p_package jsonb,p_site_visit_complete boolean,p_photos_complete boolean,
   p_measurements_complete boolean,p_documentation_complete boolean
-) returns void language plpgsql security definer set search_path=public as $bct$
+) returns void language plpgsql security definer set search_path=public,auth,pg_temp as $bct$
 declare a public.bct_site_assessments;
 begin
   select * into a from public.bct_site_assessments where project_id=p_project_id for update;
@@ -173,13 +173,13 @@ begin
   where id=a.id;
 end $bct$;
 
-revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon;
+revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon,authenticated;
 grant execute on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) to authenticated;
 
 -- Estimators may advance only their own paid, scheduled assignment to field-work complete.
 -- They cannot schedule themselves, alter fees, reassign ownership, approve BCT review, or skip workflow states.
 create or replace function public.bct_complete_site_assessment(p_project_id uuid)
-returns void language plpgsql security definer set search_path=public as $bct$
+returns void language plpgsql security definer set search_path=public,auth,pg_temp as $bct$
 declare a public.bct_site_assessments;
 begin
   select * into a from public.bct_site_assessments where project_id=p_project_id for update;
@@ -191,7 +191,7 @@ begin
     assessment_completed_at=coalesce(assessment_completed_at,now()),updated_at=now() where id=a.id;
 end $bct$;
 
-revoke all on function public.bct_complete_site_assessment(uuid) from public,anon;
+revoke all on function public.bct_complete_site_assessment(uuid) from public,anon,authenticated;
 grant execute on function public.bct_complete_site_assessment(uuid) to authenticated;
 
 -- No estimator-side table INSERT/UPDATE/DELETE policies are granted. BCT creates assignments and controls review/payment state.
