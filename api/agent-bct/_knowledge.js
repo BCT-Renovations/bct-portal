@@ -20,7 +20,7 @@ function item(key, domain, title, sensitivity, body, humanAuthorityRequired = fa
   });
 }
 function tokens(text) {
-  return new Set(String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/).filter(x => x.length > 2));
+  return new Set(String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/).filter(x => x.length > 2));
 }
 function score(query, entry) {
   const q = tokens(query);
