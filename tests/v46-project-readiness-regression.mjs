@@ -9,7 +9,7 @@ need(project,'security definer set search_path=public,auth,pg_temp','project rea
 need(project,'revoke all on function public.bct_project_readiness_blockers(uuid) from public,anon,authenticated','broad readiness execute revoke missing');
 need(project,"'ready',count(*)=0",'readiness boolean missing');
 need(project,"'blocker_count',count(*)",'blocker count missing');
-for(const x of ["'project_hold'","'contract'","'assignment'","'payment'","'access'","'inspection'","'material'","'decision'","'stop_work'","'required_approval'","'dependency'","'permit'","'failed_inspection'","'customer_material'","'hidden_condition'","'material_substitution'","'utility_restoration'","'required_checklist'"]) need(project,x,'blocker class missing');
+for(const x of ["'project_hold'","'contract'","'assignment'","'payment'","'access'","'inspection'","'material'","'decision'","'stop_work'","'required_approval'","'dependency'","'permit'","'failed_inspection'","'customer_material'","'hidden_condition'","'material_substitution'","'utility_restoration'","'required_checklist'","'prework_condition'"]) need(project,x,'blocker class missing');
 need(project,'bct_permit_responsibilities','permit blocker must be driven by required permit responsibility');
 need(project,'coalesce(cm.quantity_claimed,0)>0','customer material blocker must require claimed material');
 if(project.includes("coalesce(h.reason,h.hold_type")) throw new Error('internal hold reason exposed');
@@ -21,3 +21,7 @@ for(const x of ['bct_hidden_conditions','bct_material_substitutions','bct_utilit
 
 need(project,'bct_code_corrections','failed-inspection readiness must inspect correction clearance');
 need(project,'cc.cleared_at is null','cleared inspection corrections must release readiness blocker');
+
+need(project,'bct_site_condition_baselines','pre-work property condition readiness source missing');
+need(project,'scb.required_before_work','pre-work condition requirement flag missing from readiness');
+need(project,'scb.completed_at is null','pre-work condition completion gate missing');
