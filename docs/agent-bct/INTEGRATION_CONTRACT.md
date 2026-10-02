@@ -118,3 +118,34 @@ Before production integration, Agent BCT changes must be removable by reverting 
 ## Production integration gate
 
 Before merge: verify branch; migrations; security tests; V46 regression; preview deployment; iPhone/mobile; this Integration Contract; PR review; exact completion/remaining report. Then wait for Ty Perry's explicit production merge approval.
+
+
+## Implementation checkpoint — 2026-10-01 large-batch continuation
+
+Implemented on `agent-bct` only:
+- server health/session boundary;
+- fixed read-only tool registry and authenticated executor;
+- data-minimizing projections;
+- approved knowledge seed/retrieval;
+- immutable orchestration policy and injection guardrails;
+- model context assembler;
+- exact nine-language BCT registry;
+- disabled-by-default Vercel AI Gateway runtime;
+- gated generation path with no live model tool loop;
+- model-safe tool schemas and bounded read-only tool-loop core;
+- preview audit envelope and existing-audit integration design;
+- preview abuse rate guard;
+- executable Node security tests and GitHub workflow;
+- preview/generation/tool-loop runbooks;
+- estimator backend reconciliation contract.
+
+Current blockers:
+- Vercel branch builds are presently blocked by the account build-rate limit; latest commit status points to `upgradeToPro=build-rate-limit`.
+- CI workflow has not yet produced a recorded run; do not treat tests as passed until execution evidence exists.
+- Estimator backend remains absent in live Supabase and therefore live Estimator Agent tools remain disabled.
+- durable Agent audit-write RPC is designed but not migrated.
+- generation environment/model is not enabled.
+- model-directed live tools remain disabled.
+- mobile Agent UI not yet connected.
+
+Production invariants remain unchanged: no Agent production merge, no Agent production deployment, no Agent DB migration.
