@@ -53,6 +53,10 @@ create table if not exists public.bct_project_trade_leads (
 create unique index if not exists bct_project_trade_leads_one_visible_lead_per_trade
   on public.bct_project_trade_leads(project_id,lower(trade))
   where homeowner_visible;
+
+create unique index if not exists bct_project_trade_leads_one_primary_contact
+  on public.bct_project_trade_leads(project_id)
+  where homeowner_visible and is_primary_contact;
 alter table public.bct_project_trade_leads enable row level security;
 revoke all on public.bct_project_trade_leads from anon,authenticated;
 
@@ -109,6 +113,16 @@ begin
     select 1 from public.bct_contractor_identity_profiles ip
     where ip.contractor_id=p_contractor_id and ip.profile_photo_status='approved'
   ) then raise exception 'Contractor profile photo must be BCT-approved before homeowner release'; end if;
+
+  if p_homeowner_visible and not exists(
+    select 1
+    from public.bct_assignments a
+    where a.project_id=p_project_id
+      and a.contractor_id=p_contractor_id
+      and a.status <> 'cancelled'
+  ) then
+    raise exception 'Contractor must be assigned to this project before homeowner release';
+  end if;
 
   if p_homeowner_visible then
     update public.bct_project_trade_leads
