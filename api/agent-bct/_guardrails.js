@@ -48,6 +48,8 @@ export function detectHighRiskRequest(text) {
     ["bid_confidentiality", /(show|reveal|give|tell).{0,40}(other|another|competing|all).{0,30}(bid|price|contractor bid)/],
     ["approval_authority", /(approve|assign|reject).{0,30}(contractor|estimator)/],
     ["legal_or_dispute_authority", /(decide|rule on|settle|resolve).{0,30}(dispute|claim|legal)/],
+    ["human_impersonation", /(pretend|act|say you are|speak as).{0,30}(ty|tyrone|human|employee|general contractor)/],
+    ["emergency_safety", /(fire|gas leak|electrocution|electrical fire|immediate danger|medical emergency|someone is hurt|violence)/],
   ];
   return patterns.filter(([, regex]) => regex.test(t)).map(([code]) => code);
 }
