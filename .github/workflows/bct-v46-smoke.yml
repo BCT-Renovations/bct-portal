@@ -2,7 +2,7 @@ name: BCT V46 Smoke Checks
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/v46-field-controls-integration]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -64,3 +64,20 @@ jobs:
 
       - name: Phase 1 workflow boundary smoke
         run: node scripts/bct-phase1-workflow-boundary-smoke.mjs
+
+      - name: V46 field controls regression bundle
+        run: |
+          node tests/v46-sql-delimiter-regression.mjs
+          node tests/v46-migration-static-integrity-regression.mjs
+          node tests/v46-project-readiness-regression.mjs
+          node tests/v46-field-control-lifecycle-regression.mjs
+          node tests/v46-execution-blocker-regression.mjs
+          node tests/v46-operational-closeout-regression.mjs
+          node tests/v46-financial-protection-regression.mjs
+          node tests/v46-trade-handoff-regression.mjs
+          node tests/v46-crew-arrival-escalation-regression.mjs
+          node tests/v46-damage-responsibility-regression.mjs
+          node tests/v46-whos-coming-attendance-regression.mjs
+          node tests/v46-contractor-decision-escalation-regression.mjs
+          node tests/v46-homeowner-composition-regression.mjs
+          node tests/v46-property-manager-priority-regression.mjs
