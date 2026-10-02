@@ -124,3 +124,12 @@ test("estimator model execution stays disabled until authoritative backend role 
   const r=await executeModelToolCall({call:{name:"project_list",arguments:"{}"},role:"estimator",executeRpc:async()=>{count++;return[];}});
   assert.equal(r.error,"tool_role_denied");assert.equal(count,0);
 });
+
+test("non-array model tool sequence fails closed",async()=>{
+  let count=0;
+  for(const calls of [null,{}, "project_list"]){
+    const r=await boundedToolSequence({calls,role:"homeowner",executeRpc:async()=>{count++;return[];}});
+    assert.equal(r.error,"invalid_tool_sequence");
+  }
+  assert.equal(count,0);
+});
