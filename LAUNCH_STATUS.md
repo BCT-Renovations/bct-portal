@@ -110,6 +110,10 @@ Last verified: 2026-09-26
 - Admin readiness RPCs reject the non-Admin database execution context with `BCT admin required`, confirming the live authorization boundary instead of leaking Admin launch/health data.
 - Readiness, backup, system-health, cutover, pilot, policy, and automation-health RPCs are authenticated-only and retain explicit `is_bct_admin()` guards; the public launch-status RPC is the intentionally anonymous-safe exception.
 
+### Live launch-control truth — 2026-10-02
+
+The production launch-control table was re-read without mutation. `frontend_rollback_available` is complete. The following remain intentionally incomplete: `auth_email_confirmation_verified`, `browser_e2e_complete`, `customer_pilot_enabled`, `database_backup_verified`, `legal_policy_content_reviewed`, `outbound_email_provider_configured`, and `source_cutover_complete`. Do not infer completion from source coverage alone; each gate requires its stated external evidence.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
