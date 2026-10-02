@@ -25,6 +25,6 @@ window.bctRenderContractorContracts=function(state){
 };
 window.bctRenderAdminContracts=function(state){
  const host=ensureHost('#view-admin','bctAdminContractSigning','BCT Contract Signatures','BCT Admin may sign only eligible contracts. Homeowner and contractor signatures remain separate, immutable evidence.');
- if(!host)return;const contracts=state?.contracts||[],sigs=state?.contract_signatures||[];host.querySelector('[data-list]').innerHTML=contracts.length?contracts.map(c=>card(c,sigs,'bct','bct_admin_esign_contract')).join(''):'<div class="notice">No contracts are available.</div>';bind(host,async()=>{await window.bctContractSigningBridge?.reloadAdmin?.()});
+ if(!host)return;host.dataset.adminPagePanel='contracts';host.dataset.bctBoardInclude='1';const contracts=state?.contracts||[],sigs=state?.contract_signatures||[];host.querySelector('[data-list]').innerHTML=contracts.length?contracts.map(c=>card(c,sigs,'bct','bct_admin_esign_contract')).join(''):'<div class="notice">No contracts are available.</div>';bind(host,async()=>{await window.bctContractSigningBridge?.reloadAdmin?.()});
 };
 })();
