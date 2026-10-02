@@ -4226,6 +4226,37 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
 <script src="/bct-admin-sections.js?v=20260930-1"></script>
 <script src="/bct-admin-control-board.js?v=20260930-2"></script>
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
+<script src="/bct-insurance-portal.js?v=20261002-1" defer></script>
+<script src="/bct-insurance-admin.js?v=20261002-1" defer></script>
+<script id="bct-insurance-v46-entry-bridge">
+(function(){
+ function addInsuranceEntry(){
+  var actions=document.getElementById('bctEntryActions');
+  if(!actions||document.getElementById('bctInsuranceEntryBtn'))return;
+  var b=document.createElement('button');b.type='button';b.id='bctInsuranceEntryBtn';b.className='secondary';
+  b.textContent='Insurance / Claims Partner';
+  b.addEventListener('click',function(){
+   document.body.classList.add('bct-portal-entered');
+   document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator','bct-home-signup','bct-contractor-signup');
+   if(typeof window.bctOpenInsurancePortal==='function')window.bctOpenInsurancePortal();
+  });
+  actions.appendChild(b);
+ }
+ function addAdminTab(){
+  var tabs=document.querySelector('#view-admin .portal-tabs');
+  if(!tabs||tabs.querySelector('[data-admin-page="insurance"]'))return;
+  var b=document.createElement('button');b.type='button';b.dataset.adminPage='insurance';b.textContent='Insurance Claims';
+  b.addEventListener('click',function(){
+   document.querySelectorAll('#view-admin [data-admin-page-panel]').forEach(function(p){p.classList.toggle('active',p.dataset.adminPagePanel==='insurance')});
+   document.querySelectorAll('#view-admin .portal-tabs [data-admin-page]').forEach(function(x){x.classList.toggle('active',x===b)});
+   window.bctLoadInsuranceAdmin?.();
+  });
+  tabs.appendChild(b);
+ }
+ function wire(){addInsuranceEntry();addAdminTab()}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();
+})();
+</script>
 
 <script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20260930-1" defer></script>
 </body>
