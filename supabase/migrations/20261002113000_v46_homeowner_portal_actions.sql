@@ -13,6 +13,9 @@ begin
  if v_severity not in ('normal','high','urgent','critical') then raise exception 'Invalid concern severity'; end if;
  insert into public.bct_customer_concerns(project_id,customer_id,concern_type,description,severity,status,opened_at)
  values(p_project_id,v_customer,coalesce(nullif(btrim(p_concern_type),''),'project_problem'),btrim(p_description),v_severity,'open',now()) returning id into v_id;
+ if v_severity in ('high','urgent','critical') then
+  insert into public.bct_action_inbox(project_id,action_type,title,priority,status,created_at) values(p_project_id,'customer_concern',concat('Homeowner reported a ',coalesce(nullif(btrim(p_concern_type),''),'project problem')),case when v_severity='critical' then 'critical' else 'high' end,'open',now());
+ end if;
  return v_id;
 end $$;
 revoke all on function public.bct_homeowner_report_problem(uuid,text,text,text) from public,anon,authenticated;
@@ -30,8 +33,11 @@ begin
  insert into public.bct_customer_feedback(project_id,customer_id,rating,feedback,follow_up_required,follow_up_status,feedback_type,project_day,severity,routed_attention)
  values(p_project_id,v_customer,p_rating,nullif(btrim(p_feedback),''),p_rating<=2,case when p_rating<=2 then 'needed' else 'not_required' end,'daily',current_date,case when p_rating=1 then 'high' when p_rating=2 then 'normal' else 'low' end,p_rating=1)
  returning id into v_id;
+ if p_rating=1 then
+  insert into public.bct_action_inbox(project_id,action_type,title,priority,status,created_at) values(p_project_id,'customer_feedback','Homeowner daily feedback requires attention','high','open',now());
+ end if;
  return v_id;
-end $$;
+end $;
 revoke all on function public.bct_homeowner_daily_feedback(uuid,integer,text) from public,anon,authenticated;
 grant execute on function public.bct_homeowner_daily_feedback(uuid,integer,text) to authenticated;
 
