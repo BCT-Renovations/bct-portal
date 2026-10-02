@@ -47,50 +47,6 @@ end $bct$;
 revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon,authenticated;
 grant execute on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) to authenticated;
 
--- Insurance/Claims intake completeness stays in the existing claim record.
-alter table public.bct_insurance_claims
-  add column if not exists loss_type text,
-  add column if not exists loss_description text,
-  add column if not exists representative_role text,
-  add column if not exists representative_authorized boolean not null default false,
-  add column if not exists assignment_source text,
-  add column if not exists intake_complete boolean not null default false,
-  add column if not exists intake_reviewed_at timestamptz,
-  add column if not exists intake_reviewed_by uuid;
-
-create or replace function public.bct_insurance_claim_intake_complete(p_claim_id uuid)
-returns boolean
-language sql stable security invoker set search_path=public,auth,pg_temp
-as $$
-  select exists(
-    select 1 from public.bct_insurance_claims c
-    where c.id=p_claim_id
-      and nullif(btrim(c.carrier),'') is not null
-      and nullif(btrim(c.claim_number),'') is not null
-      and c.date_of_loss is not null
-      and nullif(btrim(c.loss_type),'') is not null
-      and nullif(btrim(c.loss_description),'') is not null
-      and nullif(btrim(c.adjuster_name),'') is not null
-      and (nullif(btrim(c.adjuster_phone),'') is not null or nullif(btrim(c.adjuster_email),'') is not null)
-      and nullif(btrim(c.representative_role),'') is not null
-      and c.representative_authorized
-  );
-$$;
-grant execute on function public.bct_insurance_claim_intake_complete(uuid) to authenticated;
-revoke execute on function public.bct_insurance_claim_intake_complete(uuid) from anon;
-
-create or replace function public.bct_admin_confirm_insurance_intake(p_claim_id uuid)
-returns public.bct_insurance_claims
-language plpgsql security definer set search_path=public,auth,pg_temp
-as $$
-declare v public.bct_insurance_claims;
-begin
-  if not public.is_bct_admin() then raise exception 'BCT Admin access required'; end if;
-  if not public.bct_insurance_claim_intake_complete(p_claim_id) then raise exception 'Insurance assignment intake is incomplete'; end if;
-  update public.bct_insurance_claims
-     set intake_complete=true,intake_reviewed_at=now(),intake_reviewed_by=auth.uid()
-   where id=p_claim_id returning * into v;
-  return v;
-end $$;
-revoke all on function public.bct_admin_confirm_insurance_intake(uuid) from public,anon;
-grant execute on function public.bct_admin_confirm_insurance_intake(uuid) to authenticated;
+-- Insurance / Claims Partner intake intentionally omitted here.
+-- External partner claims use public.bct_insurance_partner_claims and its dedicated
+-- access/lifecycle migrations. Legacy public.bct_insurance_claims remains untouched.
