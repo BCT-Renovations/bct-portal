@@ -16,7 +16,7 @@ const assert=(v,m)=>{if(!v)throw new Error(m)};
  'bct_contractor_identity_review_revocation_guard','trg_bct_identity_review_revocation','bct_contractor_identity_doc_singleton','bct_contractor_identity_profiles','bct_project_trade_leads',
  'bct_admin_review_contractor_profile_photo','bct_admin_set_project_trade_lead',
  'bct_homeowner_project_trade_leads','bct_homeowner_contractor_profile_photo_path',
- 'bct_contractor_identity_required_documents_ready','trg_bct_assignment_trade_lead_visibility',
+ 'bct_contractor_identity_required_documents_ready','bct_application_identity_required_documents_ready','trg_bct_contractor_application_identity_approval_guard','trg_bct_assignment_trade_lead_visibility',
  'bct_project_trade_leads_one_primary_contact',"d.document_type='profile_photo'",
  "ip.profile_photo_status='approved'","d.review_status='approved'","l.homeowner_visible",
  'cu.auth_user_id=auth.uid()',"'assigned','scheduled','in_progress','quality_review'",
@@ -30,4 +30,7 @@ assert(homeownerFn && !/government_id_(front|back)|contractor_trade_license|cert
 assert(!sql.includes('p.homeowner_id=auth.uid()'),'Legacy direct homeowner ownership check must not return.');
 assert(sql.includes('cu.auth_user_id=auth.uid()'),'Homeowner ownership must follow project -> customer -> auth user.');
 assert(sql.includes("a.status in ('assigned','scheduled','in_progress','quality_review')"),'Homeowner trade leads must require an active assignment lifecycle state.');
+assert(!sql.includes('bct_contractor_documents(contractor_id,document_type)'),'Identity document singleton must use canonical application_id relationship.');
+assert(sql.includes("d.application_id=(select c.application_id from public.bct_contractors c where c.id=p_contractor_id)"),'Contractor identity lookups must resolve documents through the contractor application.');
+assert(sql.includes("new.status='approved'"),'Contractor approval must be guarded by reviewed identity completeness.');
 console.log('BCT contractor identity/trade-lead smoke passed.');
