@@ -87,3 +87,4 @@ jobs:
           node tests/v46-property-manager-priority-regression.mjs
           node tests/v46-field-protection-checklists-regression.mjs
           node tests/v46-delivery-scheduling-regression.mjs
+          node tests/v46-contractor-abandonment-replacement-regression.mjs
