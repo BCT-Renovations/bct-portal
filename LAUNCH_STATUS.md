@@ -106,6 +106,10 @@ Last verified: 2026-09-26
 - Performance advisors now report a large backlog of unindexed foreign keys across later V46 expansion tables. A focused check of launch-critical identity, messaging, completion, warranty, punch-list, signature, assignment, and Live Quality tables found no missing covering foreign-key indexes in that critical set. Do not mass-create indexes across the backlog without workload/usage review.
 - The current isolated branch includes permanent Live Quality authorization-boundary regression checks and password-history recovery regression coverage.
 
+- Public launch status was rechecked read-only on 2026-10-02: `customer_pilot_enabled=false`; the pilot remains closed.
+- Admin readiness RPCs reject the non-Admin database execution context with `BCT admin required`, confirming the live authorization boundary instead of leaking Admin launch/health data.
+- Readiness, backup, system-health, cutover, pilot, policy, and automation-health RPCs are authenticated-only and retain explicit `is_bct_admin()` guards; the public launch-status RPC is the intentionally anonymous-safe exception.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
