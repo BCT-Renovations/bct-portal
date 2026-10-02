@@ -211,6 +211,7 @@ for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contr
 }
 assert(contractSigningJs.includes('p_consent:true'), 'Contract signing UI must send explicit electronic-signature consent.');
 assert(contractSigningJs.includes('typedName'), 'Contract signing UI must require a typed signer name.');
+assert(contractSigningJs.includes('electronic_signatures_enabled'), 'Contract signing UI must respect the electronic-signature feature gate.');
 assert(indexHtml.includes('bct-contract-signing.js'), 'V46 must load the contract-signing module.');
 assert(indexHtml.includes('window.supabaseClient=supabaseClient'), 'V46 must expose the shared Supabase client to isolated add-ons.');
 assert(indexHtml.includes('window.SUPABASE_URL=SUPABASE_URL'), 'V46 must expose the public Supabase URL used by isolated add-ons.');
