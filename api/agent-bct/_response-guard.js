@@ -11,6 +11,8 @@ const HUMAN_CLAIM=/\bI\s+am\s+(?:Ty|Tyrone(?:\s+Perry)?|a human|your general con
 
 export function inspectGeneratedResponse(text,{confirmedActions=[]}={}){
   const value=typeof text==="string"?text:"";
+  if(!value.trim())return {safe:false,findings:["empty_response"]};
+  if(value.length>12000)return {safe:false,findings:["response_too_large"]};
   const findings=[];
   if(SECRET_PATTERNS.some(x=>x.test(value)))findings.push("possible_secret_leak");
   if(HUMAN_CLAIM.test(value))findings.push("human_impersonation_claim");
