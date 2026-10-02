@@ -37,3 +37,10 @@ Required behavior:
 - tests must prove a denied high-risk model call never invokes the RPC executor.
 
 This gate remains incomplete until the code and tests are committed; documentation is not a pass.
+
+
+## Execution-layer risk ceiling implemented
+
+The model execution boundary now independently defaults to `medium` risk. High-risk financing, escrow and payment calls are denied before the RPC executor unless the caller explicitly activates `maxRisk: "high"`. Invalid risk stages fail closed. The bounded sequence propagates the same ceiling.
+
+This closes the schema-exposure bypass described above at the code level. It does not activate Phase B by itself; executed test evidence and preview/RLS gates are still required.
