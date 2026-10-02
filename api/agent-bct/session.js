@@ -104,7 +104,8 @@ export default {
         permissions,
         capabilities: {
           chatEnabled: false,
-          liveReadsEnabled: false,
+          generationPreviewEnabled: false,
+          liveReadsEnabled: true,
           liveWritesEnabled: false,
           estimatorLiveToolsEnabled: false,
         },
