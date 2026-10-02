@@ -28,7 +28,7 @@ with blockers as (
   union all
   select 'inspection','Required inspection/hold point is not cleared'
    where exists(select 1 from public.bct_quality_hold_points hp
-     where hp.project_id=p_project_id and coalesce(hp.clearance_required,true) and hp.cleared_at is null)
+     where hp.project_id=p_project_id and coalesce(hp.required_before_cover,true) and lower(coalesce(hp.status,'')) not in ('passed','approved','clear','cleared','complete','completed'))
   union all
   select 'material','Project material is unavailable'
    where exists(select 1 from public.bct_job_materials jm where jm.project_id=p_project_id
