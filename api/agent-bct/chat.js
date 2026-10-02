@@ -3,6 +3,7 @@ import { generateAgentBct, runtimeConfig } from "./_runtime.js";
 import { checkLocalRateLimit } from "./_rate-limit.js";
 import { auditEvent, emitPreviewAudit } from "./_audit.js";
 import { inspectGeneratedResponse } from "./_response-guard.js";
+import { classifyProvenance } from "./_provenance.js";
 
 const MAX_BODY_BYTES=32*1024;
 function json(body,status=200,extra={}){return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff","referrer-policy":"no-referrer","permissions-policy":"camera=(), microphone=(), geolocation=()",...extra}});}
@@ -43,14 +44,14 @@ export default{async fetch(request){
     const runtime=runtimeConfig();
     if(!runtime.generationFlag){
       emitPreviewAudit(auditEvent({requestId,event:"request_received",role,status:200,durationMs:Date.now()-started}));
-      return json({ok:true,requestId,stage:"orchestration_preview",generationEnabled:false,liveToolLoopEnabled:false,role,riskSignals:context.riskSignals,knowledgeKeys:context.knowledge.map(x=>x.value?.key).filter(Boolean),policyVersion:context.policyVersion,note:"Context assembled safely. Generation remains disabled by server configuration."});
+      return json({ok:true,requestId,stage:"orchestration_preview",generationEnabled:false,liveToolLoopEnabled:false,role,provenance:classifyProvenance({hasGeneral:context.knowledge.length>0,riskSignals:context.riskSignals}),riskSignals:context.riskSignals,knowledgeKeys:context.knowledge.map(x=>x.value?.key).filter(Boolean),policyVersion:context.policyVersion,note:"Context assembled safely. Generation remains disabled by server configuration."});
     }
     emitPreviewAudit(auditEvent({requestId,event:"generation_started",role,status:200,durationMs:Date.now()-started}));
     const generated=await generateAgentBct({system:modelSystem(context),history:context.history,userMessage:context.userMessage,requestId});
     const responseInspection=inspectGeneratedResponse(generated.text);
     if(!responseInspection.safe)throw Object.assign(new Error("unsafe_generation"),{code:"unsafe_generation",status:502});
     emitPreviewAudit(auditEvent({requestId,event:"generation_completed",role,status:200,durationMs:Date.now()-started}));
-    return json({ok:true,requestId,stage:"generation_preview",generationEnabled:true,liveToolLoopEnabled:false,role,riskSignals:context.riskSignals,answer:generated.text,model:generated.model,finishReason:generated.finishReason,usage:generated.usage,policyVersion:context.policyVersion});
+    return json({ok:true,requestId,stage:"generation_preview",generationEnabled:true,liveToolLoopEnabled:false,role,provenance:classifyProvenance({hasGeneral:context.knowledge.length>0,riskSignals:context.riskSignals}),riskSignals:context.riskSignals,answer:generated.text,model:generated.model,finishReason:generated.finishReason,usage:generated.usage,policyVersion:context.policyVersion});
   }catch(error){
     const status=Number(error?.status)||400;const code=error?.code||"invalid_request";
     try{emitPreviewAudit(auditEvent({requestId,event:code==="rate_limited"?"rate_limited":code==="budget_blocked"?"budget_blocked":"generation_failed",outcome:code,role,status,durationMs:Date.now()-started}));}catch{}
