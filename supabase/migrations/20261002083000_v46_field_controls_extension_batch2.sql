@@ -129,7 +129,7 @@ returns public.bct_project_crews
 language plpgsql
 security definer
 set search_path=public,auth,pg_temp
-as $
+as $$
 declare v_row public.bct_project_crews;
 begin
   if auth.uid() is null then raise exception 'Authentication required'; end if;
@@ -154,7 +154,7 @@ begin
 
   if v_row.id is null then raise exception 'Worker is not authorized to check in for this project'; end if;
   return v_row;
-end $;
+end $$;
 revoke all on function public.bct_check_in_project_crew(uuid) from public,anon,authenticated;
 grant execute on function public.bct_check_in_project_crew(uuid) to authenticated;
 
@@ -163,7 +163,7 @@ returns public.bct_project_crews
 language plpgsql
 security definer
 set search_path=public,auth,pg_temp
-as $
+as $$
 declare v_row public.bct_project_crews;
 begin
   if auth.uid() is null then raise exception 'Authentication required'; end if;
@@ -182,6 +182,6 @@ begin
   returning pc.* into v_row;
   if v_row.id is null then raise exception 'Active authorized crew check-in not found'; end if;
   return v_row;
-end $;
+end $$;
 revoke all on function public.bct_check_out_project_crew(uuid) from public,anon,authenticated;
 grant execute on function public.bct_check_out_project_crew(uuid) to authenticated;
