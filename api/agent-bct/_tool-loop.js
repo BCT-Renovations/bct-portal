@@ -4,8 +4,10 @@ import { wrapUntrustedData } from "./_guardrails.js";
 
 export const MAX_TOOL_STEPS=3;
 
-export function modelToolsForRole(role){
-  const names=listAgentBctTools(role).map(x=>x.name);
+const RISK_ORDER=Object.freeze({low:0,medium:1,high:2});
+export function modelToolsForRole(role,{maxRisk="medium"}={}){
+  if(!Object.hasOwn(RISK_ORDER,maxRisk))return[];
+  const names=listAgentBctTools(role).filter(x=>Object.hasOwn(RISK_ORDER,x.risk)&&RISK_ORDER[x.risk]<=RISK_ORDER[maxRisk]).map(x=>x.name);
   return schemasForInternalTools(names);
 }
 
