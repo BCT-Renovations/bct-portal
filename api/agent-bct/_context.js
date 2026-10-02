@@ -4,6 +4,7 @@ import { sanitizeConversation, wrapUntrustedData, detectHighRiskRequest } from "
 import { retrieveApprovedKnowledge } from "./_knowledge.js";
 
 const MAX_CONTEXT_ITEMS = 6;
+const MAX_LIVE_JSON_CHARS = 12000;
 
 export function buildAgentBctContext({
   message,
@@ -48,11 +49,8 @@ export function buildAgentBctContext({
 
 function minimizeLiveEnvelope(result) {
   if (!result || typeof result !== "object") return null;
-  return {
-    tool: result.tool,
-    requestId: result.requestId,
-    risk: result.risk,
-    effectiveRole: result.role,
-    data: result.data,
-  };
+  const envelope={tool:result.tool,risk:result.risk,effectiveRole:result.role,data:result.data};
+  const encoded=JSON.stringify(envelope);
+  if(encoded.length<=MAX_LIVE_JSON_CHARS)return envelope;
+  return {tool:result.tool,risk:result.risk,effectiveRole:result.role,data:null,truncated:true};
 }
