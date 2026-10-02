@@ -1,6 +1,7 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';
 const sql=fs.readFileSync('supabase/migrations/20261002130000_v46_trade_handoff_controls.sql','utf8');
-const completion=fs.readFileSync('supabase/migrations/20261002131000_v46_trade_handoff_completion.sql','utf8');\nconst b2=fs.readFileSync('supabase/migrations/20261002083000_v46_field_controls_extension_batch2.sql','utf8');
+const completion=fs.readFileSync('supabase/migrations/20261002131000_v46_trade_handoff_completion.sql','utf8');
+const b2=fs.readFileSync('supabase/migrations/20261002083000_v46_field_controls_extension_batch2.sql','utf8');
 for(const x of ['bct_admin_offer_trade_handoff','bct_admin_acknowledge_trade_handoff','bct_refresh_trade_handoff_attention','bct_work_packages','bct_project_dependencies','bct_action_inbox'])assert.ok(sql.includes(x),'handoff control missing '+x);
 for(const x of ['handoff_offered_at','handoff_acknowledged_at','handoff_notes'])assert.ok(b2.includes(x)&&sql.includes(x),'handoff field not reused '+x);
 assert.ok(sql.includes('public.is_bct_admin()'),'BCT authority guard missing');
