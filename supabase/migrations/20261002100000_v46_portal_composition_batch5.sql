@@ -46,6 +46,30 @@ begin
     select 'decision','Homeowner decision is overdue'
      where exists(select 1 from public.bct_customer_decisions d where d.project_id=p_project_id
        and d.due_at<now() and lower(coalesce(d.status,'')) not in ('answered','resolved','closed'))
+    union all
+    select 'stop_work','An active stop-work order blocks project readiness'
+     where exists(select 1 from public.bct_stop_work_orders sw where sw.project_id=p_project_id
+       and lower(coalesce(sw.status,'')) not in ('released','resolved','closed','cancelled'))
+    union all
+    select 'required_approval','A required project approval is incomplete'
+     where exists(select 1 from public.bct_required_approvals ra where ra.project_id=p_project_id
+       and lower(coalesce(ra.status,'')) not in ('approved','complete','completed','waived','cancelled'))
+    union all
+    select 'dependency','A required project dependency is incomplete'
+     where exists(select 1 from public.bct_project_dependencies pd where pd.project_id=p_project_id
+       and lower(coalesce(pd.status,'')) not in ('satisfied','complete','completed','resolved','waived','cancelled'))
+    union all
+    select 'permit','A required project permit is not ready'
+     where exists(select 1 from public.bct_permits pm where pm.project_id=p_project_id
+       and lower(coalesce(pm.status,'')) not in ('issued','approved','active','complete','completed','closed','not_required','waived','cancelled'))
+    union all
+    select 'failed_inspection','A project inspection requires correction or reinspection'
+     where exists(select 1 from public.bct_inspections i where i.project_id=p_project_id
+       and lower(coalesce(i.result,'')) in ('failed','fail','rejected','correction_required','reinspection_required'))
+    union all
+    select 'customer_material','Homeowner-supplied material is not verified'
+     where exists(select 1 from public.bct_customer_materials cm where cm.project_id=p_project_id
+       and lower(coalesce(cm.verification_status,'')) not in ('verified','accepted','approved','not_required','waived','cancelled'))
   )
   select jsonb_build_object(
     'project_id',p_project_id,
