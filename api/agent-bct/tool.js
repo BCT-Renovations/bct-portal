@@ -72,12 +72,15 @@ export default {
       // Always resolve role/permissions from BCT backend first. Client-supplied role is ignored.
       const permissions = await rpc("bct_my_permissions", token, {});
       const role = normalizedRole(permissions);
-      const toolName = typeof parsed.value?.tool === "string" ? parsed.value.tool : "";
+      if(!parsed.value||typeof parsed.value!=="object"||Array.isArray(parsed.value))return json({ok:false,error:"invalid_request",requestId:id},400);
+      const toolName = typeof parsed.value?.tool === "string" ? parsed.value.tool.trim() : "";
       if (!toolName) {
         return json({ ok: true, requestId: id, role, tools: listAgentBctTools(role), writeToolsEnabled: false });
       }
 
-      const resolved = resolveAgentBctTool(toolName, role, parsed.value?.input || {});
+      const input=parsed.value?.input==null?{}:parsed.value.input;
+      if(typeof input!=="object"||Array.isArray(input))return json({ok:false,error:"invalid_tool_input",requestId:id},400);
+      const resolved = resolveAgentBctTool(toolName, role, input);
       if (!resolved.ok) return json({ ok: false, error: resolved.error, requestId: id }, resolved.status);
 
       const raw = await rpc(resolved.rpc, token, resolved.args);
