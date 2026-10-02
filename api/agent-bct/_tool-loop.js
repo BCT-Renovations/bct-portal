@@ -51,7 +51,7 @@ export async function boundedToolSequence({calls,role,executeRpc,maxRisk="medium
   for(const call of source){
     const result=await executeModelToolCall({call,role,executeRpc,maxRisk});
     results.push(result);
-    if(result.ok&&result.risk==="high"){highRiskReads+=1;if(highRiskReads>1)return{ok:false,error:"too_many_high_risk_tools",results};}
+    if(result.ok&&result.risk==="high")highRiskReads+=1;
     if(!result.ok)break;
   }
   return{ok:results.every(x=>x.ok),results};
