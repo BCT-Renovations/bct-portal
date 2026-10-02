@@ -1,4 +1,5 @@
 import { retrieveApprovedKnowledge, knowledgeHealth } from "./_knowledge.js";
+import { normalizeBctLanguage } from "./_languages.js";
 
 const MAX_BODY_BYTES = 12 * 1024;
 function json(body,status=200,extra={}) { return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff",...extra}}); }
@@ -19,7 +20,8 @@ export default {
     const query=typeof parsed.value?.query==="string"?parsed.value.query.trim():"";
     if(!query||query.length>2000)return json({ok:false,error:"invalid_query",requestId},400);
     // This endpoint is public-knowledge only. Authenticated role knowledge is not exposed here.
-    const results=retrieveApprovedKnowledge({query,role:"public",languageCode:typeof parsed.value?.languageCode==="string"?parsed.value.languageCode:"en"});
-    return json({ok:true,requestId,scope:"public",results});
+    const languageCode=normalizeBctLanguage(parsed.value?.languageCode);
+    const results=retrieveApprovedKnowledge({query,role:"public",languageCode});
+    return json({ok:true,requestId,scope:"public",languageCode,results});
   }
 };
