@@ -37,6 +37,7 @@ export async function executeModelToolCall({call,role,executeRpc,maxRisk="medium
 
 export async function boundedToolSequence({calls,role,executeRpc,maxRisk="medium"}){
   const source=Array.isArray(calls)?calls:[];
+  if(source.length>MAX_TOOL_STEPS)return{ok:false,error:"too_many_tool_steps",results:[]};
   const signatures=new Set();
   for(const call of source){
     let signature="invalid";
@@ -45,10 +46,14 @@ export async function boundedToolSequence({calls,role,executeRpc,maxRisk="medium
     signatures.add(signature);
   }
   if(source.length===0)return{ok:true,results:[]};
-  if(source.length>MAX_TOOL_STEPS)return{ok:false,error:"too_many_tool_steps",results:[]};
   const results=[];
   let highRiskReads=0;
   for(const call of source){
+    if(maxRisk==="high"&&call&&typeof call==="object"&&!Array.isArray(call)){
+      const internal=internalToolName(call.name);
+      const listed=listAgentBctTools(role).find(x=>x.name===internal);
+      if(listed?.risk==="high"&&highRiskReads>=1)return{ok:false,error:"too_many_high_risk_tools",results};
+    }
     const result=await executeModelToolCall({call,role,executeRpc,maxRisk});
     results.push(result);
     if(result.ok&&result.risk==="high")highRiskReads+=1;
