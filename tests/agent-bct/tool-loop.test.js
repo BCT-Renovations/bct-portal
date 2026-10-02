@@ -35,3 +35,14 @@ test("tool execution failure is contained and does not leak backend error",async
   assert.equal(result.error,"tool_execution_failed");
   assert.equal(JSON.stringify(result).includes("database secret detail"),false);
 });
+
+test("tool loop rejects arrays and scalar argument payloads",async()=>{
+  for(const args of ["[]","123","null"]){
+    const r=await executeModelToolCall({call:{name:"project_list",arguments:args},role:"homeowner",executeRpc:async()=>[]});
+    assert.equal(r.ok,false);assert.equal(r.error,"invalid_tool_arguments");
+  }
+});
+test("empty tool sequence is a safe no-op",async()=>{
+  const r=await boundedToolSequence({calls:[],role:"homeowner",executeRpc:async()=>{throw new Error("should not run");}});
+  assert.equal(r.ok,true);assert.deepEqual(r.results,[]);
+});
