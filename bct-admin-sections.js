@@ -21,4 +21,5 @@
   loadOnce('/bct-estimator-portal.js?v=20261001-1','data-bct-estimator-portal');
   loadOnce('/bct-estimator-admin.js?v=20260930-1','data-bct-estimator-admin');
   loadOnce('/bct-photo-admin.js?v=20261001-1','data-bct-photo-admin');
+  loadOnce('/bct-admin-mfa.js?v=20261002-1','data-bct-admin-mfa');
 })();
