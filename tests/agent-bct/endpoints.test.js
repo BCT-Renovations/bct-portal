@@ -87,10 +87,15 @@ test("health keeps all irreversible Agent capabilities disabled",async()=>{
 });
 
 test("session filters malformed backend permission labels",async()=>{
-  const original=globalThis.fetch;
+  const original=globalThis.fetch,oldUrl=process.env.SUPABASE_URL,oldKey=process.env.SUPABASE_ANON_KEY;
+  process.env.SUPABASE_URL="https://example.supabase.co";process.env.SUPABASE_ANON_KEY="test";
   globalThis.fetch=async()=>new Response(JSON.stringify({role:"homeowner",permissions:["project.read","bad permission","x".repeat(100),7]}),{status:200});
   try{
     const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json",authorization:"Bearer fake"},body:"{}"}));
     assert.equal(res.status,200);assert.deepEqual((await res.json()).permissions.permissions,["project.read"]);
-  }finally{globalThis.fetch=original;}
+  }finally{
+    globalThis.fetch=original;
+    if(oldUrl===undefined)delete process.env.SUPABASE_URL;else process.env.SUPABASE_URL=oldUrl;
+    if(oldKey===undefined)delete process.env.SUPABASE_ANON_KEY;else process.env.SUPABASE_ANON_KEY=oldKey;
+  }
 });
