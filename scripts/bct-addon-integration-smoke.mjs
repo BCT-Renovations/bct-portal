@@ -9,6 +9,7 @@ const gallery=read('bct-home-gallery.js');
 const photoAdmin=read('bct-photo-admin.js');
 const estimatorPortal=read('bct-estimator-portal.js');
 const adminBoard=read('bct-admin-control-board.js');
+const adminMfa=read('bct-admin-mfa.js');
 const serviceWorker=read('service-worker.js');
 
 function assert(ok,message){if(!ok)throw new Error(message)}
@@ -21,10 +22,17 @@ assert(index.includes('bct-contract-signing.js'),'Contract-signing add-on must b
 for(const file of ['bct-admin-sections.js','bct-admin-control-board.js','bct-admin-mobile-fix.js','bct-home-gallery.js','bct-contract-signing.js']){
   assert(fs.existsSync(new URL('../'+file,import.meta.url)),`Missing index add-on: ${file}`);
 }
-for(const file of ['bct-live-project-verification.js','bct-admin-job-pages.js','bct-estimator-system.js','bct-estimator-portal.js','bct-estimator-admin.js','bct-photo-admin.js']){
+for(const file of ['bct-live-project-verification.js','bct-admin-job-pages.js','bct-estimator-system.js','bct-estimator-portal.js','bct-estimator-admin.js','bct-photo-admin.js','bct-admin-mfa.js']){
   assert(fs.existsSync(new URL('../'+file,import.meta.url)),`Missing Admin-loaded add-on: ${file}`);
   assert(adminSections.includes('/'+file),`Admin loader must reference ${file}`);
 }
+
+assert(adminMfa.includes("auth.mfa.enroll"),'Admin MFA UI must support authenticator enrollment.');
+assert(adminMfa.includes("auth.mfa.challenge"),'Admin MFA UI must challenge the authenticator.');
+assert(adminMfa.includes("auth.mfa.verify"),'Admin MFA UI must verify the authenticator code.');
+assert(adminMfa.includes('bct_admin_set_mfa_ui_ready'),'Admin MFA UI must mark readiness only through the canonical Admin RPC.');
+assert(adminMfa.includes('bct_admin_enable_mfa_enforcement'),'Admin MFA enforcement must use the canonical AAL2-gated RPC.');
+assert(adminMfa.includes('window.BCT_V46_BRIDGE'),'Admin MFA must use the shared V46 bridge for protected RPCs.');
 
 assert(liveVerification.includes('window.BCT_V46_BRIDGE'),'Live verification must use the V46 bridge.');
 assert(!liveVerification.includes("typeof rpc!=='function'"),'Live verification must not access the private rpc binding.');
