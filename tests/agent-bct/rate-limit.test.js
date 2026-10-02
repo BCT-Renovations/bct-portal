@@ -31,3 +31,8 @@ test("rate-limit window resets after expiration",()=>{
   assert.equal(checkLocalRateLimit({identity:"window-reset",authenticated:false,at:3000}).allowed,false);
   assert.equal(checkLocalRateLimit({identity:"window-reset",authenticated:false,at:3000+p.windowMs}).allowed,true);
 });
+
+test("invalid caller-supplied limiter clock cannot poison preview buckets",()=>{
+  const r=checkLocalRateLimit({identity:"bad-clock",authenticated:false,at:Number.NaN});
+  assert.equal(r.allowed,true);assert.ok(r.remaining>=0);
+});
