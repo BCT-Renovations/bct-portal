@@ -34,3 +34,7 @@ Status: HOLD. This file is a release checklist, not production approval.
 
 ## Final approval wording
 When every technical gate above has evidence, report the exact candidate SHA and remaining business-only decisions, then STOP. Do not interpret earlier broad repository/deployment permission as final Agent BCT production approval.
+
+
+## CI regression rule
+A previously passing workflow does not cover later commits. If Agent BCT Security Tests fail on the current candidate, the release gate is failed until the defect or test fixture is corrected and a subsequent security-relevant SHA passes. V46 Smoke/Production Guard success does not override an Agent security failure.
