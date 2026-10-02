@@ -41,3 +41,13 @@ Rule: tool registry declares supported roles per tool. Contractor/Admin live too
 `is_bct_admin()` accepts app-metadata roles `admin`, `bct_admin`, `owner` and also recognizes the configured BCT owner email.
 
 Agent rule: backend functions remain authoritative. The Agent never maps a chat statement to a role.
+
+
+## Money/contract function verification — 2026-10-01
+
+Read-only live schema inspection confirms:
+- `bct_my_contract_summary()` returns curated JSONB and is SECURITY INVOKER.
+- `bct_my_estimates_safe()` returns an explicit customer-safe table shape and is SECURITY INVOKER.
+- `bct_my_financing()`, `bct_my_escrow()`, and `bct_my_payments()` are SECURITY INVOKER but return whole table rows.
+
+Therefore Agent BCT keeps explicit server-side projection for financing/escrow/payments and must not forward their raw rows. Money tools remain read-only/high-risk and cannot be interpreted as authority to approve financing, release escrow, refund, create payments, or alter amounts.
