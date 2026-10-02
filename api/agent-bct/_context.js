@@ -49,7 +49,8 @@ export function buildAgentBctContext({
 
 function minimizeLiveEnvelope(result) {
   if (!result || typeof result !== "object") return null;
-  const rawTool=typeof result.tool==="string"?result.tool:"";\n  const tool=/^[a-z0-9._:-]{1,80}$/i.test(rawTool)?rawTool:"unknown";
+  const rawTool=typeof result.tool==="string"?result.tool:"";
+  const tool=/^[a-z0-9._:-]{1,80}$/i.test(rawTool)?rawTool:"unknown";
   const risk=["low","medium","high"].includes(result.risk)?result.risk:"unknown";
   const effectiveRole=["homeowner","contractor","admin"].includes(result.role)?result.role:"unknown";
   const envelope={tool,risk,effectiveRole,data:result.data};
