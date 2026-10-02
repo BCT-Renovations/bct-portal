@@ -26,7 +26,7 @@ export function sanitizeConversation({ message, history = [] }) {
 
 function cleanText(value, max) {
   if (typeof value !== "string") return "";
-  return value.replace(/\u0000/g, "").trim().slice(0, max);
+  return value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, max);
 }
 
 export function wrapUntrustedData(label, value) {
