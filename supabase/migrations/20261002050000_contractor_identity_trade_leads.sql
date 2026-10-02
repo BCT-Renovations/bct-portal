@@ -111,7 +111,9 @@ begin
   end if;
   if p_homeowner_visible and not exists(
     select 1 from public.bct_contractor_identity_profiles ip
+    join public.bct_contractor_documents pd on pd.id=ip.profile_photo_document_id
     where ip.contractor_id=p_contractor_id and ip.profile_photo_status='approved'
+      and pd.document_type='profile_photo' and pd.review_status='approved'
   ) then raise exception 'Contractor profile photo must be BCT-approved before homeowner release'; end if;
 
   if p_homeowner_visible and not exists(
@@ -167,10 +169,12 @@ language sql stable security definer set search_path=public,auth as $$
     and ip.profile_photo_status='approved'
   join public.bct_contractor_documents d on d.id=ip.profile_photo_document_id
     and d.document_type='profile_photo'
+    and d.review_status='approved'
   where l.project_id=p_project_id and l.homeowner_visible
     and exists(
       select 1 from public.bct_projects p
-      where p.id=p_project_id and p.homeowner_id=auth.uid()
+      join public.bct_customers cu on cu.id=p.customer_id
+      where p.id=p_project_id and cu.auth_user_id=auth.uid()
     )
   order by l.is_primary_contact desc,l.trade,c.legal_name;
 $$;
