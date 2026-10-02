@@ -3361,7 +3361,7 @@ renderAll();
     note('bctContractorAuthStatus',app?`✓ Signed in — ${esc(app.application_number)} — ${esc(fmtStatus(app.status))}`:'Signed in. No contractor application was found for this account.');
     if(app&&contractorApproved(app))bctCelebrate('Congratulations!', 'You are now officially a verified BCT contractor. Your approved contractor access is active for authorized BCT jobs.', `bctCelebrationSeen:contractor:${app.application_number||app.id}`);
     if(app&&$('statusId'))$('statusId').value=app.application_number;
-    renderContractorDocs();renderContractorSafetyTraining();renderContractorJobs();renderContractorCommunications();window.bctRenderContractorContracts?.(contractorState);return contractorState;
+    renderContractorDocs();renderContractorSafetyTraining();renderContractorJobs();renderContractorCommunications();window.bctRenderContractorContracts?.(contractorState);window.bctRenderContractorCloseout?.(contractorState);return contractorState;
   }
   async function loadContractorCredentials(){try{return await rpc('bct_my_contractor_credentials')||[]}catch(e){return []}}
   function credentialDisplayName(value){const key=String(value||'credential');return ({general_liability:'Insurance / General Liability',bond:'Bonding',license_registration:'License / Registration',workers_comp:'Workers Compensation',workers_comp_exemption:'Workers Compensation Exemption'})[key]||key.replaceAll('_',' ').replace(/\\b\\w/g,m=>m.toUpperCase())}
@@ -4305,5 +4305,6 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
 
 <script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20260930-1" defer></script>
 <script id="bct-contract-signing-loader" src="/bct-contract-signing.js?v=20261002-1" defer></script>
+<script id="bct-contractor-closeout-loader" src="/bct-contractor-closeout.js?v=20261002-1" defer></script>
 </body>
 </html>
