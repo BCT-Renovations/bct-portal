@@ -280,3 +280,35 @@ returns boolean language sql stable security definer set search_path=public,auth
 $$;
 revoke execute on function public.bct_contractor_identity_required_documents_ready(uuid) from public,anon;
 grant execute on function public.bct_contractor_identity_required_documents_ready(uuid) to authenticated;
+
+
+-- Revoking/rejecting the selected profile-photo document immediately revokes homeowner release.
+create or replace function public.bct_contractor_identity_review_revocation_guard()
+returns trigger language plpgsql set search_path=public,auth as $$
+begin
+  if old.review_status='approved' and new.review_status is distinct from 'approved' then
+    update public.bct_contractor_identity_profiles
+       set profile_photo_status='pending',
+           profile_photo_approved_at=null,
+           profile_photo_approved_by=null,
+           updated_at=now()
+     where profile_photo_document_id=new.id;
+    update public.bct_project_trade_leads l
+       set homeowner_visible=false,
+           is_primary_contact=false,
+           released_at=null,
+           released_by=null,
+           updated_at=now()
+     where l.contractor_id=new.contractor_id
+       and l.homeowner_visible
+       and exists(select 1 from public.bct_contractor_identity_profiles ip where ip.contractor_id=l.contractor_id and ip.profile_photo_document_id=new.id);
+  end if;
+  return new;
+end $$;
+
+drop trigger if exists trg_bct_identity_review_revocation on public.bct_contractor_documents;
+create trigger trg_bct_identity_review_revocation
+after update of review_status on public.bct_contractor_documents
+for each row
+when (old.document_type='profile_photo')
+execute function public.bct_contractor_identity_review_revocation_guard();
