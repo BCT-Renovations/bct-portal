@@ -1,6 +1,7 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';
 const sql=fs.readFileSync('supabase/migrations/20261002134000_v46_damage_responsibility_review.sql','utf8');
-const completion=fs.readFileSync('supabase/migrations/20261002135000_v46_damage_responsibility_completion.sql','utf8');\nfor(const x of ['bct_admin_review_damage_responsibility','bct_refresh_damage_responsibility_attention','responsibility_status','responsibility_party_type','responsibility_party_id','responsibility_notes','responsibility_reviewed_at','related_change_order_id','bct_action_inbox'])assert.ok(sql.includes(x),'damage review missing '+x);
+const completion=fs.readFileSync('supabase/migrations/20261002135000_v46_damage_responsibility_completion.sql','utf8');
+for(const x of ['bct_admin_review_damage_responsibility','bct_refresh_damage_responsibility_attention','responsibility_status','responsibility_party_type','responsibility_party_id','responsibility_notes','responsibility_reviewed_at','related_change_order_id','bct_action_inbox'])assert.ok(sql.includes(x),'damage review missing '+x);
 assert.ok(sql.includes('public.is_bct_admin()'),'BCT Admin authority missing');
 assert.ok(sql.includes('co.project_id=i.project_id'),'cross-project change-order guard missing');
 assert.ok(sql.includes("action_type='damage_responsibility_review'"),'damage attention lifecycle missing');
