@@ -64,3 +64,60 @@ grant execute on function public.bct_homeowner_project_crew_status(uuid) to auth
 
 comment on function public.bct_homeowner_project_crew_status(uuid) is
 'Homeowner-safe attendance/status only. Named contractor/trade-lead identity remains BCT-approved through the existing trade-lead release architecture.';
+
+
+-- Lifecycle safety: releasing a canonical worker assignment closes any open presence record.
+create or replace function public.bct_sync_crew_presence_on_assignment_release()
+returns trigger
+language plpgsql
+security definer
+set search_path=public,auth,pg_temp
+as $$
+begin
+  if old.status is distinct from new.status
+     and lower(coalesce(new.status,'')) in ('cancelled','removed','released') then
+    update public.bct_project_crews
+       set checked_out_at=coalesce(checked_out_at,case when checked_in_at is not null then now() else null end),
+           arrival_status=case when checked_in_at is null then 'cancelled' else arrival_status end,
+           substitute_approval_status=case when substitute_for is not null then 'revoked' else substitute_approval_status end
+     where project_id=new.project_id
+       and worker_profile_id=new.worker_profile_id
+       and checked_out_at is null;
+  end if;
+  return new;
+end $$;
+
+revoke all on function public.bct_sync_crew_presence_on_assignment_release() from public,anon,authenticated;
+
+drop trigger if exists trg_bct_sync_crew_presence_on_assignment_release on public.bct_worker_assignments;
+create trigger trg_bct_sync_crew_presence_on_assignment_release
+after update of status on public.bct_worker_assignments
+for each row execute function public.bct_sync_crew_presence_on_assignment_release();
+
+-- Defense in depth: an approved substitute must still have an active canonical assignment.
+create or replace function public.bct_guard_approved_crew_substitute()
+returns trigger
+language plpgsql
+set search_path=public,auth,pg_temp
+as $$
+begin
+  if new.substitute_for is not null
+     and new.substitute_approval_status='approved'
+     and not exists(
+       select 1 from public.bct_worker_assignments wa
+        where wa.project_id=new.project_id
+          and wa.worker_profile_id=new.worker_profile_id
+          and lower(coalesce(wa.status,'')) not in ('cancelled','removed','released')
+     ) then
+    raise exception 'Approved substitute requires an active project worker assignment';
+  end if;
+  return new;
+end $$;
+
+revoke all on function public.bct_guard_approved_crew_substitute() from public,anon,authenticated;
+
+drop trigger if exists trg_bct_guard_approved_crew_substitute on public.bct_project_crews;
+create trigger trg_bct_guard_approved_crew_substitute
+before insert or update of substitute_approval_status,worker_profile_id,project_id
+on public.bct_project_crews
+for each row execute function public.bct_guard_approved_crew_substitute();
