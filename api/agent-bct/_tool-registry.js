@@ -1,5 +1,5 @@
 const TOOL_REGISTRY = Object.freeze({
-  "service.list": spec("bct_active_services_localized", ["public","homeowner","contractor","admin"], input => ({ p_language_code: languageCode(input?.languageCode) }), rows(serviceSafe)),
+  "service.list": spec("bct_active_services_localized", ["homeowner","contractor","admin"], input => ({ p_language_code: languageCode(input?.languageCode) }), rows(serviceSafe)),
   "identity.permissions": spec("bct_my_permissions", ["homeowner", "contractor", "admin"], () => ({}), identityPermissions),
   "project.list": spec("bct_my_project_summary_cards", ["homeowner"], () => ({}), rows(projectSummary), "medium"),
   "project.status": spec("bct_my_project_dashboard", ["homeowner"], input => ({ p_project_number: requiredText(input?.projectNumber, 80) }), projectDashboard, "medium"),
