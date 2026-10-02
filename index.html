@@ -2657,9 +2657,12 @@ async function openBctAdmin(){
       new Promise(resolve=>setTimeout(()=>resolve({data:{session:null},timedOut:true}),2500))
     ]);
     const user=sessionResult?.data?.session?.user;
-    if(user?.app_metadata?.role==='admin'){
+    const role=String(user?.app_metadata?.role||'').trim().toLowerCase();
+    const isAdminIdentity=!!user&&(['admin','bct_admin','owner'].includes(role)||String(user.email||'').trim().toLowerCase()==='myproject@bctrenovations.com');
+    if(isAdminIdentity){
       document.getElementById('adminSessionEmail').textContent=user.email||'';
       setVisibleView('admin');
+      setTimeout(()=>window.bctRefreshAdminMfa?.(),0);
     }
   }catch(e){
     // Keep the admin login screen visible if the session check fails.
@@ -2709,7 +2712,8 @@ async function bctAdminLogin(){
     if(!user){
       throw new Error('Supabase did not return an authenticated user.');
     }
-    if(role!=='admin'){
+    const isAdminIdentity=['admin','bct_admin','owner'].includes(role)||String(user.email||'').trim().toLowerCase()==='myproject@bctrenovations.com';
+    if(!isAdminIdentity){
       await supabaseClient.auth.signOut({scope:'local'});
       status.innerHTML='<div class="notice">Your sign-in was accepted, but this account is not authorized as a BCT administrator.</div>';
       return;
@@ -2718,6 +2722,7 @@ async function bctAdminLogin(){
     document.getElementById('adminSessionEmail').textContent=user.email||email;
     status.innerHTML='';
     setVisibleView('admin');
+    setTimeout(()=>window.bctRefreshAdminMfa?.(),0);
   }catch(error){
     const msg=String(error?.message||error||'Unknown sign-in error');
     let friendly=msg;
