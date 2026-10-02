@@ -71,6 +71,8 @@ const dryRunMarkers = [
   ['homeowner completion certificate feed', 'bct_my_completion_certificates'],
   ['homeowner completion signature action', 'bct_homeowner_sign_completion_certificate'],
   ['homeowner punch-list backend', 'bct_my_punch_list'],
+  ['homeowner warranty backend', 'bct_my_warranties'],
+  ['homeowner warranty closeout UI', 'Warranty Information'],
   ['completion rating opportunities backend', 'bct_rating_opportunities'],
   ['completion rating submit backend', 'bct_submit_completion_rating'],
   ['homeowner messages live container', 'bctHomeownerMessages'],
@@ -106,6 +108,10 @@ const dryRunMarkers = [
   ['automation health RPC', 'bct_frontend_admin_automation_health'],
   ['admin notification health RPC', 'bct_admin_notification_health'],
   ['admin notification delivery state', 'notification_delivery'],
+  ['admin completion readiness backend', 'bct_admin_completion_readiness'],
+  ['admin completion requests backend', 'bct_admin_completion_requests'],
+  ['admin warranty backend', 'bct_admin_warranties'],
+  ['admin rating summary backend', 'bct_admin_rating_summary'],
   ['automation health dashboard', 'Automation Health'],
   ['local demo data disabled after overlay', "localStorage.removeItem('bctPortalDataV1')"]
 ];
