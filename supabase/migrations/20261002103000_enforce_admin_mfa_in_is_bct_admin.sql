@@ -43,12 +43,31 @@ create policy "bct_security_settings_admin_update"
 on public.bct_security_settings
 for update to authenticated
 using (
-  coalesce(auth.jwt()->'app_metadata'->>'role','') in ('admin','bct_admin','owner')
-  or lower(coalesce(auth.jwt()->>'email',''))=lower('myproject@bctrenovations.com')
+  (
+    coalesce(auth.jwt()->'app_metadata'->>'role','') in ('admin','bct_admin','owner')
+    or lower(coalesce(auth.jwt()->>'email',''))=lower('myproject@bctrenovations.com')
+  )
+  and (
+    not coalesce(admin_mfa_enforced,false)
+    or coalesce(auth.jwt()->>'aal','aal1')='aal2'
+  )
 )
 with check (
-  coalesce(auth.jwt()->'app_metadata'->>'role','') in ('admin','bct_admin','owner')
-  or lower(coalesce(auth.jwt()->>'email',''))=lower('myproject@bctrenovations.com')
+  (
+    coalesce(auth.jwt()->'app_metadata'->>'role','') in ('admin','bct_admin','owner')
+    or lower(coalesce(auth.jwt()->>'email',''))=lower('myproject@bctrenovations.com')
+  )
+  and (
+    not coalesce(admin_mfa_ui_ready,false)
+    or coalesce(auth.jwt()->>'aal','aal1')='aal2'
+  )
+  and (
+    not coalesce(admin_mfa_enforced,false)
+    or (
+      coalesce(auth.jwt()->>'aal','aal1')='aal2'
+      and coalesce(admin_mfa_ui_ready,false)
+    )
+  )
 );
 
 create or replace function public.bct_admin_set_mfa_ui_ready(p_ready boolean)
