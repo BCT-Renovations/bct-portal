@@ -44,7 +44,7 @@ function pick(object, keys) {
   return Object.fromEntries(keys.filter(key => Object.hasOwn(object, key)).map(key => [key, object[key]]));
 }
 function identityPermissions(value) {
-  if (!value || typeof value !== "object") return { role: "unknown", permissions: [] };
+  if (!value || typeof value !== "object" || Array.isArray(value)) return { role: "unknown", permissions: [] };
   const role=["homeowner","contractor","admin"].includes(value.role)?value.role:"unknown";
   const permissions=Array.isArray(value.permissions)?value.permissions.filter(x=>typeof x==="string"&&/^[a-z0-9._:-]{1,80}$/i.test(x)).slice(0,100):[];
   return { role, permissions };
