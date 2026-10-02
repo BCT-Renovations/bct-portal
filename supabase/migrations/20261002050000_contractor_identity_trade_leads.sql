@@ -262,6 +262,11 @@ for each row execute function public.bct_project_trade_leads_assignment_visibili
 alter table public.bct_contractor_applications
   add column if not exists government_id_has_back boolean not null default false;
 
+-- Identity document cardinality: one current profile photo and one current ID side per contractor.
+create unique index if not exists bct_contractor_identity_doc_singleton
+  on public.bct_contractor_documents(contractor_id,document_type)
+  where document_type in ('profile_photo','government_id_front','government_id_back');
+
 -- Central identity-completeness predicate for approval/workforce gates.
 create or replace function public.bct_contractor_identity_required_documents_ready(p_contractor_id uuid)
 returns boolean language sql stable security definer set search_path=public,auth as $$
