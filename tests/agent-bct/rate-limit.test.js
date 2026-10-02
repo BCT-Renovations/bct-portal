@@ -36,3 +36,10 @@ test("invalid caller-supplied limiter clock cannot poison preview buckets",()=>{
   const r=checkLocalRateLimit({identity:"bad-clock",authenticated:false,at:Number.NaN});
   assert.equal(r.allowed,true);assert.ok(r.remaining>=0);
 });
+
+test("negative and infinite limiter clocks cannot create immortal buckets",()=>{
+  for(const at of [-1,Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY]){
+    const r=checkLocalRateLimit({identity:"invalid-clock-"+String(at),authenticated:false,at});
+    assert.equal(r.allowed,true);assert.ok(r.retryAfterSeconds>=0);
+  }
+});
