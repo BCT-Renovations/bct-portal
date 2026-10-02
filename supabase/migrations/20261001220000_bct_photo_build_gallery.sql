@@ -85,7 +85,7 @@ begin
   end if;
   new.updated_at=now();
   return new;
-end $$;
+end $;
 revoke execute on function public.bct_gallery_enforce_limits() from public, anon, authenticated;
 
 drop trigger if exists bct_gallery_enforce_home_limit_trigger on public.bct_gallery_photos;
