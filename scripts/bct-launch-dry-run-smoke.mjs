@@ -36,6 +36,7 @@ const signatureImmutabilitySql = fs.readFileSync(new URL('../supabase/migrations
 const gallerySql = fs.readFileSync(new URL('../supabase/migrations/20261001220000_bct_photo_build_gallery.sql', import.meta.url), 'utf8');
 const homeGalleryJs = fs.readFileSync(new URL('../bct-home-gallery.js', import.meta.url), 'utf8');
 const liveVerificationJs = fs.readFileSync(new URL('../bct-live-project-verification.js', import.meta.url), 'utf8');
+const contractSigningJs = fs.readFileSync(new URL('../bct-contract-signing.js', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -203,6 +204,17 @@ for (const marker of [
   assert(indexHtml.includes(marker) || readinessSql.includes(marker), `Admin launch boundary must preserve: ${marker}`);
 }
 assert(readinessSql.includes('customer_pilot_enabled') || launchStatus.includes('customer_pilot_enabled'), 'Customer pilot launch gate must remain explicit.');
+
+for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contract','bct_admin_esign_contract']) {
+  assert(contractSigningJs.includes(marker), `Contract signing UI must preserve canonical RPC: ${marker}`);
+}
+assert(contractSigningJs.includes('p_consent:true'), 'Contract signing UI must send explicit electronic-signature consent.');
+assert(contractSigningJs.includes('typedName'), 'Contract signing UI must require a typed signer name.');
+assert(indexHtml.includes('bct-contract-signing.js'), 'V46 must load the contract-signing module.');
+assert(indexHtml.includes('bctRenderHomeownerContracts'), 'Homeowner state load must render contract signatures.');
+assert(indexHtml.includes('bctRenderContractorContracts'), 'Contractor state load must render contract acknowledgments.');
+assert(indexHtml.includes('bctRenderAdminContracts'), 'Admin state load must render BCT contract signatures.');
+assert(signatureImmutabilitySql.includes('bct_contract_signature_immutable'), 'Captured contract signature evidence must remain immutable.');
 
 assert(liveVerificationJs.includes('bct_admin_create_live_quality_check'), 'Live verification Admin creation must use the canonical quality-check workflow.');
 assert(liveVerificationJs.includes('bct_admin_live_quality_checks'), 'Live verification Admin list must use the canonical quality-check workflow.');
