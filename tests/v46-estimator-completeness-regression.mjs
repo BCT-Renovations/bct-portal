@@ -30,6 +30,8 @@ if(!bid.includes('before insert or update of contractor_id,job_id on public.bct_
  throw new Error('Bid separation trigger missing');
 if(!assign.includes('before insert or update of contractor_id,project_id on public.bct_assignments'))
  throw new Error('Performing-contractor separation trigger missing');
+if(!base.includes('pg_temp') || !bid.includes('pg_temp') || !assign.includes('pg_temp') || !ext.includes('pg_temp')) throw new Error('Estimator privileged function search-path hardening missing');
+if(!base.includes('from public,anon,authenticated') || !bid.includes('from public,anon,authenticated')) throw new Error('Estimator internal/client RPC execute revocation hardening missing');
 if(!ext.includes('revoke all on function public.bct_submit_assessment_package'))
  throw new Error('Estimator submit RPC public revoke missing');
 
