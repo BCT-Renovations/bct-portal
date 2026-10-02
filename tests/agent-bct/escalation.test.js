@@ -35,3 +35,9 @@ test("escalation RPC arguments contain only the narrow existing case contract",(
   assert.deepEqual(Object.keys(escalationRpcArgs(prepared)).sort(),["p_case_type","p_category","p_description","p_job_id","p_project_id","p_severity","p_subject"].sort());
   assert.equal(escalationRpcArgs({ok:false}),null);
 });
+
+test("escalation labels and severities reject coercion or inherited keys",()=>{
+  assert.equal(prepareEscalation({confirmed:true,label:"toString",subject:"x",description:"y"}).error,"invalid_escalation_label");
+  assert.equal(prepareEscalation({confirmed:true,label:7,subject:"x",description:"y"}).error,"invalid_escalation_label");
+  assert.equal(prepareEscalation({confirmed:true,label:"other",severity:7,subject:"x",description:"y"}).error,"invalid_escalation_severity");
+});
