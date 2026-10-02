@@ -63,6 +63,10 @@ begin
   join public.bct_property_units pu on pu.id=ppu.property_unit_id
   join public.bct_managed_properties mp on mp.id=pu.property_id
   where ppu.project_id=p_project_id
+    and pu.property_id=(
+      select p.managed_property_id from public.bct_projects p where p.id=p_project_id
+    )
+    and mp.active
     and exists(
       select 1 from public.bct_property_accounts pa
       where pa.id=mp.property_account_id and pa.auth_user_id=auth.uid() and pa.active
