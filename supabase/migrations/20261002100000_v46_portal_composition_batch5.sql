@@ -101,8 +101,12 @@ grant execute on function public.bct_homeowner_project_snapshot(uuid) to authent
 create or replace function public.bct_my_property_portfolio_priority()
 returns table(project_id uuid,project_number text,property_name text,building_number text,unit_number text,
               workflow_status text,priority text,requires_manager_action boolean,open_attention bigint)
-language sql stable security invoker set search_path=public,auth,pg_temp
-as $$
+language plpgsql stable security definer set search_path=public,auth,pg_temp
+as $
+begin
+  if auth.uid() is null then raise exception 'Authentication required'; end if;
+
+  return query
   select p.id,p.project_number,p.property_name,p.building_number,p.unit_number,p.workflow_status,
     case
       when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='critical') then 'critical'
@@ -116,14 +120,17 @@ as $$
   from public.bct_projects p
   where p.managed_property_id is not null
     and exists(
-      select 1
-      from public.bct_property_accounts pa
-      where pa.auth_user_id=auth.uid() and pa.active and exists (select 1 from public.bct_managed_properties mp where mp.id=p.managed_property_id and mp.property_account_id=pa.id and mp.active)
+      select 1 from public.bct_managed_properties mp
+      join public.bct_property_accounts pa on pa.id=mp.property_account_id
+      where mp.id=p.managed_property_id
+        and pa.auth_user_id=auth.uid()
+        and pa.active
+        and mp.active
     )
   order by
     case when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='critical') then 0
          when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='high') then 1 else 2 end,
     p.updated_at desc;
-$$;
+end $;
+revoke all on function public.bct_my_property_portfolio_priority() from public,anon,authenticated;
 grant execute on function public.bct_my_property_portfolio_priority() to authenticated;
-revoke execute on function public.bct_my_property_portfolio_priority() from anon;
