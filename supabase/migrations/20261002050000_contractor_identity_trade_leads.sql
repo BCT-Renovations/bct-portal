@@ -375,3 +375,225 @@ after update of review_status on public.bct_contractor_documents
 for each row
 when (old.document_type='profile_photo')
 execute function public.bct_contractor_identity_review_revocation_guard();
+
+
+-- Identity integration extensions for the existing canonical contractor functions.
+-- These preserve the existing application/document workflows and only add the identity fields/types.
+
+create or replace function public.bct_register_contractor_document(
+  p_document_type text,
+  p_storage_path text,
+  p_original_filename text default null::text
+)
+returns public.bct_contractor_documents
+language plpgsql
+set search_path to 'public','auth','storage'
+as $function$
+declare
+  v_uid uuid := auth.uid();
+  v_app_id uuid;
+  v_row public.bct_contractor_documents;
+  v_existing public.bct_contractor_documents;
+  v_type text := lower(btrim(coalesce(p_document_type,'')));
+begin
+  if v_uid is null then raise exception 'Authentication required'; end if;
+  select id into v_app_id
+    from public.bct_contractor_applications
+   where auth_user_id=v_uid
+   order by created_at desc limit 1;
+  if v_app_id is null then raise exception 'Contractor application required'; end if;
+
+  if v_type not in (
+    'profile_photo','government_id_front','government_id_back','contractor_trade_license',
+    'certificate_of_insurance','insurance','w9','license_registration','work_photo',
+    'supporting_document','background_check_authorization'
+  ) then raise exception 'Unsupported contractor document type'; end if;
+
+  if p_storage_path is null or btrim(p_storage_path)='' or split_part(p_storage_path,'/',1)<>v_uid::text then
+    raise exception 'Storage path must be inside current user folder';
+  end if;
+  if split_part(p_storage_path,'/',2)<>v_app_id::text then
+    raise exception 'Storage path must be inside the current contractor application folder';
+  end if;
+  if not exists(
+    select 1 from storage.objects o
+     where o.bucket_id='bct-contractor-documents' and o.name=btrim(p_storage_path)
+  ) then raise exception 'Contractor document must be uploaded to BCT private storage before metadata is registered'; end if;
+
+  select * into v_existing
+    from public.bct_contractor_documents
+   where storage_path=btrim(p_storage_path) limit 1;
+  if v_existing.id is not null then
+    if v_existing.application_id<>v_app_id then
+      raise exception 'Storage object is already registered to another contractor application';
+    end if;
+    return v_existing;
+  end if;
+
+  if v_type in ('profile_photo','government_id_front','government_id_back')
+     and exists(
+       select 1 from public.bct_contractor_documents d
+        where d.application_id=v_app_id and d.document_type=v_type
+     ) then
+    raise exception 'Retire the current identity document before registering its replacement';
+  end if;
+
+  insert into public.bct_contractor_documents(application_id,document_type,storage_path,original_filename,review_status)
+  values(v_app_id,v_type,btrim(p_storage_path),nullif(btrim(p_original_filename),''),'pending')
+  returning * into v_row;
+  return v_row;
+end
+$function$;
+
+create or replace function public.bct_submit_contractor_application(p_payload jsonb)
+returns public.bct_contractor_applications
+language plpgsql
+set search_path to 'public','auth'
+as $function$
+declare
+  v_uid uuid := auth.uid();
+  v_email text := coalesce(nullif(auth.jwt()->>'email',''), nullif(btrim(p_payload->>'email'),''));
+  v_languages text[];
+  v_primary text;
+  v_caps text[];
+  v_row public.bct_contractor_applications;
+  v_ref jsonb;
+  v_ref_no integer := 0;
+  v_ref_count integer;
+begin
+  if v_uid is null then raise exception 'Authentication required'; end if;
+  if p_payload is null or jsonb_typeof(p_payload) <> 'object' then raise exception 'Application payload required'; end if;
+  if exists(select 1 from public.bct_contractor_applications where auth_user_id=v_uid and status <> 'rejected') then
+    raise exception 'An active contractor application already exists for this account';
+  end if;
+  if nullif(btrim(p_payload->>'legal_name'),'') is null then raise exception 'Legal name required'; end if;
+  if v_email is null then raise exception 'Email required'; end if;
+  v_primary:=public.bct_resolve_service_code(p_payload->>'primary_trade');
+  if v_primary is null then raise exception 'Primary trade must be an active BCT service'; end if;
+  if v_primary='roofing' then raise exception 'Roofing is not an available BCT contractor trade'; end if;
+  if coalesce((p_payload->>'information_certified')::boolean,false) is not true then raise exception 'Information certification required'; end if;
+  if coalesce((p_payload->>'references_authorized')::boolean,false) is not true then raise exception 'Reference authorization required'; end if;
+  if coalesce((p_payload->>'background_acknowledged')::boolean,false) is not true then raise exception 'Background screening acknowledgment required'; end if;
+
+  if jsonb_typeof(p_payload->'references') <> 'array' then raise exception 'Exactly five professional references are required'; end if;
+  if exists(
+    select 1 from jsonb_array_elements(p_payload->'references') r(value)
+    where (nullif(btrim(r.value->>'name'),'') is null) <> (nullif(btrim(r.value->>'contact'),'') is null)
+  ) then raise exception 'Each professional reference must include both a name and contact information'; end if;
+  v_ref_count := public.bct_valid_reference_count(p_payload->'references');
+  if v_ref_count < 5 then raise exception 'Exactly five complete professional references are required'; end if;
+  if v_ref_count > 5 then raise exception 'No more than five professional references may be submitted'; end if;
+
+  select coalesce(array_agg(distinct lower(btrim(x))) filter (where nullif(btrim(x),'') is not null), array['en']::text[])
+    into v_languages
+  from jsonb_array_elements_text(coalesce(p_payload->'spoken_languages','["en"]'::jsonb)) as t(x);
+  if exists(select 1 from unnest(v_languages) x where not exists(select 1 from public.supported_languages l where l.code=x and l.is_active=true)) then
+    raise exception 'One or more spoken language codes are unsupported';
+  end if;
+
+  if p_payload ? 'trade_capabilities' then
+    if jsonb_typeof(p_payload->'trade_capabilities')<>'array' then raise exception 'Trade capabilities must be an array'; end if;
+    select coalesce(array_agg(distinct public.bct_resolve_service_code(x)) filter(where public.bct_resolve_service_code(x) is not null),array[]::text[])
+      into v_caps from jsonb_array_elements_text(p_payload->'trade_capabilities') t(x);
+    if (select count(*) from jsonb_array_elements_text(p_payload->'trade_capabilities')) <> cardinality(v_caps) then
+      raise exception 'One or more trade capabilities are unsupported or duplicated';
+    end if;
+  else
+    v_caps:=array[v_primary];
+  end if;
+  if cardinality(v_caps)=0 then v_caps:=array[v_primary]; end if;
+  if not(v_primary=any(v_caps)) then v_caps:=array_append(v_caps,v_primary); end if;
+
+  insert into public.bct_contractor_applications(
+    auth_user_id,legal_name,business_name,email,phone,city_state,years_experience,primary_trade,
+    crew_size,service_area,reliable_vehicle,other_trades,tools_equipment,recent_employer,
+    dates_worked,reason_for_leaving,work_performed,additional_work_history,currently_insured,
+    can_provide_coi,information_certified,photo_certified,references_authorized,
+    background_acknowledged,spoken_languages,trade_capabilities,government_id_has_back,status
+  ) values (
+    v_uid,btrim(p_payload->>'legal_name'),nullif(btrim(p_payload->>'business_name'),''),lower(v_email),
+    nullif(btrim(p_payload->>'phone'),''),nullif(btrim(p_payload->>'city_state'),''),
+    nullif(p_payload->>'years_experience','')::integer,v_primary,
+    nullif(p_payload->>'crew_size','')::integer,nullif(btrim(p_payload->>'service_area'),''),
+    case when nullif(p_payload->>'reliable_vehicle','') is null then null else (p_payload->>'reliable_vehicle')::boolean end,
+    nullif(btrim(p_payload->>'other_trades'),''),nullif(btrim(p_payload->>'tools_equipment'),''),
+    nullif(btrim(p_payload->>'recent_employer'),''),nullif(btrim(p_payload->>'dates_worked'),''),
+    nullif(btrim(p_payload->>'reason_for_leaving'),''),nullif(btrim(p_payload->>'work_performed'),''),
+    nullif(btrim(p_payload->>'additional_work_history'),''),
+    case when nullif(p_payload->>'currently_insured','') is null then null else (p_payload->>'currently_insured')::boolean end,
+    case when nullif(p_payload->>'can_provide_coi','') is null then null else (p_payload->>'can_provide_coi')::boolean end,
+    true,coalesce((p_payload->>'photo_certified')::boolean,false),true,true,v_languages,v_caps,
+    coalesce((p_payload->>'government_id_has_back')::boolean,false),'pending_review'
+  ) returning * into v_row;
+
+  for v_ref in select value from jsonb_array_elements(p_payload->'references')
+  loop
+    exit when v_ref_no >= 5;
+    if nullif(btrim(v_ref->>'name'),'') is not null and nullif(btrim(v_ref->>'contact'),'') is not null then
+      v_ref_no := v_ref_no + 1;
+      insert into public.bct_contractor_references(application_id,reference_number,reference_name,reference_contact)
+      values(v_row.id,v_ref_no,btrim(v_ref->>'name'),btrim(v_ref->>'contact'));
+    end if;
+  end loop;
+  return v_row;
+end;
+$function$;
+
+create or replace function public.bct_update_my_contractor_application(p_payload jsonb)
+returns public.bct_contractor_applications
+language plpgsql
+set search_path to 'public','auth'
+as $function$
+declare
+  v_uid uuid:=auth.uid();
+  v_old public.bct_contractor_applications;
+  v_caps text[];
+  v_langs text[];
+  v_primary text;
+  v_row public.bct_contractor_applications;
+begin
+  if v_uid is null then raise exception 'Authentication required'; end if;
+  select * into v_old from public.bct_contractor_applications where auth_user_id=v_uid order by created_at desc limit 1;
+  if v_old.id is null then raise exception 'Contractor application not found'; end if;
+  if v_old.status not in ('pending_review','background_check','background_cleared_documents_needed') then raise exception 'Application can no longer be edited'; end if;
+  if p_payload is null or jsonb_typeof(p_payload)<>'object' then raise exception 'Application payload required'; end if;
+  v_primary:=coalesce(public.bct_resolve_service_code(p_payload->>'primary_trade'),v_old.primary_trade);
+  if p_payload ? 'spoken_languages' then
+    select coalesce(array_agg(distinct lower(btrim(x))) filter(where nullif(btrim(x),'') is not null),array[]::text[])
+      into v_langs from jsonb_array_elements_text(p_payload->'spoken_languages') t(x);
+    if cardinality(v_langs)=0 or exists(select 1 from unnest(v_langs) x where not exists(select 1 from public.supported_languages l where l.code=x and l.is_active)) then
+      raise exception 'Unsupported spoken language selection';
+    end if;
+  else v_langs:=v_old.spoken_languages; end if;
+  if p_payload ? 'trade_capabilities' then
+    select coalesce(array_agg(distinct public.bct_resolve_service_code(x)) filter(where public.bct_resolve_service_code(x) is not null),array[]::text[])
+      into v_caps from jsonb_array_elements_text(p_payload->'trade_capabilities') t(x);
+  else v_caps:=v_old.trade_capabilities; end if;
+  if not(v_primary=any(v_caps)) then v_caps:=array_append(v_caps,v_primary); end if;
+
+  update public.bct_contractor_applications set
+    legal_name=case when p_payload ? 'legal_name' then btrim(p_payload->>'legal_name') else legal_name end,
+    business_name=case when p_payload ? 'business_name' then nullif(btrim(p_payload->>'business_name'),'') else business_name end,
+    phone=case when p_payload ? 'phone' then nullif(btrim(p_payload->>'phone'),'') else phone end,
+    city_state=case when p_payload ? 'city_state' then nullif(btrim(p_payload->>'city_state'),'') else city_state end,
+    years_experience=case when p_payload ? 'years_experience' then nullif(p_payload->>'years_experience','')::integer else years_experience end,
+    primary_trade=v_primary, trade_capabilities=v_caps, spoken_languages=v_langs,
+    crew_size=case when p_payload ? 'crew_size' then nullif(p_payload->>'crew_size','')::integer else crew_size end,
+    service_area=case when p_payload ? 'service_area' then nullif(btrim(p_payload->>'service_area'),'') else service_area end,
+    reliable_vehicle=case when p_payload ? 'reliable_vehicle' then (p_payload->>'reliable_vehicle')::boolean else reliable_vehicle end,
+    other_trades=case when p_payload ? 'other_trades' then nullif(btrim(p_payload->>'other_trades'),'') else other_trades end,
+    tools_equipment=case when p_payload ? 'tools_equipment' then nullif(btrim(p_payload->>'tools_equipment'),'') else tools_equipment end,
+    recent_employer=case when p_payload ? 'recent_employer' then nullif(btrim(p_payload->>'recent_employer'),'') else recent_employer end,
+    dates_worked=case when p_payload ? 'dates_worked' then nullif(btrim(p_payload->>'dates_worked'),'') else dates_worked end,
+    reason_for_leaving=case when p_payload ? 'reason_for_leaving' then nullif(btrim(p_payload->>'reason_for_leaving'),'') else reason_for_leaving end,
+    work_performed=case when p_payload ? 'work_performed' then nullif(btrim(p_payload->>'work_performed'),'') else work_performed end,
+    additional_work_history=case when p_payload ? 'additional_work_history' then nullif(btrim(p_payload->>'additional_work_history'),'') else additional_work_history end,
+    currently_insured=case when p_payload ? 'currently_insured' then (p_payload->>'currently_insured')::boolean else currently_insured end,
+    can_provide_coi=case when p_payload ? 'can_provide_coi' then (p_payload->>'can_provide_coi')::boolean else can_provide_coi end,
+    government_id_has_back=case when p_payload ? 'government_id_has_back' then coalesce((p_payload->>'government_id_has_back')::boolean,false) else government_id_has_back end,
+    updated_at=now()
+  where id=v_old.id returning * into v_row;
+  if nullif(v_row.legal_name,'') is null then raise exception 'Legal name cannot be blank'; end if;
+  return v_row;
+end
+$function$;
