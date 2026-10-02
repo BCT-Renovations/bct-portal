@@ -8,6 +8,7 @@ function ensure(){
  if(document.getElementById('bctInsuranceAdminPanel'))return;
  const h=host();if(!h)return;
  const p=document.createElement('section');p.id='bctInsuranceAdminPanel';p.className='card section hidden';p.dataset.adminPagePanel='insurance';
+ p.dataset.bctBoardInclude='1';
  p.innerHTML='<div class="toolbar"><div><span class="badge info">BCT Insurance Portal</span><h2>Insurance Claims</h2><p class="muted">BCT-controlled insurance assignment review. Accepting a claim does not create a construction job.</p></div><button type="button" id="bctInsuranceAdminRefresh" class="secondary">Refresh</button></div><div id="bctInsuranceAdminStatus"></div><div id="bctInsuranceAdminClaims"><div class="notice">Open this page to load insurance claims.</div></div>';
  h.appendChild(p);document.getElementById('bctInsuranceAdminRefresh')?.addEventListener('click',load);
 }
