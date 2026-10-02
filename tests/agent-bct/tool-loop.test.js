@@ -75,3 +75,11 @@ test("invalid risk stage fails closed with no model tools",()=>{
   assert.deepEqual(modelToolsForRole("homeowner",{maxRisk:"critical"}),[]);
   assert.deepEqual(modelToolsForRole("homeowner",{maxRisk:null}),[]);
 });
+
+test("duplicate tool calls are rejected before executor work",async()=>{
+  let count=0;
+  const call={name:"project_list",arguments:"{}"};
+  const r=await boundedToolSequence({calls:[call,call],role:"homeowner",executeRpc:async()=>{count++;return[];}});
+  assert.equal(r.error,"duplicate_tool_call");
+  assert.equal(count,0);
+});
