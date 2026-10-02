@@ -27,3 +27,14 @@ test("alternate human impersonation phrasing is unsafe",()=>{
   assert.equal(inspectGeneratedResponse("I am actually Ty and I can handle that.").safe,false);
   assert.equal(inspectGeneratedResponse("I work as your general contractor.").safe,false);
 });
+
+test("factual references to Ty and BCT authority remain safe",()=>{
+  assert.equal(inspectGeneratedResponse("Ty Perry is BCT Renovations' General Contractor.").safe,true);
+  assert.equal(inspectGeneratedResponse("BCT may approve financing-related project decisions when applicable.").safe,true);
+  assert.equal(inspectGeneratedResponse("I can explain your escrow status, but I cannot release escrow.").safe,true);
+});
+test("additional unconfirmed reserved completion variants are blocked",()=>{
+  for(const text of ["Your refund has been approved.","The contractor has been assigned.","Your contract is now signed."]){
+    assert.ok(inspectGeneratedResponse(text).findings.includes("unconfirmed_reserved_action_claim"));
+  }
+});
