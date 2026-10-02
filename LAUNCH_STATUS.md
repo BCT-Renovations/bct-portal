@@ -121,6 +121,15 @@ The production launch-control table was re-read without mutation. `frontend_roll
 - Launch regression now fails if the UI falls back to the legacy inspection-backed create/update RPCs.
 - The public Our Work gallery was re-audited against live Supabase: the `bct-gallery` bucket is private, public object reads require a matching published gallery row, metadata public reads require `is_published=true`, and writes remain BCT Admin-only. Source regression now locks those boundaries plus the 1,000-photo library and 30-photo home-page limits.
 
+### 2026-10-02 Admin Authenticator / MFA hardening
+
+- Live Supabase already provides MFA status, UI-readiness, and enforcement RPCs, but the current live setting remains `admin_mfa_enforced=false` and `admin_mfa_ui_ready=false`.
+- The isolated branch now includes an Admin Authenticator UI for TOTP enrollment, challenge/verification, current AAL visibility, UI-readiness confirmation, and a separate explicit enforcement action.
+- MFA enforcement is **not** enabled automatically and no production security setting was changed.
+- The source audit found that the prior `is_bct_admin()` predicate did not consume `admin_mfa_enforced`, so turning the setting on would not have consistently required AAL2 across Admin RPC/RLS paths. A source migration now makes the canonical Admin predicate require `aal2` whenever enforcement is enabled.
+- The same migration adds a non-recursive Admin SELECT policy for the singleton security-settings row, aligns the MFA setting UPDATE policy with canonical BCT Admin identities, requires AAL2 before marking the MFA UI ready, and preserves the owner-email Admin path.
+- The V46 add-on integration smoke now covers the Admin MFA module and the master launch dry-run guards the canonical AAL2 enforcement migration.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
