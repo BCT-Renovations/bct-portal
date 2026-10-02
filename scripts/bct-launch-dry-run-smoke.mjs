@@ -226,6 +226,9 @@ assert(indexHtml.includes('bct-contract-signing.js'), 'V46 must load the contrac
 assert(indexHtml.includes('window.supabaseClient=supabaseClient'), 'V46 must expose the shared Supabase client to isolated add-ons.');
 assert(indexHtml.includes('window.SUPABASE_URL=SUPABASE_URL'), 'V46 must expose the public Supabase URL used by isolated add-ons.');
 assert(indexHtml.includes('window.BCT_V46_BRIDGE'), 'V46 must expose the narrow shared bridge for private state/RPC operations.');
+assert(indexHtml.includes("['admin','bct_admin','owner'].includes(role)"), 'Admin login/session restore must preserve every canonical BCT Admin role alias.');
+assert(indexHtml.includes("myproject@bctrenovations.com"), 'Admin login/session restore must preserve the canonical owner-email Admin path.');
+assert(indexHtml.includes("setTimeout(()=>window.bctRefreshAdminMfa?.(),0)"), 'Admin sign-in/session restore must keep the MFA challenge reachable before protected state loads.');
 assert(indexHtml.includes('bctContractSigningBridge'), 'V46 must preserve the contract-signing bridge alias.');
 assert(liveVerificationJs.includes('window.BCT_V46_BRIDGE'), 'Live verification must use the shared V46 bridge.');
 assert(!liveVerificationJs.includes("typeof rpc!=='function'"), 'Live verification must not depend on the private rpc lexical binding.');
