@@ -18,3 +18,9 @@ test("public model schema can expose only the safe service catalog read",()=>{
   assert.deepEqual(list.map(x=>x.function.name),["service_list"]);
   assert.equal(internalToolName("service_list"),"service.list");
 });
+
+test("malformed model tool allowlist fails closed",()=>{
+  assert.deepEqual(schemasForInternalTools("service.list"),[]);
+  assert.deepEqual(schemasForInternalTools(null),[]);
+  assert.deepEqual(schemasForInternalTools([null,{},42]),[]);
+});
