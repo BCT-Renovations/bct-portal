@@ -1,0 +1,3 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';const s=fs.readFileSync('BCT-INSURANCE-INTEGRATION-READINESS.md','utf8');
+for(const x of ['ISOLATED / NOT PRODUCTION READY','deployed canonical BCT project-creation contract','non-production Supabase','authenticated RLS tests','explicit production merge/deploy approval'])assert.ok(s.includes(x),x+' missing');
+console.log('BCT Insurance readiness gate checks passed');
