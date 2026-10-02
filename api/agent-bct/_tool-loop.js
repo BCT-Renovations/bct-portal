@@ -10,7 +10,9 @@ export function modelToolsForRole(role){
 }
 
 export async function executeModelToolCall({call,role,executeRpc}){
-  if(!call||typeof call!=="object")return{ok:false,error:"invalid_tool_call"};
+  if(!["homeowner","contractor","admin"].includes(role))return{ok:false,error:"tool_role_denied"};
+  if(typeof executeRpc!=="function")return{ok:false,error:"tool_executor_unavailable"};
+  if(!call||typeof call!=="object"||Array.isArray(call))return{ok:false,error:"invalid_tool_call"};
   const internal=internalToolName(call.name);
   if(!internal)return{ok:false,error:"tool_not_allowed"};
   let args={};
