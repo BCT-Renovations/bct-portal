@@ -37,7 +37,7 @@ begin
   insert into public.bct_action_inbox(project_id,action_type,title,priority,status,created_at) values(p_project_id,'customer_feedback','Homeowner daily feedback requires attention','high','open',now());
  end if;
  return v_id;
-end $;
+end $$;
 revoke all on function public.bct_homeowner_daily_feedback(uuid,integer,text) from public,anon,authenticated;
 grant execute on function public.bct_homeowner_daily_feedback(uuid,integer,text) to authenticated;
 
