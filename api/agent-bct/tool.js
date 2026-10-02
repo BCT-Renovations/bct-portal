@@ -18,7 +18,7 @@ function json(body, status = 200, extraHeaders = {}) {
 }
 function requestId() { return crypto.randomUUID(); }
 function bearerToken(request) {
-  const match = (request.headers.get("authorization") || "").match(/^Bearer\\s+(.+)$/i);
+  const match = (request.headers.get("authorization") || "").match(/^Bearer\s+(.+)$/i);
   return match ? match[1].trim() : "";
 }
 async function smallJson(request) {
@@ -30,7 +30,7 @@ async function smallJson(request) {
   catch { return { error: "invalid_json", status: 400 }; }
 }
 function config() {
-  const url = (process.env.SUPABASE_URL || "").replace(/\\/$/, "");
+  const url = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
   const key = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || "";
   if (!url || !key) throw Object.assign(new Error("service_unavailable"), { status: 503 });
   return { url, key };
