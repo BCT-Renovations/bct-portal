@@ -2,25 +2,27 @@
    Isolated add-on: does not replace existing landing controls or portal logic. */
 (function(){
   'use strict';
-  const VERSION='BCT-PHOTO-BUILD-2026.10.01-public-foundation-2';
+  const VERSION='BCT-PHOTO-BUILD-2026.10.01-production-hardening-1';
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
-    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',close:'Close',prev:'Previous',next:'Next',all:'All',slot:'BCT project photo'},
-    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',slot:'Foto de proyecto BCT'},
-    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',slot:'Photo de projet BCT'},
-    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',slot:'Foto pwojè BCT'},
-    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',less:'Ver Menos Projetos',slot:'Foto de projeto BCT'},
-    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',less:'Hiển Thị Ít Hơn',slot:'Ảnh dự án BCT'},
-    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',less:'收起项目',slot:'BCT 项目照片'},
-    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',less:'عرض مشاريع أقل',slot:'صورة مشروع BCT'},
-    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',slot:'Фото проекта BCT'}
+    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',close:'Close',category:'Category',prev:'Previous',next:'Next',load:'Load More Photos',all:'All',slot:'BCT project photo'},
+    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',full:'Abrir galería completa',close:'Cerrar',category:'Categoría',prev:'Anterior',next:'Siguiente',load:'Cargar más fotos',all:'Todas',slot:'Foto de proyecto BCT'},
+    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',full:'Ouvrir la galerie complète',close:'Fermer',category:'Catégorie',prev:'Précédent',next:'Suivant',load:'Charger plus de photos',all:'Toutes',slot:'Photo de projet BCT'},
+    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',full:'Louvri galri konplè',close:'Fèmen',category:'Kategori',prev:'Anvan',next:'Apre',load:'Chaje plis foto',all:'Tout',slot:'Foto pwojè BCT'},
+    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',less:'Ver Menos Projetos',full:'Abrir galeria completa',close:'Fechar',category:'Categoria',prev:'Anterior',next:'Próximo',load:'Carregar mais fotos',all:'Todas',slot:'Foto de projeto BCT'},
+    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',less:'Hiển Thị Ít Hơn',full:'Mở toàn bộ thư viện',close:'Đóng',category:'Danh mục',prev:'Trước',next:'Tiếp',load:'Tải thêm ảnh',all:'Tất cả',slot:'Ảnh dự án BCT'},
+    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',less:'收起项目',full:'打开完整图库',close:'关闭',category:'类别',prev:'上一张',next:'下一张',load:'加载更多照片',all:'全部',slot:'BCT 项目照片'},
+    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',less:'عرض مشاريع أقل',full:'فتح المعرض الكامل',close:'إغلاق',category:'الفئة',prev:'السابق',next:'التالي',load:'تحميل المزيد من الصور',all:'الكل',slot:'صورة مشروع BCT'},
+    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',full:'Открыть всю галерею',close:'Закрыть',category:'Категория',prev:'Назад',next:'Вперёд',load:'Загрузить ещё фото',all:'Все',slot:'Фото проекта BCT'}
   };
 
   let PROJECTS=[]; // Loaded from the secure BCT gallery table; never create empty placeholders.
 
   let expanded=false;
   let loaded=false;
+  let rotationTimer=null,rotationOffset=0;
+  const ROTATION_MS=9000;
   let FULL=[];let fullIndex=0;let fullCategory='All';let fullPage=0;const FULL_PAGE=24;let fullHasMore=false;
   const $=id=>document.getElementById(id);
   function language(){try{return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}catch(_){return 'en'}}
@@ -68,9 +70,13 @@
 
     const caption=document.createElement('figcaption');
     caption.textContent=[project.caption,formatDate(project.project_work_date)].filter(Boolean).join(' • ')||c.slot;
-    figure.tabIndex=0;figure.setAttribute('role','button');figure.setAttribute('aria-label',(project.alt||c.slot)+' — '+formatDate(project.project_work_date));const open=async()=>{await loadFull(true);const i=FULL.findIndex(x=>x.id===project.id);if(i>=0){fullIndex=i;showFull()}};figure.addEventListener('click',open);figure.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});figure.append(frame,caption);
+    figure.tabIndex=0;figure.setAttribute('role','button');figure.setAttribute('aria-label',(project.alt||c.slot)+' — '+formatDate(project.project_work_date));const open=async()=>{await openProject(project.id)};figure.addEventListener('click',open);figure.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});figure.append(frame,caption);
     return figure;
   }
+
+  function stopRotation(){if(rotationTimer){clearInterval(rotationTimer);rotationTimer=null}}
+  function startRotation(){stopRotation();if(PROJECTS.length<=4||expanded||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||document.hidden)return;rotationTimer=setInterval(()=>{rotationOffset=(rotationOffset+4)%PROJECTS.length;render()},ROTATION_MS)}
+  function displayProjects(){if(PROJECTS.length<=4||expanded||!rotationOffset)return PROJECTS;return PROJECTS.slice(rotationOffset).concat(PROJECTS.slice(0,rotationOffset))}
 
   function render(){
     const section=$('bctHomeGallery');
@@ -79,12 +85,19 @@
     section.querySelector('h2').textContent=c.title;
     section.querySelector('.bct-gallery-lead').textContent=c.lead;
     const grid=$('bctHomeGalleryGrid');
-    grid.replaceChildren(...PROJECTS.map(card));
+    grid.replaceChildren(...displayProjects().map(card));
     const toggle=$('bctGalleryToggle');
     toggle.hidden=PROJECTS.length<=4;
     toggle.textContent=expanded?c.less:c.more;
     toggle.setAttribute('aria-expanded',String(expanded));
     section.hidden=loaded&&PROJECTS.length===0;
+    const full=$('bctGalleryFull');if(full)full.textContent=c.full||COPY.en.full;
+    if($('bctGalleryClose'))$('bctGalleryClose').textContent=c.close||COPY.en.close;
+    if($('bctGalleryCategoryLabel'))$('bctGalleryCategoryLabel').firstChild.textContent=(c.category||COPY.en.category)+' ';
+    if($('bctGalleryPrev'))$('bctGalleryPrev').textContent='← '+(c.prev||COPY.en.prev);
+    if($('bctGalleryNext'))$('bctGalleryNext').textContent=(c.next||COPY.en.next)+' →';
+    if($('bctGalleryMore'))$('bctGalleryMore').textContent=c.load||COPY.en.load;
+    startRotation();
   }
 
   async function loadProjects(){
@@ -100,10 +113,12 @@
   }
 
 
+  async function openProject(id){await loadFull(true,false);let i=FULL.findIndex(x=>x.id===id);if(i<0&&window.supabaseClient){const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('id',id).eq('is_published',true).maybeSingle();if(!error&&data?.storage_path){const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(data.storage_path,3600);if(signed?.signedUrl){FULL.unshift({...data,image:signed.signedUrl});i=0}}}if(i>=0){fullCategory='All';const sel=$('bctGalleryCategory');if(sel)sel.value='All';fullIndex=i;showFull()}}
+
   function fullList(){return fullCategory==='All'?FULL:FULL.filter(x=>x.category===fullCategory)}
   function showFull(){const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;$('bctGalleryModalCaption').textContent=[p.caption,p.category,formatDate(p.project_work_date)].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
   function moveFull(n){const list=fullList();if(!list.length)return;fullIndex=(fullIndex+n+list.length)%list.length;showFull()}
-  async function loadFull(reset=true){if(!window.supabaseClient)return;if(reset){FULL=[];fullPage=0}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error)return;const items=(data||[]).filter(x=>x.storage_path);const batch=(await Promise.all(items.map(async x=>{const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(x.storage_path,3600);return signed&&signed.signedUrl?{...x,image:signed.signedUrl}:null}))).filter(Boolean);const priorCategory=fullCategory,priorIndex=fullIndex;FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;showFull();if($('bctGalleryMore'))$('bctGalleryMore').hidden=!fullHasMore}
+  async function loadFull(reset=true,openModal=true){if(!window.supabaseClient)return;if(reset){FULL=[];fullPage=0}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error)return;const items=(data||[]).filter(x=>x.storage_path);const batch=(await Promise.all(items.map(async x=>{const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(x.storage_path,3600);return signed&&signed.signedUrl?{...x,image:signed.signedUrl}:null}))).filter(Boolean);const priorCategory=fullCategory,priorIndex=fullIndex;FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;if(openModal)showFull();if($('bctGalleryMore'))$('bctGalleryMore').hidden=!fullHasMore}
 
   function ensure(){
     const home=$('view-home');
@@ -118,7 +133,8 @@
     section.innerHTML='<h2 id="bctHomeGalleryTitle"></h2><p class="bct-gallery-lead"></p><div id="bctHomeGalleryGrid"></div><button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false"></button><button type="button" id="bctGalleryFull">Open Full Gallery</button>';
     license.insertAdjacentElement('beforebegin',section);
     section.querySelector('#bctGalleryToggle').addEventListener('click',()=>{expanded=!expanded;render()});section.querySelector('#bctGalleryFull').addEventListener('click',loadFull);
-    if(!$('bctGalleryModal')){const m=document.createElement('div');m.id='bctGalleryModal';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">Close</button><label>Category <select id="bctGalleryCategory"><option>All</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← Previous</button><button id="bctGalleryMore" type="button">Load More Photos</button><button id="bctGalleryNext" type="button">Next →</button></div>';document.body.appendChild(m);$('bctGalleryClose').onclick=()=>m.hidden=true;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryMore').onclick=()=>{fullPage++;loadFull(false)};$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')m.hidden=true;else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')moveFull(1)})}
+    if(!$('bctGalleryModal')){const m=document.createElement('div');m.id='bctGalleryModal';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">Close</button><label id="bctGalleryCategoryLabel">Category <select id="bctGalleryCategory"><option>All</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← Previous</button><button id="bctGalleryMore" type="button">Load More Photos</button><button id="bctGalleryNext" type="button">Next →</button></div>';document.body.appendChild(m);$('bctGalleryClose').onclick=()=>m.hidden=true;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryMore').onclick=()=>{fullPage++;loadFull(false)};$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')m.hidden=true;else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')moveFull(1)})}
+    const pause=()=>stopRotation(),resume=()=>startRotation();section.addEventListener('mouseenter',pause);section.addEventListener('mouseleave',resume);section.addEventListener('focusin',pause);section.addEventListener('focusout',resume);document.addEventListener('visibilitychange',()=>document.hidden?stopRotation():startRotation());
     loadProjects();
   }
 
