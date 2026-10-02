@@ -13,7 +13,7 @@ const assert=(v,m)=>{if(!v)throw new Error(m)};
 ].forEach(x=>assert(html.includes(x),'Missing contractor identity UI marker: '+x));
 
 [
- 'bct_contractor_identity_review_revocation_guard','trg_bct_identity_review_revocation','bct_contractor_identity_doc_singleton','bct_contractor_identity_profiles','bct_project_trade_leads',
+ 'bct_admin_retire_contractor_identity_document','bct_contractor_identity_review_revocation_guard','trg_bct_identity_review_revocation','bct_contractor_identity_doc_singleton','bct_contractor_identity_profiles','bct_project_trade_leads',
  'bct_admin_review_contractor_profile_photo','bct_admin_set_project_trade_lead',
  'bct_homeowner_project_trade_leads','bct_homeowner_contractor_profile_photo_path',
  'bct_contractor_identity_required_documents_ready','bct_application_identity_required_documents_ready','trg_bct_contractor_application_identity_approval_guard','trg_bct_assignment_trade_lead_visibility',
@@ -37,4 +37,8 @@ assert(html.includes("bct_homeowner_contractor_profile_photo_path"),'Who’s Com
 assert(html.includes("storage.from('bct-contractor-documents').createSignedUrl(authorizedPath,900)"),'Who’s Coming must use short-lived signed profile-photo delivery.');
 assert(html.includes('bct-whos-coming-photo'),'Who’s Coming must render the approved contractor photo.');
 assert(!html.includes("/storage/v1/object/public/bct-contractor-documents/"),'Private contractor documents must never use a public object URL.');
+assert(sql.includes("c.application_id=a.id"),'Contractor identity readiness must use the canonical application row, not latest auth-user application.');
+assert(sql.includes("document_type='government_id_front' and d.review_status='approved'"),'Government ID front must pass BCT review before identity readiness.');
+assert(sql.includes("document_type='government_id_back' and d.review_status='approved'"),'Required government ID back must pass BCT review before identity readiness.');
+assert(sql.includes("delete from public.bct_contractor_documents where id=v_doc.id"),'Identity replacement must explicitly retire the old singleton document.');
 console.log('BCT contractor identity/trade-lead smoke passed.');
