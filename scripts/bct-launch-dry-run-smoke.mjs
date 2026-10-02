@@ -191,6 +191,16 @@ for (const marker of ['bct_validate_password_not_recent','bct_record_password_hi
   assert(indexHtml.includes(marker), `Password recovery must preserve: ${marker}`);
 }
 
+for (const marker of [
+  'bct_admin_operational_readiness',
+  'bct_admin_system_health',
+  'bct_admin_frontend_cutover_readiness',
+  'bct_admin_launch_readiness'
+]) {
+  assert(indexHtml.includes(marker) || readinessSql.includes(marker), `Admin launch boundary must preserve: ${marker}`);
+}
+assert(readinessSql.includes('customer_pilot_enabled') || launchStatus.includes('customer_pilot_enabled'), 'Customer pilot launch gate must remain explicit.');
+
 const externalGateMarkers = [
   'Supabase backups/PITR verified',
   'Leaked-password protection enabled',
