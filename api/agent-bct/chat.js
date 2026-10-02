@@ -9,7 +9,7 @@ function bearer(request){const m=(request.headers.get("authorization")||"").matc
 async function parse(request){const declared=Number(request.headers.get("content-length")||"0");if(Number.isFinite(declared)&&declared>MAX_BODY_BYTES)return{error:"payload_too_large",status:413};const text=await request.text();if(new TextEncoder().encode(text).byteLength>MAX_BODY_BYTES)return{error:"payload_too_large",status:413};try{return{value:text?JSON.parse(text):{}}}catch{return{error:"invalid_json",status:400}};}
 function cfg(){const url=(process.env.SUPABASE_URL||"").replace(/\/$/,"");const key=process.env.SUPABASE_PUBLISHABLE_KEY||process.env.SUPABASE_ANON_KEY||"";if(!url||!key)throw Object.assign(new Error("service_unavailable"),{status:503});return{url,key};}
 async function rpc(name,token,args={}){const{url,key}=cfg();const res=await fetch(`${url}/rest/v1/rpc/${name}`,{method:"POST",headers:{apikey:key,authorization:`Bearer ${token}`,"content-type":"application/json"},body:JSON.stringify(args)});const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{}if(!res.ok)throw Object.assign(new Error("backend_request_failed"),{status:res.status===401?401:res.status===403?403:502});return data;}
-function roleOf(value){const role=value&&typeof value.role==="string"?value.role:"";return["homeowner","contractor","admin"].includes(role)?role:"homeowner";}
+function roleOf(value){const role=value&&typeof value.role==="string"?value.role:"";if(!["homeowner","contractor","admin"].includes(role))throw Object.assign(new Error("access_denied"),{code:"access_denied",status:403});return role;}
 function clientIdentity(request,token){
   if(token){
     try{
@@ -20,7 +20,7 @@ function clientIdentity(request,token){
     }catch{}
     return "auth:unresolved";
   }
-  return `public:${(request.headers.get("x-forwarded-for")||"unknown").split(",")[0].trim().slice(0,64)}`;
+  return "public:anonymous";
 }
 function modelSystem(context){
   const knowledge=context.knowledge.map(x=>JSON.stringify(x)).join("\n");
