@@ -16,14 +16,17 @@ function bind(host,reload){
  host?.querySelectorAll('.bct-contract-sign-form').forEach(f=>f.onsubmit=async e=>{e.preventDefault();const status=f.querySelector('[data-status]');const btn=f.querySelector('button');try{btn.disabled=true;status.textContent='Saving signature...';const typedName=f.typedName.value.trim();if(!typedName)throw new Error('Type your full legal name.');if(!f.consent.checked)throw new Error('Electronic signature consent is required.');const bridge=window.bctContractSigningBridge;if(!bridge?.callRpc)throw new Error('BCT contract signing connection is not ready.');await bridge.callRpc(f.dataset.rpc,{p_contract_id:f.dataset.id,p_typed_name:typedName,p_consent:true});status.textContent='Signature recorded.';await reload()}catch(err){status.textContent=err?.message||'Signature could not be recorded.'}finally{btn.disabled=false}});
 }
 window.bctRenderHomeownerContracts=function(state){
+ if(state?.feature_flags?.electronic_signatures_enabled===false)return;
  const host=ensureHost('[data-customer-page-panel="estimate"]','bctHomeownerContractSigning','Contract Signatures','Only contracts BCT has released to your account appear here. Required BCT policies must be accepted before signing.');
  if(!host)return;const contracts=state?.contracts||[],sigs=state?.contract_signatures||[];host.querySelector('[data-list]').innerHTML=contracts.length?contracts.map(c=>card(c,sigs,'homeowner','bct_homeowner_esign_contract')).join(''):'<div class="notice">No released contracts are available yet.</div>';bind(host,async()=>{await window.bctContractSigningBridge?.reloadHomeowner?.()});
 };
 window.bctRenderContractorContracts=function(state){
+ if(state?.feature_flags?.electronic_signatures_enabled===false)return;
  const host=ensureHost('#view-jobs','bctContractorContractSigning','Contract Acknowledgments','Only contracts tied to your authorized BCT assignments appear here. Current contractor policies must be accepted before acknowledgment.');
  if(!host)return;const contracts=state?.contracts||[],sigs=state?.contract_signatures||[];host.querySelector('[data-list]').innerHTML=contracts.length?contracts.map(c=>card(c,sigs,'contractor','bct_contractor_esign_contract')).join(''):'<div class="notice">No assigned contracts are available yet.</div>';bind(host,async()=>{await window.bctContractSigningBridge?.reloadContractor?.()});
 };
 window.bctRenderAdminContracts=function(state){
+ if(state?.feature_flags?.electronic_signatures_enabled===false)return;
  const host=ensureHost('#view-admin','bctAdminContractSigning','BCT Contract Signatures','BCT Admin may sign only eligible contracts. Homeowner and contractor signatures remain separate, immutable evidence.');
  if(!host)return;host.dataset.adminPagePanel='contracts';host.dataset.bctBoardInclude='1';const contracts=state?.contracts||[],sigs=state?.contract_signatures||[];host.querySelector('[data-list]').innerHTML=contracts.length?contracts.map(c=>card(c,sigs,'bct','bct_admin_esign_contract')).join(''):'<div class="notice">No contracts are available.</div>';bind(host,async()=>{await window.bctContractSigningBridge?.reloadAdmin?.()});
 };
