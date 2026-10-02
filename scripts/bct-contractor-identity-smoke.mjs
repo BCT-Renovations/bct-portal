@@ -41,4 +41,10 @@ assert(sql.includes("c.application_id=a.id"),'Contractor identity readiness must
 assert(sql.includes("document_type='government_id_front' and d.review_status='approved'"),'Government ID front must pass BCT review before identity readiness.');
 assert(sql.includes("document_type='government_id_back' and d.review_status='approved'"),'Required government ID back must pass BCT review before identity readiness.');
 assert(sql.includes("delete from public.bct_contractor_documents where id=v_doc.id"),'Identity replacement must explicitly retire the old singleton document.');
+assert(sql.includes("new.status in ('completed','cancelled')"),'Completed/cancelled assignments must revoke homeowner trade-lead visibility.');
+assert(sql.includes("set homeowner_visible=false"),'Visibility revocation must explicitly hide the released trade lead.');
+assert(sql.includes("is_primary_contact=false"),'Visibility revocation must clear primary-contact status.');
+assert(sql.includes("profile_photo_status='pending'"),'Revoked profile-photo review must reset public identity approval.');
+assert(sql.includes("old.review_status='approved' and new.review_status is distinct from 'approved'"),'Profile-photo review withdrawal must trigger revocation.');
+assert(sql.includes("and c.active"),'Homeowner trade leads must exclude inactive contractors.');
 console.log('BCT contractor identity/trade-lead smoke passed.');
