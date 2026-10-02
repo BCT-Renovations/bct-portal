@@ -252,6 +252,9 @@ assert(adminMfaEnforcementSql.includes('bct_admin_set_mfa_ui_ready'), 'Source MF
 assert(adminMfaEnforcementSql.includes('Complete MFA verification before marking the Admin MFA UI ready'), 'Admin MFA UI cannot be marked ready from an AAL1 session.');
 assert(adminMfaEnforcementSql.includes('bct_admin_enable_mfa_enforcement'), 'Source MFA hardening must preserve the enforcement RPC.');
 assert(adminMfaEnforcementSql.includes('myproject@bctrenovations.com'), 'MFA controls must preserve the canonical BCT owner-email Admin identity path.');
+assert(adminMfaEnforcementSql.includes('not coalesce(admin_mfa_enforced,false)'), 'Existing MFA enforcement must block AAL1 direct security-setting updates.');
+assert(adminMfaEnforcementSql.includes('not coalesce(admin_mfa_ui_ready,false)'), 'MFA UI readiness cannot be set true by an AAL1 direct update.');
+assert(adminMfaEnforcementSql.includes("and coalesce(admin_mfa_ui_ready,false)"), 'Direct enforcement updates must require both AAL2 and verified UI readiness.');
 
 assert(liveVerificationJs.includes('bct_admin_create_live_quality_check'), 'Live verification Admin creation must use the canonical quality-check workflow.');
 assert(liveVerificationJs.includes('bct_admin_live_quality_checks'), 'Live verification Admin list must use the canonical quality-check workflow.');
