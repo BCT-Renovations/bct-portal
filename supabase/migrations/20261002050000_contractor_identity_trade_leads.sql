@@ -314,6 +314,31 @@ revoke execute on function public.bct_contractor_identity_required_documents_rea
 grant execute on function public.bct_contractor_identity_required_documents_ready(uuid) to authenticated;
 
 
+-- Replacing a singleton identity document is explicit: retire the prior row first so a stale
+-- approved profile/ID cannot remain current beside a newly uploaded document.
+create or replace function public.bct_admin_retire_contractor_identity_document(p_document_id uuid)
+returns void language plpgsql security definer set search_path=public,auth as $
+declare v_doc public.bct_contractor_documents%rowtype;
+begin
+  if not public.is_bct_admin() then raise exception 'BCT Admin access required'; end if;
+  select * into v_doc from public.bct_contractor_documents where id=p_document_id for update;
+  if not found or v_doc.document_type not in ('profile_photo','government_id_front','government_id_back') then
+    raise exception 'Identity document not found';
+  end if;
+  if v_doc.document_type='profile_photo' then
+    update public.bct_contractor_identity_profiles
+       set profile_photo_status='pending',profile_photo_approved_at=null,profile_photo_approved_by=null,updated_at=now()
+     where profile_photo_document_id=v_doc.id;
+    update public.bct_project_trade_leads l
+       set homeowner_visible=false,is_primary_contact=false,released_at=null,released_by=null,updated_at=now()
+     where l.contractor_id=(select c.id from public.bct_contractors c where c.application_id=v_doc.application_id limit 1)
+       and l.homeowner_visible;
+  end if;
+  delete from public.bct_contractor_documents where id=v_doc.id;
+end $;
+revoke execute on function public.bct_admin_retire_contractor_identity_document(uuid) from public,anon;
+grant execute on function public.bct_admin_retire_contractor_identity_document(uuid) to authenticated;
+
 -- Revoking/rejecting the selected profile-photo document immediately revokes homeowner release.
 create or replace function public.bct_contractor_identity_review_revocation_guard()
 returns trigger language plpgsql set search_path=public,auth as $$
