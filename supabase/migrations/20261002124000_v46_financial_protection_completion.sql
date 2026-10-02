@@ -15,8 +15,8 @@ begin
    'open',(select count(*) from public.bct_project_milestones where project_id=p_project_id and lower(coalesce(status,'')) not in ('complete','completed','closed')),
    'overdue',(select count(*) from public.bct_project_milestones where project_id=p_project_id and due_date<current_date and completed_at is null)),
  'rentals',jsonb_build_object(
-   'open_exposure',coalesce((select sum(coalesce(late_fee_exposure,0)) from public.bct_equipment_usage where project_id=p_project_id and return_deadline is not null and returned_at is null),0),
-   'overdue',(select count(*) from public.bct_equipment_usage where project_id=p_project_id and return_deadline<now() and returned_at is null)),
+   'open_exposure',coalesce((select sum(coalesce(late_fee_exposure,0)) from public.bct_equipment_usage where project_id=p_project_id and return_deadline is not null and coalesce(return_condition,'') not in ('returned','complete','completed')),0),
+   'overdue',(select count(*) from public.bct_equipment_usage where project_id=p_project_id and return_deadline<now() and coalesce(return_condition,'') not in ('returned','complete','completed'))),
  'warranties',jsonb_build_object(
    'without_responsibility',(select count(*) from public.bct_warranties w where w.project_id=p_project_id and not exists(select 1 from public.bct_warranty_responsibility wr where wr.warranty_id=w.id and lower(coalesce(wr.status,'')) not in ('inactive','cancelled')))),
  'closeout',(select to_jsonb(fc) from public.bct_financial_closeouts fc where fc.project_id=p_project_id order by fc.closed_at desc nulls first limit 1)
