@@ -210,3 +210,11 @@ test("live context rejects non-object envelopes and caps item count",()=>{
   assert.equal(ctx.live[1].value,null);
   assert.equal(ctx.live[2].value,null);
 });
+
+test("knowledge limit cannot be NaN, infinite, negative or oversized",()=>{
+  for(const limit of [NaN,Infinity,-1,0,"not-a-number"]){
+    const r=retrieveApprovedKnowledge({query:"BCT contractor project payment contract",role:"homeowner",limit});
+    assert.ok(r.length<=4);
+  }
+  assert.ok(retrieveApprovedKnowledge({query:"BCT contractor project payment contract",role:"homeowner",limit:999}).length<=8);
+});
