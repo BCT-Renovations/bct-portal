@@ -76,6 +76,16 @@ begin
     where d.id=p_document_id and d.contractor_id=p_contractor_id and d.document_type='profile_photo'
   ) then raise exception 'Profile photo document not found for contractor'; end if;
 
+  if p_status='approved' and not exists(
+    select 1 from public.bct_contractor_documents d
+    where d.id=p_document_id
+      and d.contractor_id=p_contractor_id
+      and d.document_type='profile_photo'
+      and d.review_status='approved'
+  ) then
+    raise exception 'Profile photo document review must be approved before identity approval';
+  end if;
+
   insert into public.bct_contractor_identity_profiles(
     contractor_id,profile_photo_document_id,profile_photo_status,
     profile_photo_approved_at,profile_photo_approved_by,profile_photo_rejection_reason,updated_at
