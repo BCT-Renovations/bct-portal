@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 
+const contractorIdentitySmoke = fs.readFileSync(new URL('./bct-contractor-identity-smoke.mjs', import.meta.url), 'utf8');
+
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
 
@@ -84,4 +86,7 @@ try {
   throw new Error(`service-worker.js failed to parse: ${error.message}`);
 }
 
+assert(contractorIdentitySmoke.includes('BCT contractor identity/trade-lead smoke passed.'), 'Current source integrity must retain contractor identity regression coverage.');
+assert(contractorIdentitySmoke.includes('identity work must retain the existing credential-current gate.'), 'Current source integrity must retain identity/credential compatibility guard.');
+assert(contractorIdentitySmoke.includes('performing-contractor assignment must retain estimator separation.'), 'Current source integrity must retain identity/estimator separation guard.');
 console.log('BCT current source integrity smoke passed.');
