@@ -1,3 +1,4 @@
+import { normalizeBctLanguage } from "./_languages.js";
 import { systemPolicy, AGENT_BCT_POLICY_VERSION } from "./_policy.js";
 import { sanitizeConversation, wrapUntrustedData, detectHighRiskRequest } from "./_guardrails.js";
 import { retrieveApprovedKnowledge } from "./_knowledge.js";
@@ -12,6 +13,7 @@ export function buildAgentBctContext({
   liveResults = [],
 }) {
   const conversation = sanitizeConversation({ message, history });
+  languageCode = normalizeBctLanguage(languageCode);
   const riskSignals = detectHighRiskRequest(conversation.message);
   const knowledge = retrieveApprovedKnowledge({
     query: conversation.message,
