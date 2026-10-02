@@ -80,6 +80,70 @@ with checks as (
   union all
 
   select
+    'live_quality_admin_rpcs_self_authorize',
+    not exists (
+      select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+      where n.nspname='public'
+        and p.proname in (
+          'bct_admin_ack_live_quality_privacy','bct_admin_create_live_quality_check',
+          'bct_admin_live_quality_check_events','bct_admin_live_quality_checks',
+          'bct_admin_live_quality_health','bct_admin_set_live_quality_check_status',
+          'bct_admin_update_live_quality_check'
+        )
+        and pg_get_functiondef(p.oid) not ilike '%is_bct_admin()%'
+    ),
+    'Every authenticated-callable Admin live-quality SECURITY DEFINER RPC must enforce is_bct_admin() internally.'
+
+  union all
+
+  select
+    'live_quality_browser_roles_are_not_anonymous',
+    not exists (
+      select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+      where n.nspname='public' and p.proname like 'bct_%live_quality%'
+        and (has_function_privilege('anon',p.oid,'EXECUTE') or has_function_privilege('public',p.oid,'EXECUTE'))
+    ),
+    'Live-quality RPCs must never be executable by anon or PUBLIC.'
+
+  union all
+
+  select
+    'live_quality_contractor_rpcs_self_scope',
+    not exists (
+      select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+      where n.nspname='public'
+        and p.proname in ('bct_contractor_ack_live_quality_privacy','bct_contractor_live_quality_checks','bct_contractor_update_live_quality_check')
+        and (pg_get_functiondef(p.oid) not ilike '%auth.uid()%' or pg_get_functiondef(p.oid) not ilike '%bct_assignments%')
+    ),
+    'Contractor live-quality RPCs must bind auth.uid() to the assigned contractor and an active assignment.'
+
+  union all
+
+  select
+    'live_quality_homeowner_rpc_self_scopes',
+    exists (
+      select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+      where n.nspname='public' and p.proname='bct_homeowner_live_quality_checks'
+        and pg_get_functiondef(p.oid) ilike '%bct_user_owns_project%'
+    ),
+    'Homeowner live-quality visibility must remain limited to projects owned by the signed-in homeowner.'
+
+  union all
+
+  select
+    'live_quality_direct_tables_admin_only',
+    not exists (
+      select 1 from pg_policies
+      where schemaname='public' and tablename in ('bct_live_quality_checks','bct_live_quality_check_events')
+        and roles::text ilike '%authenticated%'
+        and coalesce(qual::text,'') not ilike '%is_bct_admin%'
+        and coalesce(with_check::text,'') not ilike '%is_bct_admin%'
+    ),
+    'Direct live-quality table policies must remain Admin-only; homeowner/contractor access is through scoped RPCs.'
+
+  union all
+
+  select
     'unexpected_security_definer_count_zero',
     not exists (
       select 1
@@ -95,7 +159,18 @@ with checks as (
           'bct_sync_public_launch_config',
           'bct_validate_password_not_recent',
           'bct_record_password_history',
-          'bct_hoa_revocation_alert'
+          'bct_hoa_revocation_alert',
+          'bct_admin_ack_live_quality_privacy',
+          'bct_admin_create_live_quality_check',
+          'bct_admin_live_quality_check_events',
+          'bct_admin_live_quality_checks',
+          'bct_admin_live_quality_health',
+          'bct_admin_set_live_quality_check_status',
+          'bct_admin_update_live_quality_check',
+          'bct_contractor_ack_live_quality_privacy',
+          'bct_contractor_live_quality_checks',
+          'bct_contractor_update_live_quality_check',
+          'bct_homeowner_live_quality_checks'
         )
     ),
     'Only allow-listed internal BCT functions should be SECURITY DEFINER.'
