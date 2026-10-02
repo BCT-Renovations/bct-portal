@@ -11,7 +11,7 @@ function required(name){
 function boundedText(value,max){
   return typeof value==="string"?value.slice(0,max):"";
 }
-function safeUsage(value){const n=Number(value);return Number.isFinite(n)&&n>=0?Math.min(Math.floor(n),10_000_000):0;}
+function safeRequestId(value){const v=boundedText(value,80);return /^[a-z0-9._:-]{1,80}$/i.test(v)?v:"redacted";}\nfunction safeUsage(value){const n=Number(value);return Number.isFinite(n)&&n>=0?Math.min(Math.floor(n),10_000_000):0;}
 export function runtimeConfig(){
   return {
     model:String(process.env.AGENT_BCT_MODEL||"").trim(),
@@ -41,7 +41,7 @@ export async function generateAgentBct({system,history=[],userMessage,requestId}
       headers:{
         authorization:`Bearer ${apiKey}`,
         "content-type":"application/json",
-        "x-agent-bct-request-id":boundedText(requestId,80),
+        "x-agent-bct-request-id":safeRequestId(requestId),
       },
       body:JSON.stringify({
         model,
