@@ -101,7 +101,7 @@ export default {
       const rawPermissions = await supabaseRpc("bct_my_permissions", token, {});
       const role = rawPermissions && typeof rawPermissions.role==="string" ? rawPermissions.role : "";
       if(!["homeowner","contractor","admin"].includes(role)) throw Object.assign(new Error("access_denied"),{status:403});
-      const permissions={role,permissions:Array.isArray(rawPermissions.permissions)?rawPermissions.permissions.filter(x=>typeof x==="string").slice(0,100):[]};
+      const permissions={role,permissions:Array.isArray(rawPermissions.permissions)?rawPermissions.permissions.filter(x=>typeof x==="string"&&/^[a-z0-9._:-]{1,80}$/i.test(x)).slice(0,100):[]};
       return json({
         ok: true,
         service: "Agent BCT",
