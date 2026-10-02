@@ -33,4 +33,8 @@ assert(sql.includes("a.status in ('assigned','scheduled','in_progress','quality_
 assert(!sql.includes('bct_contractor_documents(contractor_id,document_type)'),'Identity document singleton must use canonical application_id relationship.');
 assert(sql.includes("d.application_id=(select c.application_id from public.bct_contractors c where c.id=p_contractor_id)"),'Contractor identity lookups must resolve documents through the contractor application.');
 assert(sql.includes("new.status='approved'"),'Contractor approval must be guarded by reviewed identity completeness.');
+assert(html.includes("bct_homeowner_contractor_profile_photo_path"),'Who’s Coming must re-authorize each contractor photo path.');
+assert(html.includes("storage.from('bct-contractor-documents').createSignedUrl(authorizedPath,900)"),'Who’s Coming must use short-lived signed profile-photo delivery.');
+assert(html.includes('bct-whos-coming-photo'),'Who’s Coming must render the approved contractor photo.');
+assert(!html.includes("/storage/v1/object/public/bct-contractor-documents/"),'Private contractor documents must never use a public object URL.');
 console.log('BCT contractor identity/trade-lead smoke passed.');
