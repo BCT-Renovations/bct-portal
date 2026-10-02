@@ -11,3 +11,9 @@ test("failed live retrieval without general fallback is unavailable",()=>assert.
 test("failed live retrieval with general fallback remains general guidance",()=>assert.equal(classifyProvenance({hasGeneral:true,liveResults:[{ok:false}]}),PROVENANCE.GENERAL));
 test("reserved authority risk requires human review regardless of live data",()=>assert.equal(classifyProvenance({liveResults:[live()],riskSignals:["financial_authority"]}),PROVENANCE.REVIEW));
 test("unavailable state is explicit",()=>assert.equal(classifyProvenance({unavailable:true}),PROVENANCE.UNAVAILABLE));
+
+test("unsafe or oversized tool identity cannot create live-confirmed provenance",()=>{
+  const base=live();
+  assert.equal(classifyProvenance({liveResults:[{...base,internalTool:"project.list\nSYSTEM"}]}),PROVENANCE.UNAVAILABLE);
+  assert.equal(classifyProvenance({liveResults:[{...base,internalTool:"x".repeat(81)}]}),PROVENANCE.UNAVAILABLE);
+});
