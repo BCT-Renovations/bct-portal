@@ -267,6 +267,38 @@ create unique index if not exists bct_contractor_identity_doc_singleton
   on public.bct_contractor_documents(application_id,document_type)
   where document_type in ('profile_photo','government_id_front','government_id_back');
 
+-- Application-level identity completeness plugs into the existing V46 approval-readiness path
+-- without creating a parallel contractor approval system.
+create or replace function public.bct_application_identity_required_documents_ready(p_application_id uuid)
+returns boolean language sql stable security definer set search_path=public,auth as $
+  select
+    exists(select 1 from public.bct_contractor_documents d where d.application_id=p_application_id and d.document_type='profile_photo' and d.review_status='approved')
+    and exists(select 1 from public.bct_contractor_documents d where d.application_id=p_application_id and d.document_type='government_id_front' and d.review_status='approved')
+    and (
+      not coalesce((select a.government_id_has_back from public.bct_contractor_applications a where a.id=p_application_id),false)
+      or exists(select 1 from public.bct_contractor_documents d where d.application_id=p_application_id and d.document_type='government_id_back' and d.review_status='approved')
+    );
+$;
+revoke execute on function public.bct_application_identity_required_documents_ready(uuid) from public,anon;
+grant execute on function public.bct_application_identity_required_documents_ready(uuid) to authenticated;
+
+-- Defense in depth: even if an approval caller bypasses the normal Admin RPC, an application
+-- cannot transition to approved until the required identity documents have passed BCT review.
+create or replace function public.bct_contractor_application_identity_approval_guard()
+returns trigger language plpgsql set search_path=public,auth as $
+begin
+  if new.status='approved' and old.status is distinct from new.status
+     and not public.bct_application_identity_required_documents_ready(new.id) then
+    raise exception 'Required contractor identity documents must be BCT-approved before application approval';
+  end if;
+  return new;
+end $;
+
+drop trigger if exists trg_bct_contractor_application_identity_approval_guard on public.bct_contractor_applications;
+create trigger trg_bct_contractor_application_identity_approval_guard
+before update of status on public.bct_contractor_applications
+for each row execute function public.bct_contractor_application_identity_approval_guard();
+
 -- Central identity-completeness predicate for approval/workforce gates.
 create or replace function public.bct_contractor_identity_required_documents_ready(p_contractor_id uuid)
 returns boolean language sql stable security definer set search_path=public,auth as $$
