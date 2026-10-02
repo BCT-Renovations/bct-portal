@@ -12,6 +12,8 @@ test("health is GET-only and explicitly non-production",async()=>{
   assert.equal(ok.status,200);
   assert.equal(body.productionIntegrated,false);
   assert.equal(body.liveWritesEnabled,false);
+  assert.equal(body.voiceEnabled,false);
+  assert.match(ok.headers.get("permissions-policy")||"",/microphone=\(\)/);
   const bad=await health.fetch(req("https://example.test/api/agent-bct/health",{method:"POST"}));
   assert.equal(bad.status,405);
 });
@@ -42,7 +44,7 @@ test("Agent endpoints use no-store and no-referrer privacy headers",async()=>{
   const h=await health.fetch(req("https://example.test/api/agent-bct/health"));
   const s=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
   const t=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
-  for(const res of [h,s,t]){assert.equal(res.headers.get("cache-control"),"no-store");assert.equal(res.headers.get("referrer-policy"),"no-referrer");}
+  for(const res of [h,s,t]){assert.equal(res.headers.get("cache-control"),"no-store");assert.equal(res.headers.get("referrer-policy"),"no-referrer");assert.match(res.headers.get("permissions-policy")||"",/microphone=\(\)/);}
 });
 
 test("tool endpoint rejects scalar JSON request bodies before tool execution",async()=>{
