@@ -25,7 +25,7 @@
   function managedJob(){try{return typeof activeManagedJob!=='undefined'?activeManagedJob:null}catch(_){return null}}
   function checkpointLabel(value,c=t()){return c[value]||value||''}
   function resultLabel(value,c=t()){
-    const map={pending:c.pending,passed:c.pass,needs_correction:c.correct,recheck_required:c.recheck,failed:'Failed',cancelled:'Cancelled'};
+    const map={pending:c.pending,ready:'Ready',in_progress:c.started,accepted:c.pass,correction_required:c.correct,recheck_required:c.recheck,cancelled:'Cancelled'};
     return map[value]||value||c.pending;
   }
   function formatDate(value){if(!value)return 'Not scheduled';try{return new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(new Date(value))}catch(_){return value}}
@@ -52,7 +52,7 @@
     <div id="bctLiveVerificationStatus" class="notice" hidden></div>
     <label>${esc(c.checkpoint)}</label>
     <select name="checkpoint" required>
-      <option value="arrival">${esc(c.arrival)}</option><option value="pre_cover">${esc(c.pre_cover)}</option><option value="progress">${esc(c.progress)}</option><option value="final">${esc(c.final)}</option>
+      <option value="arrival_before_work">${esc(c.arrival)}</option><option value="pre_cover_critical">${esc(c.pre_cover)}</option><option value="progress">${esc(c.progress)}</option><option value="final">${esc(c.final)}</option>
     </select>
     <label>${esc(c.scheduled)}</label><input name="scheduledFor" type="datetime-local" required>
     <label>${esc(c.video)}</label><input name="videoUrl" type="url" inputmode="url" placeholder="https://...">
@@ -75,18 +75,19 @@
     const data=new FormData(event.currentTarget);const video=String(data.get('videoUrl')||'').trim();
     if(!validHttps(video))return notify('Use an https:// video link.',true);
     try{
-      await callRpc('bct_admin_create_live_verification',{
-        p_project_id:j.project_id,p_job_id:j.job_id,p_checkpoint:data.get('checkpoint'),
-        p_scheduled_for:new Date(data.get('scheduledFor')).toISOString(),p_video_join_url:video||null,p_notes:data.get('notes')||null
+      await callRpc('bct_admin_create_live_quality_check',{
+        p_project_id:j.project_id,p_job_id:j.job_id,p_contractor_id:null,p_checkpoint_type:data.get('checkpoint'),
+        p_requested_for:new Date(data.get('scheduledFor')).toISOString(),p_instructions:data.get('notes')||null,
+        p_join_url:video||null,p_meeting_provider:video?'external_secure_link':null,p_admin_notes:null
       });
       notify(t().saved);event.currentTarget.reset();await loadAdminVerifications();
     }catch(error){notify(error?.message||'Live verification could not be saved.',true)}
   }
-  function adminRow(item){const c=t();const join=item.video_join_url?`<a class="btn secondary" href="${esc(item.video_join_url)}" target="_blank" rel="noopener noreferrer">${esc(c.join)}</a>`:'';return `
+  function adminRow(item){const c=t();const join=item.join_url?`<a class="btn secondary" href="${esc(item.join_url)}" target="_blank" rel="noopener noreferrer">${esc(c.join)}</a>`:'';return `
     <div class="bct-live-verification-row" data-live-verification-id="${esc(item.id)}">
-      <b>${esc(checkpointLabel(item.verification_checkpoint,c))}</b> <span class="badge info">${esc(resultLabel(item.result,c))}</span><br>
-      <small>${esc(formatDate(item.scheduled_for))}${item.started_at?` • ${esc(c.started)}`:''}</small>
-      ${item.notes?`<p>${esc(item.notes)}</p>`:''}
+      <b>${esc(checkpointLabel(item.checkpoint_type,c))}</b> <span class="badge info">${esc(resultLabel(item.status,c))}</span><br>
+      <small>${esc(formatDate(item.requested_for))}${item.started_at?` • ${esc(c.started)}`:''}</small>
+      ${item.instructions?`<p>${esc(item.instructions)}</p>`:''}
       <div class="bct-live-verification-actions">${join}
         <button type="button" class="secondary" data-live-result="start" data-live-id="${esc(item.id)}">${esc(c.start)}</button>
         <button type="button" class="success" data-live-result="passed" data-live-id="${esc(item.id)}">${esc(c.pass)}</button>
@@ -96,24 +97,26 @@
     </div>`}
   async function loadAdminVerifications(){
     ensureAdminUi();const j=managedJob(),host=$('bctLiveVerificationList');if(!host||!j)return;
-    try{const rows=await callRpc('bct_admin_inspections',{p_project_id:j.project_id});const live=(Array.isArray(rows)?rows:[]).filter(x=>x.verification_mode==='live_video'||x.inspection_type==='BCT Live Project Verification').filter(x=>!j.job_id||!x.job_id||x.job_id===j.job_id);host.innerHTML=live.length?live.map(adminRow).join(''):`<span class="muted">${esc(t().empty)}</span>`}catch(error){host.textContent=error?.message||'Live verification list unavailable.'}
+    try{const rows=await callRpc('bct_admin_live_quality_checks',{p_job_id:j.job_id||null});const live=(Array.isArray(rows)?rows:[]).filter(x=>!j.job_id||x.job_id===j.job_id);host.innerHTML=live.length?live.map(adminRow).join(''):`<span class="muted">${esc(t().empty)}</span>`}catch(error){host.textContent=error?.message||'Live verification list unavailable.'}
   }
   async function updateVerification(id,result){
-    try{await callRpc('bct_admin_update_live_verification',{p_id:id,p_result:result==='start'?null:result,p_video_join_url:null,p_notes:null,p_mark_started:result==='start'});notify(t().updated);await loadAdminVerifications()}catch(error){notify(error?.message||'Live verification could not be updated.',true)}
+    try{const status=result==='start'?'in_progress':result==='passed'?'accepted':result==='needs_correction'?'correction_required':result;await callRpc('bct_admin_set_live_quality_check_status',{p_id:id,p_status:status,p_reviewer_name:null,p_admin_notes:null,p_follow_up_requirements:null});notify(t().updated);await loadAdminVerifications()}catch(error){notify(error?.message||'Live verification could not be updated.',true)}
   }
   function ensureContractorUi(){
     injectStyle();const view=$('view-jobs');if(!view)return null;let card=$('bctContractorLiveVerificationCard');if(card)return card;
     const host=view.querySelector(':scope > .card.section')||view;card=document.createElement('div');card.id='bctContractorLiveVerificationCard';card.className='card section';card.innerHTML=`<h3>${esc(t().title)}</h3><p class="muted">${esc(t().desc)}</p><div id="bctContractorLiveVerificationList" class="muted">${esc(t().empty)}</div>`;host.appendChild(card);return card;
   }
-  function contractorRow(item){const c=t();return `<div class="bct-live-verification-row"><b>${esc(checkpointLabel(item.verification_checkpoint,c))}</b> <span class="badge info">${esc(resultLabel(item.result,c))}</span><br><small>${esc(formatDate(item.scheduled_for))}</small>${item.notes?`<p>${esc(item.notes)}</p>`:''}${item.video_join_url?`<div class="bct-live-verification-actions"><a class="btn" href="${esc(item.video_join_url)}" target="_blank" rel="noopener noreferrer">${esc(c.join)}</a></div>`:''}</div>`}
+  function contractorRow(item){const c=t();const privacy=!item.privacy_notice_acknowledged_at?`<button type="button" class="secondary" data-live-privacy="${esc(item.id)}">Acknowledge privacy notice</button>`:'';return `<div class="bct-live-verification-row"><b>${esc(checkpointLabel(item.checkpoint_type,c))}</b> <span class="badge info">${esc(resultLabel(item.status,c))}</span><br><small>${esc(formatDate(item.requested_for))}</small>${item.instructions?`<p>${esc(item.instructions)}</p>`:''}<div class="bct-live-verification-actions">${item.join_url?`<a class="btn" href="${esc(item.join_url)}" target="_blank" rel="noopener noreferrer">${esc(c.join)}</a>`:''}${privacy}<button type="button" class="secondary" data-live-contractor-status="ready" data-live-id="${esc(item.id)}">Ready</button><button type="button" class="secondary" data-live-contractor-status="in_progress" data-live-id="${esc(item.id)}">In Progress</button></div></div>`}
   async function loadContractorVerifications(){
     ensureContractorUi();const host=$('bctContractorLiveVerificationList');if(!host)return;
-    try{const rows=await callRpc('bct_my_assigned_inspections',{});const live=(Array.isArray(rows)?rows:[]).filter(x=>x.verification_mode==='live_video'||x.inspection_type==='BCT Live Project Verification');host.innerHTML=live.length?live.map(contractorRow).join(''):`<span class="muted">${esc(t().empty)}</span>`}catch(_){host.innerHTML=`<span class="muted">${esc(t().empty)}</span>`}
+    try{const rows=await callRpc('bct_contractor_live_quality_checks',{});const live=Array.isArray(rows)?rows:[];host.innerHTML=live.length?live.map(contractorRow).join(''):`<span class="muted">${esc(t().empty)}</span>`}catch(_){host.innerHTML=`<span class="muted">${esc(t().empty)}</span>`}
   }
   function refreshCopy(){const form=$('bctLiveVerificationForm');if(form){form.innerHTML=adminFormHtml();form.addEventListener('submit',submitVerification)}const cc=$('bctContractorLiveVerificationCard');if(cc){cc.querySelector('h3').textContent=t().title;cc.querySelector('p').textContent=t().desc}loadAdminVerifications();loadContractorVerifications()}
 
   document.addEventListener('click',event=>{
     const action=event.target?.closest?.('[data-live-result]');if(action){event.preventDefault();updateVerification(action.dataset.liveId,action.dataset.liveResult);return}
+    const privacy=event.target?.closest?.('[data-live-privacy]');if(privacy){event.preventDefault();callRpc('bct_contractor_ack_live_quality_privacy',{p_id:privacy.dataset.livePrivacy}).then(loadContractorVerifications).catch(e=>notify(e?.message||'Privacy acknowledgment could not be saved.',true));return}
+    const contractorStatus=event.target?.closest?.('[data-live-contractor-status]');if(contractorStatus){event.preventDefault();callRpc('bct_contractor_update_live_quality_check',{p_id:contractorStatus.dataset.liveId,p_status:contractorStatus.dataset.liveContractorStatus,p_contractor_notes:null}).then(loadContractorVerifications).catch(e=>notify(e?.message||'Quality-check status could not be updated.',true));return}
     const jobs=event.target?.closest?.('[data-contractor-view="jobs"]');if(jobs)setTimeout(loadContractorVerifications,0);
   },true);
   document.addEventListener('change',event=>{if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(refreshCopy,0)},true);
