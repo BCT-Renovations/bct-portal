@@ -91,6 +91,8 @@ export default {
     const parsed = await parseSmallJson(request);
     if (parsed.error) return json({ ok: false, error: parsed.error, requestId }, parsed.status);
 
+    if(!parsed.value||typeof parsed.value!=="object"||Array.isArray(parsed.value))return json({ok:false,error:"invalid_request",requestId},400);
+
     const token = bearerToken(request);
     if (!token) return json({ ok: false, error: "authentication_required", requestId }, 401);
 
