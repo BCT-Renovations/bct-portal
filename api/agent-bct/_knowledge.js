@@ -24,17 +24,19 @@ function tokens(text) {
 }
 function score(query, entry) {
   const q = tokens(query);
+  if(q.size===0)return 0;
   const hay = tokens(`${entry.key} ${entry.domain} ${entry.title} ${entry.body}`);
   let n = 0;
   for (const token of q) if (hay.has(token)) n += 1;
   return n;
 }
 export function retrieveApprovedKnowledge({ query, role = "public", languageCode = "en", limit = 4 }) {
+  const safeQuery=typeof query==="string"?query.slice(0,2000):"";
   const safeLimit = Math.max(1, Math.min(Number(limit) || 4, 8));
   const allowedRole = ["public","homeowner","contractor","estimator","admin","property_manager"].includes(role) ? role : "public";
   return KNOWLEDGE
     .filter(entry => entry.status === "approved" && entry.audience.includes(allowedRole))
-    .map(entry => ({ entry, rank: score(query, entry) }))
+    .map(entry => ({ entry, rank: score(safeQuery, entry) }))
     .filter(x => x.rank > 0)
     .sort((a,b) => b.rank - a.rank || a.entry.key.localeCompare(b.entry.key))
     .slice(0, safeLimit)
