@@ -71,12 +71,12 @@ function estimateSafe(row) {
 }
 function contractSummary(value) { return pick(value, ["contracts","executed","completed","total_amount"]); }
 function financingSafe(row) {
-  // Deliberately excludes provider application_reference and free-form notes.
-  return pick(row, ["id","project_id","provider","status","approved_amount","customer_shared_approval","created_at","updated_at"]);
+  // Deliberately excludes provider identity/reference fields and free-form notes.
+  return pick(row, ["id","project_id","status","approved_amount","customer_shared_approval","created_at","updated_at"]);
 }
 function escrowSafe(row) {
-  // Deliberately excludes external_reference and free-form notes.
-  return pick(row, ["id","project_id","provider","amount","status","homeowner_approved_release","bct_approved_release","funded_at","released_at","created_at","updated_at"]);
+  // Deliberately excludes provider/external references and free-form notes.
+  return pick(row, ["id","project_id","amount","status","homeowner_approved_release","bct_approved_release","funded_at","released_at","created_at","updated_at"]);
 }
 function paymentSafe(row) {
   // Deliberately excludes external_reference and free-form notes.
