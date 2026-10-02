@@ -6,6 +6,10 @@ const homeownerEstimateSafetySql = fs.readFileSync(
   new URL('../supabase/migrations/20260926104500_homeowner_safe_estimate_summary.sql', import.meta.url),
   'utf8'
 );
+const contractorIdentitySql = fs.readFileSync(
+  new URL('../supabase/migrations/20261002050000_contractor_identity_trade_leads.sql', import.meta.url),
+  'utf8'
+);
 const contractorJobSafetySql = fs.readFileSync(
   new URL('../supabase/migrations/20260926110500_contractor_safe_available_jobs.sql', import.meta.url),
   'utf8'
@@ -77,4 +81,27 @@ assert(
   'AI estimating release message must preserve customer-safe estimate feed wording.'
 );
 
-console.log('BCT role visibility smoke passed: homeowner estimates, contractor jobs, and bid privacy markers verified.');
+
+const homeownerTradeLeadMatch = contractorIdentitySql.match(
+  /create or replace function public\.bct_homeowner_project_trade_leads\(p_project_id uuid\)[\s\S]*?\$\$;/i
+);
+assert(homeownerTradeLeadMatch, 'Missing homeowner-safe Who’s Coming trade-lead function.');
+const homeownerTradeLeadFunction = homeownerTradeLeadMatch[0];
+for (const field of ['government_id_front','government_id_back','contractor_trade_license','admin_notes','original_filename']) {
+  assert(!homeownerTradeLeadFunction.includes(field), `Who’s Coming must not expose private contractor field/type: ${field}.`);
+}
+assert(homeownerTradeLeadFunction.includes('l.homeowner_visible'), 'Who’s Coming must require explicit homeowner visibility release.');
+assert(homeownerTradeLeadFunction.includes('cu.auth_user_id=auth.uid()'), 'Who’s Coming must bind project visibility to the authenticated homeowner.');
+assert(homeownerTradeLeadFunction.includes("a.status in ('assigned','scheduled','in_progress','quality_review')"), 'Who’s Coming must require an active assignment state.');
+
+const homeownerPhotoPathMatch = contractorIdentitySql.match(
+  /create or replace function public\.bct_homeowner_contractor_profile_photo_path\([\s\S]*?\$\$;/i
+);
+assert(homeownerPhotoPathMatch, 'Missing homeowner-authorized contractor profile-photo path function.');
+const homeownerPhotoPathFunction = homeownerPhotoPathMatch[0];
+assert(homeownerPhotoPathFunction.includes("d.document_type='profile_photo'"), 'Homeowner photo resolver must only return profile photos.');
+assert(homeownerPhotoPathFunction.includes("d.review_status='approved'"), 'Homeowner photo resolver must require approved document review.');
+assert(!homeownerPhotoPathFunction.includes('government_id_front'), 'Homeowner photo resolver must never expose government ID front.');
+assert(!homeownerPhotoPathFunction.includes('government_id_back'), 'Homeowner photo resolver must never expose government ID back.');
+
+console.log('BCT role visibility smoke passed: homeowner estimates, contractor jobs, bid privacy, and Who’s Coming identity privacy markers verified.');
