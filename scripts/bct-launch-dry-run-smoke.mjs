@@ -33,6 +33,8 @@ const launchRunnerBoundarySql = fs.readFileSync(new URL('../supabase/migrations/
 const closeoutCreationSql = fs.readFileSync(new URL('../supabase/migrations/20260926150000_harden_inspection_warranty_closeout_creation.sql', import.meta.url), 'utf8');
 const closeoutGuardSql = fs.readFileSync(new URL('../supabase/migrations/20260926151500_attach_closeout_validation_guards.sql', import.meta.url), 'utf8');
 const signatureImmutabilitySql = fs.readFileSync(new URL('../supabase/migrations/20260926161500_contract_signature_immutability.sql', import.meta.url), 'utf8');
+const gallerySql = fs.readFileSync(new URL('../supabase/migrations/20261001220000_bct_photo_build_gallery.sql', import.meta.url), 'utf8');
+const homeGalleryJs = fs.readFileSync(new URL('../bct-home-gallery.js', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -200,6 +202,16 @@ for (const marker of [
   assert(indexHtml.includes(marker) || readinessSql.includes(marker), `Admin launch boundary must preserve: ${marker}`);
 }
 assert(readinessSql.includes('customer_pilot_enabled') || launchStatus.includes('customer_pilot_enabled'), 'Customer pilot launch gate must remain explicit.');
+
+assert(gallerySql.includes("values ('bct-gallery','bct-gallery',false"), 'Gallery storage bucket must remain private.');
+assert(gallerySql.includes('using (is_published = true)'), 'Public gallery metadata must remain published-only.');
+assert(gallerySql.includes("p.is_published"), 'Gallery object read policy must require a published gallery row.');
+assert(gallerySql.includes('BCT admins manage gallery photos'), 'Gallery write management must remain BCT Admin-only.');
+assert(gallerySql.includes('BCT gallery library is limited to 1,000 photos'), 'Gallery must preserve the 1,000-photo library cap.');
+assert(gallerySql.includes('BCT front-page gallery is limited to 30 published photos'), 'Gallery must preserve the 30-photo homepage cap.');
+assert(homeGalleryJs.includes("createSignedUrl"), 'Public gallery must use controlled signed object delivery.');
+assert(homeGalleryJs.includes(".eq('is_published',true)"), 'Public gallery queries must remain published-only.');
+assert(!homeGalleryJs.includes('/storage/v1/object/public/bct-gallery/'), 'Public gallery must not regress to unconditional public object URLs.');
 
 assert(indexHtml.includes('Manual Weather Log'), 'Admin weather workflow must remain explicitly manual.');
 assert(indexHtml.includes('Automatic weather-provider pulls are not enabled yet.'), 'Automatic weather must remain disabled in the current portal until approved.');
