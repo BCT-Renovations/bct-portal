@@ -6,10 +6,10 @@ This checklist tracks account, billing, and provider items that cannot be fully 
 
 | Service | Needed action | Why it matters | Current status |
 | --- | --- | --- | --- |
-| Supabase Pro | Upgrade the Supabase project before public launch. | Unlocks leaked-password protection and managed backup features. | On hold by business decision. |
+| Supabase Pro | Upgrade the Supabase project before public launch. | Unlocks leaked-password protection and managed backup features. | Rechecked 2026-10-02: the connected BCT Supabase organization is still on the Free plan; upgrade remains a business/billing decision. |
 | Supabase leaked-password protection | Enable Prevent use of leaked passwords after Pro is active. | Blocks known compromised passwords during sign-up/reset. | Rechecked 2026-10-02: live security advisor still reports disabled; blocked until Supabase Pro/account setting is available. |
-| Supabase backups | Verify current daily backups after Pro is active. | Confirms the production database has restorable backups. | Blocked until Supabase Pro. |
-| Supabase PITR | Decide whether to enable PITR/add-on retention. | Allows point-in-time restore beyond basic backup coverage. | Business/billing decision pending. |
+| Supabase backups | Verify current daily backups after Pro is active. | Confirms the production database has restorable backups. | Connected account is currently Free; managed backup verification remains blocked until the plan is upgraded or an approved manual export is used. |
+| Supabase PITR | Decide whether to enable PITR/add-on retention. | Allows point-in-time restore beyond basic backup coverage. | Connected account is currently Free; PITR remains unavailable/pending the plan and retention decision. |
 | Email sender | Verify confirmation and password-reset delivery with a real mailbox. | Required for account recovery and launch support. | Resend domain is verified and sending-enabled; prior password-reset messages are provider-delivered and mailbox evidence exists. Fresh production confirmation flow and the separate V46 notification-worker send remain to be verified. |
 | AI/API billing | Confirm the AI estimate provider, spending limits, and alerting. | Prevents surprise AI costs while keeping estimates admin-reviewed. | Needs billing/provider confirmation before high-volume use. |
 | Weather API provider | Choose a provider and configure `BCT_WEATHER_PROVIDER`, `BCT_WEATHER_API_KEY`, and `BCT_WEATHER_ENABLED=true` only after approval. | Enables automatic weather by job location/schedule without mislabeling manual tracking. | Manual weather tracking is live; automatic provider pulls are disabled. |
