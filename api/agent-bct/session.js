@@ -21,7 +21,7 @@ function correlationId() {
 
 function bearerToken(request) {
   const value = request.headers.get("authorization") || "";
-  const match = value.match(/^Bearer\\s+(.+)$/i);
+  const match = value.match(/^Bearer\s+(.+)$/i);
   return match ? match[1].trim() : "";
 }
 
@@ -45,7 +45,7 @@ async function parseSmallJson(request) {
 }
 
 async function supabaseRpc(name, token, args = {}) {
-  const baseUrl = (process.env.SUPABASE_URL || "").replace(/\\/$/, "");
+  const baseUrl = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
   const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || "";
 
   if (!baseUrl || !publishableKey) {
