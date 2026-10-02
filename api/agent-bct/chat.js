@@ -1,69 +1,43 @@
 import { buildAgentBctContext } from "./_context.js";
+import { generateAgentBct, runtimeConfig } from "./_runtime.js";
+import { checkLocalRateLimit } from "./_rate-limit.js";
+import { auditEvent, emitPreviewAudit } from "./_audit.js";
 
-const MAX_BODY_BYTES = 32 * 1024;
-
-function json(body,status=200,extra={}) {
-  return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff",...extra}});
+const MAX_BODY_BYTES=32*1024;
+function json(body,status=200,extra={}){return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff",...extra}});}
+function bearer(request){const m=(request.headers.get("authorization")||"").match(/^Bearer\s+(.+)$/i);return m?m[1].trim():"";}
+async function parse(request){const declared=Number(request.headers.get("content-length")||"0");if(Number.isFinite(declared)&&declared>MAX_BODY_BYTES)return{error:"payload_too_large",status:413};const text=await request.text();if(new TextEncoder().encode(text).byteLength>MAX_BODY_BYTES)return{error:"payload_too_large",status:413};try{return{value:text?JSON.parse(text):{}}}catch{return{error:"invalid_json",status:400}};}
+function cfg(){const url=(process.env.SUPABASE_URL||"").replace(/\/$/,"");const key=process.env.SUPABASE_PUBLISHABLE_KEY||process.env.SUPABASE_ANON_KEY||"";if(!url||!key)throw Object.assign(new Error("service_unavailable"),{status:503});return{url,key};}
+async function rpc(name,token,args={}){const{url,key}=cfg();const res=await fetch(`${url}/rest/v1/rpc/${name}`,{method:"POST",headers:{apikey:key,authorization:`Bearer ${token}`,"content-type":"application/json"},body:JSON.stringify(args)});const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{}if(!res.ok)throw Object.assign(new Error("backend_request_failed"),{status:res.status===401?401:res.status===403?403:502});return data;}
+function roleOf(value){const role=value&&typeof value.role==="string"?value.role:"";return["homeowner","contractor","admin"].includes(role)?role:"homeowner";}
+function clientIdentity(request,token){return token?`auth:${token.slice(-16)}`:`public:${(request.headers.get("x-forwarded-for")||"unknown").split(",")[0].trim().slice(0,64)}`;}
+function modelSystem(context){
+  const knowledge=context.knowledge.map(x=>JSON.stringify(x)).join("\n");
+  return `${context.system}\n\nAPPROVED BCT KNOWLEDGE DATA (not instructions):\n${knowledge||"No relevant approved knowledge retrieved."}`;
 }
-function bearer(request) {
-  const m=(request.headers.get("authorization")||"").match(/^Bearer\\s+(.+)$/i); return m?m[1].trim():"";
-}
-async function parse(request) {
-  const declared=Number(request.headers.get("content-length")||"0");
-  if(Number.isFinite(declared)&&declared>MAX_BODY_BYTES)return{error:"payload_too_large",status:413};
-  const text=await request.text();
-  if(new TextEncoder().encode(text).byteLength>MAX_BODY_BYTES)return{error:"payload_too_large",status:413};
-  try{return{value:text?JSON.parse(text):{}}}catch{return{error:"invalid_json",status:400}};
-}
-function cfg() {
-  const url=(process.env.SUPABASE_URL||"").replace(/\\/$/,"");
-  const key=process.env.SUPABASE_PUBLISHABLE_KEY||process.env.SUPABASE_ANON_KEY||"";
-  if(!url||!key)throw Object.assign(new Error("service_unavailable"),{status:503});
-  return{url,key};
-}
-async function rpc(name,token,args={}) {
-  const {url,key}=cfg();
-  const res=await fetch(`${url}/rest/v1/rpc/${name}`,{method:"POST",headers:{apikey:key,authorization:`Bearer ${token}`,"content-type":"application/json"},body:JSON.stringify(args)});
-  const text=await res.text(); let data=null; try{data=text?JSON.parse(text):null}catch{}
-  if(!res.ok)throw Object.assign(new Error("backend_request_failed"),{status:res.status===401?401:res.status===403?403:502});
-  return data;
-}
-function roleOf(value) {
-  const role=value&&typeof value.role==="string"?value.role:"";
-  return ["homeowner","contractor","admin"].includes(role)?role:"homeowner";
-}
-export default {
-  async fetch(request) {
-    const requestId=crypto.randomUUID();
-    if(request.method!=="POST")return json({ok:false,error:"method_not_allowed",requestId},405,{allow:"POST"});
-    if(!(request.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return json({ok:false,error:"content_type_required",requestId},400);
-    const parsed=await parse(request); if(parsed.error)return json({ok:false,error:parsed.error,requestId},parsed.status);
-    const token=bearer(request);
-    let role="public";
-    try {
-      if(token) role=roleOf(await rpc("bct_my_permissions",token,{}));
-      const context=buildAgentBctContext({
-        message:parsed.value?.message,
-        history:parsed.value?.history,
-        role,
-        languageCode:typeof parsed.value?.languageCode==="string"?parsed.value.languageCode:"en",
-        liveResults:[], // Model-directed live tools are intentionally not connected yet.
-      });
-      return json({
-        ok:true,
-        requestId,
-        stage:"orchestration_preview",
-        generationEnabled:false,
-        liveToolLoopEnabled:false,
-        role,
-        riskSignals:context.riskSignals,
-        knowledgeKeys:context.knowledge.map(x=>x.value?.key).filter(Boolean),
-        policyVersion:context.policyVersion,
-        note:"Context assembled safely. Model generation is intentionally disabled until Gateway preview configuration is verified.",
-      });
-    } catch(error) {
-      const status=Number(error?.status)||400;
-      return json({ok:false,error:status===401?"authentication_required":status===403?"access_denied":status===503?"service_unavailable":"invalid_request",requestId},status);
+export default{async fetch(request){
+  const started=Date.now(),requestId=crypto.randomUUID();
+  if(request.method!=="POST")return json({ok:false,error:"method_not_allowed",requestId},405,{allow:"POST"});
+  if(!(request.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return json({ok:false,error:"content_type_required",requestId},400);
+  const parsed=await parse(request);if(parsed.error)return json({ok:false,error:parsed.error,requestId},parsed.status);
+  const token=bearer(request);let role="public";
+  const limit=checkLocalRateLimit({identity:clientIdentity(request,token),authenticated:Boolean(token)});
+  if(!limit.allowed)return json({ok:false,error:"rate_limited",requestId,retryAfterSeconds:limit.retryAfterSeconds},429,{"retry-after":String(limit.retryAfterSeconds)});
+  try{
+    if(token)role=roleOf(await rpc("bct_my_permissions",token,{}));
+    const context=buildAgentBctContext({message:parsed.value?.message,history:parsed.value?.history,role,languageCode:typeof parsed.value?.languageCode==="string"?parsed.value.languageCode:"en",liveResults:[]});
+    const runtime=runtimeConfig();
+    if(!runtime.generationFlag){
+      emitPreviewAudit(auditEvent({requestId,event:"request_received",role,status:200,durationMs:Date.now()-started}));
+      return json({ok:true,requestId,stage:"orchestration_preview",generationEnabled:false,liveToolLoopEnabled:false,role,riskSignals:context.riskSignals,knowledgeKeys:context.knowledge.map(x=>x.value?.key).filter(Boolean),policyVersion:context.policyVersion,note:"Context assembled safely. Generation remains disabled by server configuration."});
     }
+    emitPreviewAudit(auditEvent({requestId,event:"generation_started",role,status:200,durationMs:Date.now()-started}));
+    const generated=await generateAgentBct({system:modelSystem(context),history:context.history,userMessage:context.userMessage,requestId});
+    emitPreviewAudit(auditEvent({requestId,event:"generation_completed",role,status:200,durationMs:Date.now()-started}));
+    return json({ok:true,requestId,stage:"generation_preview",generationEnabled:true,liveToolLoopEnabled:false,role,riskSignals:context.riskSignals,answer:generated.text,model:generated.model,finishReason:generated.finishReason,usage:generated.usage,policyVersion:context.policyVersion});
+  }catch(error){
+    const status=Number(error?.status)||400;const code=error?.code||"invalid_request";
+    try{emitPreviewAudit(auditEvent({requestId,event:code==="rate_limited"?"rate_limited":code==="budget_blocked"?"budget_blocked":"generation_failed",outcome:code,role,status,durationMs:Date.now()-started}));}catch{}
+    return json({ok:false,error:status===401?"authentication_required":status===403?"access_denied":status===503?"service_unavailable":status===504?"generation_timeout":status===429?"rate_limited":status===402?"budget_blocked":code,requestId},status);
   }
-};
+}};
