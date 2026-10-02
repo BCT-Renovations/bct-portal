@@ -240,6 +240,41 @@ revoke execute on function public.bct_homeowner_contractor_profile_photo_path(uu
 grant execute on function public.bct_homeowner_contractor_profile_photo_path(uuid,uuid) to authenticated;
 
 
+
+-- Narrow private-storage read grant for the homeowner-facing released profile photo only.
+-- This does not expose government IDs, licenses, COIs, W-9s, work photos, or unrelated contractor files.
+drop policy if exists "Homeowners view released contractor profile photos" on storage.objects;
+create policy "Homeowners view released contractor profile photos"
+on storage.objects for select
+to authenticated
+using (
+  bucket_id='bct-contractor-documents'
+  and exists (
+    select 1
+    from public.bct_contractor_documents d
+    join public.bct_contractors c
+      on c.application_id=d.application_id
+     and c.active
+    join public.bct_contractor_identity_profiles ip
+      on ip.contractor_id=c.id
+     and ip.profile_photo_document_id=d.id
+     and ip.profile_photo_status='approved'
+    join public.bct_project_trade_leads l
+      on l.contractor_id=c.id
+     and l.homeowner_visible
+    join public.bct_assignments a
+      on a.project_id=l.project_id
+     and a.contractor_id=c.id
+     and a.status in ('assigned','scheduled','in_progress','quality_review')
+    join public.bct_projects p on p.id=l.project_id
+    join public.bct_customers cu on cu.id=p.customer_id
+    where d.storage_path=storage.objects.name
+      and d.document_type='profile_photo'
+      and d.review_status='approved'
+      and cu.auth_user_id=(select auth.uid())
+  )
+);
+
 -- Keep homeowner identity display synchronized with the canonical V46 assignment lifecycle.
 create or replace function public.bct_project_trade_leads_assignment_visibility_guard()
 returns trigger language plpgsql set search_path=public,auth as $$
