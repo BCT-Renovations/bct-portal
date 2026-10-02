@@ -1,0 +1,33 @@
+name: Agent BCT Security Tests
+
+on:
+  push:
+    branches:
+      - agent-bct
+    paths:
+      - "api/agent-bct/**"
+      - "tests/agent-bct/**"
+      - "package.json"
+      - ".github/workflows/agent-bct-security.yml"
+  pull_request:
+    paths:
+      - "api/agent-bct/**"
+      - "tests/agent-bct/**"
+      - "package.json"
+
+permissions:
+  contents: read
+
+jobs:
+  agent-bct-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run Agent BCT security tests
+        run: npm run test:agent-bct
