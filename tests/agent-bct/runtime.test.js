@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { runtimeConfig } from "../../api/agent-bct/_runtime.js";
+import { runtimeConfig, generateAgentBct } from "../../api/agent-bct/_runtime.js";
 
 test("generation defaults disabled",()=>{
   const prior=process.env.AGENT_BCT_GENERATION_ENABLED;
@@ -28,4 +28,19 @@ test("runtime reports model id but never gateway credential",()=>{
   assert.equal(JSON.stringify(cfg).includes("private-key"),false);
   if(oldModel===undefined)delete process.env.AGENT_BCT_MODEL;else process.env.AGENT_BCT_MODEL=oldModel;
   if(oldKey===undefined)delete process.env.AI_GATEWAY_API_KEY;else process.env.AI_GATEWAY_API_KEY=oldKey;
+});
+
+test("runtime rejects malformed successful gateway payload",async()=>{
+  const old={flag:process.env.AGENT_BCT_GENERATION_ENABLED,key:process.env.AI_GATEWAY_API_KEY,model:process.env.AGENT_BCT_MODEL};
+  process.env.AGENT_BCT_GENERATION_ENABLED="true";process.env.AI_GATEWAY_API_KEY="test";process.env.AGENT_BCT_MODEL="openai/gpt-test";
+  const priorFetch=globalThis.fetch;globalThis.fetch=async()=>new Response(JSON.stringify({unexpected:true}),{status:200});
+  try{await assert.rejects(()=>generateAgentBct({system:"s",userMessage:"u",requestId:"r"}),e=>e.code==="invalid_generation_response");}
+  finally{globalThis.fetch=priorFetch;for(const [k,v] of Object.entries({AGENT_BCT_GENERATION_ENABLED:old.flag,AI_GATEWAY_API_KEY:old.key,AGENT_BCT_MODEL:old.model})){if(v===undefined)delete process.env[k];else process.env[k]=v;}}
+});
+test("runtime rejects unexpected tool calls during Phase A",async()=>{
+  const old={flag:process.env.AGENT_BCT_GENERATION_ENABLED,key:process.env.AI_GATEWAY_API_KEY,model:process.env.AGENT_BCT_MODEL};
+  process.env.AGENT_BCT_GENERATION_ENABLED="true";process.env.AI_GATEWAY_API_KEY="test";process.env.AGENT_BCT_MODEL="openai/gpt-test";
+  const priorFetch=globalThis.fetch;globalThis.fetch=async()=>new Response(JSON.stringify({choices:[{message:{content:"x",tool_calls:[{id:"1"}]}}]}),{status:200});
+  try{await assert.rejects(()=>generateAgentBct({system:"s",userMessage:"u",requestId:"r"}),e=>e.code==="unexpected_tool_call");}
+  finally{globalThis.fetch=priorFetch;for(const [k,v] of Object.entries({AGENT_BCT_GENERATION_ENABLED:old.flag,AI_GATEWAY_API_KEY:old.key,AGENT_BCT_MODEL:old.model})){if(v===undefined)delete process.env[k];else process.env[k]=v;}}
 });
