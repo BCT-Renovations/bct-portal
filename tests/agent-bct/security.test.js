@@ -165,3 +165,14 @@ test("row-returning tools cap projected results",()=>{
   const rows=Array.from({length:200},(_,i)=>({id:String(i),subject:"n"}));
   assert.equal(tool.project(rows).length,50);
 });
+
+test("conversation sanitizer strips unsafe control characters but preserves normal whitespace",()=>{
+  const r=sanitizeConversation({message:"hello\u0000\u0007 world\nnext"});
+  assert.equal(r.message,"hello world\nnext");
+});
+test("history budget keeps newest safe turns within the bounded context",()=>{
+  const history=Array.from({length:30},(_,i)=>({role:i%2?"assistant":"user",content:"x".repeat(2000)+i}));
+  const r=sanitizeConversation({message:"now",history});
+  assert.ok(r.history.length<=12);
+  assert.ok(r.history.reduce((n,x)=>n+x.content.length,0)<=18000);
+});
