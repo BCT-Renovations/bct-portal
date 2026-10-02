@@ -82,6 +82,10 @@ begin
          )
      )
     union all
+    select 'prework_condition','Required pre-work property condition documentation is incomplete'
+     where exists(select 1 from public.bct_site_condition_baselines scb where scb.project_id=p_project_id
+       and coalesce(scb.required_before_work,false) and scb.completed_at is null)
+    union all
     select 'hidden_condition','An unresolved hidden condition is stopping work'
      where exists(select 1 from public.bct_hidden_conditions hc where hc.project_id=p_project_id
        and hc.resolved_at is null and coalesce(hc.work_stopped,false))
