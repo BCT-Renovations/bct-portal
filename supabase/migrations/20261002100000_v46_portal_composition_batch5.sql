@@ -67,8 +67,20 @@ begin
          and lower(coalesce(pm.status,'')) in ('issued','approved','active','complete','completed','closed')))
     union all
     select 'failed_inspection','A project inspection requires correction or reinspection'
-     where exists(select 1 from public.bct_inspections i where i.project_id=p_project_id
-       and lower(coalesce(i.result,'')) in ('failed','fail','rejected','correction_required','reinspection_required'))
+     where exists(
+       select 1 from public.bct_inspections i
+       where i.project_id=p_project_id
+         and lower(coalesce(i.result,'')) in ('failed','fail','rejected','correction_required','reinspection_required')
+         and (
+           not exists(select 1 from public.bct_code_corrections cc where cc.inspection_id=i.id)
+           or exists(
+             select 1 from public.bct_code_corrections cc
+             where cc.inspection_id=i.id
+               and cc.cleared_at is null
+               and lower(coalesce(cc.clearance_status,cc.status,'')) not in ('cleared','closed','complete','completed')
+           )
+         )
+     )
     union all
     select 'hidden_condition','An unresolved hidden condition is stopping work'
      where exists(select 1 from public.bct_hidden_conditions hc where hc.project_id=p_project_id
