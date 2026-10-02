@@ -32,6 +32,7 @@ export default{async fetch(request){
   if(request.method!=="POST")return json({ok:false,error:"method_not_allowed",requestId},405,{allow:"POST"});
   if(!(request.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return json({ok:false,error:"content_type_required",requestId},400);
   const parsed=await parse(request);if(parsed.error)return json({ok:false,error:parsed.error,requestId},parsed.status);
+  if(!parsed.value||typeof parsed.value!=="object"||Array.isArray(parsed.value))return json({ok:false,error:"invalid_request",requestId},400);
   const token=bearer(request);let role="public";
   const limit=checkLocalRateLimit({identity:clientIdentity(request,token),authenticated:Boolean(token)});
   if(!limit.allowed)return json({ok:false,error:"rate_limited",requestId,retryAfterSeconds:limit.retryAfterSeconds},429,{"retry-after":String(limit.retryAfterSeconds)});
