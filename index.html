@@ -977,6 +977,22 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
         <div><label>Professional Reference #5</label><input name="ref5" required></div>
         <div><label>Reference #5 Contact</label><input name="ref5contact" required></div>
       </div>
+      <div class="card section" id="contractorIdentityUploads">
+        <h3>Required Identity & Verification Uploads</h3>
+        <p class="muted">These files are required for BCT verification. Government ID and credential documents stay private to BCT. Only a BCT-approved profile photo may later be shown to a homeowner for a project you are officially assigned to.</p>
+        <label>Contractor Profile Photo <b>(Required)</b></label>
+        <div class="file-upload-ui"><input id="contractorProfilePhoto" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif" required><label class="file-upload-button" for="contractorProfilePhoto" data-file-choose>Choose Photo</label><span class="file-upload-name" data-file-name="contractorProfilePhoto">No photo selected</span></div>
+        <small class="muted">Use a clear, current photo showing your face. BCT must approve it before any homeowner can see it.</small>
+        <div class="grid grid-2 section">
+          <div><label>Government ID — Front <b>(Required)</b></label><div class="file-upload-ui"><input id="governmentIdFront" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf" required><label class="file-upload-button" for="governmentIdFront" data-file-choose>Choose ID Front</label><span class="file-upload-name" data-file-name="governmentIdFront">No file selected</span></div></div>
+          <div><label>Government ID — Back <b>(Required when the ID has information on the back)</b></label><div class="file-upload-ui"><input id="governmentIdBack" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"><label class="file-upload-button" for="governmentIdBack" data-file-choose>Choose ID Back</label><span class="file-upload-name" data-file-name="governmentIdBack">No file selected</span></div></div>
+        </div>
+        <label>Does your government ID have information on the back?</label>
+        <select id="governmentIdHasBack" name="governmentIdHasBack" required><option value="">Choose answer</option><option value="yes">Yes — I will upload the back</option><option value="no">No — there is no information on the back</option></select>
+        <label>Contractor / Trade License or Registration <b>(Required when applicable to your trade/jurisdiction)</b></label>
+        <div class="file-upload-ui"><input id="contractorTradeLicense" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"><label class="file-upload-button" for="contractorTradeLicense" data-file-choose>Choose License</label><span class="file-upload-name" data-file-name="contractorTradeLicense">No file selected</span></div>
+        <small class="muted">This is separate from your government-issued ID. It remains private BCT verification material.</small>
+      </div>
       <label>Previous Work Photos</label><div class="file-upload-ui"><input id="workPhotos" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.heic,.heif"><label class="file-upload-button" for="workPhotos" data-file-choose>Choose Photos</label><span class="file-upload-name" data-file-name="workPhotos">No photos selected — you can add photos more than once</span></div>
       <p class="muted">Up to 10 image files, 25 MB each. Allowed: JPG, PNG, WEBP, and HEIC/HEIF.</p>
       <label>Describe the Projects in Your Photos</label><textarea name="photoNotes" placeholder="Required only when work photos are uploaded."></textarea>
@@ -2465,7 +2481,7 @@ const defaultData={applications:[],jobs:[],bids:[],customers:[],customerProjects
 let db=JSON.parse(localStorage.getItem(KEY)||JSON.stringify(defaultData));
 db.applications=db.applications||[];db.jobs=db.jobs||[];db.bids=db.bids||[];db.customers=db.customers||[];db.customerProjects=db.customerProjects||[];db.serviceCalls=db.serviceCalls||[];
 db.customerProjects.forEach(p=>{p.workflowStage=p.workflowStage||p.status||'BCT Review';p.statusHistory=p.statusHistory||[{status:p.status||'Existing Project',at:p.created||new Date().toISOString(),note:'Existing project migrated to workflow'}];p.assignedContractorId=p.assignedContractorId||'';p.assignedContractorName=p.assignedContractorName||'';});
-const accumulatedFiles={customerFiles:[],workPhotos:[],contractorDocs:[]};
+const accumulatedFiles={customerFiles:[],workPhotos:[],contractorDocs:[],contractorProfilePhoto:[],governmentIdFront:[],governmentIdBack:[],contractorTradeLicense:[]};
 window.bctAccumulatedFiles=accumulatedFiles;
 const BCT_UPLOAD_LIMITS={
   maxFiles:10,
@@ -2477,8 +2493,8 @@ const BCT_UPLOAD_LIMITS={
 };
 function bctUploadKind(input){
   const id=input?.id||'';
-  if(id==='workPhotos')return 'contractorPhoto';
-  if(id==='contractorDocs'||id==='bctContractorDocFiles')return 'contractorDocument';
+  if(id==='workPhotos'||id==='contractorProfilePhoto')return 'contractorPhoto';
+  if(id==='contractorDocs'||id==='bctContractorDocFiles'||id==='governmentIdFront'||id==='governmentIdBack'||id==='contractorTradeLicense')return 'contractorDocument';
   return 'project';
 }
 function bctUploadAllowedExtensions(kind){
@@ -3356,7 +3372,17 @@ renderAll();
       if(!activeUser){if(!email)throw new Error('Email is required.');validMatchingPassword(p1,p2);}
       const refs=[];for(let i=1;i<=5;i++){const name=String(fd.get('ref'+i)||'').trim(),contact=String(fd.get('ref'+i+'contact')||'').trim();if(name&&contact)refs.push({name,contact})}if(refs.length!==5)throw new Error('All five professional references and their contact information are required.');
       const langs=[...f.querySelectorAll('input[name="spokenLanguage"]:checked')].map(x=>x.value);if(!langs.length)langs.push($('bctLanguage')?.value||'en');
-      const photos=[...(window.bctAccumulatedFiles?.workPhotos||[])],screeningResult=runContractorScreening(f,email);
+      const photos=[...(window.bctAccumulatedFiles?.workPhotos||[])],
+        profilePhotos=[...(window.bctAccumulatedFiles?.contractorProfilePhoto||[])],
+        idFront=[...(window.bctAccumulatedFiles?.governmentIdFront||[])],
+        idBack=[...(window.bctAccumulatedFiles?.governmentIdBack||[])],
+        tradeLicense=[...(window.bctAccumulatedFiles?.contractorTradeLicense||[])],
+        idHasBack=String(fd.get('governmentIdHasBack')||''),
+        screeningResult=runContractorScreening(f,email);
+      if(profilePhotos.length!==1)throw new Error('One clear contractor profile photo is required.');
+      if(idFront.length!==1)throw new Error('Government ID front is required.');
+      if(idHasBack==='yes'&&idBack.length!==1)throw new Error('Government ID back is required when your ID has information on the back.');
+      if(idHasBack==='no'&&idBack.length)throw new Error('Remove the ID back file or choose Yes for information on the back.');
       const applicationPayload={email,legal_name:String(fd.get('legalName')||'').trim(),business_name:String(fd.get('businessName')||'').trim(),phone:String(fd.get('phone')||'').trim(),city_state:[fd.get('city'),fd.get('state')].filter(Boolean).join(', '),years_experience:Number(fd.get('years')||0),primary_trade:String(fd.get('trade')||''),crew_size:Number(fd.get('crewSize')||1),service_area:String(fd.get('serviceArea')||'').trim(),reliable_vehicle:fd.get('vehicle')==='Yes',other_trades:String(fd.get('otherTrades')||'').trim(),tools_equipment:String(fd.get('tools')||'').trim(),recent_employer:String(fd.get('employer1')||'').trim(),dates_worked:String(fd.get('dates1')||'').trim(),reason_for_leaving:String(fd.get('reason')||'').trim(),work_performed:String(fd.get('duties1')||'').trim(),additional_work_history:String(fd.get('history2')||'').trim(),currently_insured:fd.get('insured')==='Yes',can_provide_coi:fd.get('coiAvailable')==='Yes',information_certified:fd.get('truth')==='on',photo_certified:!photos.length||fd.get('photoCert')==='on',references_authorized:fd.get('referenceAuth')==='on',background_acknowledged:fd.get('screeningAck')==='on',contractor_rules_acknowledged:fd.get('contractorRulesAck')==='on',spoken_languages:langs,trade_capabilities:[String(fd.get('trade')||'')],references,screening_result:screeningResult,screening_status:screeningResult.pass?'passed':'failed',screening_score:screeningResult.score,screening_passed:screeningResult.pass};
       let application=null,applicationNumber='',needsEmailConfirmation=false;
       if(activeUser){application=await rpc('bct_submit_contractor_application',{p_payload:applicationPayload});await loadContractorState();applicationNumber=application.application_number||'';}
@@ -3367,10 +3393,20 @@ renderAll();
         needsEmailConfirmation=!data.session;
         if(data.session){await loadContractorState();application=(contractorState?.application||[]).find(a=>a.application_number===requestedNumber)||(contractorState?.application||[])[0]||null;applicationNumber=application?.application_number||requestedNumber;}
       }
+      let identityMsg='';
+      if(application){
+        await uploadContractorFiles(profilePhotos,'profile_photo');
+        await uploadContractorFiles(idFront,'government_id_front');
+        if(idBack.length)await uploadContractorFiles(idBack,'government_id_back');
+        if(tradeLicense.length)await uploadContractorFiles(tradeLicense,'contractor_trade_license');
+        identityMsg='<br><b>Identity verification:</b> Required files uploaded privately to BCT for review.';
+      }else{
+        identityMsg='<br><b>Identity verification:</b> After email confirmation, sign in immediately to finish the required private identity uploads before BCT approval.';
+      }
       let photoMsg='';if(application&&photos.length){const n=await uploadContractorFiles(photos,'work_photo');photoMsg=`<br>${n} work photo${n===1?'':'s'} uploaded privately.`}else if(photos.length){photoMsg='<br><b>Work photos:</b> Confirm your email, sign in under Applicant Status, then upload them as Work Photo.'}
       const numberLine=applicationNumber?`<br>Your BCT Application Number is <b>${esc(applicationNumber)}</b>.`:needsEmailConfirmation?'<br>Your application number will be available after email confirmation.':'';
-      msg.innerHTML=`<div class="notice backend-live"><b>✓ Basic Pre-Application Login Submitted</b>${numberLine}<br>Screening: Passed at ${screeningResult.score}%.<br>Status: Pending BCT Admin Review. Jobs, bids, and assignments stay locked until BCT approves.${needsEmailConfirmation?'<br><b>Next:</b> Check your email and confirm your account.':''}${photoMsg}</div>`;
-      resetQueuedFiles('workPhotos');clearAndLockSubmission(f);
+      msg.innerHTML=`<div class="notice backend-live"><b>✓ Basic Pre-Application Login Submitted</b>${numberLine}<br>Screening: Passed at ${screeningResult.score}%.<br>Status: Pending BCT Admin Review. Jobs, bids, and assignments stay locked until BCT approves.${needsEmailConfirmation?'<br><b>Next:</b> Check your email and confirm your account.':''}${identityMsg}${photoMsg}</div>`;
+      ['workPhotos','contractorProfilePhoto','governmentIdFront','governmentIdBack','contractorTradeLicense'].forEach(resetQueuedFiles);clearAndLockSubmission(f);
     }catch(ex){f.dataset.pending='false';msg.innerHTML=`<div class="notice"><b>Submission failed:</b> ${esc(ex.message||ex)}</div>`;btn.disabled=false;btn.textContent='Submit Pre-Application'}
   };
 
