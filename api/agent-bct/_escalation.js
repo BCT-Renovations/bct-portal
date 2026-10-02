@@ -17,7 +17,7 @@ const LABEL_MAP=Object.freeze({
   other:{caseType:"issue",category:"other"},
 });
 const SEVERITIES=new Set(["low","normal","high"]);
-function cleanText(value,max){return typeof value==="string"?value.replace(/[\u0000-\u001f\u007f]/g," ").replace(/\s+/g," ").trim().slice(0,max):"";}
+function cleanText(value,max){return typeof value==="string"?value.replace(/[\u0000-\u001f\u007f]/g," ").replace(/\s+/g," ").trim().slice(0,max):"";}\nfunction safeId(value){const v=cleanText(value,80);return !v||/^[a-z0-9_-]+$/i.test(v)?v:"";}\nexport function escalationFingerprint(payload={}){\n  const r=prepareEscalation({...payload,confirmed:true});\n  if(!r.ok)return "";\n  return [r.projectId,r.jobId,r.caseType,r.category,r.severity,r.subject.toLowerCase(),r.description.toLowerCase()].join("|");\n}
 export function prepareEscalation({label="other",severity="normal",subject="",description="",confirmed=false,projectId="",jobId=""}={}){
   if(confirmed!==true)return{ok:false,error:"confirmation_required"};
   const mapped=LABEL_MAP[label];
@@ -25,6 +25,6 @@ export function prepareEscalation({label="other",severity="normal",subject="",de
   if(!SEVERITIES.has(severity))return{ok:false,error:"invalid_escalation_severity"};
   const safeSubject=cleanText(subject,160),safeDescription=cleanText(description,1200);
   if(!safeSubject||!safeDescription)return{ok:false,error:"invalid_escalation_text"};
-  return{ok:true,caseType:mapped.caseType,category:mapped.category,severity,subject:safeSubject,description:safeDescription,projectId:cleanText(projectId,80),jobId:cleanText(jobId,80)};
+  return{ok:true,caseType:mapped.caseType,category:mapped.category,severity,subject:safeSubject,description:safeDescription,projectId:safeId(projectId),jobId:safeId(jobId)};
 }
 export function escalationLabels(){return Object.keys(LABEL_MAP);}
