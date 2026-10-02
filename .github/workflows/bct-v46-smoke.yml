@@ -36,6 +36,9 @@ jobs:
       - name: Admin section navigation regression
         run: node tests/v46-admin-section-navigation.mjs
 
+      - name: Add-on integration smoke
+        run: node scripts/bct-addon-integration-smoke.mjs
+
       - name: Launch dry run smoke
         run: node scripts/bct-launch-dry-run-smoke.mjs
 
