@@ -237,6 +237,8 @@ assert(adminMfaEnforcementSql.includes('create or replace function public.is_bct
 assert(adminMfaEnforcementSql.includes('admin_mfa_enforced'), 'Canonical Admin predicate must honor the Admin MFA enforcement setting.');
 assert(adminMfaEnforcementSql.includes("auth.jwt()->>'aal'"), 'Canonical Admin predicate must inspect the Supabase assurance level.');
 assert(adminMfaEnforcementSql.includes("='aal2'"), 'Enforced Admin access must require AAL2.');
+assert(adminMfaEnforcementSql.includes('BCT security settings admin select'), 'Admin MFA enforcement must include a non-recursive Admin SELECT policy for the singleton security setting.');
+assert(adminMfaEnforcementSql.includes("in ('admin','bct_admin','owner')"), 'MFA security-setting visibility must use raw Admin identity claims, not recurse through is_bct_admin().');
 
 assert(liveVerificationJs.includes('bct_admin_create_live_quality_check'), 'Live verification Admin creation must use the canonical quality-check workflow.');
 assert(liveVerificationJs.includes('bct_admin_live_quality_checks'), 'Live verification Admin list must use the canonical quality-check workflow.');
