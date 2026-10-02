@@ -21,3 +21,11 @@ test("audit metadata rejects prompt-like free text",()=>{
   assert.equal(e.risk,"redacted");
   assert.equal(e.build,"redacted");
 });
+
+test("audit role cannot be elevated by arbitrary role text",()=>{
+  const e=auditEvent({requestId:"r",event:"auth_failed",role:"owner-admin",status:403});
+  assert.equal(e.role,"public");
+});
+test("audit never accepts unknown event names as log structure",()=>{
+  assert.throws(()=>auditEvent({requestId:"r",event:"user_prompt"}),/invalid_audit_event/);
+});
