@@ -49,8 +49,11 @@ export function buildAgentBctContext({
 
 function minimizeLiveEnvelope(result) {
   if (!result || typeof result !== "object") return null;
-  const envelope={tool:result.tool,risk:result.risk,effectiveRole:result.role,data:result.data};
+  const tool=typeof result.tool==="string"?result.tool.slice(0,80):"unknown";
+  const risk=["low","medium","high"].includes(result.risk)?result.risk:"unknown";
+  const effectiveRole=["homeowner","contractor","admin"].includes(result.role)?result.role:"unknown";
+  const envelope={tool,risk,effectiveRole,data:result.data};
   const encoded=JSON.stringify(envelope);
   if(encoded.length<=MAX_LIVE_JSON_CHARS)return envelope;
-  return {tool:result.tool,risk:result.risk,effectiveRole:result.role,data:null,truncated:true};
+  return {tool,risk,effectiveRole,data:null,truncated:true};
 }
