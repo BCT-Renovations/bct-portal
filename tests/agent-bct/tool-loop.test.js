@@ -5,7 +5,7 @@ import { MAX_TOOL_STEPS,modelToolsForRole,executeModelToolCall,boundedToolSequen
 test("model tools are role filtered",()=>{
   const homeowner=modelToolsForRole("homeowner").map(x=>x.function.name);
   const contractor=modelToolsForRole("contractor").map(x=>x.function.name);
-  assert.ok(homeowner.includes("payment_status"));
+  assert.equal(homeowner.includes("payment_status"),false);
   assert.equal(contractor.includes("payment_status"),false);
   assert.ok(contractor.includes("contractor_dashboard"));
 });
@@ -59,4 +59,19 @@ test("tool execution fails closed without an executor",async()=>{
 test("array-shaped model tool call is rejected",async()=>{
   const r=await executeModelToolCall({call:[],role:"homeowner",executeRpc:async()=>[]});
   assert.equal(r.error,"invalid_tool_call");
+});
+
+test("ordinary Phase B schemas exclude high-risk money reads",()=>{
+  const names=modelToolsForRole("homeowner").map(x=>x.function.name);
+  for(const high of ["financing_status","escrow_status","payment_status"])assert.equal(names.includes(high),false);
+  assert.ok(names.includes("project_list"));
+  assert.ok(names.includes("contract_summary"));
+});
+test("high-risk reads require explicit schema exposure",()=>{
+  const names=modelToolsForRole("homeowner",{maxRisk:"high"}).map(x=>x.function.name);
+  for(const high of ["financing_status","escrow_status","payment_status"])assert.ok(names.includes(high));
+});
+test("invalid risk stage fails closed with no model tools",()=>{
+  assert.deepEqual(modelToolsForRole("homeowner",{maxRisk:"critical"}),[]);
+  assert.deepEqual(modelToolsForRole("homeowner",{maxRisk:null}),[]);
 });
