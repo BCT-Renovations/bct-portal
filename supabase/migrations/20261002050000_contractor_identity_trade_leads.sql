@@ -126,6 +126,15 @@ begin
     raise exception 'Contractor must be assigned to this project before homeowner release';
   end if;
 
+  if p_homeowner_visible and p_primary then
+    update public.bct_project_trade_leads
+      set is_primary_contact=false,updated_at=now()
+    where project_id=p_project_id
+      and is_primary_contact
+      and homeowner_visible
+      and not (contractor_id=p_contractor_id and lower(trade)=lower(p_trade));
+  end if;
+
   if p_homeowner_visible then
     update public.bct_project_trade_leads
       set homeowner_visible=false,released_at=null,released_by=null,updated_at=now()
