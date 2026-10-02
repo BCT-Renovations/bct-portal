@@ -32,7 +32,10 @@ begin
  if auth.uid() is null or not public.is_bct_admin() then raise exception 'BCT Admin access required'; end if;
  insert into public.bct_action_inbox(project_id,action_type,title,due_at,priority,status,created_at)
  select d.project_id,'delivery_discrepancy','Delivery discrepancy requires review',d.delivered_at,'high','open',now()
- from public.bct_delivery_receipts d where nullif(btrim(coalesce(d.discrepancies,'')),'') is not null
+ from public.bct_delivery_receipts d where (
+   nullif(btrim(coalesce(d.discrepancies,'')),'') is not null
+   or (d.quantity_expected is not null and d.quantity_received is not null and d.quantity_received<d.quantity_expected)
+ )
  and not exists(select 1 from public.bct_action_inbox a where a.project_id=d.project_id and a.action_type='delivery_discrepancy' and a.status='open');
  get diagnostics x=row_count;n:=n+x;
  insert into public.bct_action_inbox(project_id,action_type,title,due_at,priority,status,created_at)
