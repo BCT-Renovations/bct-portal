@@ -1,4 +1,5 @@
 export const MODEL_TOOL_SCHEMAS=Object.freeze([
+  tool("service_list","List BCT services from the authoritative localized service catalog.",{languageCode:{type:"string",enum:["en","ar","zh","fr","ht","pt","ru","es","vi"]}},[]),
   tool("project_list","List the signed-in homeowner's BCT projects.",{},[]),
   tool("project_status","Get confirmed BCT status for one homeowner project number.",{projectNumber:{type:"string",maxLength:80}},["projectNumber"]),
   tool("notifications","List the signed-in user's BCT notifications.",{},[]),
@@ -14,6 +15,7 @@ export const MODEL_TOOL_SCHEMAS=Object.freeze([
 ]);
 
 const MODEL_TO_INTERNAL=Object.freeze({
+  service_list:"service.list",
   project_list:"project.list",
   project_status:"project.status",
   notifications:"notification.list",
