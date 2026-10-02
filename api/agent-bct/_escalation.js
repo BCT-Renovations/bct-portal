@@ -13,8 +13,9 @@ function cleanText(value,max){return typeof value==="string"?value.replace(/[\u0
 function safeId(value){const v=cleanText(value,80);return !v||/^[a-z0-9_-]+$/i.test(v)?v:"";}
 export function prepareEscalation({label="other",severity="normal",subject="",description="",confirmed=false,projectId="",jobId=""}={}){
   if(confirmed!==true)return{ok:false,error:"confirmation_required"};
-  const mapped=LABEL_MAP[label];if(!mapped)return{ok:false,error:"invalid_escalation_label"};
-  if(!SEVERITIES.has(severity))return{ok:false,error:"invalid_escalation_severity"};
+  if(typeof label!=="string"||!Object.hasOwn(LABEL_MAP,label))return{ok:false,error:"invalid_escalation_label"};
+  const mapped=LABEL_MAP[label];
+  if(typeof severity!=="string"||!SEVERITIES.has(severity))return{ok:false,error:"invalid_escalation_severity"};
   const safeSubject=cleanText(subject,160),safeDescription=cleanText(description,1200);
   if(!safeSubject||!safeDescription)return{ok:false,error:"invalid_escalation_text"};
   return{ok:true,caseType:mapped.caseType,category:mapped.category,severity,subject:safeSubject,description:safeDescription,projectId:safeId(projectId),jobId:safeId(jobId)};
