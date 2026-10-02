@@ -28,3 +28,18 @@
 - GitHub workflow created on the feature branch has not yet reported a workflow run at the immediate verification point. Do not claim CI pass until a run exists and succeeds.
 - Recent Vercel deployment listing had not yet advanced to the newest Agent commits at the immediate verification point. Do not claim preview of the newest server code is READY until its SHA appears.
 - No production deployment is required to clear these preview gates.
+
+
+## Evidence rule
+
+A gate is PASS only with evidence from the exact candidate SHA/environment. Design documents, source inspection, or the existence of a test file are not execution evidence.
+
+Required evidence categories:
+- GitHub test run: workflow run ID + successful conclusion + SHA.
+- Vercel: READY preview deployment + SHA.
+- Endpoint smoke: status/result recorded against that preview.
+- Auth/cross-user: dedicated non-production test identities, no real customer secrets in evidence.
+- Model adversarial: prompt/scenario + expected/actual + pass/fail, with secrets redacted.
+- V46 regression: exact candidate SHA and checklist result.
+
+If infrastructure prevents a gate from running, mark BLOCKED, not PASS and not FAIL.
