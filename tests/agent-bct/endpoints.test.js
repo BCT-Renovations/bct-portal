@@ -76,3 +76,12 @@ test("health does not advertise production-only capabilities",async()=>{
   assert.equal(body.estimatorLiveToolsEnabled,false);
   assert.equal(body.voiceEnabled,false);
 });
+
+test("health keeps all irreversible Agent capabilities disabled",async()=>{
+  const res=await health.fetch(req("https://example.test/api/agent-bct/health"));
+  const body=await res.json();
+  assert.equal(body.productionIntegrated,false);
+  assert.equal(body.liveWritesEnabled,false);
+  assert.equal(body.estimatorLiveToolsEnabled,false);
+  assert.equal(body.voiceEnabled,false);
+});
