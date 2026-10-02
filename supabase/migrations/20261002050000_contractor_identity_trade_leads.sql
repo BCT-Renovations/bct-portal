@@ -258,12 +258,20 @@ after update of status on public.bct_assignments
 for each row execute function public.bct_project_trade_leads_assignment_visibility_guard();
 
 
+-- Persist whether the applicant's government ID requires a back image.
+alter table public.bct_contractor_applications
+  add column if not exists government_id_has_back boolean not null default false;
+
 -- Central identity-completeness predicate for approval/workforce gates.
 create or replace function public.bct_contractor_identity_required_documents_ready(p_contractor_id uuid)
 returns boolean language sql stable security definer set search_path=public,auth as $$
   select
     exists(select 1 from public.bct_contractor_documents d where d.contractor_id=p_contractor_id and d.document_type='profile_photo')
-    and exists(select 1 from public.bct_contractor_documents d where d.contractor_id=p_contractor_id and d.document_type='government_id_front');
+    and exists(select 1 from public.bct_contractor_documents d where d.contractor_id=p_contractor_id and d.document_type='government_id_front')
+    and (
+      not coalesce((select a.government_id_has_back from public.bct_contractor_applications a join public.bct_contractors c on c.auth_user_id=a.auth_user_id where c.id=p_contractor_id order by a.created_at desc limit 1),false)
+      or exists(select 1 from public.bct_contractor_documents d where d.contractor_id=p_contractor_id and d.document_type='government_id_back')
+    );
 $$;
 revoke execute on function public.bct_contractor_identity_required_documents_ready(uuid) from public,anon;
 grant execute on function public.bct_contractor_identity_required_documents_ready(uuid) to authenticated;
