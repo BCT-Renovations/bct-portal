@@ -94,3 +94,4 @@ jobs:
           node tests/v46-site-key-custody-regression.mjs
           node tests/v46-customer-material-verification-regression.mjs
           node tests/v46-delivery-custody-regression.mjs
+          node tests/v46-incident-stopwork-regression.mjs
