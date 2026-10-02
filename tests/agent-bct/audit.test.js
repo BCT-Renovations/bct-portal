@@ -38,3 +38,7 @@ test("audit outcome and status cannot become arbitrary log fields",()=>{
 test("audit accepts bounded known outcome vocabulary",()=>{
   for(const outcome of ["ok","denied","failed","blocked","unavailable"])assert.equal(auditEvent({event:"tool_failed",outcome,status:502}).outcome,outcome);
 });
+
+test("audit duration rejects non-finite clocks",()=>{
+  for(const durationMs of [Infinity,-Infinity,NaN])assert.equal(auditEvent({event:"request_received",durationMs}).durationMs,0);
+});
