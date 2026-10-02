@@ -1,8 +1,8 @@
 # BCT Insurance Portal — Integration Readiness Gate
 
-Status: **ISOLATED / NOT PRODUCTION READY**
+Status: **INTEGRATED ON V46 DEVELOPMENT BRANCH / NOT PRODUCTION READY**
 
-The Insurance Portal foundation, carrier/member access, per-claim RLS boundaries, claim intake, BCT review, needs-information loop, messaging, supplements, authorization, internal notes, existing-project linking, and linked-project lifecycle are implemented on the isolated feature branch.
+The Insurance Portal foundation, carrier/member access, per-claim RLS boundaries, claim intake, BCT review, needs-information loop, messaging, supplements, authorization, internal notes, existing-project linking, and linked-project lifecycle are selectively integrated into the current V46 development branch without replacing the newer homeowner, contractor, estimator, property-manager, or Admin shell.
 
 ## Required before production integration
 
@@ -17,4 +17,4 @@ The Insurance Portal foundation, carrier/member access, per-claim RLS boundaries
 - Verify mobile/iPhone behavior and role visibility.
 - Obtain explicit production merge/deploy approval.
 
-Until all gates pass, the Insurance Portal must remain isolated.
+Until all gates pass, the Insurance Portal must remain development-only and must not be merged/deployed to production.
