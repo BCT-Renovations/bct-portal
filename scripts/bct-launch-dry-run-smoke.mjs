@@ -37,6 +37,7 @@ const gallerySql = fs.readFileSync(new URL('../supabase/migrations/2026100122000
 const homeGalleryJs = fs.readFileSync(new URL('../bct-home-gallery.js', import.meta.url), 'utf8');
 const liveVerificationJs = fs.readFileSync(new URL('../bct-live-project-verification.js', import.meta.url), 'utf8');
 const contractSigningJs = fs.readFileSync(new URL('../bct-contract-signing.js', import.meta.url), 'utf8');
+const signatureTriggerHardeningSql = fs.readFileSync(new URL('../supabase/migrations/20261002100000_restrict_contract_signature_trigger_execute.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -215,6 +216,9 @@ assert(indexHtml.includes('bctRenderHomeownerContracts'), 'Homeowner state load 
 assert(indexHtml.includes('bctRenderContractorContracts'), 'Contractor state load must render contract acknowledgments.');
 assert(indexHtml.includes('bctRenderAdminContracts'), 'Admin state load must render BCT contract signatures.');
 assert(signatureImmutabilitySql.includes('bct_contract_signature_immutable'), 'Captured contract signature evidence must remain immutable.');
+assert(signatureTriggerHardeningSql.includes('bct_prepare_contract_signature()'), 'Contract signature preparation trigger must be covered by execute hardening.');
+assert(signatureTriggerHardeningSql.includes('bct_prevent_contract_signature_mutation()'), 'Contract signature immutability trigger must be covered by execute hardening.');
+assert(signatureTriggerHardeningSql.includes('from public, anon, authenticated'), 'Contract signature trigger helpers must not remain browser-callable.');
 
 assert(liveVerificationJs.includes('bct_admin_create_live_quality_check'), 'Live verification Admin creation must use the canonical quality-check workflow.');
 assert(liveVerificationJs.includes('bct_admin_live_quality_checks'), 'Live verification Admin list must use the canonical quality-check workflow.');
