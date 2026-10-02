@@ -45,6 +45,9 @@ export function detectHighRiskRequest(text) {
     ["instruction_override", /(ignore|override|disregard).{0,40}(instruction|policy|rule|system|security)/],
     ["financial_authority", /(release escrow|refund|approve financing|approve payout|change (the )?price|final price)/],
     ["contract_authority", /(sign (the )?contract|approve (the )?contract|change (the )?contract|amend (the )?contract)/],
+    ["bid_confidentiality", /(show|reveal|give|tell).{0,40}(other|another|competing|all).{0,30}(bid|price|contractor bid)/],
+    ["approval_authority", /(approve|assign|reject).{0,30}(contractor|estimator)/],
+    ["legal_or_dispute_authority", /(decide|rule on|settle|resolve).{0,30}(dispute|claim|legal)/],
   ];
   return patterns.filter(([, regex]) => regex.test(t)).map(([code]) => code);
 }
