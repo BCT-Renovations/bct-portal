@@ -16,7 +16,8 @@ alter table public.bct_project_crews
   add column if not exists arrival_status text,
   add column if not exists checked_in_at timestamptz,
   add column if not exists checked_out_at timestamptz,
-  add column if not exists substitute_for uuid,
+  add column if not exists worker_profile_id uuid references public.bct_worker_profiles(id),
+  add column if not exists substitute_for uuid references public.bct_worker_profiles(id),
   add column if not exists substitute_approval_status text,
   add column if not exists homeowner_notified_at timestamptz;
 
@@ -122,58 +123,65 @@ $$;
 grant execute on function public.bct_hold_point_cleared(uuid) to authenticated;
 revoke execute on function public.bct_hold_point_cleared(uuid) from anon;
 
--- Crew check-in guard. Worker must be assigned/authorized for the project.
+-- Crew check-in guard. Crew presence is tied to the canonical worker assignment.
 create or replace function public.bct_check_in_project_crew(p_project_crew_id uuid)
 returns public.bct_project_crews
 language plpgsql
 security definer
-set search_path=public,auth
-as $$
+set search_path=public,auth,pg_temp
+as $
 declare v_row public.bct_project_crews;
 begin
+  if auth.uid() is null then raise exception 'Authentication required'; end if;
+
   update public.bct_project_crews pc
-     set checked_in_at=now(),
-         arrival_status='arrived'
+     set checked_in_at=now(), arrival_status='arrived'
    where pc.id=p_project_crew_id
      and pc.checked_in_at is null
+     and pc.worker_profile_id is not null
      and exists(
-       select 1 from public.bct_worker_assignments wa
-        where wa.project_id=pc.project_id
-          and wa.worker_id=pc.worker_id
-          and coalesce(wa.status,'') not in ('cancelled','removed')
+       select 1
+       from public.bct_worker_assignments wa
+       join public.bct_worker_profiles wp on wp.id=wa.worker_profile_id
+       where wa.project_id=pc.project_id
+         and wa.worker_profile_id=pc.worker_profile_id
+         and coalesce(wa.status,'') not in ('cancelled','removed','released')
+         and wp.active
+         and (wp.auth_user_id=auth.uid() or public.is_bct_admin())
      )
-     and (
-       pc.substitute_for is null
-       or pc.substitute_approval_status='approved'
-     )
+     and (pc.substitute_for is null or pc.substitute_approval_status='approved')
   returning pc.* into v_row;
 
-  if v_row.id is null then
-    raise exception 'Worker is not authorized to check in for this project';
-  end if;
+  if v_row.id is null then raise exception 'Worker is not authorized to check in for this project'; end if;
   return v_row;
-end $$;
-
-revoke execute on function public.bct_check_in_project_crew(uuid) from public,anon;
+end $;
+revoke all on function public.bct_check_in_project_crew(uuid) from public,anon,authenticated;
 grant execute on function public.bct_check_in_project_crew(uuid) to authenticated;
 
 create or replace function public.bct_check_out_project_crew(p_project_crew_id uuid)
 returns public.bct_project_crews
 language plpgsql
 security definer
-set search_path=public,auth
-as $$
+set search_path=public,auth,pg_temp
+as $
 declare v_row public.bct_project_crews;
 begin
+  if auth.uid() is null then raise exception 'Authentication required'; end if;
+
   update public.bct_project_crews pc
      set checked_out_at=now()
    where pc.id=p_project_crew_id
      and pc.checked_in_at is not null
      and pc.checked_out_at is null
+     and pc.worker_profile_id is not null
+     and exists(
+       select 1 from public.bct_worker_profiles wp
+       where wp.id=pc.worker_profile_id and wp.active
+         and (wp.auth_user_id=auth.uid() or public.is_bct_admin())
+     )
   returning pc.* into v_row;
-  if v_row.id is null then raise exception 'Active crew check-in not found'; end if;
+  if v_row.id is null then raise exception 'Active authorized crew check-in not found'; end if;
   return v_row;
-end $$;
-
-revoke execute on function public.bct_check_out_project_crew(uuid) from public,anon;
+end $;
+revoke all on function public.bct_check_out_project_crew(uuid) from public,anon,authenticated;
 grant execute on function public.bct_check_out_project_crew(uuid) to authenticated;
