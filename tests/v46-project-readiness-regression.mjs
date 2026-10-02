@@ -9,7 +9,7 @@ need(project,'security definer set search_path=public,auth,pg_temp','project rea
 need(project,'revoke all on function public.bct_project_readiness_blockers(uuid) from public,anon,authenticated','broad readiness execute revoke missing');
 need(project,"'ready',count(*)=0",'readiness boolean missing');
 need(project,"'blocker_count',count(*)",'blocker count missing');
-for(const x of ["'project_hold'","'contract'","'assignment'","'payment'","'access'","'inspection'","'material'","'decision'"]) need(project,x,'blocker class missing');
+for(const x of ["'project_hold'","'contract'","'assignment'","'payment'","'access'","'inspection'","'material'","'decision'","'stop_work'","'required_approval'","'dependency'","'permit'","'failed_inspection'","'customer_material'"]) need(project,x,'blocker class missing');
 if(project.includes("coalesce(h.reason,h.hold_type")) throw new Error('internal hold reason exposed');
 if((project.match(/create or replace function public\.bct_project_readiness_blockers/g)||[]).length!==1) throw new Error('duplicate project readiness function');
 console.log('V46 project readiness reconciliation regression checks passed');
