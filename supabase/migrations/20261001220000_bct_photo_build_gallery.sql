@@ -70,7 +70,10 @@ using (bucket_id='bct-gallery' and (select public.is_bct_admin()))
 with check (bucket_id='bct-gallery' and (select public.is_bct_admin()));
 
 create or replace function public.bct_gallery_enforce_limits()
-returns trigger language plpgsql set search_path=public as $
+returns trigger
+language plpgsql
+set search_path=public
+as $bct$
 begin
   -- Serialize limit checks so concurrent Admin uploads cannot race past the 1,000/30 caps.
   perform pg_advisory_xact_lock(hashtextextended('bct_gallery_limits',0));
@@ -85,7 +88,8 @@ begin
   end if;
   new.updated_at=now();
   return new;
-end $;
+end
+$bct$;
 revoke execute on function public.bct_gallery_enforce_limits() from public, anon, authenticated;
 
 drop trigger if exists bct_gallery_enforce_home_limit_trigger on public.bct_gallery_photos;
