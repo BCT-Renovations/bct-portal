@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {prepareEscalation,escalationLabels} from "../../api/agent-bct/_escalation.js";
+import {prepareEscalation,escalationLabels,escalationFingerprint} from "../../api/agent-bct/_escalation.js";
 test("escalation preparation requires explicit confirmation",()=>assert.equal(prepareEscalation({label:"project_question",subject:"Question",description:"Need help"}).error,"confirmation_required"));
 test("Agent labels map only to existing BCT case enums",()=>{
   for(const label of escalationLabels()){
@@ -16,3 +16,16 @@ test("escalation text is bounded and strips control characters",()=>{
   assert.equal(r.subject,"A B");assert.equal(r.description.length,1200);
 });
 test("unknown conversational escalation label fails closed",()=>assert.equal(prepareEscalation({label:"refund_approved",confirmed:true,subject:"x",description:"y"}).error,"invalid_escalation_label"));
+
+test("same escalation content has deterministic duplicate fingerprint",()=>{
+  const p={label:"schedule_issue",severity:"normal",subject:" Schedule ",description:"Please review",projectId:"abc_123",jobId:"job-7"};
+  assert.equal(escalationFingerprint(p),escalationFingerprint({...p,subject:"schedule"}));
+});
+test("different project changes escalation fingerprint",()=>{
+  const p={label:"payment_question",subject:"Payment",description:"Please review"};
+  assert.notEqual(escalationFingerprint({...p,projectId:"one"}),escalationFingerprint({...p,projectId:"two"}));
+});
+test("unsafe project and job identifiers are not carried into prepared payload",()=>{
+  const r=prepareEscalation({confirmed:true,subject:"Question",description:"Review",projectId:"id\nsecret",jobId:"id:bad"});
+  assert.equal(r.projectId,"");assert.equal(r.jobId,"");
+});
