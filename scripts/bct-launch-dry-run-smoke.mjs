@@ -38,6 +38,7 @@ const homeGalleryJs = fs.readFileSync(new URL('../bct-home-gallery.js', import.m
 const liveVerificationJs = fs.readFileSync(new URL('../bct-live-project-verification.js', import.meta.url), 'utf8');
 const contractSigningJs = fs.readFileSync(new URL('../bct-contract-signing.js', import.meta.url), 'utf8');
 const signatureTriggerHardeningSql = fs.readFileSync(new URL('../supabase/migrations/20261002100000_restrict_contract_signature_trigger_execute.sql', import.meta.url), 'utf8');
+const adminMfaEnforcementSql = fs.readFileSync(new URL('../supabase/migrations/20261002103000_enforce_admin_mfa_in_is_bct_admin.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -232,6 +233,10 @@ assert(signatureImmutabilitySql.includes('bct_contract_signature_immutable'), 'C
 assert(signatureTriggerHardeningSql.includes('bct_prepare_contract_signature()'), 'Contract signature preparation trigger must be covered by execute hardening.');
 assert(signatureTriggerHardeningSql.includes('bct_prevent_contract_signature_mutation()'), 'Contract signature immutability trigger must be covered by execute hardening.');
 assert(signatureTriggerHardeningSql.includes('from public, anon, authenticated'), 'Contract signature trigger helpers must not remain browser-callable.');
+assert(adminMfaEnforcementSql.includes('create or replace function public.is_bct_admin()'), 'Admin MFA must harden the canonical Admin predicate.');
+assert(adminMfaEnforcementSql.includes('admin_mfa_enforced'), 'Canonical Admin predicate must honor the Admin MFA enforcement setting.');
+assert(adminMfaEnforcementSql.includes("auth.jwt()->>'aal'"), 'Canonical Admin predicate must inspect the Supabase assurance level.');
+assert(adminMfaEnforcementSql.includes("='aal2'"), 'Enforced Admin access must require AAL2.');
 
 assert(liveVerificationJs.includes('bct_admin_create_live_quality_check'), 'Live verification Admin creation must use the canonical quality-check workflow.');
 assert(liveVerificationJs.includes('bct_admin_live_quality_checks'), 'Live verification Admin list must use the canonical quality-check workflow.');
