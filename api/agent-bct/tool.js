@@ -10,6 +10,7 @@ function json(body, status = 200, extraHeaders = {}) {
       "content-type": "application/json; charset=utf-8",
       "cache-control": "no-store",
       "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
       ...extraHeaders,
     },
   });
