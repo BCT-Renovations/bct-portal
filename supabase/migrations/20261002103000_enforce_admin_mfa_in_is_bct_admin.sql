@@ -68,6 +68,8 @@ with check (
       and coalesce(admin_mfa_ui_ready,false)
     )
   )
+  and singleton is true
+  and updated_by=auth.uid()
 );
 
 create or replace function public.bct_admin_set_mfa_ui_ready(p_ready boolean)
