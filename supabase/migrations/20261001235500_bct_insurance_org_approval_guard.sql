@@ -31,7 +31,7 @@ begin
  if nullif(btrim(coalesce(p_claim_number,'')),'') is null then raise exception 'Claim number is required'; end if;
  if nullif(btrim(coalesce(p_policyholder_name,'')),'') is null then raise exception 'Policyholder name is required'; end if;
  if nullif(btrim(coalesce(p_loss_type,'')),'') is null then raise exception 'Loss type is required'; end if;
- insert into public.bct_insurance_claims(organization_id,submitted_by,assigned_adjuster_user_id,claim_number,policyholder_name,property_address,loss_type,date_of_loss,carrier_scope,carrier_estimate,insurance_documents,insurance_photos,status)
+ insert into public.bct_insurance_partner_claims(organization_id,submitted_by,assigned_adjuster_user_id,claim_number,policyholder_name,property_address,loss_type,date_of_loss,carrier_scope,carrier_estimate,insurance_documents,insurance_photos,status)
  values(p_organization_id,auth.uid(),auth.uid(),btrim(p_claim_number),btrim(p_policyholder_name),coalesce(p_property_address,'{}'::jsonb),btrim(p_loss_type),p_date_of_loss,coalesce(p_carrier_scope,'{}'::jsonb),coalesce(p_carrier_estimate,'{}'::jsonb),coalesce(p_documents,'[]'::jsonb),coalesce(p_photos,'[]'::jsonb),'bct_review')
  returning id into v_id;
  return v_id;
@@ -42,5 +42,5 @@ grant execute on function public.bct_insurance_submit_claim(uuid,text,text,jsonb
 -- Explicitly deny browser table mutations. Authorized writes are RPC-only.
 revoke insert,update,delete on public.bct_insurance_organizations from authenticated;
 revoke insert,update,delete on public.bct_insurance_members from authenticated;
-revoke insert,update,delete on public.bct_insurance_claims from authenticated;
+revoke insert,update,delete on public.bct_insurance_partner_claims from authenticated;
 revoke insert,update,delete on public.bct_insurance_claim_events from authenticated;
