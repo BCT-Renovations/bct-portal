@@ -11,10 +11,11 @@ export function modelToolsForRole(role,{maxRisk="medium"}={}){
   return schemasForInternalTools(names);
 }
 
-export async function executeModelToolCall({call,role,executeRpc}){
+export async function executeModelToolCall({call,role,executeRpc,maxRisk="medium"}){
   if(!["homeowner","contractor","admin"].includes(role))return{ok:false,error:"tool_role_denied"};
   if(typeof role!=="string")return{ok:false,error:"tool_role_denied"};
   if(typeof executeRpc!=="function")return{ok:false,error:"tool_executor_unavailable"};
+  if(!Object.hasOwn(RISK_ORDER,maxRisk))return{ok:false,error:"invalid_tool_risk_stage"};
   if(!call||typeof call!=="object"||Array.isArray(call))return{ok:false,error:"invalid_tool_call"};
   const internal=internalToolName(call.name);
   if(!internal)return{ok:false,error:"tool_not_allowed"};
@@ -23,6 +24,7 @@ export async function executeModelToolCall({call,role,executeRpc}){
   if(!args||typeof args!=="object"||Array.isArray(args))return{ok:false,error:"invalid_tool_arguments"};
   const resolved=resolveAgentBctTool(internal,role,args);
   if(!resolved.ok)return{ok:false,error:resolved.error};
+  if(!Object.hasOwn(RISK_ORDER,resolved.risk)||RISK_ORDER[resolved.risk]>RISK_ORDER[maxRisk])return{ok:false,error:"tool_risk_denied"};
   let raw;
   try{raw=await executeRpc(resolved.rpc,resolved.args);}catch{return{ok:false,error:"tool_execution_failed",internalTool:internal,risk:resolved.risk};}
   return{
@@ -33,7 +35,7 @@ export async function executeModelToolCall({call,role,executeRpc}){
   };
 }
 
-export async function boundedToolSequence({calls,role,executeRpc}){
+export async function boundedToolSequence({calls,role,executeRpc,maxRisk="medium"}){
   const source=Array.isArray(calls)?calls:[];
   const signatures=new Set();
   for(const call of source){
@@ -46,7 +48,7 @@ export async function boundedToolSequence({calls,role,executeRpc}){
   if(source.length>MAX_TOOL_STEPS)return{ok:false,error:"too_many_tool_steps",results:[]};
   const results=[];
   for(const call of source){
-    const result=await executeModelToolCall({call,role,executeRpc});
+    const result=await executeModelToolCall({call,role,executeRpc,maxRisk});
     results.push(result);
     if(!result.ok)break;
   }
