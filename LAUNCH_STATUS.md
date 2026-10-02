@@ -137,6 +137,13 @@ The production launch-control table was re-read without mutation. `frontend_roll
 - Connected mailbox evidence confirms password-reset mail has reached the business mailbox in prior testing.
 - This closes the question of whether the underlying Resend/Supabase Auth provider can send mail. The remaining email launch gap is narrower: run a fresh production confirmation flow and prove one separate `bct-notification-dispatch` delivery with a provider message ID and mailbox receipt.
 
+### 2026-10-02 Admin identity and MFA lockout audit
+
+- The V46 Admin login/session restore path now recognizes the same canonical Admin identities as the backend: `admin`, `bct_admin`, `owner`, and the BCT owner-email path.
+- Strict client-side `role === admin` checks were removed from launch-overlay Admin reload and homeowner/contractor submission guards so frontend authorization does not contradict the backend identity model.
+- After a successful Admin password sign-in, the Authenticator panel is refreshed immediately. This preserves a reachable MFA challenge when Admin MFA enforcement later blocks AAL1 access to protected Admin RPCs.
+- The MFA panel can therefore elevate an existing Admin session to AAL2 before the protected dashboard state is retried, avoiding an enforcement lockout loop.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
