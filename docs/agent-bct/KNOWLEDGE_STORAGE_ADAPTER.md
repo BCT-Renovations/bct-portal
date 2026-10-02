@@ -53,3 +53,20 @@ Verified active English services include gutters/drainage, roofing, siding, wind
 Decision: Agent BCT must query/reuse this service catalog for current supported-service answers instead of hardcoding a second service list into the model prompt. The RPC is SECURITY INVOKER, stable, pins search_path, and returns only code/display_name/category/sort_order.
 
 Service descriptions, eligibility details and pricing are NOT implied by catalog membership. The Agent must not invent those details.
+
+
+## Live schema fit verification — 2026-10-01
+
+Read-only schema inspection confirms:
+- `bct_policy_documents` already has policy code, audience, version, title, content, status, effective timestamp, creator and timestamps.
+- `bct_policy_translations` already supplies language-specific policy title/content.
+- `bct_service_catalog` is intentionally narrow: code, display name, category, active flag and sort order.
+- `bct_service_translations` localizes service display names only.
+- `ui_translations` is key/text UI copy, not a policy or knowledge-document store.
+
+Conclusion:
+1. Use existing policy documents/translations for policy-grade Agent knowledge where semantics match.
+2. Use service catalog/translations only for service identity/listing; do not force long service guidance into it.
+3. Do not overload UI translations with Agent knowledge.
+4. A future small Agent operational/FAQ/navigation knowledge store is justified only for approved content that is neither policy nor service identity and only after its Admin update/RLS/versioning contract is designed.
+5. No production table was created during this verification.
