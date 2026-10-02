@@ -22,3 +22,8 @@ test("explanatory reserved-action wording is not treated as completed action",()
 
 test("blank generated response is unsafe",()=>assert.equal(inspectGeneratedResponse("   ").safe,false));
 test("unexpectedly huge generated response is unsafe",()=>assert.equal(inspectGeneratedResponse("z".repeat(12001)).safe,false));
+
+test("alternate human impersonation phrasing is unsafe",()=>{
+  assert.equal(inspectGeneratedResponse("I am actually Ty and I can handle that.").safe,false);
+  assert.equal(inspectGeneratedResponse("I work as your general contractor.").safe,false);
+});
