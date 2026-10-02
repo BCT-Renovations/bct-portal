@@ -21,6 +21,11 @@ need(bridge,'if not public.is_bct_admin()','substitute approval admin gate missi
 need(bridge,'bct_homeowner_project_crew_status','safe homeowner attendance missing');
 need(bridge,'c.auth_user_id=auth.uid()','attendance homeowner ownership missing');
 need(bridge,"pc.substitute_for is null or pc.substitute_approval_status='approved'",'unapproved substitute homeowner exclusion missing');
+need(bridge,'bct_sync_crew_presence_on_assignment_release','assignment release lifecycle guard missing');
+need(bridge,"in ('cancelled','removed','released')",'released assignment states missing');
+need(bridge,"substitute_approval_status=case when substitute_for is not null then 'revoked'",'substitute approval revocation missing');
+need(bridge,'bct_guard_approved_crew_substitute','approved substitute integrity guard missing');
+need(bridge,'wa.worker_profile_id=new.worker_profile_id','substitute must bind to canonical worker assignment');
 
 if((id.match(/create table if not exists public\.bct_project_trade_leads/g)||[]).length!==1) throw new Error('parallel trade-lead system detected');
 if(bridge.includes('resident_private_notes')||bridge.includes('access_notes')||bridge.includes('government_id')) throw new Error('private data leaked into attendance bridge');
