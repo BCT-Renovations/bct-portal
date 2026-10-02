@@ -13,6 +13,7 @@ export function modelToolsForRole(role,{maxRisk="medium"}={}){
 
 export async function executeModelToolCall({call,role,executeRpc}){
   if(!["homeowner","contractor","admin"].includes(role))return{ok:false,error:"tool_role_denied"};
+  if(typeof role!=="string")return{ok:false,error:"tool_role_denied"};
   if(typeof executeRpc!=="function")return{ok:false,error:"tool_executor_unavailable"};
   if(!call||typeof call!=="object"||Array.isArray(call))return{ok:false,error:"invalid_tool_call"};
   const internal=internalToolName(call.name);
@@ -36,7 +37,8 @@ export async function boundedToolSequence({calls,role,executeRpc}){
   const source=Array.isArray(calls)?calls:[];
   const signatures=new Set();
   for(const call of source){
-    const signature=call&&typeof call==="object"&&!Array.isArray(call)?`${String(call.name||"")}:${typeof call.arguments==="string"?call.arguments:JSON.stringify(call.arguments||{})}`:"invalid";
+    let signature="invalid";
+    try{signature=call&&typeof call==="object"&&!Array.isArray(call)?`${String(call.name||"")}:${typeof call.arguments==="string"?call.arguments:JSON.stringify(call.arguments||{})}`:"invalid";}catch{return{ok:false,error:"invalid_tool_call",results:[]};}
     if(signatures.has(signature))return{ok:false,error:"duplicate_tool_call",results:[]};
     signatures.add(signature);
   }
