@@ -28,3 +28,10 @@ test("tool sequence is strictly bounded",async()=>{
   const result=await boundedToolSequence({calls,role:"homeowner",executeRpc:async()=>[]});
   assert.equal(result.error,"too_many_tool_steps");
 });
+
+test("tool execution failure is contained and does not leak backend error",async()=>{
+  const result=await executeModelToolCall({call:{name:"project_list",arguments:"{}"},role:"homeowner",executeRpc:async()=>{throw new Error("database secret detail");}});
+  assert.equal(result.ok,false);
+  assert.equal(result.error,"tool_execution_failed");
+  assert.equal(JSON.stringify(result).includes("database secret detail"),false);
+});
