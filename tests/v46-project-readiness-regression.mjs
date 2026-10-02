@@ -10,6 +10,9 @@ need(project,'revoke all on function public.bct_project_readiness_blockers(uuid)
 need(project,"'ready',count(*)=0",'readiness boolean missing');
 need(project,"'blocker_count',count(*)",'blocker count missing');
 for(const x of ["'project_hold'","'contract'","'assignment'","'payment'","'access'","'inspection'","'material'","'decision'","'stop_work'","'required_approval'","'dependency'","'permit'","'failed_inspection'","'customer_material'"]) need(project,x,'blocker class missing');
+need(project,'bct_permit_responsibilities','permit blocker must be driven by required permit responsibility');
+need(project,'coalesce(cm.quantity_claimed,0)>0','customer material blocker must require claimed material');
 if(project.includes("coalesce(h.reason,h.hold_type")) throw new Error('internal hold reason exposed');
+if(project.includes("select 'permit','a required project permit is not ready'\n     where exists(select 1 from public.bct_permits pm")) throw new Error('all permit rows must not become readiness requirements');
 if((project.match(/create or replace function public\.bct_project_readiness_blockers/g)||[]).length!==1) throw new Error('duplicate project readiness function');
 console.log('V46 project readiness reconciliation regression checks passed');
