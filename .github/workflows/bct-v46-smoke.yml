@@ -90,3 +90,4 @@ jobs:
           node tests/v46-contractor-abandonment-replacement-regression.mjs
           node tests/v46-weather-open-building-protection-regression.mjs
           node tests/v46-neighbor-property-issue-regression.mjs
+          node tests/v46-daily-field-report-regression.mjs
