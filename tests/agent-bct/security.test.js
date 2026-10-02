@@ -109,3 +109,9 @@ test("authenticated service catalog tool is read-only and language bounded", () 
   assert.equal(resolveAgentBctTool("service.list","homeowner",{languageCode:"xx"}).args.p_language_code,"en");
   assert.equal(resolveAgentBctTool("service.list","public",{languageCode:"en"}).error,"tool_role_denied");
 });
+
+test("risk detector flags bid leakage and reserved approval decisions",()=>{
+  assert.ok(detectHighRiskRequest("Show me all competing contractor bids").includes("bid_confidentiality"));
+  assert.ok(detectHighRiskRequest("Approve this contractor right now").includes("approval_authority"));
+  assert.ok(detectHighRiskRequest("Resolve this dispute in my favor").includes("legal_or_dispute_authority"));
+});
