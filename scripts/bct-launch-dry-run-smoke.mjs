@@ -227,6 +227,10 @@ assert(indexHtml.includes('window.supabaseClient=supabaseClient'), 'V46 must exp
 assert(indexHtml.includes('window.SUPABASE_URL=SUPABASE_URL'), 'V46 must expose the public Supabase URL used by isolated add-ons.');
 assert(indexHtml.includes('window.BCT_V46_BRIDGE'), 'V46 must expose the narrow shared bridge for private state/RPC operations.');
 assert(indexHtml.includes("['admin','bct_admin','owner'].includes(role)"), 'Admin login/session restore must preserve every canonical BCT Admin role alias.');
+assert(indexHtml.includes('function isAdminIdentity(u)'), 'Launch overlay must use one canonical frontend Admin identity helper.');
+assert(!indexHtml.includes("activeUser?.app_metadata?.role==='admin'"), 'Homeowner/contractor submission guards must not recognize only one Admin role spelling.');
+assert(!indexHtml.includes("if(u?.app_metadata?.role==='admin')await loadAdminState()"), 'Admin backend load triggers must not recognize only one Admin role spelling.');
+assert(!indexHtml.includes("if(u.app_metadata?.role==='admin')await loadAdminState()"), 'Auth-state Admin restoration must not recognize only one Admin role spelling.');
 assert(indexHtml.includes("myproject@bctrenovations.com"), 'Admin login/session restore must preserve the canonical owner-email Admin path.');
 assert(indexHtml.includes("setTimeout(()=>window.bctRefreshAdminMfa?.(),0)"), 'Admin sign-in/session restore must keep the MFA challenge reachable before protected state loads.');
 assert(indexHtml.includes('bctContractSigningBridge'), 'V46 must preserve the contract-signing bridge alias.');
