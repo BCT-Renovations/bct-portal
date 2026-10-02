@@ -131,7 +131,7 @@ begin
     from public.bct_assignments a
     where a.project_id=p_project_id
       and a.contractor_id=p_contractor_id
-      and a.status <> 'cancelled'
+      and a.status in ('assigned','scheduled','in_progress','quality_review')
   ) then
     raise exception 'Contractor must be assigned to this project before homeowner release';
   end if;
@@ -210,7 +210,7 @@ language sql stable security definer set search_path=public,auth as $$
   select d.storage_path
   from public.bct_project_trade_leads l
   join public.bct_assignments a
-    on a.project_id=l.project_id and a.contractor_id=l.contractor_id and a.status<>'cancelled'
+    on a.project_id=l.project_id and a.contractor_id=l.contractor_id and a.status in ('assigned','scheduled','in_progress','quality_review')
   join public.bct_contractor_identity_profiles ip
     on ip.contractor_id=l.contractor_id and ip.profile_photo_status='approved'
   join public.bct_contractor_documents d
@@ -227,3 +227,27 @@ language sql stable security definer set search_path=public,auth as $$
 $$;
 revoke execute on function public.bct_homeowner_contractor_profile_photo_path(uuid,uuid) from public,anon;
 grant execute on function public.bct_homeowner_contractor_profile_photo_path(uuid,uuid) to authenticated;
+
+
+-- Keep homeowner identity display synchronized with the canonical V46 assignment lifecycle.
+create or replace function public.bct_project_trade_leads_assignment_visibility_guard()
+returns trigger language plpgsql set search_path=public,auth as $$
+begin
+  if new.status in ('completed','cancelled') and old.status is distinct from new.status then
+    update public.bct_project_trade_leads
+       set homeowner_visible=false,
+           is_primary_contact=false,
+           released_at=null,
+           released_by=null,
+           updated_at=now()
+     where project_id=new.project_id
+       and contractor_id=new.contractor_id
+       and homeowner_visible;
+  end if;
+  return new;
+end $$;
+
+drop trigger if exists trg_bct_assignment_trade_lead_visibility on public.bct_assignments;
+create trigger trg_bct_assignment_trade_lead_visibility
+after update of status on public.bct_assignments
+for each row execute function public.bct_project_trade_leads_assignment_visibility_guard();
