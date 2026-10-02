@@ -3250,6 +3250,8 @@ renderAll();
     for(const file of files){const path=`${u.id}/${app.id}/${crypto.randomUUID()}-${safeName(file.name)}`;const {error}=await supabaseClient.storage.from('bct-contractor-documents').upload(path,file,{upsert:false,contentType:file.type||undefined});if(error)throw error;await rpc('bct_register_contractor_document',{p_document_type:documentType,p_storage_path:path,p_original_filename:file.name});count++}return count;
   }
 
+  const bctWhoComingStyle=document.createElement('style');bctWhoComingStyle.textContent='.bct-whos-coming-photo{width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #0f766e;flex:0 0 auto}.bct-whos-coming .toolbar{align-items:center}.bct-whos-coming .card{min-width:0}@media(max-width:560px){.bct-whos-coming-photo{width:56px;height:56px}}';document.head.appendChild(bctWhoComingStyle);
+
   async function loadHomeownerState(){
     homeownerState=await rpc('bct_frontend_homeowner_state');
     const projects=homeownerState?.projects||[];
