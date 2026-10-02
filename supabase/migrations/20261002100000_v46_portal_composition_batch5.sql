@@ -118,7 +118,7 @@ as $$
     and exists(
       select 1
       from public.bct_property_accounts pa
-      where pa.auth_user_id=auth.uid() and pa.active
+      where pa.auth_user_id=auth.uid() and pa.active and exists (select 1 from public.bct_managed_properties mp where mp.id=p.managed_property_id and mp.property_account_id=pa.id and mp.active)
     )
   order by
     case when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='critical') then 0
