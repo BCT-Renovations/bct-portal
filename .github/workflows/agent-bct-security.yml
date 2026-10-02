@@ -7,12 +7,20 @@ on:
     paths:
       - "api/agent-bct/**"
       - "tests/agent-bct/**"
+      - "agent-bct-ui.js"
+      - "agent-bct-ui.css"
+      - "scripts/agent-bct-mobile-smoke.mjs"
+      - "index.html"
       - "package.json"
       - ".github/workflows/agent-bct-security.yml"
   pull_request:
     paths:
       - "api/agent-bct/**"
       - "tests/agent-bct/**"
+      - "agent-bct-ui.js"
+      - "agent-bct-ui.css"
+      - "scripts/agent-bct-mobile-smoke.mjs"
+      - "index.html"
       - "package.json"
 
 permissions:
@@ -30,4 +38,6 @@ jobs:
         with:
           node-version: "20"
       - name: Run Agent BCT security tests
-        run: |\n          npm run test:agent-bct\n          node scripts/agent-bct-mobile-smoke.mjs
+        run: |
+          npm run test:agent-bct
+          node scripts/agent-bct-mobile-smoke.mjs
