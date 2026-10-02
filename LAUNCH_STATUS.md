@@ -114,6 +114,13 @@ Last verified: 2026-09-26
 
 The production launch-control table was re-read without mutation. `frontend_rollback_available` is complete. The following remain intentionally incomplete: `auth_email_confirmation_verified`, `browser_e2e_complete`, `customer_pilot_enabled`, `database_backup_verified`, `legal_policy_content_reviewed`, `outbound_email_provider_configured`, and `source_cutover_complete`. Do not infer completion from source coverage alone; each gate requires its stated external evidence.
 
+### 2026-10-02 workflow consolidation audit
+
+- The Live Project Verification UI previously called the older inspection-backed live-verification RPCs while a newer, more tightly scoped Live Quality workflow also existed. Live production contained zero records in both live-verification stores, so the isolated branch was safely rewired before use rather than maintaining two parallel workflows.
+- The current branch now uses the canonical Live Quality RPCs for Admin creation/list/status, contractor assignment-scoped visibility/status, and contractor privacy acknowledgment.
+- Launch regression now fails if the UI falls back to the legacy inspection-backed create/update RPCs.
+- The public Our Work gallery was re-audited against live Supabase: the `bct-gallery` bucket is private, public object reads require a matching published gallery row, metadata public reads require `is_published=true`, and writes remain BCT Admin-only. Source regression now locks those boundaries plus the 1,000-photo library and 30-photo home-page limits.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
