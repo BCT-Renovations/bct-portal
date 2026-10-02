@@ -17,3 +17,6 @@ export function languageMeta(code){
   const normalized=normalizeBctLanguage(code);
   return {code:normalized,...BCT_LANGUAGES[normalized]};
 }
+export function supportedBctLanguageCodes(){return Object.keys(BCT_LANGUAGES);}
+export function isBctLanguageSupported(code){return typeof code==="string"&&Object.hasOwn(BCT_LANGUAGES,code.trim().toLowerCase());}
+
