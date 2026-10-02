@@ -144,3 +144,18 @@ test("unknown knowledge role falls back to public rather than authenticated acce
   const r=retrieveApprovedKnowledge({query:"contractor bids",role:"superadmin"});
   assert.equal(r.some(x=>x.key==="bidding.confidentiality"),false);
 });
+
+test("financial projections do not expose provider identity or references",()=>{
+  for(const name of ["financing.list","escrow.list"]){
+    const tool=resolveAgentBctTool(name,"homeowner",{});
+    const row=tool.project([{id:"1",project_id:"p",provider:"private-provider",external_reference:"secret",application_reference:"secret",status:"pending"}])[0];
+    assert.equal(Object.hasOwn(row,"provider"),false);
+    assert.equal(Object.hasOwn(row,"external_reference"),false);
+    assert.equal(Object.hasOwn(row,"application_reference"),false);
+  }
+});
+test("all currently registered Agent tools remain read-only",()=>{
+  for(const role of ["homeowner","contractor","admin"]){
+    for(const tool of listAgentBctTools(role))assert.equal(tool.write,false);
+  }
+});
