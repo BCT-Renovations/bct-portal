@@ -30,6 +30,9 @@ const validation500Sql = fs.readFileSync(new URL('../supabase/migrations/2026092
 const requirements1000Sql = fs.readFileSync(new URL('../supabase/migrations/20260926131000_1000_unique_launch_requirements.sql', import.meta.url), 'utf8');
 const automationHealthSql = fs.readFileSync(new URL('../supabase/migrations/20260926135500_admin_automation_health.sql', import.meta.url), 'utf8');
 const launchRunnerBoundarySql = fs.readFileSync(new URL('../supabase/migrations/20260926134500_launch_runner_execution_boundary.sql', import.meta.url), 'utf8');
+const closeoutCreationSql = fs.readFileSync(new URL('../supabase/migrations/20260926150000_harden_inspection_warranty_closeout_creation.sql', import.meta.url), 'utf8');
+const closeoutGuardSql = fs.readFileSync(new URL('../supabase/migrations/20260926151500_attach_closeout_validation_guards.sql', import.meta.url), 'utf8');
+const signatureImmutabilitySql = fs.readFileSync(new URL('../supabase/migrations/20260926161500_contract_signature_immutability.sql', import.meta.url), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -108,6 +111,13 @@ for (const [label, marker] of dryRunMarkers) {
 
 assert(indexHtml.includes("audience controls") || indexHtml.includes("BCT-mediated project communication"), 'Homeowner messaging must remain BCT-mediated.');
 assert(indexHtml.includes("This records your completion acknowledgment."), 'Completion signature UI must explicitly identify the acknowledgment action.');
+
+assert(closeoutCreationSql.includes('bct_admin_create_warranty'), 'Closeout regression must retain admin warranty creation.');
+assert(closeoutCreationSql.includes('bct_admin_add_closeout_item'), 'Closeout regression must retain required closeout items.');
+assert(closeoutCreationSql.includes("'customer_signoff'"), 'Closeout regression must retain customer sign-off item support.');
+assert(closeoutGuardSql.includes('bct_closeout_guard'), 'Closeout regression must retain the canonical closeout validation guard.');
+assert(signatureImmutabilitySql.includes('bct_contract_signature_immutable'), 'Contract signature evidence must remain immutable.');
+assert(signatureImmutabilitySql.includes('Create a new contract/version for corrections.'), 'Signed-contract corrections must require a new contract/version.');
 
 assertFinalHandler('homeForm', 'bct_submit_homeowner_project', 'Project submitted successfully.');
 assertFinalHandler('appForm', 'bct_submit_contractor_application', 'Basic Pre-Application Submitted');
