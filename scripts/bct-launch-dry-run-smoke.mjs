@@ -37,6 +37,7 @@ const gallerySql = fs.readFileSync(new URL('../supabase/migrations/2026100122000
 const homeGalleryJs = fs.readFileSync(new URL('../bct-home-gallery.js', import.meta.url), 'utf8');
 const liveVerificationJs = fs.readFileSync(new URL('../bct-live-project-verification.js', import.meta.url), 'utf8');
 const contractSigningJs = fs.readFileSync(new URL('../bct-contract-signing.js', import.meta.url), 'utf8');
+const contractorCloseoutJs = fs.readFileSync(new URL('../bct-contractor-closeout.js', import.meta.url), 'utf8');
 const signatureTriggerHardeningSql = fs.readFileSync(new URL('../supabase/migrations/20261002100000_restrict_contract_signature_trigger_execute.sql', import.meta.url), 'utf8');
 const adminMfaEnforcementSql = fs.readFileSync(new URL('../supabase/migrations/20261002103000_enforce_admin_mfa_in_is_bct_admin.sql', import.meta.url), 'utf8');
 
@@ -217,6 +218,10 @@ for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contr
 assert(contractSigningJs.includes('p_consent:true'), 'Contract signing UI must send explicit electronic-signature consent.');
 assert(contractSigningJs.includes('typedName'), 'Contract signing UI must require a typed signer name.');
 assert(contractSigningJs.includes('electronic_signatures_enabled'), 'Contract signing UI must respect the electronic-signature feature gate.');
+assert(contractorCloseoutJs.includes('bct_completion_requests'), 'Contractor closeout must reuse the existing completion-request table.');
+assert(contractorCloseoutJs.includes('bct_contractor_cancel_completion_request'), 'Contractor closeout must preserve canonical request cancellation.');
+assert(contractorCloseoutJs.includes('bct_submit_completion_rating'), 'Contractor closeout must preserve canonical completion ratings.');
+assert(contractorCloseoutJs.includes("status==='in_progress'"), 'Contractor completion requests must remain limited to in-progress assignments.');
 assert(indexHtml.includes('bct-contract-signing.js'), 'V46 must load the contract-signing module.');
 assert(indexHtml.includes('window.supabaseClient=supabaseClient'), 'V46 must expose the shared Supabase client to isolated add-ons.');
 assert(indexHtml.includes('window.SUPABASE_URL=SUPABASE_URL'), 'V46 must expose the public Supabase URL used by isolated add-ons.');
