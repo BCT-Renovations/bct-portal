@@ -16,6 +16,11 @@ begin
   union all
   select jsonb_build_object('type','homeowner_concern','id',cc.id)
   from public.bct_customer_concerns cc where cc.project_id=p_project_id and cc.resolved_at is null
+  union all
+  select jsonb_build_object('type','unreturned_site_key','id',k.id)
+  from public.bct_site_keys k where k.project_id=p_project_id
+    and k.checked_out_at is not null and k.returned_at is null
+    and lower(coalesce(k.status,'')) not in ('returned','revoked','available')
  ) s;
  return v;
 end $$;
