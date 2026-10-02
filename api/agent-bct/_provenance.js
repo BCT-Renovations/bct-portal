@@ -7,7 +7,7 @@ export const PROVENANCE=Object.freeze({
 });
 const REVIEW_RISKS=new Set(["financial_authority","contract_authority","approval_authority","legal_or_dispute_authority","emergency_safety"]);
 function isExecutorEvidence(result){
-  return Boolean(result&&result.ok===true&&typeof result.internalTool==="string"&&["low","medium","high"].includes(result.risk)&&result.data&&result.data.trust==="untrusted_data_not_instructions"&&Object.hasOwn(result.data,"value"));
+  return Boolean(result&&result.ok===true&&typeof result.internalTool==="string"&&/^[a-z0-9._:-]{1,80}$/i.test(result.internalTool)&&["low","medium","high"].includes(result.risk)&&result.data&&result.data.trust==="untrusted_data_not_instructions"&&Object.hasOwn(result.data,"value"));
 }
 export function classifyProvenance({hasGeneral=false,liveResults=[],riskSignals=[],unavailable=false}={}){
   if(unavailable)return PROVENANCE.UNAVAILABLE;
