@@ -12,7 +12,7 @@ grant execute on function public.bct_insurance_org_admin_of(uuid) to authenticat
 create or replace function public.bct_insurance_can_read_claim(p_claim uuid)
 returns boolean language sql stable security definer set search_path=public as $$
  select exists(
-  select 1 from public.bct_insurance_claims c
+  select 1 from public.bct_insurance_partner_claims c
   where c.id=p_claim and (
    public.is_bct_admin()
    or public.bct_insurance_org_admin_of(c.organization_id)
@@ -24,8 +24,8 @@ $$;
 revoke all on function public.bct_insurance_can_read_claim(uuid) from public,anon;
 grant execute on function public.bct_insurance_can_read_claim(uuid) to authenticated;
 
-drop policy if exists "insurance_claim_member_read" on public.bct_insurance_claims;
-create policy "insurance_claim_authorized_read" on public.bct_insurance_claims
+drop policy if exists "insurance_claim_member_read" on public.bct_insurance_partner_claims;
+create policy "insurance_claim_authorized_read" on public.bct_insurance_partner_claims
 for select to authenticated using (
  public.is_bct_admin()
  or public.bct_insurance_org_admin_of(organization_id)
