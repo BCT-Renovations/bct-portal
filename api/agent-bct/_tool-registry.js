@@ -18,8 +18,9 @@ const TOOL_REGISTRY = Object.freeze({
 function spec(rpc, roles, args, project, risk = "low") {
   return Object.freeze({ rpc, roles, risk, write: false, args, project });
 }
+const MAX_TOOL_ROWS=50;
 function rows(projector) {
-  return value => Array.isArray(value) ? value.map(projector) : [];
+  return value => Array.isArray(value) ? value.slice(0,MAX_TOOL_ROWS).map(projector) : [];
 }
 function requiredText(value, max) {
   if (typeof value !== "string") throw new ToolInputError("invalid_text");
