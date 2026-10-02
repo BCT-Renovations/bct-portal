@@ -191,6 +191,11 @@ language sql stable security definer set search_path=public,auth as $$
     and d.review_status='approved'
   where l.project_id=p_project_id and l.homeowner_visible
     and exists(
+      select 1 from public.bct_assignments a
+      where a.project_id=l.project_id and a.contractor_id=l.contractor_id
+        and a.status in ('assigned','scheduled','in_progress','quality_review')
+    )
+    and exists(
       select 1 from public.bct_projects p
       join public.bct_customers cu on cu.id=p.customer_id
       where p.id=p_project_id and cu.auth_user_id=auth.uid()
