@@ -15,6 +15,7 @@ export async function executeModelToolCall({call,role,executeRpc}){
   if(!internal)return{ok:false,error:"tool_not_allowed"};
   let args={};
   try{args=typeof call.arguments==="string"?JSON.parse(call.arguments):call.arguments||{};}catch{return{ok:false,error:"invalid_tool_arguments"};}
+  if(!args||typeof args!=="object"||Array.isArray(args))return{ok:false,error:"invalid_tool_arguments"};
   const resolved=resolveAgentBctTool(internal,role,args);
   if(!resolved.ok)return{ok:false,error:resolved.error};
   let raw;
@@ -29,6 +30,7 @@ export async function executeModelToolCall({call,role,executeRpc}){
 
 export async function boundedToolSequence({calls,role,executeRpc}){
   const source=Array.isArray(calls)?calls:[];
+  if(source.length===0)return{ok:true,results:[]};
   if(source.length>MAX_TOOL_STEPS)return{ok:false,error:"too_many_tool_steps",results:[]};
   const results=[];
   for(const call of source){
