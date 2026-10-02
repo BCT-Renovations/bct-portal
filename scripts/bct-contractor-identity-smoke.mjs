@@ -28,4 +28,6 @@ const homeownerFn=sql.slice(sql.indexOf('create or replace function public.bct_h
 assert(homeownerFn && !/government_id_(front|back)|contractor_trade_license|certificate_of_insurance|\bw9\b/i.test(homeownerFn),
  'Homeowner trade-lead function must never expose private contractor verification document types.');
 assert(!sql.includes('p.homeowner_id=auth.uid()'),'Legacy direct homeowner ownership check must not return.');
+assert(sql.includes('cu.auth_user_id=auth.uid()'),'Homeowner ownership must follow project -> customer -> auth user.');
+assert(sql.includes("a.status in ('assigned','scheduled','in_progress','quality_review')"),'Homeowner trade leads must require an active assignment lifecycle state.');
 console.log('BCT contractor identity/trade-lead smoke passed.');
