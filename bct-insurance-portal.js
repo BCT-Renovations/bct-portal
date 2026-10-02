@@ -24,12 +24,13 @@ function ensure(){
  <div><label>Date of Loss</label><input name="loss_date" type="date"></div><div><label>Carrier Scope / Notes</label><textarea name="scope_notes"></textarea></div>
  </div><button type="submit">Submit to BCT Review</button></form></div>
  <div class="card section hidden" data-ins-panel="claims"><h3>My Authorized Claims</h3><button type="button" id="bctInsuranceRefresh">Refresh Claims</button><div id="bctInsuranceClaims"><div class="notice">Sign in to view authorized claims.</div></div></div>
+ <div class="card section hidden" id="bctInsuranceClaimAction"><h3>Claim Communication</h3><p class="muted" id="bctInsuranceClaimActionLabel"></p><label>Message / Additional Information</label><textarea id="bctInsuranceClaimMessage"></textarea><div class="portal-tabs"><button type="button" id="bctInsuranceSendMessage">Send Message</button><button type="button" id="bctInsuranceRespondInfo" class="secondary">Respond to Needs Information</button></div></div>
  <div id="bctInsuranceStatus" class="section"></div><button type="button" class="secondary" id="bctInsuranceBackHome">Back to Home</button>`;
  main.appendChild(s);
  s.querySelectorAll('[data-ins-page]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.insPage)));
  $('bctInsuranceSignIn')?.addEventListener('click',signIn);
  $('bctInsuranceClaimForm')?.addEventListener('submit',submitClaim);
- $('bctInsuranceRefresh')?.addEventListener('click',loadClaims);
+ $('bctInsuranceRefresh')?.addEventListener('click',loadClaims); $('bctInsuranceSendMessage')?.addEventListener('click',()=>sendClaimAction('message')); $('bctInsuranceRespondInfo')?.addEventListener('click',()=>sendClaimAction('information'));
  $('bctInsuranceBackHome')?.addEventListener('click',()=>window.bctReturnToPublicLanding?.()||setView('home'));
 }
 function show(page){document.querySelectorAll('[data-ins-page]').forEach(b=>b.classList.toggle('active',b.dataset.insPage===page));document.querySelectorAll('[data-ins-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.insPanel!==page))}
@@ -54,7 +55,10 @@ async function loadClaims(){
  const sb=window.supabaseClient;if(!sb)return;const box=$('bctInsuranceClaims');if(!box)return;
  const {data,error}=await sb.from('bct_insurance_claims').select('id,claim_number,policyholder_name,property_address,loss_type,date_of_loss,status,created_at').order('created_at',{ascending:false}).limit(100);
  if(error){box.innerHTML='<div class="error">'+esc(error.message)+'</div>';return}
- box.innerHTML=(data||[]).length?(data||[]).map(c=>`<article class="card"><strong>Claim ${esc(c.claim_number)}</strong><p>${esc(c.policyholder_name)} · ${esc(c.loss_type)}</p><p class="muted">${esc(c.property_address?.street||'')}, ${esc(c.property_address?.city||'')}, ${esc(c.property_address?.state||'')}</p><p>Status: <strong>${esc(c.status)}</strong></p></article>`).join(''):'<div class="notice">No authorized claims found.</div>';
+ box.innerHTML=(data||[]).length?(data||[]).map(c=>`<article class="card"><strong>Claim ${esc(c.claim_number)}</strong><p>${esc(c.policyholder_name)} · ${esc(c.loss_type)}</p><p class="muted">${esc(c.property_address?.street||'')}, ${esc(c.property_address?.city||'')}, ${esc(c.property_address?.state||'')}</p><p>Status: <strong>${esc(c.status)}</strong></p><button type="button" data-ins-open="${esc(c.id)}" data-ins-status="${esc(c.status)}" data-ins-number="${esc(c.claim_number)}">Open Claim Communication</button></article>`).join(''):'<div class="notice">No authorized claims found.</div>'; box.querySelectorAll('[data-ins-open]').forEach(b=>b.addEventListener('click',()=>openClaimAction(b.dataset.insOpen,b.dataset.insStatus,b.dataset.insNumber)));
 }
+let activeClaim=null,activeClaimStatus=null;
+function openClaimAction(id,claimStatus,number){activeClaim=id;activeClaimStatus=claimStatus;$('bctInsuranceClaimAction')?.classList.remove('hidden');const l=$('bctInsuranceClaimActionLabel');if(l)l.textContent='Claim '+number+' · '+claimStatus;const r=$('bctInsuranceRespondInfo');if(r)r.disabled=claimStatus!=='needs_information';}
+async function sendClaimAction(kind){const sb=window.supabaseClient;if(!sb||!activeClaim)return status('Select an authorized claim first.','error');const body=$('bctInsuranceClaimMessage')?.value.trim();if(!body)return status('Enter the information you want to send.','error');let error;if(kind==='information'){({error}=await sb.rpc('bct_insurance_respond_to_information_request',{p_claim_id:activeClaim,p_response:{response:body}}));}else{({error}=await sb.rpc('bct_insurance_add_claim_message',{p_claim_id:activeClaim,p_body:body}));}if(error)return status(error.message,'error');$('bctInsuranceClaimMessage').value='';status(kind==='information'?'Additional information returned to BCT Review.':'Claim message sent.','success');await loadClaims();}
 window.BCT_INSURANCE_PORTAL_VERSION=VERSION;window.bctOpenInsurancePortal=()=>{ensure();setView('insurance')};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure,{once:true});else ensure();
 })();
