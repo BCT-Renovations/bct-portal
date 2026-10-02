@@ -20,7 +20,9 @@ create table if not exists public.bct_insurance_members (
   primary key (organization_id,user_id)
 );
 
-create table if not exists public.bct_insurance_claims (
+-- The legacy live schema already uses public.bct_insurance_partner_claims for BCT's internal project claim record.
+-- Preserve it. Partner-submitted claim assignments use a distinct intake table and link to the legacy/internal record only through BCT Admin.
+create table if not exists public.bct_insurance_partner_claims (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.bct_insurance_organizations(id),
   submitted_by uuid not null references auth.users(id),
@@ -50,13 +52,13 @@ create table if not exists public.bct_insurance_claims (
   unique (organization_id,claim_number)
 );
 
-create index if not exists bct_insurance_claims_org_idx on public.bct_insurance_claims(organization_id);
-create index if not exists bct_insurance_claims_adjuster_idx on public.bct_insurance_claims(assigned_adjuster_user_id);
-create index if not exists bct_insurance_claims_project_idx on public.bct_insurance_claims(project_id) where project_id is not null;
+create index if not exists bct_insurance_partner_claims_org_idx on public.bct_insurance_partner_claims(organization_id);
+create index if not exists bct_insurance_partner_claims_adjuster_idx on public.bct_insurance_partner_claims(assigned_adjuster_user_id);
+create index if not exists bct_insurance_partner_claims_project_idx on public.bct_insurance_partner_claims(project_id) where project_id is not null;
 
 alter table public.bct_insurance_organizations enable row level security;
 alter table public.bct_insurance_members enable row level security;
-alter table public.bct_insurance_claims enable row level security;
+alter table public.bct_insurance_partner_claims enable row level security;
 
 create or replace function public.bct_insurance_member_of(p_org uuid)
 returns boolean language sql stable security definer set search_path=public as $$
@@ -77,8 +79,8 @@ drop policy if exists "insurance_member_same_org_read" on public.bct_insurance_m
 create policy "insurance_member_same_org_read" on public.bct_insurance_members
 for select to authenticated using (public.bct_insurance_member_of(organization_id));
 
-drop policy if exists "insurance_claim_member_read" on public.bct_insurance_claims;
-create policy "insurance_claim_member_read" on public.bct_insurance_claims
+drop policy if exists "insurance_claim_member_read" on public.bct_insurance_partner_claims;
+create policy "insurance_claim_member_read" on public.bct_insurance_partner_claims
 for select to authenticated using (public.bct_insurance_member_of(organization_id));
 
 -- Claim creation is constrained through an RPC so browser users cannot create claims for another carrier,
@@ -105,7 +107,7 @@ begin
   if nullif(btrim(coalesce(p_policyholder_name,'')),'') is null then raise exception 'Policyholder name is required'; end if;
   if nullif(btrim(coalesce(p_loss_type,'')),'') is null then raise exception 'Loss type is required'; end if;
 
-  insert into public.bct_insurance_claims(
+  insert into public.bct_insurance_partner_claims(
     organization_id,submitted_by,assigned_adjuster_user_id,claim_number,policyholder_name,
     property_address,loss_type,date_of_loss,carrier_scope,carrier_estimate,insurance_documents,insurance_photos,status
   ) values (
@@ -128,7 +130,7 @@ returns void language plpgsql security definer set search_path=public as $$
 begin
   if not public.is_bct_admin() then raise exception 'BCT admin required' using errcode='42501'; end if;
   if p_decision not in ('accepted','declined','needs_information') then raise exception 'Unsupported insurance review decision'; end if;
-  update public.bct_insurance_claims
+  update public.bct_insurance_partner_claims
      set status=p_decision,
          accepted_at=case when p_decision='accepted' then coalesce(accepted_at,now()) else accepted_at end,
          updated_at=now()
@@ -140,5 +142,5 @@ $$;
 revoke all on function public.bct_admin_review_insurance_claim(uuid,text) from public,anon;
 grant execute on function public.bct_admin_review_insurance_claim(uuid,text) to authenticated;
 
-comment on table public.bct_insurance_claims is
+comment on table public.bct_insurance_partner_claims is
 'BCT Insurance Portal claim assignments. Submission enters BCT Review; claim acceptance does not automatically create an active construction job.';
