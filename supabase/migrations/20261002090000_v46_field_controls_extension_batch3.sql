@@ -123,6 +123,7 @@ set search_path=public,auth
 as $$
 declare v public.bct_customer_concerns; v_action uuid;
 begin
+  if not public.is_bct_admin() then raise exception 'BCT Admin access required'; end if;
   select * into v from public.bct_customer_concerns where id=p_concern_id;
   if v.id is null then raise exception 'Concern not found'; end if;
   if lower(coalesce(v.severity,'')) not in ('urgent','critical','high') then return null; end if;
