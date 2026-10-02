@@ -64,7 +64,7 @@ export async function generateAgentBct({system,history=[],userMessage,requestId}
     if(typeof answer!=="string"||!answer.trim()) throw Object.assign(new Error("empty_generation"),{code:"empty_generation",status:502});
     return {
       text:answer.trim(),
-      model:typeof payload?.model==="string"&&ALLOWED_MODEL_ID.test(payload.model)?payload.model:model,
+      model:typeof payload?.model==="string"&&payload.model===model?payload.model:model,
       finishReason:typeof payload?.choices?.[0]?.finish_reason==="string"?boundedText(payload.choices[0].finish_reason,40):null,
       usage:payload?.usage?{
         promptTokens:safeUsage(payload.usage.prompt_tokens),
