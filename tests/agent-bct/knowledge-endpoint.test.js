@@ -31,3 +31,16 @@ test("public knowledge endpoint rejects non-json POST",async()=>{
   const res=await knowledge.fetch(req({method:"POST",body:"query=x",contentType:"text/plain"}));
   assert.equal(res.status,400);
 });
+
+test("public knowledge rejects scalar and array request bodies",async()=>{
+  for(const payload of ["123","[]","null"]){
+    const res=await knowledge.fetch(req({method:"POST",body:payload}));
+    assert.equal(res.status,400);
+    assert.equal((await res.json()).error,"invalid_request");
+  }
+});
+test("knowledge endpoint keeps microphone disabled and response non-cacheable",async()=>{
+  const res=await knowledge.fetch(req());
+  assert.equal(res.headers.get("cache-control"),"no-store");
+  assert.match(res.headers.get("permissions-policy")||"",/microphone=\(\)/);
+});
