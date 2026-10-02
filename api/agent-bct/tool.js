@@ -51,7 +51,8 @@ async function rpc(name, token, args = {}) {
 }
 function normalizedRole(permissions) {
   const role = permissions && typeof permissions.role === "string" ? permissions.role : "";
-  return ["homeowner", "contractor", "admin"].includes(role) ? role : "homeowner";
+  if (!["homeowner", "contractor", "admin"].includes(role)) throw Object.assign(new Error("access_denied"), { status: 403 });
+  return role;
 }
 
 export default {
