@@ -6,7 +6,7 @@ const assert=(v,m)=>{if(!v)throw new Error(m)};
 
 [
  'contractorProfilePhoto','governmentIdFront','governmentIdBack','governmentIdHasBack',
- 'contractorTradeLicense','profile_photo','government_id_front','government_id_back',
+ 'contractorTradeLicense','government_id_has_back','profile_photo','government_id_front','government_id_back',
  'contractor_trade_license',"One clear contractor profile photo is required.",
  "Government ID front is required.","Government ID back is required when your ID has information on the back.",
  'Who’s Coming','Profile Photo','Government ID — Front','Contractor / Trade License'
