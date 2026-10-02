@@ -2,7 +2,7 @@
 -- Additive: extends the existing credential bid boundary; does not replace credential checks.
 
 create or replace function public.bct_guard_estimator_bid_conflict()
-returns trigger language plpgsql security definer set search_path=public,auth as $$
+returns trigger language plpgsql security definer set search_path=public,auth,pg_temp as $
 declare v_user_id uuid;
 begin
   select c.auth_user_id into v_user_id
@@ -16,6 +16,8 @@ begin
   return new;
 end $$;
 
+revoke all on function public.bct_guard_estimator_bid_conflict() from public,anon,authenticated;
+
 drop trigger if exists bct_bid_estimator_conflict on public.bct_bids;
 create trigger bct_bid_estimator_conflict
 before insert or update of contractor_id,job_id on public.bct_bids
@@ -24,7 +26,7 @@ for each row execute function public.bct_guard_estimator_bid_conflict();
 -- Discovery also hides a project from the estimator who assessed it.
 create or replace function public.bct_my_available_jobs_safe()
 returns table(id uuid,job_number text,title text,trade text,public_location text,sanitized_scope text,desired_start_date date,bid_deadline timestamptz,status text,published_at timestamptz,required_language text)
-language sql stable set search_path=public,auth as $$
+language sql stable set search_path=public,auth,pg_temp as $
  select j.id,j.job_number,j.title,j.trade,j.public_location,j.sanitized_scope,j.desired_start_date,j.bid_deadline,j.status,j.published_at,j.required_language
  from public.bct_jobs j
  where j.status='open_for_bids' and (j.bid_deadline is null or j.bid_deadline>=now())
