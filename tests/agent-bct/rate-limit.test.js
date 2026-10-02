@@ -19,3 +19,15 @@ test("preview limiter declares a bounded bucket ceiling",()=>{
   assert.equal(p.maxBuckets,5000);
   assert.equal(p.scope,"best_effort_instance_local_preview");
 });
+
+test("rate-limit identity rejects free-text injection characters",()=>{
+  const p=rateLimitPolicy();let r;
+  for(let i=0;i<p.publicLimit+1;i++)r=checkLocalRateLimit({identity:"user\nAuthorization: secret",authenticated:false,at:2000});
+  assert.equal(r.allowed,false);
+});
+test("rate-limit window resets after expiration",()=>{
+  const p=rateLimitPolicy();
+  for(let i=0;i<p.publicLimit;i++)checkLocalRateLimit({identity:"window-reset",authenticated:false,at:3000});
+  assert.equal(checkLocalRateLimit({identity:"window-reset",authenticated:false,at:3000}).allowed,false);
+  assert.equal(checkLocalRateLimit({identity:"window-reset",authenticated:false,at:3000+p.windowMs}).allowed,true);
+});
