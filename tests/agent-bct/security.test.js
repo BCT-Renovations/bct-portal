@@ -133,3 +133,14 @@ test("oversized live result is truncated before model context",()=>{
   assert.equal(ctx.live[0].value.truncated,true);
   assert.equal(ctx.live[0].value.data,null);
 });
+
+test("knowledge retrieval safely handles empty, non-string and oversized queries",()=>{
+  assert.deepEqual(retrieveApprovedKnowledge({query:null,role:"public"}),[]);
+  assert.deepEqual(retrieveApprovedKnowledge({query:"   ",role:"public"}),[]);
+  const r=retrieveApprovedKnowledge({query:"BCT "+("x".repeat(5000)),role:"public"});
+  assert.ok(Array.isArray(r));assert.ok(r.length<=4);
+});
+test("unknown knowledge role falls back to public rather than authenticated access",()=>{
+  const r=retrieveApprovedKnowledge({query:"contractor bids",role:"superadmin"});
+  assert.equal(r.some(x=>x.key==="bidding.confidentiality"),false);
+});
