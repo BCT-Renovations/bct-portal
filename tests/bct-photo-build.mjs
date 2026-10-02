@@ -27,7 +27,9 @@ assert.match(pub,/async function openProject\(id\)/);
 assert.match(pub,/\.eq\('id',id\)\.eq\('is_published',true\)\.maybeSingle\(\)/);
 assert.match(pub,/loadFull\(true,false\)/);
 for(const lang of ['es','fr','ht','pt','vi','zh','ar','ru']){
-  const block=pub.match(new RegExp(lang+":\\\\{[^\\n]+"))?.[0]||'';
+  const start=pub.indexOf(lang+':{');
+  const end=start<0?-1:pub.indexOf('},',start);
+  const block=start<0?'':pub.slice(start,end<0?pub.length:end+1);
   assert.ok(block.includes("full:")&&block.includes("close:")&&block.includes("category:")&&block.includes("prev:")&&block.includes("next:")&&block.includes("load:"),lang+' gallery controls must be localized');
 }
 console.log('BCT PHOTO BUILD static deployment gate passed');
