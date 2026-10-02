@@ -19,11 +19,11 @@ export function auditEvent({requestId,event,outcome="ok",role="public",tool="",r
     source:"agent-bct",
     requestId:safeToken(requestId,80),
     event,
-    outcome:clean(outcome,40),
+    outcome:["ok","denied","failed","blocked","unavailable"].includes(clean(outcome,40))?clean(outcome,40):"failed",
     role:["public","homeowner","contractor","admin"].includes(role)?role:"public",
     tool:safeToken(tool,80),
     risk:safeToken(risk,20),
-    status:Number.isFinite(Number(status))?Number(status):0,
+    status:Number.isInteger(Number(status))&&Number(status)>=100&&Number(status)<=599?Number(status):0,
     durationMs:Math.max(0,Math.min(Number(durationMs)||0,300000)),
     build:safeToken(build,80),
   };
