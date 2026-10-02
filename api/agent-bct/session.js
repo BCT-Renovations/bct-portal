@@ -95,7 +95,10 @@ export default {
 
     try {
       // Fixed allowlisted RPC. The client cannot choose an RPC name.
-      const permissions = await supabaseRpc("bct_my_permissions", token, {});
+      const rawPermissions = await supabaseRpc("bct_my_permissions", token, {});
+      const role = rawPermissions && typeof rawPermissions.role==="string" ? rawPermissions.role : "";
+      if(!["homeowner","contractor","admin"].includes(role)) throw Object.assign(new Error("access_denied"),{status:403});
+      const permissions={role,permissions:Array.isArray(rawPermissions.permissions)?rawPermissions.permissions.filter(x=>typeof x==="string").slice(0,100):[]};
       return json({
         ok: true,
         service: "Agent BCT",
