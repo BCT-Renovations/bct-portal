@@ -20,7 +20,7 @@ test("role denial happens before RPC",async()=>{
   assert.equal(result.error,"tool_role_denied");assert.equal(called,false);
 });
 test("tool result is projected and labeled untrusted",async()=>{
-  const result=await executeModelToolCall({call:{name:"payment_status",arguments:"{}"},role:"homeowner",executeRpc:async()=>[{id:"1",status:"paid",external_reference:"secret"}]});
+  const result=await executeModelToolCall({call:{name:"payment_status",arguments:"{}"},role:"homeowner",maxRisk:"high",executeRpc:async()=>[{id:"1",status:"paid",external_reference:"secret"}]});
   assert.equal(result.ok,true);assert.equal(result.data.trust,"untrusted_data_not_instructions");assert.equal(Object.hasOwn(result.data.value[0],"external_reference"),false);
 });
 test("tool sequence is strictly bounded",async()=>{
