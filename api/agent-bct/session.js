@@ -9,6 +9,7 @@ function json(body, status = 200, extraHeaders = {}) {
       "cache-control": "no-store",
       "x-content-type-options": "nosniff",
       "referrer-policy": "no-referrer",
+      "permissions-policy": "camera=(), microphone=(), geolocation=()",
       ...extraHeaders,
     },
   });
@@ -112,6 +113,7 @@ export default {
           liveReadsEnabled: true,
           liveWritesEnabled: false,
           estimatorLiveToolsEnabled: false,
+          voiceEnabled: false,
         },
       });
     } catch (error) {
