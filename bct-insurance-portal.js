@@ -53,7 +53,7 @@ async function submitClaim(e){
 }
 async function loadClaims(){
  const sb=window.supabaseClient;if(!sb)return;const box=$('bctInsuranceClaims');if(!box)return;
- const {data,error}=await sb.from('bct_insurance_claims').select('id,claim_number,policyholder_name,property_address,loss_type,date_of_loss,status,created_at').order('created_at',{ascending:false}).limit(100);
+ const {data,error}=await sb.from('bct_insurance_partner_claims').select('id,claim_number,policyholder_name,property_address,loss_type,date_of_loss,status,created_at').order('created_at',{ascending:false}).limit(100);
  if(error){box.innerHTML='<div class="error">'+esc(error.message)+'</div>';return}
  box.innerHTML=(data||[]).length?(data||[]).map(c=>`<article class="card"><strong>Claim ${esc(c.claim_number)}</strong><p>${esc(c.policyholder_name)} · ${esc(c.loss_type)}</p><p class="muted">${esc(c.property_address?.street||'')}, ${esc(c.property_address?.city||'')}, ${esc(c.property_address?.state||'')}</p><p>Status: <strong>${esc(c.status)}</strong></p><button type="button" data-ins-open="${esc(c.id)}" data-ins-status="${esc(c.status)}" data-ins-number="${esc(c.claim_number)}">Open Claim Communication</button></article>`).join(''):'<div class="notice">No authorized claims found.</div>'; box.querySelectorAll('[data-ins-open]').forEach(b=>b.addEventListener('click',()=>openClaimAction(b.dataset.insOpen,b.dataset.insStatus,b.dataset.insNumber)));
 }
