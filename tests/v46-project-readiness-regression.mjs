@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+const launch=fs.readFileSync(new URL('../supabase/migrations/20260925212000_align_operational_readiness_with_live_schema.sql',import.meta.url),'utf8').toLowerCase();
+const project=fs.readFileSync(new URL('../supabase/migrations/20261002100000_v46_portal_composition_batch5.sql',import.meta.url),'utf8').toLowerCase();
+const need=(s,x,m)=>{if(!s.includes(x))throw new Error(m+': '+x)};
+need(launch,'bct_admin_operational_readiness','platform launch readiness missing');
+need(project,'bct_project_readiness_blockers','canonical project readiness missing');
+need(project,"if not public.is_bct_admin() then raise exception 'bct admin access required'","project readiness admin gate missing");
+need(project,'security definer set search_path=public,auth,pg_temp','project readiness hardened execution missing');
+need(project,'revoke all on function public.bct_project_readiness_blockers(uuid) from public,anon,authenticated','broad readiness execute revoke missing');
+need(project,"'ready',count(*)=0",'readiness boolean missing');
+need(project,"'blocker_count',count(*)",'blocker count missing');
+for(const x of ["'project_hold'","'contract'","'assignment'","'payment'","'access'","'inspection'","'material'","'decision'"]) need(project,x,'blocker class missing');
+if(project.includes("coalesce(h.reason,h.hold_type")) throw new Error('internal hold reason exposed');
+if((project.match(/create or replace function public\.bct_project_readiness_blockers/g)||[]).length!==1) throw new Error('duplicate project readiness function');
+console.log('V46 project readiness reconciliation regression checks passed');
