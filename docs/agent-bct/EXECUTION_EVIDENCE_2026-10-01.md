@@ -38,3 +38,12 @@ GitHub Actions evidence for that exact SHA:
 This closes the executed automated-test evidence gap for this exact candidate SHA.
 
 Vercel preview readiness remains separate. Earlier Vercel status reported the account build-rate limit, so an exact-candidate READY preview is still required before release.
+
+
+## 2026-10-02 current exact hardening checkpoint
+Exact SHA: `526650c3157171bdea380893d8896bf629182b73`
+- Agent BCT Security Tests: PASS — 146 tests / 146 pass / 0 fail / 0 skipped.
+- BCT V46 Production Guard: PASS.
+- BCT V46 Smoke Checks: PASS.
+- This supersedes older automated-test checkpoints for branch-local code evidence.
+- Exact READY Vercel preview, live model adversarial execution, authenticated RLS/cross-user execution, mobile/iPhone execution and voice execution remain separate gates and are not implied by these automated passes.
