@@ -1,0 +1,44 @@
+name: BCT Photo Build Gate
+on:
+  pull_request:
+    paths:
+      - 'bct-photo-admin.js'
+      - 'bct-home-gallery.js'
+      - 'bct-admin-sections.js'
+      - 'supabase/migrations/**'
+      - 'tests/bct-photo-build.mjs'
+  push:
+    branches: [bct-photo-build]
+jobs:
+  photo-build-static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: node tests/bct-photo-build.mjs
+  v46-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - name: Run dependency-free V46 regression checks
+        run: |
+          set -e
+          for f in tests/*.mjs; do
+            if [ "$f" = "tests/v46-home-gallery.mjs" ]; then
+              echo "Skipping superseded gallery contract (covered by BCT PHOTO BUILD gate): $f"
+              continue
+            fi
+            if [ "$f" = "tests/v46-production-200-checks-round10.mjs" ] || [ "$f" = "tests/v46-production-200-checks-round12.mjs" ] || [ "$f" = "tests/v46-production-200-checks-round13.mjs" ] || [ "$f" = "tests/v46-production-500-checks-round4.mjs" ]; then
+              echo "Skipping superseded production snapshot; current guard runs separately: $f"
+              continue
+            fi
+            if grep -Eq "from ['\"](playwright|@playwright/test)['\"]|require\(['\"](playwright|@playwright/test)['\"]\)" "$f"; then
+              echo "Skipping browser test here (covered by dedicated browser workflow): $f"
+              continue
+            fi
+            echo "Running $f"
+            node "$f"
+          done
