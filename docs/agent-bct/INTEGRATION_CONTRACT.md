@@ -149,3 +149,17 @@ Current blockers:
 - mobile Agent UI not yet connected.
 
 Production invariants remain unchanged: no Agent production merge, no Agent production deployment, no Agent DB migration.
+
+
+## Reconciliation checkpoint — 2026-10-02
+
+The earlier checkpoint above is historical. Current verified state:
+- GitHub Actions now executes the Agent BCT suite; exact candidate `755ed046554be0523b2ede1c26078b129a38ebe3` executed 128 tests with 128 pass / 0 fail, and V46 Smoke Checks plus Production Guard passed.
+- Subsequent hardening commits require their own exact-SHA CI evidence before release.
+- Vercel still reports deployment rate limiting, so the current exact candidate does not yet have READY preview evidence.
+- Repository history contains the V46 estimator-system and estimator separation-of-duty migrations. A read-only check of the connected live Supabase project found those estimator objects absent; Agent BCT therefore continues to disable estimator live tools and will not invent a parallel estimator schema.
+- Agent BCT has not applied a production database migration.
+- Generation remains disabled by default; model-directed live reads remain unconnected to chat; writes and voice remain disabled.
+- Final release requirements are now also captured in `RELEASE_GATE.md`, and mobile execution requirements in `MOBILE_UI_TEST_MATRIX.md`.
+
+Production invariants remain unchanged: no Agent production merge/deployment and no Agent database migration without the release gates and Ty Perry's explicit final approval.
