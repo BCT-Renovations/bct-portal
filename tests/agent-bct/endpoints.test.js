@@ -37,3 +37,10 @@ test("oversized declared session body is rejected",async()=>{
   const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json","content-length":"20000",authorization:"Bearer fake"},body:"{}"}));
   assert.equal(res.status,413);
 });
+
+test("Agent endpoints use no-store and no-referrer privacy headers",async()=>{
+  const h=await health.fetch(req("https://example.test/api/agent-bct/health"));
+  const s=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+  const t=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+  for(const res of [h,s,t]){assert.equal(res.headers.get("cache-control"),"no-store");assert.equal(res.headers.get("referrer-policy"),"no-referrer");}
+});
