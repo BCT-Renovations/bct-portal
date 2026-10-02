@@ -1,4 +1,5 @@
 const TOOL_REGISTRY = Object.freeze({
+  "service.list": spec("bct_active_services_localized", ["public","homeowner","contractor","admin"], input => ({ p_language_code: languageCode(input?.languageCode) }), rows(serviceSafe)),
   "identity.permissions": spec("bct_my_permissions", ["homeowner", "contractor", "admin"], () => ({}), identityPermissions),
   "project.list": spec("bct_my_project_summary_cards", ["homeowner"], () => ({}), rows(projectSummary), "medium"),
   "project.status": spec("bct_my_project_dashboard", ["homeowner"], input => ({ p_project_number: requiredText(input?.projectNumber, 80) }), projectDashboard, "medium"),
@@ -26,6 +27,10 @@ function requiredText(value, max) {
   if (!clean || clean.length > max) throw new ToolInputError("invalid_text");
   return clean;
 }
+function languageCode(value) {
+  const code = typeof value === "string" ? value.trim().toLowerCase() : "en";
+  return ["en","ar","zh","fr","ht","pt","ru","es","vi"].includes(code) ? code : "en";
+}
 function optionalUuid(value) {
   if (value == null || value === "") return null;
   if (typeof value !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)) {
@@ -40,6 +45,9 @@ function pick(object, keys) {
 function identityPermissions(value) {
   if (!value || typeof value !== "object") return { role: "unknown", permissions: [] };
   return { role: typeof value.role === "string" ? value.role : "unknown", permissions: Array.isArray(value.permissions) ? value.permissions : [] };
+}
+function serviceSafe(row) {
+  return pick(row, ["code","display_name","category","sort_order"]);
 }
 function projectSummary(row) {
   return pick(row, ["id","project_number","workflow_status","verification_status","services","city","state","submitted_at","open_punch_items","pending_decisions","upcoming_events","active_warranties"]);
