@@ -51,4 +51,18 @@ assert(sql.includes("p_project_id,p_contractor_id,lower(btrim(p_trade))"),'Trade
 ['insurance','license_registration','background_check_authorization'].forEach(x=>assert(sql.includes("'"+x+"'"),'Identity migration must preserve legacy contractor document type: '+x));
 assert(sql.includes("d.application_id=c.application_id"),'Homeowner profile-photo reads must bind the photo to the contractor’s canonical application.');
 assert(!/storage\.objects|create policy[\s\S]{0,100}bct-contractor-documents/i.test(sql),'Identity migration must not broaden private storage access.');
+
+assert(migration.includes("create or replace function public.bct_register_contractor_document"), 'canonical contractor document registration must be extended, not duplicated');
+assert(migration.includes("'profile_photo','government_id_front','government_id_back','contractor_trade_license'"), 'identity document types must use canonical registration');
+assert(migration.includes("Retire the current identity document before registering its replacement"), 'identity singleton replacement must be explicit');
+assert(migration.includes("split_part(p_storage_path,'/',1)<>v_uid::text"), 'canonical registration must retain user-folder ownership check');
+assert(migration.includes("split_part(p_storage_path,'/',2)<>v_app_id::text"), 'canonical registration must retain application-folder ownership check');
+assert(migration.includes("o.bucket_id='bct-contractor-documents'"), 'canonical registration must retain private bucket object check');
+assert(migration.includes("create or replace function public.bct_submit_contractor_application"), 'canonical application submit function must be extended');
+assert(migration.includes("spoken_languages,trade_capabilities,government_id_has_back,status"), 'new application submit must persist government ID back-side requirement');
+assert(migration.includes("create or replace function public.bct_update_my_contractor_application"), 'canonical application update function must be extended');
+assert(migration.includes("government_id_has_back=case when p_payload ? 'government_id_has_back'"), 'application edits must persist government ID back-side requirement');
+assert(migration.includes("Exactly five complete professional references are required"), 'identity extension must preserve five-reference validation');
+assert(migration.includes("An active contractor application already exists for this account"), 'identity extension must preserve duplicate-application guard');
+
 console.log('BCT contractor identity/trade-lead smoke passed.');
