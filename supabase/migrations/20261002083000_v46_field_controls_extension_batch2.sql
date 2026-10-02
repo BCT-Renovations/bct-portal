@@ -33,6 +33,7 @@ alter table public.bct_field_questions
   add column if not exists question_category text,
   add column if not exists blocks_work boolean not null default false,
   add column if not exists needed_by timestamptz,
+  add column if not exists affected_scope_item_id uuid references public.bct_scope_items(id),
   add column if not exists bct_decision text,
   add column if not exists decided_at timestamptz,
   add column if not exists decided_by uuid;
