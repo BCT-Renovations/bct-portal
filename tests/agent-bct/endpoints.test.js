@@ -85,3 +85,12 @@ test("health keeps all irreversible Agent capabilities disabled",async()=>{
   assert.equal(body.estimatorLiveToolsEnabled,false);
   assert.equal(body.voiceEnabled,false);
 });
+
+test("session filters malformed backend permission labels",async()=>{
+  const original=globalThis.fetch;
+  globalThis.fetch=async()=>new Response(JSON.stringify({role:"homeowner",permissions:["project.read","bad permission","x".repeat(100),7]}),{status:200});
+  try{
+    const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json",authorization:"Bearer fake"},body:"{}"}));
+    assert.equal(res.status,200);assert.deepEqual((await res.json()).permissions.permissions,["project.read"]);
+  }finally{globalThis.fetch=original;}
+});
