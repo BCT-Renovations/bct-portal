@@ -70,6 +70,25 @@ begin
      where exists(select 1 from public.bct_inspections i where i.project_id=p_project_id
        and lower(coalesce(i.result,'')) in ('failed','fail','rejected','correction_required','reinspection_required'))
     union all
+    select 'hidden_condition','An unresolved hidden condition is stopping work'
+     where exists(select 1 from public.bct_hidden_conditions hc where hc.project_id=p_project_id
+       and hc.resolved_at is null and coalesce(hc.work_stopped,false))
+    union all
+    select 'material_substitution','A required material substitution approval is incomplete'
+     where exists(select 1 from public.bct_material_substitutions ms where ms.project_id=p_project_id
+       and coalesce(ms.customer_approval_required,false) and ms.approved_at is null
+       and lower(coalesce(ms.status,'')) not in ('rejected','cancelled','closed'))
+    union all
+    select 'utility_restoration','A utility shutoff has not been safely restored'
+     where exists(select 1 from public.bct_utility_interruptions ui where ui.project_id=p_project_id
+       and ui.actual_shutoff_at is not null
+       and (ui.restored_at is null or not coalesce(ui.safe_restoration_confirmed,false)))
+    union all
+    select 'required_checklist','A required project checklist is incomplete'
+     where exists(select 1 from public.bct_project_checklists pc where pc.project_id=p_project_id
+       and coalesce(pc.required_before_start,false)
+       and lower(coalesce(pc.status,'')) not in ('complete','completed','closed'))
+    union all
     select 'customer_material','Homeowner-supplied material is not verified'
      where exists(select 1 from public.bct_customer_materials cm where cm.project_id=p_project_id
        and coalesce(cm.quantity_claimed,0)>0
