@@ -2,7 +2,7 @@ import { retrieveApprovedKnowledge, knowledgeHealth } from "./_knowledge.js";
 import { normalizeBctLanguage } from "./_languages.js";
 
 const MAX_BODY_BYTES = 12 * 1024;
-function json(body,status=200,extra={}) { return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff",...extra}}); }
+function json(body,status=200,extra={}) { return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff","referrer-policy":"no-referrer",...extra}}); }
 async function body(request) {
   const declared=Number(request.headers.get("content-length")||"0");
   if(Number.isFinite(declared)&&declared>MAX_BODY_BYTES)return{error:"payload_too_large",status:413};
