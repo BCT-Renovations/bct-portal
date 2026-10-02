@@ -183,3 +183,14 @@ test("live result metadata cannot inject arbitrary role or risk labels",()=>{
   assert.equal(ctx.live[0].value.risk,"unknown");
   assert.ok(ctx.live[0].value.tool.length<=80);
 });
+
+test("no registered model tool exposes a write path or estimator role",()=>{
+  assert.deepEqual(listAgentBctTools("estimator"),[]);
+  for(const role of ["homeowner","contractor","admin"]){
+    for(const tool of listAgentBctTools(role)){
+      assert.equal(tool.write,false);
+      assert.equal(typeof tool.rpc,"string");
+      assert.equal(/(?:insert|update|delete|award|approve|release|refund|assign|open_case)/i.test(tool.rpc),false);
+    }
+  }
+});
