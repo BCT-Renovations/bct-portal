@@ -128,3 +128,17 @@ Before any live schema change:
 - test on non-production/staging path;
 - verify existing V46 regression;
 - then separately approve live application.
+
+
+## Reconciliation update — 2026-10-02
+
+Repository inspection found that V46 already contains additive estimator migrations on the development history, including:
+- `20260930232500_estimator_system.sql`;
+- `20261001001500_estimator_contractor_conflict_guard.sql`;
+- `20261001195000_estimator_performing_contractor_assignment_guard.sql`.
+
+These migrations define the estimator application/profile/site-assessment model and database separation-of-duties guards. Agent BCT must reuse this work rather than inventing another estimator schema.
+
+A read-only check of the currently connected live Supabase project on 2026-10-02 returned no live `bct_estimator_applications`, `bct_estimator_profiles`, `bct_site_assessments`, `bct_submit_assessment_package`, or `bct_complete_site_assessment` objects. Therefore repository implementation and live database state are not yet reconciled.
+
+No estimator migration was applied to the live database during Agent BCT work. Applying or merging these V46 migrations is a production change and remains outside the Agent branch release gate until separately approved and verified.
