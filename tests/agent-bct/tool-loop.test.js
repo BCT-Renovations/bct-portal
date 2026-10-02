@@ -91,3 +91,24 @@ test("unserializable model tool arguments fail closed before executor",async()=>
   assert.equal(r.error,"invalid_tool_call");
   assert.equal(count,0);
 });
+
+test("default execution risk ceiling blocks high-risk tool before RPC",async()=>{
+  let count=0;
+  const r=await executeModelToolCall({call:{name:"payment_status",arguments:"{}"},role:"homeowner",executeRpc:async()=>{count++;return[];}});
+  assert.equal(r.error,"tool_risk_denied");assert.equal(count,0);
+});
+test("explicit high-risk execution stage permits high-risk read",async()=>{
+  let count=0;
+  const r=await executeModelToolCall({call:{name:"payment_status",arguments:"{}"},role:"homeowner",maxRisk:"high",executeRpc:async()=>{count++;return[];}});
+  assert.equal(r.ok,true);assert.equal(count,1);assert.equal(r.risk,"high");
+});
+test("invalid execution risk stage fails closed before RPC",async()=>{
+  let count=0;
+  const r=await executeModelToolCall({call:{name:"project_list",arguments:"{}"},role:"homeowner",maxRisk:"critical",executeRpc:async()=>{count++;return[];}});
+  assert.equal(r.error,"invalid_tool_risk_stage");assert.equal(count,0);
+});
+test("bounded sequence propagates execution risk ceiling",async()=>{
+  let count=0;
+  const r=await boundedToolSequence({calls:[{name:"payment_status",arguments:"{}"}],role:"homeowner",executeRpc:async()=>{count++;return[];}});
+  assert.equal(r.ok,false);assert.equal(r.results[0].error,"tool_risk_denied");assert.equal(count,0);
+});
