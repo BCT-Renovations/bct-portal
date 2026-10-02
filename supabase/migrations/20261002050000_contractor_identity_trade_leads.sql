@@ -142,20 +142,20 @@ begin
     where project_id=p_project_id
       and is_primary_contact
       and homeowner_visible
-      and not (contractor_id=p_contractor_id and lower(trade)=lower(p_trade));
+      and not (contractor_id=p_contractor_id and lower(trade)=lower(btrim(p_trade)));
   end if;
 
   if p_homeowner_visible then
     update public.bct_project_trade_leads
       set homeowner_visible=false,released_at=null,released_by=null,updated_at=now()
-    where project_id=p_project_id and lower(trade)=lower(p_trade)
+    where project_id=p_project_id and lower(trade)=lower(btrim(p_trade))
       and contractor_id<>p_contractor_id and homeowner_visible;
   end if;
 
   insert into public.bct_project_trade_leads(
     project_id,contractor_id,trade,role_label,is_primary_contact,homeowner_visible,released_at,released_by
   ) values(
-    p_project_id,p_contractor_id,btrim(p_trade),nullif(btrim(p_role_label),''),
+    p_project_id,p_contractor_id,lower(btrim(p_trade)),nullif(btrim(p_role_label),''),
     p_primary,p_homeowner_visible,
     case when p_homeowner_visible then now() else null end,
     case when p_homeowner_visible then auth.uid() else null end
