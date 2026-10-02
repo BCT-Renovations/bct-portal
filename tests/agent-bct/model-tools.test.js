@@ -12,3 +12,9 @@ test("role-filtered schema helper exposes only supplied internal tools",()=>{
   const list=schemasForInternalTools(["contractor.dashboard"]);
   assert.deepEqual(list.map(x=>x.function.name),["contractor_dashboard"]);
 });
+
+test("public model schema can expose only the safe service catalog read",()=>{
+  const list=schemasForInternalTools(["service.list"]);
+  assert.deepEqual(list.map(x=>x.function.name),["service_list"]);
+  assert.equal(internalToolName("service_list"),"service.list");
+});
