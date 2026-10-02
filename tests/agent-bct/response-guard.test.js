@@ -19,3 +19,6 @@ test("reserved action completion claim requires confirmed action evidence",()=>{
 test("explanatory reserved-action wording is not treated as completed action",()=>{
   assert.equal(inspectGeneratedResponse("I cannot release escrow. BCT approval is required.").safe,true);
 });
+
+test("blank generated response is unsafe",()=>assert.equal(inspectGeneratedResponse("   ").safe,false));
+test("unexpectedly huge generated response is unsafe",()=>assert.equal(inspectGeneratedResponse("z".repeat(12001)).safe,false));
