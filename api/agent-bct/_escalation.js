@@ -19,7 +19,11 @@ export function prepareEscalation({label="other",severity="normal",subject="",de
   if(!safeSubject||!safeDescription)return{ok:false,error:"invalid_escalation_text"};
   return{ok:true,caseType:mapped.caseType,category:mapped.category,severity,subject:safeSubject,description:safeDescription,projectId:safeId(projectId),jobId:safeId(jobId)};
 }
-export function escalationRpcArgs(prepared={}){\n  if(!prepared?.ok)return null;\n  return Object.freeze({p_project_id:prepared.projectId||null,p_job_id:prepared.jobId||null,p_case_type:prepared.caseType,p_category:prepared.category,p_severity:prepared.severity,p_subject:prepared.subject,p_description:prepared.description});\n}\nexport function escalationFingerprint(payload={}){
+export function escalationRpcArgs(prepared={}){
+  if(!prepared?.ok)return null;
+  return Object.freeze({p_project_id:prepared.projectId||null,p_job_id:prepared.jobId||null,p_case_type:prepared.caseType,p_category:prepared.category,p_severity:prepared.severity,p_subject:prepared.subject,p_description:prepared.description});
+}
+export function escalationFingerprint(payload={}){
   const r=prepareEscalation({...payload,confirmed:true});if(!r.ok)return"";
   return[r.projectId,r.jobId,r.caseType,r.category,r.severity,r.subject.toLowerCase(),r.description.toLowerCase()].join("|");
 }
