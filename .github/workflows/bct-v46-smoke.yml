@@ -50,6 +50,9 @@ jobs:
       - name: Contractor onboarding smoke
         run: node scripts/bct-contractor-onboarding-smoke.mjs
 
+      - name: Contractor identity and trade-lead smoke
+        run: node scripts/bct-contractor-identity-smoke.mjs
+
       - name: Contractor safety UI smoke
         run: node scripts/bct-contractor-safety-ui-smoke.mjs
 
