@@ -1,0 +1,3 @@
+import fs from'node:fs';import assert from'node:assert/strict';const s=fs.readFileSync('supabase/migrations/20261002011500_bct_insurance_claim_history.sql','utf8');
+for(const x of ['bct_insurance_claim_history','bct_insurance_can_read_claim',"e.visibility='insurance_and_bct'",'public.is_bct_admin()'])assert.ok(s.includes(x),x+' missing');
+console.log('Insurance claim history boundary checks passed');
