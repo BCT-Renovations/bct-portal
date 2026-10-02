@@ -44,7 +44,7 @@ begin
   where id=a.id;
 end $bct$;
 
-revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon;
+revoke all on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) from public,anon,authenticated;
 grant execute on function public.bct_submit_assessment_package(uuid,jsonb,boolean,boolean,boolean,boolean) to authenticated;
 
 -- Insurance/Claims intake completeness stays in the existing claim record.
