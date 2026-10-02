@@ -96,6 +96,16 @@ Last verified: 2026-09-26
 - **PASS / LOCK — BCT public-table RLS baseline:** all 326 current BCT public tables have RLS enabled; no BCT public table was found without RLS, and `anon`/`PUBLIC` have zero direct BCT table write grants. Reopen after schema/grant changes.\n- **PASS / LOCK — Anonymous RPC privilege hardening:** revoked inherited `PUBLIC`/anonymous EXECUTE from 19 authenticated/admin/private-workflow RPCs and retested; those RPCs are no longer anonymously executable. `bct_log_client_error` remains intentionally under separate review because signed-out client diagnostics may depend on it. Migration is source-controlled.\n- **OPEN — Supabase leaked-password protection:** security advisor still reports the Auth setting disabled.
 - **OPEN / intentional-review — Password-history SECURITY DEFINER warnings:** only `bct_record_password_history` and `bct_validate_password_not_recent` are executable by authenticated users; three other BCT SECURITY DEFINER functions are postgres-only. Existing password-history smoke remains the regression gate.
 
+## 2026-10-02 security and launch re-audit
+
+- Live Supabase project `onpqykpikxbbypfvmtin` is `ACTIVE_HEALTHY` on PostgreSQL 17.6.1.
+- All eight current BCT Edge Functions are ACTIVE and continue to require JWT verification.
+- Supabase security advisors currently report 13 authenticated-callable SECURITY DEFINER functions: 11 Live Quality RPCs plus the two password-history RPCs. The Live Quality RPCs were inspected individually: Admin RPCs enforce `is_bct_admin()`; contractor RPCs bind `auth.uid()` to the assigned contractor and an active assignment; the homeowner RPC requires project ownership; anon/PUBLIC execution is denied. These warnings are therefore retained for intentional-boundary review rather than blindly revoking browser access and breaking the workflows.
+- Password-history RPCs remain authenticated-only, self-scoped with `auth.uid()`, direct password-history table access remains denied, and the last-five-password rule remains enforced.
+- Supabase leaked-password protection remains disabled and is still an external account/plan gate.
+- Performance advisors now report a large backlog of unindexed foreign keys across later V46 expansion tables. A focused check of launch-critical identity, messaging, completion, warranty, punch-list, signature, assignment, and Live Quality tables found no missing covering foreign-key indexes in that critical set. Do not mass-create indexes across the backlog without workload/usage review.
+- The current isolated branch includes permanent Live Quality authorization-boundary regression checks and password-history recovery regression coverage.
+
 ## Remaining external gates
 
 - Enable Supabase leaked-password protection.
