@@ -11,3 +11,7 @@ console.log('V46 homeowner composition regression checks passed');
 for(const x of ['bct_homeowner_report_problem','bct_homeowner_daily_feedback','bct_homeowner_home_record'])assert.ok(actions.includes(x),'homeowner action missing '+x);
 for(const x of ['Report a Problem','Optional Daily Feedback','Your Home Record','Warranties & Products','Closeout Documents','Punch List'])assert.ok(ui.includes(x),'homeowner UI missing '+x);
 assert.ok(actions.includes('c.auth_user_id=auth.uid()'),'homeowner action ownership guard missing');
+
+for(const x of ["'customer_concern'","'customer_feedback'","'critical'","'high'"])assert.ok(actions.includes(x),'attention routing missing '+x);
+assert.ok(actions.includes("c.homeowner_visible"),'Home Record closeout privacy gate missing');
+assert.ok(actions.includes('security definer set search_path=public,auth,pg_temp'),'homeowner RPC hardened search path missing');
