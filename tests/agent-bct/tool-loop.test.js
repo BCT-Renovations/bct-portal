@@ -116,5 +116,5 @@ test("bounded sequence propagates execution risk ceiling",async()=>{
 test("high-risk mode allows at most one high-risk read per sequence",async()=>{
   let count=0;
   const r=await boundedToolSequence({calls:[{name:"payment_status",arguments:"{}"},{name:"escrow_status",arguments:"{}"}],role:"homeowner",maxRisk:"high",executeRpc:async()=>{count++;return[];}});
-  assert.equal(r.ok,false);assert.equal(r.error,"too_many_high_risk_tools");assert.equal(count,2);
+  assert.equal(r.ok,false);assert.equal(r.error,"too_many_high_risk_tools");assert.equal(count,1);
 });
