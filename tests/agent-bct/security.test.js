@@ -100,11 +100,12 @@ test("role-specific tool listing excludes unauthorized tools", () => {
   assert.ok(contractor.includes("contractor.dashboard"));
 });
 
-test("public service catalog tool is read-only and language bounded", () => {
-  const tool=resolveAgentBctTool("service.list","public",{languageCode:"es"});
+test("authenticated service catalog tool is read-only and language bounded", () => {
+  const tool=resolveAgentBctTool("service.list","homeowner",{languageCode:"es"});
   assert.equal(tool.ok,true);
   assert.equal(tool.rpc,"bct_active_services_localized");
   assert.equal(tool.args.p_language_code,"es");
   assert.equal(tool.project([{code:"drywall",display_name:"Drywall",category:"interior",sort_order:40,secret:"x"}])[0].secret,undefined);
-  assert.equal(resolveAgentBctTool("service.list","public",{languageCode:"xx"}).args.p_language_code,"en");
+  assert.equal(resolveAgentBctTool("service.list","homeowner",{languageCode:"xx"}).args.p_language_code,"en");
+  assert.equal(resolveAgentBctTool("service.list","public",{languageCode:"en"}).error,"tool_role_denied");
 });
