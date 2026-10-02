@@ -1,0 +1,12 @@
+import fs from'node:fs';import assert from'node:assert/strict';
+const admin=fs.readFileSync('bct-insurance-admin.js','utf8'),portal=fs.readFileSync('bct-insurance-portal.js','utf8'),loader=fs.readFileSync('bct-admin-sections.js','utf8'),board=fs.readFileSync('bct-admin-control-board.js','utf8');
+const migrations=fs.readdirSync('supabase/migrations').filter(f=>f.includes('insurance')).map(f=>fs.readFileSync('supabase/migrations/'+f,'utf8')).join('\n');
+for(const x of ['bct_admin_create_insurance_organization','bct_admin_set_insurance_org_status','bct_admin_set_insurance_member_status','bct_admin_link_insurance_claim_to_project','bct_admin_unlink_insurance_claim_project'])assert.ok(admin.includes(x),x+' UI missing');
+assert.ok(loader.includes('/bct-insurance-admin.js?v=20261002-1'),'Admin loader missing Insurance');
+assert.ok(admin.includes("p.dataset.bctBoardInclude='1'"),'Insurance portal card flag missing');
+assert.ok(!admin.includes('bctUrgentCategory'),'Insurance must not become fourth urgent category');
+assert.ok(board.includes("const defs=[['jobs',t.jobs,t.noJobs],['contractors',t.contractors,t.noContractors],['clients',t.clients,t.noClients]]"),'three locked urgent boxes changed');
+assert.ok(!portal.includes('contractor_bids'),'carrier portal exposes contractor bids');
+assert.ok(!portal.includes('bct_submit_homeowner_project'),'carrier portal invokes homeowner project submission');
+assert.ok(!migrations.includes('insert into public.bct_projects'),'Insurance migrations create parallel BCT projects');
+console.log('BCT Insurance pre-environment integration gate passed');
