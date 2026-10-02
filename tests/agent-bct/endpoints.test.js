@@ -61,3 +61,16 @@ test("tool endpoint rejects array tool input",async()=>{
     assert.equal(res.status,400);assert.equal((await res.json()).error,"invalid_tool_input");
   }finally{globalThis.fetch=original;}
 });
+
+test("session rejects array JSON body before authentication",async()=>{
+  const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json"},body:"[]"}));
+  assert.equal(res.status,401);
+});
+test("health does not advertise production-only capabilities",async()=>{
+  const res=await health.fetch(req("https://example.test/api/agent-bct/health"));
+  const body=await res.json();
+  assert.equal(body.productionIntegrated,false);
+  assert.equal(body.liveWritesEnabled,false);
+  assert.equal(body.estimatorLiveToolsEnabled,false);
+  assert.equal(body.voiceEnabled,false);
+});
