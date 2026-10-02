@@ -13,3 +13,9 @@ test("rate limit eventually blocks repeated caller in same window",()=>{
   assert.equal(r.allowed,false);
   assert.ok(r.retryAfterSeconds>0);
 });
+
+test("preview limiter declares a bounded bucket ceiling",()=>{
+  const p=rateLimitPolicy();
+  assert.equal(p.maxBuckets,5000);
+  assert.equal(p.scope,"best_effort_instance_local_preview");
+});
