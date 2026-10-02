@@ -19,6 +19,8 @@ const contractorOnboardingSmoke = fs.readFileSync(new URL('./bct-contractor-onbo
 const contractorIdentitySmoke = fs.readFileSync(new URL('./bct-contractor-identity-smoke.mjs', import.meta.url), 'utf8');
 assert(contractorIdentitySmoke.includes('BCT contractor identity/trade-lead smoke passed.'), 'Launch dry run must include the contractor identity/trade-lead regression suite.');
 assert(contractorIdentitySmoke.includes('government IDs must never share homeowner storage access'), 'Launch dry run must retain the homeowner/government-ID privacy guard.');
+assert(contractorIdentitySmoke.includes('identity work must retain the existing credential-current gate.'), 'Launch dry run must include identity/credential cross-system regression.');
+assert(contractorIdentitySmoke.includes('performing-contractor assignment must retain estimator separation.'), 'Launch dry run must include identity/estimator assignment separation regression.');
 
 const safetyCoreSql = fs.readFileSync(new URL('../supabase/migrations/20260926114500_contractor_safety_training_automation.sql', import.meta.url), 'utf8');
 const safetyAdminSql = fs.readFileSync(new URL('../supabase/migrations/20260926115500_safety_training_admin_automation.sql', import.meta.url), 'utf8');
