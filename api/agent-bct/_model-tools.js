@@ -41,6 +41,7 @@ function tool(name,description,properties,required){
 }
 export function internalToolName(modelName){return MODEL_TO_INTERNAL[modelName]||null;}
 export function schemasForInternalTools(internalNames){
-  const allowed=new Set(internalNames||[]);
+  const source=Array.isArray(internalNames)?internalNames:[];
+  const allowed=new Set(source.filter(x=>typeof x==="string"));
   return MODEL_TOOL_SCHEMAS.filter(schema=>allowed.has(MODEL_TO_INTERNAL[schema.function.name]));
 }
