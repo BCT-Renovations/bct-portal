@@ -6,7 +6,7 @@ const SAFE_EVENT_CODES = new Set([
 ]);
 
 function clean(value,max=120) {
-  return typeof value==="string" ? value.replace(/[\\r\\n\\u0000]/g," ").trim().slice(0,max) : "";
+  return typeof value==="string" ? value.replace(/[\r\n\u0000]/g," ").trim().slice(0,max) : "";
 }
 function safeToken(value,max=80){
   const cleaned=clean(value,max);
