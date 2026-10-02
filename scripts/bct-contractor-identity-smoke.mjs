@@ -65,4 +65,13 @@ assert(migration.includes("government_id_has_back=case when p_payload ? 'governm
 assert(migration.includes("Exactly five complete professional references are required"), 'identity extension must preserve five-reference validation');
 assert(migration.includes("An active contractor application already exists for this account"), 'identity extension must preserve duplicate-application guard');
 
+
+assert(migration.includes('Homeowners view released contractor profile photos'), 'private storage must have a narrow homeowner profile-photo policy');
+assert(migration.includes("d.document_type='profile_photo'"), 'homeowner storage access must be restricted to profile photos');
+assert(migration.includes("ip.profile_photo_status='approved'"), 'homeowner storage access requires BCT-approved identity profile');
+assert(migration.includes("d.review_status='approved'"), 'homeowner storage access requires approved underlying document');
+assert(migration.includes("l.homeowner_visible"), 'homeowner storage access requires explicit BCT release');
+assert(migration.includes("cu.auth_user_id=(select auth.uid())"), 'homeowner storage access must bind to the owning customer account');
+assert(!migration.includes("document_type in ('profile_photo','government_id_front','government_id_back')\n      and cu.auth_user_id"), 'government IDs must never share homeowner storage access');
+
 console.log('BCT contractor identity/trade-lead smoke passed.');
