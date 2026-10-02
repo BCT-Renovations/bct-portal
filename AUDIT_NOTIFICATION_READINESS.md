@@ -20,3 +20,10 @@ Status: launch-critical actions have app-side audit hooks and readiness checks; 
 - Confirm production notification sender and mailbox delivery after the email/provider setup is finalized.
 - Confirm durable server-side audit rows during the live dry run for estimate approval, job assignment, change order, completion sign-off, disputes, and ratings.
 - Keep local admin activity audit visible for in-session operator traceability, but do not treat it as a replacement for durable backend audit history.
+
+
+## 2026-10-02 live delivery recheck
+
+- The deployed `bct-notification-dispatch` Edge Function is ACTIVE, requires JWT, re-checks `is_bct_admin()`, and uses Resend only when its provider configuration is present.
+- Current `bct_notifications` rows include both `queued` and `sent` statuses, but the live rows show zero delivery attempts and zero provider message IDs. A `sent` application status without provider evidence is not accepted as proof of external email delivery.
+- Keep `outbound_email_provider_configured` incomplete until a provider-backed send records an actual attempt/provider message ID and a real mailbox receives it.
