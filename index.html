@@ -3164,6 +3164,7 @@ renderAll();
   async function rpc(name,args={}){const {data,error}=await supabaseClient.rpc(name,args);if(error)throw error;return data}
   window.bctContractSigningRpc=rpc;
   async function user(){const {data,error}=await supabaseClient.auth.getUser();if(error)throw error;return data.user}
+  function isAdminIdentity(u){const role=String(u?.app_metadata?.role||'').trim().toLowerCase();return !!u&&(['admin','bct_admin','owner'].includes(role)||String(u.email||'').trim().toLowerCase()==='myproject@bctrenovations.com')}
   function note(id,html,kind='notice'){const el=$(id);if(el)el.innerHTML=`<div class="${kind}">${html}</div>`}
   function bctCelebrate(title,message,storageKey=''){
     if(storageKey){try{if(localStorage.getItem(storageKey))return;localStorage.setItem(storageKey,new Date().toISOString())}catch(_){}}
@@ -3316,7 +3317,7 @@ renderAll();
     e.preventDefault();const f=e.target,err=$('customerSubmitError'),btn=$('customerSubmitBtn');if(f.dataset.submitted==='true'||f.dataset.pending==='true')return;f.dataset.pending='true';const fail=(m,el)=>{f.dataset.pending='false';err.innerHTML='<b>Please fix this item:</b> '+esc(m);err.classList.remove('hidden');btn.disabled=false;btn.textContent='Submit Project Privately to BCT';el?.focus?.()};err.classList.add('hidden');btn.disabled=true;btn.textContent='Submitting…';
     try{
       const activeUser=await user().catch(()=>null);
-      if(activeUser?.app_metadata?.role==='admin')return fail('Sign out of the BCT Admin account before submitting a homeowner project.');
+      if(isAdminIdentity(activeUser))return fail('Sign out of the BCT Admin account before submitting a homeowner project.');
       const first=$('custFirst').value.trim(),last=$('custLast').value.trim(),email=$('custEmail').value.trim(),phone=$('custPhone').value.trim(),p1=$('custPassword').value,p2=$('custPassword2').value;
       if(!activeUser){if(!first)return fail('First Name is required.',$('custFirst'));if(!last)return fail('Last Name is required.',$('custLast'));if(!email)return fail('Email is required.',$('custEmail'));if(!phone)return fail('Mobile Phone is required.',$('custPhone'));try{validMatchingPassword(p1,p2)}catch(passwordError){return fail(passwordError.message,$('custPassword'))};}
       for(const name of ['address','city','state','zip','description']){const el=f.elements[name];if(!String(el?.value||'').trim())return fail(`${name} is required.`,el)}
@@ -3403,7 +3404,7 @@ renderAll();
     e.preventDefault();const f=e.target,msg=$('applyMsg'),btn=$('applicationSubmitBtn');if(f.dataset.submitted==='true'||f.dataset.pending==='true')return;f.dataset.pending='true';btn.disabled=true;btn.textContent='Submitting…';
     try{
       const activeUser=await user().catch(()=>null);
-      if(activeUser?.app_metadata?.role==='admin')throw new Error('Sign out of the BCT Admin account before submitting a contractor pre-application.');
+      if(isAdminIdentity(activeUser))throw new Error('Sign out of the BCT Admin account before submitting a contractor pre-application.');
       const fd=new FormData(f),email=String(fd.get('email')||'').trim(),p1=String(fd.get('contractorPassword')||''),p2=String(fd.get('contractorPassword2')||'');
       if(!activeUser){if(!email)throw new Error('Email is required.');validMatchingPassword(p1,p2);}
       const refs=[];for(let i=1;i<=5;i++){const name=String(fd.get('ref'+i)||'').trim(),contact=String(fd.get('ref'+i+'contact')||'').trim();if(name&&contact)refs.push({name,contact})}if(refs.length!==5)throw new Error('All five professional references and their contact information are required.');
@@ -3591,8 +3592,8 @@ renderAll();
   const jobForm=$('jobForm');if(jobForm)jobForm.onsubmit=async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button[type="submit"]');try{btn.disabled=true;btn.textContent='Publishing...';showInlineStatus('jobPostStatus','<b>Publishing BCT job to the contractor network...</b>','notice backend-live');const f=new FormData(e.target),deadline=f.get('bidDeadline')?new Date(String(f.get('bidDeadline'))+'T23:59:00').toISOString():null,title=String(f.get('title')||''),trade=String(f.get('trade')||'');await rpc('bct_admin_create_job',{p_project_id:String(f.get('projectId')),p_title:title,p_trade:trade,p_public_location:[f.get('city'),f.get('jobState')].filter(Boolean).join(', '),p_sanitized_scope:String(f.get('scope')||''),p_target_subcontract_amount:Number(f.get('budget')||0)||null,p_desired_start_date:f.get('startDate')||null,p_bid_deadline:deadline});e.target.reset();await loadAdminState();adminAuditEvent('Job published',`${title||'Untitled job'} opened for ${fmtStatus(trade)} bidding.`);adminSuccess('BCT job published to the real contractor network.','jobPostStatus')}catch(e){adminError(e,'jobPostStatus','BCT job publish failed')}finally{btn.disabled=false;btn.textContent='Publish BCT Job'}};
   const serviceForm=$('serviceCallForm');if(serviceForm)serviceForm.onsubmit=async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button[type="submit"]');try{btn.disabled=true;btn.textContent='Creating...';showInlineStatus('serviceCallStatus','<b>Creating BCT service call...</b>','notice backend-live');const f=new FormData(e.target),jobNumber=String(f.get('jobNumber')||'').trim(),callType=String(f.get('type')||'');await rpc('bct_admin_create_service_call',{p_job_number:jobNumber,p_call_type:callType,p_issue_reported:String(f.get('issue')||'')});e.target.reset();await loadAdminState();adminAuditEvent('Service call created',`${fmtStatus(callType)} service call created.`,jobNumber);adminSuccess('BCT service call created.','serviceCallStatus')}catch(e){adminError(e,'serviceCallStatus','BCT service call failed')}finally{btn.disabled=false;btn.textContent='Create BCT Service Call'}};
   // Trigger backend admin load after sign-in or when admin view opens.
-  if($('adminLoginBtn'))$('adminLoginBtn').addEventListener('click',()=>setTimeout(async()=>{try{const u=await user();if(u?.app_metadata?.role==='admin')await loadAdminState()}catch(_){}},700));
-  document.querySelectorAll('[data-view="admin"]').forEach(b=>b.addEventListener('click',()=>setTimeout(async()=>{try{const u=await user();if(u?.app_metadata?.role==='admin')await loadAdminState()}catch(_){}},700)));
+  if($('adminLoginBtn'))$('adminLoginBtn').addEventListener('click',()=>setTimeout(async()=>{try{const u=await user();if(isAdminIdentity(u))await loadAdminState()}catch(_){}},700));
+  document.querySelectorAll('[data-view="admin"]').forEach(b=>b.addEventListener('click',()=>setTimeout(async()=>{try{const u=await user();if(isAdminIdentity(u))await loadAdminState()}catch(_){}},700)));
 
   // Never render localStorage jobs/applications after launch overlay is active.
   window.demoBid=()=>bctNotice('BCT bidding now uses the secure contractor account. Sign in under Applicant Status.');
@@ -3603,8 +3604,8 @@ renderAll();
   document.querySelectorAll('[data-view="jobs"]').forEach(btn=>btn.addEventListener('click',()=>setTimeout(()=>{if(contractorState)renderContractorJobs(contractorState.available_jobs||[])},0)));
   if(window.location.hash==='#password-reset'){openPasswordReset();note('passwordResetStatus','Checking your secure reset link...');setTimeout(async()=>{try{const {data}=await supabaseClient.auth.getSession();if(!data?.session)note('passwordResetStatus','This password-reset link is missing, invalid, or expired. Request a new reset link and open it from your email.')}catch(e){note('passwordResetStatus',esc(authFriendly(e)))}
   },900)}
-  window.bctHandlePortalAuthState=(event,session)=>{if(event==='PASSWORD_RECOVERY'){openPasswordReset();note('passwordResetStatus','Enter and save your new password.')}setTimeout(async()=>{try{const u=session?.user;if(!u)return;if(u.app_metadata?.role==='admin')await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}},0)};
-  loadPublic().then(async()=>{try{const u=await user();if(!u)return;if(u.app_metadata?.role==='admin')await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}}).catch(e=>console.error('BCT public bootstrap failed',e));
+  window.bctHandlePortalAuthState=(event,session)=>{if(event==='PASSWORD_RECOVERY'){openPasswordReset();note('passwordResetStatus','Enter and save your new password.')}setTimeout(async()=>{try{const u=session?.user;if(!u)return;if(isAdminIdentity(u))await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}},0)};
+  loadPublic().then(async()=>{try{const u=await user();if(!u)return;if(isAdminIdentity(u))await loadAdminState();else{try{await loadHomeownerState()}catch(_){}try{await loadContractorState()}catch(_){}}}catch(_){}}).catch(e=>console.error('BCT public bootstrap failed',e));
 })();
 </script>
 
