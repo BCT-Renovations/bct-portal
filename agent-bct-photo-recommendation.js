@@ -114,5 +114,11 @@ function ensure(){
  root.appendChild(section);
  $('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
 }
+async function analyzeRequestedPhoto(photoId){
+ const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running Agent BCT test recommendation for selected photo…';
+ const {data:photo,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,thumbnail_path,caption,alt_text,category,project_work_date,is_published').eq('id',photoId).single();
+ if(error||!photo){if(status)status.textContent='🔴 Selected photo could not be loaded.';return}
+ try{await saveRecommendation(photo.id,await analyzePhoto(photo,'test'));if(status)status.textContent='🟢 Test recommendation saved for selected photo.';await load();document.getElementById('agentBctPhotoRecommendations')?.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation failed.')}}
+window.addEventListener('bct-agent-photo-request',e=>{if(e.detail?.photoId)analyzeRequestedPhoto(e.detail.photoId)});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();window.addEventListener('pageshow',ensure);
 })();
