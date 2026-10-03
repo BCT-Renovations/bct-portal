@@ -19,11 +19,11 @@ function style(){
  .abpr-card img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eef3f3}
  .abpr-body{padding:12px}
  .abpr-agent{color:#0f5f63;font-weight:900}
- .abpr-ai{display:inline-block;margin-left:6px;padding:3px 7px;border-radius:999px;background:#f2c14e;color:#173c3e;font-size:11px;font-weight:900}
+ .abpr-ai{display:inline-block;margin-left:6px;padding:3px 7px;border-radius:999px;background:#e9c57f;color:#173c3e;font-size:11px;font-weight:900}
  .abpr-row{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
  .abpr-label{color:#5f6f73;font-size:12px;font-weight:800}
  .abpr-value{font-weight:800;text-align:right}
- .abpr-reason{padding:9px;border-left:4px solid #f2c14e;background:#fff9e8;border-radius:6px;margin:9px 0;line-height:1.4}
+ .abpr-reason{padding:9px;border-left:4px solid #e9c57f;background:#fff9e8;border-radius:6px;margin:9px 0;line-height:1.4}
  .abpr-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
  .abpr-actions button{min-height:42px;border:1px solid #0a4549;border-radius:9px;padding:8px 12px;font-weight:900}
  .abpr-use{background:#15803d;color:#fff}.abpr-reject{background:#b91c1c;color:#fff}.abpr-later{background:#e5e7eb;color:#173c3e}
