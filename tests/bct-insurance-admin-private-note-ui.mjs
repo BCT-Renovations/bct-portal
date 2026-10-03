@@ -1,0 +1,1 @@
+import fs from'node:fs';import assert from'node:assert/strict';const s=fs.readFileSync('bct-insurance-admin.js','utf8');for(const x of ['Private BCT Note','not visible to the carrier','bct_admin_add_insurance_internal_note'])assert.ok(s.includes(x),x+' missing');console.log('Insurance private Admin note UI checks passed');

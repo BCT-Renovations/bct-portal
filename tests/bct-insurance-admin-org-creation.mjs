@@ -1,0 +1,1 @@
+import fs from'node:fs';import assert from'node:assert/strict';const s=fs.readFileSync('supabase/migrations/20261002012500_bct_insurance_admin_org_creation.sql','utf8');for(const x of ['bct_admin_create_insurance_organization','public.is_bct_admin()',"status)\n values","'pending'"])assert.ok(s.includes(x),x+' missing');console.log('Insurance organization creation checks passed');

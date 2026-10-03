@@ -1,0 +1,215 @@
+-- V46 field controls batch 5: composed readiness + homeowner-safe portal views.
+-- DEVELOPMENT BRANCH ONLY. No new readiness table/system is created.
+-- Uses existing holds, contracts, assignments, payments, access rules, inspections, materials, decisions and action inbox.
+
+create or replace function public.bct_project_readiness_blockers(p_project_id uuid)
+returns jsonb
+language plpgsql stable security definer set search_path=public,auth,pg_temp
+as $$
+declare v_result jsonb;
+begin
+  if auth.uid() is null then raise exception 'Authentication required'; end if;
+  if not public.is_bct_admin() then raise exception 'BCT Admin access required'; end if;
+  if not exists(select 1 from public.bct_projects p where p.id=p_project_id) then
+    raise exception 'Project not found';
+  end if;
+
+  with blockers as (
+    select 'project_hold' kind, 'Project is on hold' detail
+      from public.bct_project_holds h
+     where h.project_id=p_project_id and lower(coalesce(h.status,'')) not in ('released','resolved','closed')
+    union all
+    select 'contract','Required contract signatures are incomplete'
+     where exists(select 1 from public.bct_contracts c where c.project_id=p_project_id
+       and (c.homeowner_signed_at is null or c.bct_signed_at is null))
+    union all
+    select 'assignment','Performing contractor assignment is not active'
+     where not exists(select 1 from public.bct_assignments a where a.project_id=p_project_id
+       and lower(coalesce(a.status,'')) in ('assigned','accepted','active','in_progress'))
+    union all
+    select 'payment','Required project payment is past due'
+     where exists(select 1 from public.bct_payments p where p.project_id=p_project_id
+       and p.due_date<current_date and lower(coalesce(p.status,'')) not in ('paid','waived','cancelled'))
+    union all
+    select 'access','Required site access information is not active'
+     where exists(select 1 from public.bct_site_access_rules ar where ar.project_id=p_project_id and not ar.active)
+    union all
+    select 'inspection','Required inspection/hold point is not cleared'
+     where exists(select 1 from public.bct_quality_hold_points hp
+       where hp.project_id=p_project_id and coalesce(hp.required_before_cover,true)
+       and lower(coalesce(hp.status,'')) not in ('passed','approved','clear','cleared','complete','completed'))
+    union all
+    select 'material','Project material is unavailable'
+     where exists(select 1 from public.bct_job_materials jm where jm.project_id=p_project_id
+       and lower(coalesce(jm.status,'')) in ('short','shortage','backordered','unavailable'))
+    union all
+    select 'decision','Homeowner decision is overdue'
+     where exists(select 1 from public.bct_customer_decisions d where d.project_id=p_project_id
+       and d.due_at<now() and lower(coalesce(d.status,'')) not in ('answered','resolved','closed'))
+    union all
+    select 'stop_work','An active stop-work order blocks project readiness'
+     where exists(select 1 from public.bct_stop_work_orders sw where sw.project_id=p_project_id
+       and lower(coalesce(sw.status,'')) not in ('released','resolved','closed','cancelled'))
+    union all
+    select 'required_approval','A required project approval is incomplete'
+     where exists(select 1 from public.bct_required_approvals ra where ra.project_id=p_project_id
+       and lower(coalesce(ra.status,'')) not in ('approved','complete','completed','waived','cancelled'))
+    union all
+    select 'dependency','A required project dependency is incomplete'
+     where exists(select 1 from public.bct_project_dependencies pd where pd.project_id=p_project_id
+       and lower(coalesce(pd.status,'')) not in ('satisfied','complete','completed','resolved','waived','cancelled'))
+    union all
+    select 'permit','A required project permit is not ready'
+     where exists(select 1 from public.bct_permit_responsibilities pr where pr.project_id=p_project_id
+       and lower(coalesce(pr.status,'')) not in ('complete','completed','not_required','waived','cancelled')
+       and not exists(select 1 from public.bct_permits pm where pm.project_id=p_project_id
+         and lower(coalesce(pm.permit_type,''))=lower(coalesce(pr.permit_type,''))
+         and lower(coalesce(pm.status,'')) in ('issued','approved','active','complete','completed','closed')))
+    union all
+    select 'failed_inspection','A project inspection requires correction or reinspection'
+     where exists(
+       select 1 from public.bct_inspections i
+       where i.project_id=p_project_id
+         and lower(coalesce(i.result,'')) in ('failed','fail','rejected','correction_required','reinspection_required')
+         and (
+           not exists(select 1 from public.bct_code_corrections cc where cc.inspection_id=i.id)
+           or exists(
+             select 1 from public.bct_code_corrections cc
+             where cc.inspection_id=i.id
+               and cc.cleared_at is null
+               and lower(coalesce(cc.clearance_status,cc.status,'')) not in ('cleared','closed','complete','completed')
+           )
+         )
+     )
+    union all
+    select 'prework_condition','Required pre-work property condition documentation is incomplete'
+     where exists(select 1 from public.bct_site_condition_baselines scb where scb.project_id=p_project_id
+       and coalesce(scb.required_before_work,false) and scb.completed_at is null)
+    union all
+    select 'hidden_condition','An unresolved hidden condition is stopping work'
+     where exists(select 1 from public.bct_hidden_conditions hc where hc.project_id=p_project_id
+       and hc.resolved_at is null and coalesce(hc.work_stopped,false))
+    union all
+    select 'material_substitution','A required material substitution approval is incomplete'
+     where exists(select 1 from public.bct_material_substitutions ms where ms.project_id=p_project_id
+       and coalesce(ms.customer_approval_required,false) and ms.approved_at is null
+       and lower(coalesce(ms.status,'')) not in ('rejected','cancelled','closed'))
+    union all
+    select 'utility_restoration','A utility shutoff has not been safely restored'
+     where exists(select 1 from public.bct_utility_interruptions ui where ui.project_id=p_project_id
+       and ui.actual_shutoff_at is not null
+       and (ui.restored_at is null or not coalesce(ui.safe_restoration_confirmed,false)))
+    union all
+    select 'required_checklist','A required project checklist is incomplete'
+     where exists(select 1 from public.bct_project_checklists pc where pc.project_id=p_project_id
+       and coalesce(pc.required_before_start,false)
+       and lower(coalesce(pc.status,'')) not in ('complete','completed','closed'))
+    union all
+    select 'customer_material','Homeowner-supplied material is not verified'
+     where exists(select 1 from public.bct_customer_materials cm where cm.project_id=p_project_id
+       and coalesce(cm.quantity_claimed,0)>0
+       and (cm.verification_status is null or lower(cm.verification_status) not in ('verified','accepted','approved','not_required','waived','cancelled')))
+  )
+  select jsonb_build_object(
+    'project_id',p_project_id,
+    'ready',count(*)=0,
+    'blocker_count',count(*),
+    'blockers',coalesce(jsonb_agg(jsonb_build_object('kind',kind,'detail',detail)) filter(where kind is not null),'[]'::jsonb)
+  ) into v_result from blockers;
+
+  return v_result;
+end $$;
+revoke all on function public.bct_project_readiness_blockers(uuid) from public,anon,authenticated;
+grant execute on function public.bct_project_readiness_blockers(uuid) to authenticated;
+
+-- Homeowner-safe composition; no private resident notes, access codes, bids or internal notes.
+create or replace function public.bct_homeowner_project_snapshot(p_project_id uuid)
+returns jsonb
+language plpgsql stable security definer set search_path=public,auth,pg_temp
+as $$
+declare
+  v_customer_id uuid;
+  v_result jsonb;
+begin
+  if auth.uid() is null then raise exception 'Authentication required'; end if;
+  select p.customer_id into v_customer_id from public.bct_projects p where p.id=p_project_id;
+  if v_customer_id is null then raise exception 'Project not found'; end if;
+  if not public.is_bct_admin() and not exists(
+    select 1 from public.bct_customers c where c.id=v_customer_id and c.auth_user_id=auth.uid()
+  ) then raise exception 'Project access denied'; end if;
+
+  select jsonb_build_object(
+    'project',jsonb_build_object(
+      'id',p.id,'project_number',p.project_number,'workflow_status',p.workflow_status,
+      'property_name',p.property_name,'city',p.city,'state',p.state
+    ),
+    'what_happens_next',(
+      select coalesce(jsonb_agg(jsonb_build_object('title',m.title,'status',m.status,'due_date',m.due_date)
+        order by m.due_date nulls last),'[]'::jsonb)
+      from public.bct_project_milestones m where m.project_id=p.id
+        and lower(coalesce(m.status,'')) not in ('complete','completed','closed')
+    ),
+    'my_decisions',(
+      select coalesce(jsonb_agg(jsonb_build_object('id',d.id,'type',d.decision_type,'question',d.question,
+        'due_at',d.due_at,'status',d.status,'schedule_impact',d.schedule_impact) order by d.due_at nulls last),'[]'::jsonb)
+      from public.bct_customer_decisions d where d.project_id=p.id
+    ),
+    'money',jsonb_build_object(
+      'contract_amount',(select max(c.contract_amount) from public.bct_contracts c where c.project_id=p.id),
+      'paid',(select coalesce(sum(py.amount),0) from public.bct_payments py where py.project_id=p.id and lower(coalesce(py.status,''))='paid'),
+      'open_change_orders',(select coalesce(sum(co.amount_change),0) from public.bct_change_orders co where co.project_id=p.id and lower(coalesce(co.status,'')) not in ('rejected','cancelled','void'))
+    ),
+    'today',(
+      select coalesce(jsonb_agg(jsonb_build_object('title',s.title,'starts_at',s.starts_at,'ends_at',s.ends_at,'status',s.status)
+        order by s.starts_at),'[]'::jsonb)
+      from public.bct_schedule_events s where s.project_id=p.id and s.starts_at::date=current_date
+    ),
+    'open_concerns',(
+      select count(*) from public.bct_customer_concerns cc where cc.project_id=p.id
+        and lower(coalesce(cc.status,'')) not in ('resolved','closed')
+    )
+  ) into v_result
+  from public.bct_projects p where p.id=p_project_id;
+
+  return v_result;
+end $$;
+revoke all on function public.bct_homeowner_project_snapshot(uuid) from public,anon;
+grant execute on function public.bct_homeowner_project_snapshot(uuid) to authenticated;
+
+-- Property manager/commercial priority view composed from existing property/project/attention records.
+create or replace function public.bct_my_property_portfolio_priority()
+returns table(project_id uuid,project_number text,property_name text,building_number text,unit_number text,
+              workflow_status text,priority text,requires_manager_action boolean,open_attention bigint)
+language plpgsql stable security definer set search_path=public,auth,pg_temp
+as $$
+begin
+  if auth.uid() is null then raise exception 'Authentication required'; end if;
+
+  return query
+  select p.id,p.project_number,p.property_name,p.building_number,p.unit_number,p.workflow_status,
+    case
+      when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='critical') then 'critical'
+      when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='high') then 'urgent'
+      when lower(coalesce(p.workflow_status,'')) in ('completed','closed') then 'completed'
+      when lower(coalesce(p.workflow_status,'')) in ('active','in_progress') then 'active'
+      else 'waiting'
+    end,
+    exists(select 1 from public.bct_customer_decisions d where d.project_id=p.id and lower(coalesce(d.status,'')) not in ('answered','resolved','closed')),
+    (select count(*) from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue'))
+  from public.bct_projects p
+  where p.managed_property_id is not null
+    and exists(
+      select 1 from public.bct_managed_properties mp
+      join public.bct_property_accounts pa on pa.id=mp.property_account_id
+      where mp.id=p.managed_property_id
+        and pa.auth_user_id=auth.uid()
+        and pa.active
+        and mp.active
+    )
+  order by
+    case when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='critical') then 0
+         when exists(select 1 from public.bct_action_inbox ai where ai.project_id=p.id and ai.status in ('open','overdue') and ai.priority='high') then 1 else 2 end,
+    p.updated_at desc;
+end $$;
+revoke all on function public.bct_my_property_portfolio_priority() from public,anon,authenticated;
+grant execute on function public.bct_my_property_portfolio_priority() to authenticated;

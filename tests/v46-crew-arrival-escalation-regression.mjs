@@ -1,0 +1,12 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const sql=fs.readFileSync('supabase/migrations/20261002132000_v46_crew_arrival_escalation.sql','utf8');
+const recovery=fs.readFileSync('supabase/migrations/20261002133000_v46_crew_arrival_recovery.sql','utf8');
+const b2=fs.readFileSync('supabase/migrations/20261002083000_v46_field_controls_extension_batch2.sql','utf8');
+for(const x of ['bct_refresh_crew_arrival_attention','bct_admin_crew_arrival_status','crew_late_arrival','crew_no_show','expected_arrival_start','expected_arrival_end','checked_in_at','arrival_status'])assert.ok(sql.includes(x),'arrival escalation missing '+x);
+for(const x of ['expected_arrival_start','expected_arrival_end','arrival_status','bct_check_in_project_crew'])assert.ok(b2.includes(x),'canonical crew control missing '+x);
+assert.ok(sql.includes('public.is_bct_admin()'),'BCT Admin guard missing');
+assert.ok(sql.includes("'critical'"),'no-show critical escalation missing');
+assert.ok(sql.includes('security definer set search_path=public,auth,pg_temp'),'hardened search path missing');
+console.log('V46 crew arrival escalation regression checks passed');
+for(const x of ['bct_sync_crew_arrival_attention_on_checkin','trg_bct_sync_crew_arrival_attention_on_checkin','bct_admin_resolve_crew_arrival_exception',"action_type in ('crew_late_arrival','crew_no_show')","set status='closed'"])assert.ok(recovery.includes(x),'arrival recovery missing '+x);
+assert.ok(recovery.includes('public.is_bct_admin()'),'manual arrival resolution Admin guard missing');
