@@ -1,6 +1,5 @@
 import fs from'node:fs';import assert from'node:assert/strict';
-const files=fs.readdirSync('supabase/migrations').filter(x=>x.includes('insurance'));const sql=files.map(x=>fs.readFileSync('supabase/migrations/'+x,'utf8')).join('
-');
+const files=fs.readdirSync('supabase/migrations').filter(x=>x.includes('insurance'));const sql=files.map(x=>fs.readFileSync('supabase/migrations/'+x,'utf8')).join('\n');
 const portal=fs.readFileSync('bct-insurance-portal.js','utf8'),admin=fs.readFileSync('bct-insurance-admin.js','utf8');
 for(const forbidden of ['contractor_bids','service_role'])assert.ok(!portal.includes(forbidden),'carrier UI contains forbidden '+forbidden);
 assert.ok(!portal.includes('bct_submit_homeowner_project'),'carrier UI must not invoke homeowner project submission');
