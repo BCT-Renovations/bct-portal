@@ -217,6 +217,9 @@ for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contr
 }
 assert(contractSigningJs.includes('policy_ack_required'), 'Contract signing must honor required policy acknowledgment state.');
 assert(contractSigningJs.includes('policy_acknowledged'), 'Contract signing must not proceed when required policy acknowledgment is absent.');
+assert(contractSigningJs.includes('policy_ack_text'), 'Contract signing must preserve backend-provided policy prerequisite text.');
+
+
 assert(contractSigningJs.includes('Accept the current BCT policies before signing this contract.'), 'Contract signing must clearly explain the policy prerequisite.');
 
 assert(contractSigningJs.includes("p_typed_name:typedName"), 'Contract signing UI must pass the typed signer name to the canonical RPC.');
