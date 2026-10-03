@@ -215,7 +215,11 @@ assert(readinessSql.includes('customer_pilot_enabled') || launchStatus.includes(
 for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contract','bct_admin_esign_contract']) {
   assert(contractSigningJs.includes(marker), `Contract signing UI must preserve canonical RPC: ${marker}`);
 }
-assert(contractSigningJs.includes('p_consent:true'), 'Contract signing UI must send explicit electronic-signature consent.');
+assert(contractSigningJs.includes("p_typed_name:typedName"), 'Contract signing UI must pass the typed signer name to the canonical RPC.');
+assert(contractSigningJs.includes("p_consent:true"), 'Contract signing UI must send explicit electronic-signature consent.');
+assert(contractSigningJs.includes("['sent','partially_signed']"), 'Contract signing UI must restrict signature action to released/partially-signed contracts.');
+assert(contractSigningJs.includes("signed?.typed_name"), 'Contract signing UI must display captured signer evidence.');
+
 assert(contractSigningJs.includes('typedName'), 'Contract signing UI must require a typed signer name.');
 assert(contractSigningJs.includes('electronic_signatures_enabled'), 'Contract signing UI must respect the electronic-signature feature gate.');
 assert(contractorCloseoutJs.includes('bct_completion_requests'), 'Contractor closeout must reuse the existing completion-request table.');
