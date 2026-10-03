@@ -215,6 +215,10 @@ assert(readinessSql.includes('customer_pilot_enabled') || launchStatus.includes(
 for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contract','bct_admin_esign_contract']) {
   assert(contractSigningJs.includes(marker), `Contract signing UI must preserve canonical RPC: ${marker}`);
 }
+assert(contractSigningJs.includes('policy_ack_required'), 'Contract signing must honor required policy acknowledgment state.');
+assert(contractSigningJs.includes('policy_acknowledged'), 'Contract signing must not proceed when required policy acknowledgment is absent.');
+assert(contractSigningJs.includes('Accept the current BCT policies before signing this contract.'), 'Contract signing must clearly explain the policy prerequisite.');
+
 assert(contractSigningJs.includes("p_typed_name:typedName"), 'Contract signing UI must pass the typed signer name to the canonical RPC.');
 assert(contractSigningJs.includes('window.bctContractSigningRpc'), 'Contract signing UI must use the canonical V46 RPC bridge.');
 assert(contractSigningJs.includes("window.bctContractSigningReload?.('homeowner')"), 'Homeowner contract signing must reload through the canonical state loader.');
