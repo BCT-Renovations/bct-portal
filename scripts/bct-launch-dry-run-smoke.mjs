@@ -216,6 +216,12 @@ for (const marker of ['bct_homeowner_esign_contract','bct_contractor_esign_contr
   assert(contractSigningJs.includes(marker), `Contract signing UI must preserve canonical RPC: ${marker}`);
 }
 assert(contractSigningJs.includes("p_typed_name:typedName"), 'Contract signing UI must pass the typed signer name to the canonical RPC.');
+assert(contractSigningJs.includes('window.bctContractSigningRpc'), 'Contract signing UI must use the canonical V46 RPC bridge.');
+assert(contractSigningJs.includes("window.bctContractSigningReload?.('homeowner')"), 'Homeowner contract signing must reload through the canonical state loader.');
+assert(contractSigningJs.includes("window.bctContractSigningReload?.('contractor')"), 'Contractor contract signing must reload through the canonical state loader.');
+assert(contractSigningJs.includes("window.bctContractSigningReload?.('admin')"), 'Admin contract signing must reload through the canonical state loader.');
+assert(indexHtml.includes('window.bctContractSigningRpc=rpc'), 'V46 must expose the shared contract-signing RPC bridge.');
+
 assert(contractSigningJs.includes("p_consent:true"), 'Contract signing UI must send explicit electronic-signature consent.');
 assert(contractSigningJs.includes("['sent','partially_signed']"), 'Contract signing UI must restrict signature action to released/partially-signed contracts.');
 assert(contractSigningJs.includes("signed?.typed_name"), 'Contract signing UI must display captured signer evidence.');
