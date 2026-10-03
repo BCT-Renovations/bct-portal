@@ -2698,6 +2698,7 @@ async function bctAdminLogin(){
       return;
     }
     document.getElementById('adminPassword').value='';
+    try{sessionStorage.setItem('bctAdminLaunchAuthenticated','1');}catch(_){}
     document.getElementById('adminSessionEmail').textContent=user.email||email;
     status.innerHTML='';
     setVisibleView('admin');
@@ -2715,6 +2716,7 @@ async function bctAdminLogin(){
 }
 
 async function bctAdminLogout(){
+  try{sessionStorage.removeItem('bctAdminLaunchAuthenticated');}catch(_){}
   if(supabaseClient)await supabaseClient.auth.signOut({scope:'local'});
   document.getElementById('adminPassword').value='';
   window.bctReturnToPublicLanding?.();
@@ -3608,7 +3610,7 @@ function renderContractorJobs(){const el=$('jobList');if(!el)return;const app=(c
  let entryIntent=null;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
  function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
- async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
+ async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();const s=r?.data?.session||null;const role=String(s?.user?.app_metadata?.role||'').trim().toLowerCase();if(role==='admin'&&!sessionStorage.getItem('bctAdminLaunchAuthenticated')){try{await supabaseClient?.auth?.signOut?.({scope:'local'});}catch(_){}return null;}return s}catch(e){return null}}
  async function openEntry(kind){
    entryIntent=kind;
    // Authoritative portal transition: remove the public landing immediately, before any async auth work.
