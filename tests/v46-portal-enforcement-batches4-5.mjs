@@ -18,7 +18,7 @@ for(const t of ['create table public.bct_site_assessments','create table public.
 
 if(b4.includes('alter table public.bct_insurance_claims') || b4.includes('bct_admin_confirm_insurance_intake')) throw new Error('Stale legacy insurance intake returned to Batch4');
 if(!b5.includes("c.auth_user_id=auth.uid()")) throw new Error('Homeowner ownership check missing');
-if(!b5.includes("mp.id=p.managed_property_id") || !b5.includes("mp.property_account_id=pa.id") || !b5.includes("mp.active"))
+if((!b5.includes("mp.id=p.managed_property_id") && !b5.includes("p.managed_property_id=mp.id")) || ((!b5.includes("mp.property_account_id=pa.id")) && (!b5.includes("pa.id=mp.property_account_id"))) || !b5.includes("mp.active"))
  throw new Error('Property portfolio ownership scope missing');
 if(!b5.includes("pa.auth_user_id=auth.uid()") || !b5.includes("pa.active"))
  throw new Error('Property account owner boundary missing');
