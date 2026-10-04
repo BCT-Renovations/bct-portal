@@ -8,6 +8,7 @@ on:
       - 'supabase/migrations/**'
       - 'tests/bct-photo-build.mjs'
       - 'tests/bct-insurance-org-approval.mjs'
+      - '.github/workflows/bct-photo-build-gate.yml'
   push:
     branches: [bct-photo-build]
 jobs:
@@ -43,4 +44,4 @@ jobs:
             echo "Running $f"
             node "$f"
           done
-# V46 validation trigger: keep this gate on the current validation branch.
+# V46 validation trigger: workflow changes intentionally retrigger this gate on the validation branch.
