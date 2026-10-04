@@ -43,3 +43,4 @@ jobs:
             echo "Running $f"
             node "$f"
           done
+# V46 validation trigger: keep this gate on the current validation branch.
