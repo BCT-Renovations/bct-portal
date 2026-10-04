@@ -26,6 +26,7 @@ jobs:
       - name: Run dependency-free V46 regression checks
         run: |
           set -e
+          cd "$GITHUB_WORKSPACE"
           for f in tests/*.mjs; do
             if [ "$f" = "tests/v46-home-gallery.mjs" ]; then
               echo "Skipping superseded gallery contract (covered by BCT PHOTO BUILD gate): $f"
