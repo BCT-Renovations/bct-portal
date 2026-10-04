@@ -85,6 +85,8 @@
     toggle.textContent=expanded?c.less:c.more;
     toggle.setAttribute('aria-expanded',String(expanded));
     // Keep the gallery section and its entry buttons visible even when the public photo query is empty or temporarily unavailable.\n    // This preserves the existing gallery system and prevents the Full Gallery entry point from disappearing.\n    section.hidden=false;
+    const full=$('bctGalleryFull');
+    if(full){full.disabled=PROJECTS.length===0;full.textContent=PROJECTS.length===0?'Gallery Coming Soon':c.full;}
   }
 
   async function loadProjects(){
