@@ -4,6 +4,7 @@ import { checkLocalRateLimit } from "./_rate-limit.js";
 import { auditEvent, emitPreviewAudit } from "./_audit.js";
 import { inspectGeneratedResponse } from "./_response-guard.js";
 import { classifyProvenance } from "./_provenance.js";
+import { normalizeAgentBctPosition, positionProfile, listAgentBctPositions } from "./_positions.js";
 
 const MAX_BODY_BYTES=32*1024;
 function json(body,status=200,extra={}){return new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff","referrer-policy":"no-referrer","permissions-policy":"camera=(), microphone=(), geolocation=()",...extra}});}
@@ -40,11 +41,12 @@ export default{async fetch(request){
   if(!limit.allowed)return json({ok:false,error:"rate_limited",requestId,retryAfterSeconds:limit.retryAfterSeconds},429,{"retry-after":String(limit.retryAfterSeconds)});
   try{
     if(token)role=roleOf(await rpc("bct_my_permissions",token,{}));
-    const context=buildAgentBctContext({message:parsed.value?.message,history:parsed.value?.history,role,languageCode:typeof parsed.value?.languageCode==="string"?parsed.value.languageCode:"en",liveResults:[]});
+    const position=normalizeAgentBctPosition(parsed.value?.position);
+    const context=buildAgentBctContext({message:parsed.value?.message,history:parsed.value?.history,role,languageCode:typeof parsed.value?.languageCode==="string"?parsed.value.languageCode:"en",liveResults:[],position});
     const runtime=runtimeConfig();
     if(!runtime.generationFlag){
       emitPreviewAudit(auditEvent({requestId,event:"request_received",role,status:200,durationMs:Date.now()-started}));
-      return json({ok:true,requestId,stage:"orchestration_preview",generationEnabled:false,liveToolLoopEnabled:false,role,provenance:classifyProvenance({hasGeneral:context.knowledge.length>0,riskSignals:context.riskSignals}),riskSignals:context.riskSignals,knowledgeKeys:context.knowledge.map(x=>x.value?.key).filter(Boolean),policyVersion:context.policyVersion,note:"Context assembled safely. Generation remains disabled by server configuration."});
+      return json({ok:true,requestId,stage:"orchestration_preview",generationEnabled:false,liveToolLoopEnabled:false,role,position,positionConfig:positionProfile(position),availablePositions:listAgentBctPositions(),provenance:classifyProvenance({hasGeneral:context.knowledge.length>0,riskSignals:context.riskSignals}),riskSignals:context.riskSignals,knowledgeKeys:context.knowledge.map(x=>x.value?.key).filter(Boolean),policyVersion:context.policyVersion,note:"Context assembled safely. Generation remains disabled by server configuration."});
     }
     emitPreviewAudit(auditEvent({requestId,event:"generation_started",role,status:200,durationMs:Date.now()-started}));
     const generated=await generateAgentBct({system:modelSystem(context),history:context.history,userMessage:context.userMessage,requestId});
