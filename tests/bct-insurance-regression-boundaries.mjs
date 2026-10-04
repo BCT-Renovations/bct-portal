@@ -1,5 +1,5 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';
-const portal=fs.readFileSync('bct-insurance-portal.js','utf8'),admin=fs.readFileSync('bct-insurance-admin.js','utf8');
+const root=new URL('../',import.meta.url).pathname;const portal=fs.readFileSync(new URL('../bct-insurance-portal.js',import.meta.url),'utf8'),admin=fs.readFileSync(new URL('../bct-insurance-admin.js',import.meta.url),'utf8');
 const migrations=fs.readdirSync('supabase/migrations').filter(x=>x.includes('insurance')).map(x=>fs.readFileSync('supabase/migrations/'+x,'utf8')).join('\n');
 assert.ok(portal.includes('BCT INSURANCE PORTAL'));
 assert.ok(portal.includes('bct_insurance_submit_claim'));
