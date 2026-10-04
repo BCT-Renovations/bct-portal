@@ -84,7 +84,7 @@
     toggle.hidden=PROJECTS.length<=4;
     toggle.textContent=expanded?c.less:c.more;
     toggle.setAttribute('aria-expanded',String(expanded));
-    section.hidden=loaded&&PROJECTS.length===0;
+    // Keep the gallery section and its entry buttons visible even when the public photo query is empty or temporarily unavailable.\n    // This preserves the existing gallery system and prevents the Full Gallery entry point from disappearing.\n    section.hidden=false;
   }
 
   async function loadProjects(){
