@@ -21,7 +21,11 @@ const checks=[
   ['Homeowner submission locks after success', /clearAndLockSubmission\(f,\['custFirst','custLast','custEmail','custPhone','custPassword','custPassword2'\]\)/.test(index)],
   ['Contractor pre-application locks after success', /clearAndLockSubmission\(f\)/.test(index)],
   ['Contractor password pair is validated', /setupPasswordPair\('contractorPassword','contractorPassword2','contractorPasswordCheck'\)/.test(index)],
-  ['Admin activity trail can be cleared', /clearAdminActivityAuditBtn/.test(index)]
+  ['Admin activity trail can be cleared', /clearAdminActivityAuditBtn/.test(index)],
+  ['Admin auth uses a dedicated session-storage boundary', /const BCT_ADMIN_SESSION_MODE_KEY='bctAdminSessionMode'/.test(index) && /storage:bctAuthStorage/.test(index)],
+  ['Admin login enables session-only auth before sign-in', /bctSetAdminSessionMode\(true\)/.test(index)],
+  ['Homeowner and contractor login clear admin session mode', /async function homeLogin\(\).*?bctSetAdminSessionMode\(false\)/s.test(index) && /async function contractorLogin\(\).*?bctSetAdminSessionMode\(false\)/s.test(index)],
+  ['Admin logout clears session mode before sign-out', /async function bctAdminLogout\(\)\{\s*bctSetAdminSessionMode\(false\)/.test(index)]
 ];
 
 const failed=checks.filter(([,ok])=>!ok);
