@@ -10,7 +10,9 @@ on:
       - 'tests/bct-insurance-org-approval.mjs'
       - '.github/workflows/bct-photo-build-gate.yml'
   push:
-    branches: [bct-photo-build]
+    branches:
+      - bct-photo-build
+      - feature/v46-field-controls-integration
 jobs:
   photo-build-static:
     runs-on: ubuntu-latest
@@ -24,7 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '20'}
       - name: Run dependency-free V46 regression checks
         run: |
           set -e
@@ -44,4 +45,4 @@ jobs:
             echo "Running $f"
             node "$f"
           done
-# V46 validation trigger: workflow changes intentionally retrigger this gate on the validation branch.
+# V46 validation trigger: run this gate on the active validation branch as well as the legacy photo-build branch.
