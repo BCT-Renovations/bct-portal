@@ -1,4 +1,5 @@
-const VERSION = "agent-bct-2026.10.01-session-1";
+const VERSION = "agent-bct-2026.10.03-session-positions-1";
+const AGENT_POSITION_KEYS = Object.freeze(["project_manager","estimator","contractor_coordinator","assignment_scheduler","customer_support","finance_escrow","insurance_claims","property_commercial","documents_change_orders","quality_completion","compliance_credentials","admin_escalation"]);
 const MAX_BODY_BYTES = 16 * 1024;
 
 function json(body, status = 200, extraHeaders = {}) {
@@ -116,6 +117,8 @@ export default {
           liveWritesEnabled: false,
           estimatorLiveToolsEnabled: false,
           voiceEnabled: false,
+          positionProfilesEnabled: true,
+          availablePositionCount: AGENT_POSITION_KEYS.length,
         },
       });
     } catch (error) {
