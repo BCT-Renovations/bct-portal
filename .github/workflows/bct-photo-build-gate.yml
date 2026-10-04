@@ -25,6 +25,7 @@ jobs:
         with: {node-version: '20'}
       - name: Run dependency-free V46 regression checks
         run: |
+          cd "$GITHUB_WORKSPACE"
           set -e
           for f in tests/*.mjs; do
             if [ "$f" = "tests/v46-home-gallery.mjs" ]; then
