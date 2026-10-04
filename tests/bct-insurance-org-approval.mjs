@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
+// V46 partner-claims isolation contract.
 
 const s = fs.readFileSync(
   'supabase/migrations/20261001235500_bct_insurance_org_approval_guard.sql',
