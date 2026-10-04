@@ -1,0 +1,36 @@
+name: BCT Admin Portal Smoke
+
+on:
+  push:
+    branches:
+      - agent-bct
+    paths:
+      - "index.html"
+      - "bct-admin-control-board.js"
+      - "bct-admin-mobile-fix.js"
+      - "scripts/admin-portal-smoke.mjs"
+      - ".github/workflows/admin-portal-smoke.yml"
+  pull_request:
+    paths:
+      - "index.html"
+      - "bct-admin-control-board.js"
+      - "bct-admin-mobile-fix.js"
+      - "scripts/admin-portal-smoke.mjs"
+      - ".github/workflows/admin-portal-smoke.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  admin-portal-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run Admin Portal smoke
+        run: node scripts/admin-portal-smoke.mjs
