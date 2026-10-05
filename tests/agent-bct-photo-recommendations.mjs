@@ -10,3 +10,11 @@ assert.match(rec,/bct_gallery_photos/);assert.match(rec,/bct_photo_recommendatio
 assert.match(api,/OPENAI_API_KEY/);assert.match(api,/input_image/);assert.match(api,/marketing_recommendation/);assert.doesNotMatch(api,/is_published/);assert.doesNotMatch(api,/show_on_home/);
 assert.match(migration,/references public\.bct_gallery_photos/);assert.match(migration,/is_bct_admin/);assert.match(migration,/admin_decision/);assert.match(migration,/corrected_category/);assert.match(migration,/does not change the existing/);
 console.log('Agent BCT Photo Recommendation static safety gate passed');
+
+// Homepage gallery regression guards
+const home = read('bct-home-gallery.js');
+assert(home.includes("window.addEventListener('bct-gallery-changed'"), 'Homepage refreshes after Admin gallery changes');
+assert(home.includes("FULL=PROJECTS.slice()"), 'Homepage photo cards open the existing gallery modal');
+assert(home.includes(".eq('show_on_home',true)"), 'Homepage only loads first-page selected photos');
+assert(!home.includes('is_published',false), 'No homepage publication mutation');
+console.log('Homepage gallery regression gate passed');
