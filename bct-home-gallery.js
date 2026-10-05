@@ -6,15 +6,15 @@
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
-    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',close:'Close',prev:'Previous',next:'Next',all:'All',slot:'BCT project photo'},
-    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',slot:'Foto de proyecto BCT'},
-    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',slot:'Photo de projet BCT'},
-    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',slot:'Foto pwojè BCT'},
-    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',less:'Ver Menos Projetos',slot:'Foto de projeto BCT'},
-    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',less:'Hiển Thị Ít Hơn',slot:'Ảnh dự án BCT'},
-    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',less:'收起项目',slot:'BCT 项目照片'},
-    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',less:'عرض مشاريع أقل',slot:'صورة مشروع BCT'},
-    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',slot:'Фото проекта BCT'}
+    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',coming:'Gallery Coming Soon',close:'Close',prev:'Previous',next:'Next',all:'All',slot:'BCT project photo'},
+    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',full:'Abrir Galería Completa',coming:'Galería Próximamente',close:'Cerrar',prev:'Anterior',next:'Siguiente',all:'Todos',slot:'Foto de proyecto BCT'},
+    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',full:'Ouvrir la Galerie Complète',coming:'Galerie Bientôt Disponible',close:'Fermer',prev:'Précédent',next:'Suivant',all:'Tous',slot:'Photo de projet BCT'},
+    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',full:'Louvri Galri Konplè a',coming:'Galri a Ap Vini Talè',close:'Fèmen',prev:'Anvan',next:'Pwochen',all:'Tout',slot:'Foto pwojè BCT'},
+    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',less:'Ver Menos Projetos',full:'Abrir Galeria Completa',coming:'Galeria em Breve',close:'Fechar',prev:'Anterior',next:'Próximo',all:'Todos',slot:'Foto de projeto BCT'},
+    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',less:'Hiển Thị Ít Hơn',full:'Mở Thư Viện Ảnh Đầy Đủ',coming:'Thư Viện Ảnh Sắp Ra Mắt',close:'Đóng',prev:'Trước',next:'Tiếp',all:'Tất Cả',slot:'Ảnh dự án BCT'},
+    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',less:'收起项目',full:'打开完整图库',coming:'图库即将推出',close:'关闭',prev:'上一张',next:'下一张',all:'全部',slot:'BCT 项目照片'},
+    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',less:'عرض مشاريع أقل',full:'فتح المعرض الكامل',coming:'المعرض قريبًا',close:'إغلاق',prev:'السابق',next:'التالي',all:'الكل',slot:'صورة مشروع BCT'},
+    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',full:'Открыть Полную Галерею',coming:'Галерея Скоро Откроется',close:'Закрыть',prev:'Назад',next:'Далее',all:'Все',slot:'Фото проекта BCT'}
   };
 
   let PROJECTS=[]; // Loaded from the secure BCT gallery table; never create empty placeholders.
@@ -86,7 +86,7 @@
     toggle.setAttribute('aria-expanded',String(expanded));
     // Keep the gallery section and its entry buttons visible even when the public photo query is empty or temporarily unavailable.\n    // This preserves the existing gallery system and prevents the Full Gallery entry point from disappearing.\n    section.hidden=false;
     const full=$('bctGalleryFull');
-    if(full){full.disabled=PROJECTS.length===0;full.textContent=PROJECTS.length===0?'Gallery Coming Soon':c.full;}
+    if(full){const hasPhotos=PROJECTS.length>0;full.disabled=!hasPhotos;full.textContent=hasPhotos?c.full:c.coming;full.setAttribute('aria-disabled',String(!hasPhotos));}
   }
 
   async function loadProjects(){
