@@ -102,12 +102,15 @@ async function runTest(){
  if(error){if(status)status.textContent='🔴 '+error.message;return}
  try{for(const p of (photos||[])){await saveRecommendation(p.id,await analyzePhoto(p,'test'));}if(status)status.textContent='🟢 Test recommendations saved for '+(photos||[]).length+' photos.';await load();}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation test failed.')}
 }
-function openExistingPhotoUploader(){const existing=$('bctPhotoUpload');if(existing){existing.click();return true;}const status=$('agentBctPhotoRecStatus');if(status)status.textContent='🟡 Upload control is loading. Try again in a moment.';return false;}
-async function runAi(){
- const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running private Agent BCT AI analysis…';
- const {data:photos,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,thumbnail_path,caption,alt_text,category,project_work_date,is_published').order('created_at',{ascending:false}).limit(12);
- if(error){if(status)status.textContent='🔴 '+error.message;return}
- try{for(const p of (photos||[])){await saveRecommendation(p.id,await analyzePhoto(p,'ai'));}if(status)status.textContent='🟢 Private AI recommendations saved. No publication occurred.';await load();}catch(e){if(status)status.textContent='🔴 '+(e.message||'AI analysis failed.')}
+function openExistingPhotoUploader(){
+ const status=$('agentBctPhotoRecStatus');
+ const find=()=>document.getElementById('bctPhotoUpload')||document.querySelector('#bctPhotoAdmin input[type="file"]')||document.querySelector('input[type="file"]');
+ const trigger=()=>{const el=find();if(!el)return false;try{el.click();return true;}catch(e){return false;}};
+ if(trigger())return true;
+ if(status)status.textContent='';
+ let tries=0;
+ const timer=setInterval(()=>{tries++;if(trigger()||tries>=40){clearInterval(timer);if(tries>=40&&!find()&&status)status.textContent='🔴 Photo Control uploader did not initialize.';}},250);
+ return false;
 }
 function ensure(){
  const root=$('view-admin');if(!root||$('agentBctPhotoRecommendations'))return;
