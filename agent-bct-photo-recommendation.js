@@ -28,6 +28,7 @@ function style(){
  .abpr-actions button{min-height:42px;border:1px solid #0a4549;border-radius:9px;padding:8px 12px;font-weight:900}
  .abpr-use{background:#15803d;color:#fff}.abpr-reject{background:#b91c1c;color:#fff}.abpr-later{background:#e5e7eb;color:#173c3e}
  .abpr-secondary{background:#0f5f63;color:#fff}
+ .abpr-upload{background:#e9c57f;color:#173c3e;border-color:#b98b2f!important}
  .abpr-select{width:100%;min-height:40px;border:1px solid #9fb5b6;border-radius:8px;padding:6px}
  .abpr-permission{font-size:12px;color:#5f6f73;margin-top:9px}
  .abpr-empty{padding:18px;border:1px dashed #9fb5b6;border-radius:12px;color:#5f6f73}
@@ -101,6 +102,12 @@ async function runTest(){
  if(error){if(status)status.textContent='🔴 '+error.message;return}
  try{for(const p of (photos||[])){await saveRecommendation(p.id,await analyzePhoto(p,'test'));}if(status)status.textContent='🟢 Test recommendations saved for '+(photos||[]).length+' photos.';await load();}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation test failed.')}
 }
+function openExistingPhotoUploader(){
+ const input=$('bctPhotoUpload');
+ if(input){input.click();return true;}
+ const status=$('agentBctPhotoRecStatus');if(status)status.textContent='🟡 Photo Control uploader is still loading. Try Upload Photos again in a moment.';
+ return false;
+}
 async function runAi(){
  const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running private Agent BCT AI analysis…';
  const {data:photos,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,thumbnail_path,caption,alt_text,category,project_work_date,is_published').order('created_at',{ascending:false}).limit(12);
@@ -110,9 +117,9 @@ async function runAi(){
 function ensure(){
  const root=$('view-admin');if(!root||$('agentBctPhotoRecommendations'))return;
  style();const section=document.createElement('section');section.id='agentBctPhotoRecommendations';section.dataset.adminPagePanel='photos';
- section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><div class="abpr-actions"><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
+ section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
  root.appendChild(section);
- $('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
+ $('agentBctPhotoUpload').onclick=openExistingPhotoUploader;$('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
 }
 async function analyzeRequestedPhoto(photoId){
  const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running Agent BCT test recommendation for selected photo…';
