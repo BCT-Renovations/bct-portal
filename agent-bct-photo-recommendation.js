@@ -3,7 +3,7 @@
    No code here can publish a photo. */
 (function(){
 'use strict';
-const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-1';
+const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-2';
 window.AGENT_BCT_PHOTO_RECOMMENDATION_VERSION=VERSION;
 const CATEGORIES=['Kitchen','Bathroom','Gutters','Siding','Roofing','Decks','Doors / Windows','Concrete','Interior','Exterior','Before','After','Other'];
 const $=id=>document.getElementById(id);
@@ -111,9 +111,9 @@ async function runAi(){
 }
 function ensure(){
  const root=$('view-admin');if(!root||$('agentBctPhotoRecommendations'))return;
- style();const section=document.createElement('section');section.id='agentBctPhotoRecommendations';section.dataset.adminPagePanel='photos';
+ style();const section=document.createElement('section');section.id='agentBctPhotoRecommendations';
  section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><input id="agentBctPhotoFileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none"><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
- root.appendChild(section);
+ const photoPanel=$('bctPhotoAdmin');if(photoPanel)photoPanel.appendChild(section);else root.appendChild(section);
  $('agentBctPhotoFileInput').addEventListener('change',e=>{window.dispatchEvent(new CustomEvent('bct-agent-photo-upload-files',{detail:{files:e.target.files}}));e.target.value='';});$('agentBctPhotoUpload').onclick=openExistingPhotoUploader;$('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
 }
 async function analyzeRequestedPhoto(photoId){
