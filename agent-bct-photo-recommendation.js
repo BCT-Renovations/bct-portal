@@ -104,7 +104,7 @@ async function runTest(){
 }
 function openExistingPhotoUploader(){
  const status=$('agentBctPhotoRecStatus');
- const find=()=>document.getElementById('bctPhotoUpload')||document.querySelector('#bctPhotoAdmin input[type="file"]')||document.querySelector('input[type="file"]');
+ const find=()=>document.getElementById('bctPhotoUpload');
  const trigger=()=>{
   const el=find();if(!el)return false;
   if(status)status.textContent='🟡 Opening the existing BCT Photo Control picker…';
@@ -113,8 +113,7 @@ function openExistingPhotoUploader(){
       the existing input is reset before opening. Keep Photo Control as the only
       upload handler; Agent BCT only opens it and observes the handoff. */
    try{el.value='';}catch(e){}
-   const onSelected=()=>{if(status)status.textContent='🟡 Photo selected. BCT Photo Control is processing it…';};
-   el.addEventListener('change',onSelected,{once:true});
+   /* Photo Control owns the change/upload lifecycle and its own status. */
    const hadCapture=el.hasAttribute('capture');const captureValue=el.getAttribute('capture');
    if(hadCapture)el.removeAttribute('capture');
    el.click();
@@ -125,7 +124,7 @@ function openExistingPhotoUploader(){
  if(trigger())return true;
  if(status)status.textContent='🟡 Waiting for BCT Photo Control to initialize…';
  let tries=0;
- const timer=setInterval(()=>{tries++;if(trigger()||tries>=40){clearInterval(timer);if(tries>=40&&!find()&&status)status.textContent='🔴 BCT Photo Control uploader did not initialize.';}},250);
+ const timer=setInterval(()=>{tries++;if(trigger()||tries>=40){clearInterval(timer);if(tries>=40&&!find()&&status)status.textContent='🔴 BCT Photo Control uploader did not initialize within 10 seconds.';}},250);
  return false;
 }
 function ensure(){
