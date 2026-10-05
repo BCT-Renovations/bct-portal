@@ -758,11 +758,11 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
     </div>
   </div>
   <section id="bctHomeGallery" aria-labelledby="bctHomeGalleryTitle" class="bct-home-gallery-static">
-    <h2 id="bctHomeGalleryTitle">Our Work</h2>
-    <p class="bct-gallery-lead">A look at recent BCT Renovations projects.</p>
+    <h2 id="bctHomeGalleryTitle" data-i18n="gallery.title">Our Work</h2>
+    <p class="bct-gallery-lead" data-i18n="gallery.lead">A look at recent BCT Renovations projects.</p>
     <div id="bctHomeGalleryGrid"></div>
-    <button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false">View More Projects</button>
-    <button type="button" id="bctGalleryFull">Open Full Gallery</button>
+    <button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false" data-i18n="gallery.more">View More Projects</button>
+    <button type="button" id="bctGalleryFull" data-i18n="gallery.full">Open Full Gallery</button>
   </section>
 
   <div id="bctPublicLicenseBar" class="bct-public-license-bar" data-i18n="about.licensed">Licensed • Bonded • Insured</div>
@@ -1327,6 +1327,10 @@ const BCT_ENGLISH_FALLBACK={
   'portal.contractor_title':'CONTRACTOR PORTAL',
   'portal.admin_title':'ADMIN PORTAL',
   'estimator.email':'Email',
+  'gallery.title':'Our Work',
+  'gallery.lead':'A look at recent BCT Renovations projects.',
+  'gallery.more':'View More Projects',
+  'gallery.full':'Open Full Gallery',
   'about.short_lead':'BCT Renovations is your general contractor — not just a contractor referral service.',
   'about.short_body':'We coordinate your project, work with verified contractors, monitor progress, and stay involved from start to finish.',
   'about.short_close':'Your project. Your home. Our commitment.',
@@ -1494,7 +1498,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.login_title": "Inicio de sesión de Administración de BCT",
     "admin.login_description": "Inicie sesión con la cuenta de administrador de BCT. Solo los usuarios cuya cuenta de Supabase tenga el rol de administrador pueden abrir el panel.",
     "admin.email": "Correo electrónico",
-    "estimator.email": "Correo electrónico"
+    "estimator.email": "Correo electrónico",
+    "gallery.title":"Nuestro Trabajo",
+    "gallery.lead":"Una muestra de proyectos recientes de BCT Renovations.",
+    "gallery.more":"Ver Más Proyectos",
+    "gallery.full":"Abrir Galería Completa"
   },
   "fr": {
     "contractor.signin_title": "Connexion entrepreneur",
@@ -2403,6 +2411,7 @@ async function applyBctLanguage(languageCode){
   syncShareLanguage(language);
   if(selector) selector.value=language;
   if(loginSelector) loginSelector.value=language;
+  window.dispatchEvent(new CustomEvent('bct-language-changed',{detail:{language}}));
 }
 function bctText(key){
   const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
@@ -4246,6 +4255,6 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
 <script src="/bct-admin-control-board.js?v=20260930-2"></script>
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
 
-<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261005-1" defer></script>
+<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261005-3" defer></script>
 </body>
 </html>
