@@ -105,7 +105,7 @@ async function runTest(){
 function openExistingPhotoUploader(){
  const status=$('agentBctPhotoRecStatus');
  const find=()=>document.getElementById('bctPhotoUpload')||document.querySelector('#bctPhotoAdmin input[type="file"]')||document.querySelector('input[type="file"]');
- const trigger=()=>{const el=find();if(!el)return false;try{el.click();return true;}catch(e){return false;}};
+ const trigger=()=>{const el=find();if(!el)return false;try{const hadCapture=el.hasAttribute('capture');const captureValue=el.getAttribute('capture');if(hadCapture)el.removeAttribute('capture');el.click();if(hadCapture){setTimeout(()=>{try{el.setAttribute('capture',captureValue??'')}catch(e){}},0);}return true;}catch(e){return false;}};
  if(trigger())return true;
  if(status)status.textContent='';
  let tries=0;
