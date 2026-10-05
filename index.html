@@ -693,6 +693,15 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
   transform:translateY(1px);
 }
 </style>
+
+<style id="bct-gallery-static-anchor-20261005">
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:block;margin:14px 0 0;padding:16px;background:#fff;border:1px solid #d7e0e1;border-radius:16px;box-shadow:0 8px 24px rgba(23,36,39,.06)}
+#bctHomeGallery h2{margin:0;text-align:center;color:#0a4549;font-size:clamp(24px,6vw,32px)}
+#bctHomeGallery .bct-gallery-lead{text-align:center;margin:6px 0 14px;color:#5f6f73;line-height:1.4}
+#bctHomeGalleryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
+@media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -748,6 +757,14 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
       <div id="bctShareAppStatus" class="muted" role="status" aria-live="polite"></div>
     </div>
   </div>
+  <section id="bctHomeGallery" aria-labelledby="bctHomeGalleryTitle" class="bct-home-gallery-static">
+    <h2 id="bctHomeGalleryTitle">Our Work</h2>
+    <p class="bct-gallery-lead">A look at recent BCT Renovations projects.</p>
+    <div id="bctHomeGalleryGrid"></div>
+    <button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false">View More Projects</button>
+    <button type="button" id="bctGalleryFull">Open Full Gallery</button>
+  </section>
+
   <div id="bctPublicLicenseBar" class="bct-public-license-bar" data-i18n="about.licensed">Licensed • Bonded • Insured</div>
 
   <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle">
