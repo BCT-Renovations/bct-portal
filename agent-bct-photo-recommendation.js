@@ -3,7 +3,7 @@
    No code here can publish a photo. */
 (function(){
 'use strict';
-const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-2';
+const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-4';
 window.AGENT_BCT_PHOTO_RECOMMENDATION_VERSION=VERSION;
 const CATEGORIES=['Kitchen','Bathroom','Gutters','Siding','Roofing','Decks','Doors / Windows','Concrete','Interior','Exterior','Before','After','Other'];
 const $=id=>document.getElementById(id);
@@ -102,7 +102,7 @@ async function runTest(){
  if(error){if(status)status.textContent='🔴 '+error.message;return}
  try{for(const p of (photos||[])){await saveRecommendation(p.id,await analyzePhoto(p,'test'));}if(status)status.textContent='🟢 Test recommendations saved for '+(photos||[]).length+' photos.';await load();}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation test failed.')}
 }
-function openExistingPhotoUploader(){const input=$('agentBctPhotoFileInput');if(input){input.click();return true;}const existing=$('bctPhotoUpload');if(existing){existing.click();return true;}const status=$('agentBctPhotoRecStatus');if(status)status.textContent='🟡 Upload control is loading. Try again in a moment.';return false;}
+function openExistingPhotoUploader(){const existing=$('bctPhotoUpload');if(existing){existing.click();return true;}const status=$('agentBctPhotoRecStatus');if(status)status.textContent='🟡 Upload control is loading. Try again in a moment.';return false;}
 async function runAi(){
  const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running private Agent BCT AI analysis…';
  const {data:photos,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,thumbnail_path,caption,alt_text,category,project_work_date,is_published').order('created_at',{ascending:false}).limit(12);
@@ -112,9 +112,9 @@ async function runAi(){
 function ensure(){
  const root=$('view-admin');if(!root||$('agentBctPhotoRecommendations'))return;
  style();const section=document.createElement('section');section.id='agentBctPhotoRecommendations';
- section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><input id="agentBctPhotoFileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none"><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
+ section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
  const photoPanel=$('bctPhotoAdmin');if(photoPanel)photoPanel.appendChild(section);else root.appendChild(section);
- $('agentBctPhotoFileInput').addEventListener('change',e=>{const files=Array.from(e.target.files||[]);window.dispatchEvent(new CustomEvent('bct-agent-photo-upload-files',{detail:{files}}));e.target.value='';});$('agentBctPhotoUpload').onclick=openExistingPhotoUploader;$('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
+ $('agentBctPhotoUpload').onclick=openExistingPhotoUploader;$('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
 }
 async function analyzeRequestedPhoto(photoId){
  const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running Agent BCT test recommendation for selected photo…';
