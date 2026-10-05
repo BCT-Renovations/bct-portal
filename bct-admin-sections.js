@@ -20,6 +20,6 @@
   loadOnce('/bct-estimator-system.js?v=20260930-1','data-bct-estimator-system');
   loadOnce('/bct-estimator-portal.js?v=20261001-1','data-bct-estimator-portal');
   loadOnce('/bct-estimator-admin.js?v=20260930-1','data-bct-estimator-admin');
-  loadOnce('/bct-photo-admin.js?v=20261001-1','data-bct-photo-admin');
-  loadOnce('/agent-bct-photo-recommendation.js?v=20261005-3','data-agent-bct-photo-recommendation');
+  loadOnce('/bct-photo-admin.js?v=20261005-2','data-bct-photo-admin');
+  loadOnce('/agent-bct-photo-recommendation.js?v=20261005-5','data-agent-bct-photo-recommendation');
 })();
