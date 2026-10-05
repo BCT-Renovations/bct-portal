@@ -3,7 +3,7 @@
    No code here can publish a photo. */
 (function(){
 'use strict';
-const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-5';
+const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-6';
 window.AGENT_BCT_PHOTO_RECOMMENDATION_VERSION=VERSION;
 const CATEGORIES=['Kitchen','Bathroom','Gutters','Siding','Roofing','Decks','Doors / Windows','Concrete','Interior','Exterior','Before','After','Other'];
 const $=id=>document.getElementById(id);
@@ -141,5 +141,5 @@ async function analyzeRequestedPhoto(photoId){
  try{await saveRecommendation(photo.id,await analyzePhoto(photo,'test'));if(status)status.textContent='🟢 Test recommendation saved for selected photo.';await load();document.getElementById('agentBctPhotoRecommendations')?.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation failed.')}}
 window.addEventListener('bct-agent-photo-upload-started',e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🟡 Uploading '+Number(e.detail?.count||1)+' photo(s)…'});window.addEventListener('bct-agent-photo-upload-error',e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🔴 Photo upload failed: '+(e.detail?.message||'Unknown upload error.')});window.addEventListener('bct-agent-photo-upload-complete',async e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🟢 '+Number(e.detail?.count||1)+' photo(s) uploaded to Photo Control. Refreshing the gallery…';await load();if(s)s.textContent='🟢 '+Number(e.detail?.count||1)+' photo(s) uploaded. The photo is now in Photo Control as hidden until Admin publishes it.'});
 window.addEventListener('bct-agent-photo-request',e=>{if(e.detail?.photoId)analyzeRequestedPhoto(e.detail.photoId)});
-let rootObserver=null;function watchForAdminRoot(){if(rootObserver||!document.body)return;rootObserver=new MutationObserver(()=>{if($('view-admin')){ensure();if($('agentBctPhotoRecommendations')){try{rootObserver.disconnect()}catch(_){}rootObserver=null;}}});rootObserver.observe(document.body,{childList:true,subtree:true});ensure()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchForAdminRoot);else watchForAdminRoot();window.addEventListener('pageshow',ensure);window.addEventListener('bct-photo-control-ready',ensure);
+let rootObserver=null;function watchForAdminRoot(){if(rootObserver||!document.body)return;rootObserver=new MutationObserver(()=>{if(!$('view-admin'))return;ensure();/* Do not stop watching merely because the Agent panel exists. Photo Control can initialize later. */if($('agentBctPhotoRecommendations')&&$('bctPhotoUpload')){try{rootObserver.disconnect()}catch(_){}rootObserver=null;}});rootObserver.observe(document.body,{childList:true,subtree:true});ensure()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchForAdminRoot);else watchForAdminRoot();window.addEventListener('pageshow',watchForAdminRoot);window.addEventListener('bct-photo-control-ready',()=>{ensure();watchForAdminRoot();});
 })();
