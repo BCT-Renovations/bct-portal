@@ -3,7 +3,7 @@
    No code here can publish a photo. */
 (function(){
 'use strict';
-const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-4';
+const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-5';
 window.AGENT_BCT_PHOTO_RECOMMENDATION_VERSION=VERSION;
 const CATEGORIES=['Kitchen','Bathroom','Gutters','Siding','Roofing','Decks','Doors / Windows','Concrete','Interior','Exterior','Before','After','Other'];
 const $=id=>document.getElementById(id);
@@ -105,32 +105,21 @@ async function runTest(){
 function openExistingPhotoUploader(){
  const status=$('agentBctPhotoRecStatus');
  const find=()=>document.getElementById('bctPhotoUpload')||document.querySelector('#bctPhotoAdmin input[type="file"]')||document.querySelector('input[type="file"]');
- const wire=(el)=>{
-  if(!el||el.dataset.agentBctUploadWired==='1')return true;
-  el.dataset.agentBctUploadWired='1';
-  el.addEventListener('change',()=>{
-   const files=el.files;
-   if(!files?.length)return;
-   if(status)status.textContent='🟡 Photo selected. Sending it through Photo Control…';
-   window.dispatchEvent(new CustomEvent('bct-agent-photo-upload-files',{detail:{files}}));
-   setTimeout(()=>{try{el.value=''}catch(e){}},0);
-  });
-  return true;
- };
  const trigger=()=>{
-  const el=find();if(!el)return false;wire(el);
+  const el=find();if(!el)return false;
+  if(status)status.textContent='🟡 Opening the existing BCT Photo Control picker…';
   try{
    const hadCapture=el.hasAttribute('capture');const captureValue=el.getAttribute('capture');
    if(hadCapture)el.removeAttribute('capture');
    el.click();
-   if(hadCapture)setTimeout(()=>{try{el.setAttribute('capture',captureValue??'')}catch(e){ }},0);
+   if(hadCapture)setTimeout(()=>{try{el.setAttribute('capture',captureValue??'')}catch(e){}},0);
    return true;
-  }catch(e){return false;}
+  }catch(e){if(status)status.textContent='🔴 Could not open the BCT Photo Control picker.';return false;}
  };
  if(trigger())return true;
- if(status)status.textContent='';
+ if(status)status.textContent='🟡 Waiting for BCT Photo Control to initialize…';
  let tries=0;
- const timer=setInterval(()=>{tries++;if(trigger()||tries>=40){clearInterval(timer);if(tries>=40&&!find()&&status)status.textContent='🔴 Photo Control uploader did not initialize.';}},250);
+ const timer=setInterval(()=>{tries++;if(trigger()||tries>=40){clearInterval(timer);if(tries>=40&&!find()&&status)status.textContent='🔴 BCT Photo Control uploader did not initialize.';}},250);
  return false;
 }
 function ensure(){
