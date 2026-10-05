@@ -118,7 +118,7 @@
     if($('bctGalleryModal'))return;
     const m=document.createElement('div');m.id='bctGalleryModal';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');
     const c=copy();
-    m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">'+c.close+'</button><label>'+c.category+' <select id="bctGalleryCategory"><option value="All">'+c.all+'</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← '+c.prev+'</button><button id="bctGalleryMore" type="button">Load More Photos</button><button id="bctGalleryNext" type="button">'+c.next+' →</button></div>';
+    m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">'+c.close+'</button><label>'+c.category+' <select id="bctGalleryCategory"><option value="All">'+c.all+'</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← '+c.prev+'</button><button id="bctGalleryMore" type="button">'+c.morePhotos+'</button><button id="bctGalleryNext" type="button">'+c.next+' →</button></div>';
     document.body.appendChild(m);
     $('bctGalleryClose').onclick=()=>m.hidden=true;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryMore').onclick=()=>{fullPage++;loadFull(false)};$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};
     let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')m.hidden=true;else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')moveFull(1)});
@@ -131,14 +131,7 @@
     const full=$('bctGalleryFull');if(full)full.addEventListener('click',()=>{ensureGalleryModal();loadFull(true)});
   }
 
-    function wireGalleryControls(section){
-    if(section.dataset.bctGalleryWired==='1')return;
-    section.dataset.bctGalleryWired='1';
-    const toggle=$('bctGalleryToggle'); if(toggle)toggle.addEventListener('click',()=>{expanded=!expanded;render()});
-    const full=$('bctGalleryFull'); if(full)full.addEventListener('click',()=>{ensureGalleryModal();loadFull(true)});
-  }
-
-  function ensure(){
+    function ensure(){
     const home=$('view-home');
     const license=$('bctPublicLicenseBar');
     if(!home||!license)return;
