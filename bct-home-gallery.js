@@ -2,7 +2,7 @@
    Isolated add-on: does not replace existing landing controls or portal logic. */
 (function(){
   'use strict';
-  const VERSION='BCT-PHOTO-BUILD-2026.10.01-public-foundation-2';
+  const VERSION='BCT-PHOTO-BUILD-2026.10.05-image-text-translation-1';
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
@@ -38,7 +38,7 @@
       #bctHomeGalleryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
       .bct-gallery-card{margin:0;cursor:pointer;border:1px solid #d7e0e1;border-radius:12px;overflow:hidden;background:#f7faf9;min-width:0}
       .bct-gallery-frame{aspect-ratio:4/3;background:linear-gradient(145deg,#e7f3f3,#f7fbf8);display:flex;align-items:center;justify-content:center;overflow:hidden;color:#0f5f63;font-weight:800;text-align:center;padding:14px}
-      .bct-gallery-frame img{width:100%;height:100%;display:block;object-fit:cover}
+      .bct-gallery-frame{position:relative}.bct-gallery-frame img{width:100%;height:100%;display:block;object-fit:cover}.bct-gallery-image-text{position:absolute;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(0,0,0,.72);color:#fff;font-weight:900;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.8);line-height:1.25}
       .bct-gallery-card figcaption{padding:9px 10px;font-size:13px;font-weight:700;color:#173c3e;text-align:center}
       .bct-gallery-extra[hidden]{display:none!important}
       #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}\n      #bctGalleryModal[hidden]{display:none!important}#bctGalleryModal{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.9);color:#fff;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));display:grid;grid-template-rows:auto 1fr auto}.bct-gallery-modal-head,.bct-gallery-modal-foot{display:flex;gap:8px;align-items:center;justify-content:space-between}.bct-gallery-modal-head button,.bct-gallery-modal-foot button,.bct-gallery-modal-head select{min-height:44px;border-radius:9px;padding:8px 12px}.bct-gallery-stage{display:grid;place-items:center;min-height:0}.bct-gallery-stage img{max-width:100%;max-height:68vh;object-fit:contain}.bct-gallery-modal-caption{text-align:center;margin-top:6px}
@@ -92,20 +92,20 @@
   async function loadProjects(){
     if(!window.supabaseClient){loaded=true;PROJECTS=[];render();return}
     const {data,error}=await window.supabaseClient.from('bct_gallery_photos')
-      .select('id,storage_path,thumbnail_path,caption,alt_text,project_work_date,category,home_order')
+      .select('id,storage_path,thumbnail_path,caption,alt_text,image_text,image_text_translations,project_work_date,category,home_order')
       .eq('is_published',true).eq('show_on_home',true).order('home_order',{ascending:true}).limit(30);
     loaded=true;
     if(error){PROJECTS=[];render();return}
     const items=(data||[]).filter(x=>x.storage_path);
-    PROJECTS=(await Promise.all(items.map(async x=>{const path=x.thumbnail_path||x.storage_path;const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(path,3600);return signed&&signed.signedUrl?{image:signed.signedUrl,caption:x.caption,alt:x.alt_text,project_work_date:x.project_work_date,category:x.category,id:x.id}:null}))).filter(Boolean);
+    PROJECTS=(await Promise.all(items.map(async x=>{const path=x.thumbnail_path||x.storage_path;const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(path,3600);return signed&&signed.signedUrl?{image:signed.signedUrl,caption:x.caption,alt:x.alt_text,project_work_date:x.project_work_date,category:x.category,id:x.id,image_text:x.image_text||'',image_text_translations:x.image_text_translations||{}}:null}))).filter(Boolean);
     render();
   }
 
 
   function fullList(){return fullCategory==='All'?FULL:FULL.filter(x=>x.category===fullCategory)}
-  function showFull(){ensureGalleryModal();const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;$('bctGalleryModalCaption').textContent=[p.caption,p.category,formatDate(p.project_work_date)].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
+  function showFull(){ensureGalleryModal();const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;const modalText=(p.image_text_translations&&p.image_text_translations[language()])||p.image_text||'';$('bctGalleryModalImage').dataset.imageText=modalText;$('bctGalleryModalCaption').textContent=[p.caption,p.category,formatDate(p.project_work_date)].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
   function moveFull(n){const list=fullList();if(!list.length)return;fullIndex=(fullIndex+n+list.length)%list.length;showFull()}
-  async function loadFull(reset=true){ensureGalleryModal();if(reset){FULL=[];fullPage=0;fullCategory='All';fullIndex=0;}if(!window.supabaseClient){FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error){if(!FULL.length)FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const items=(data||[]).filter(x=>x.storage_path);const batch=(await Promise.all(items.map(async x=>{const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(x.storage_path,3600);return signed&&signed.signedUrl?{...x,image:signed.signedUrl}:null}))).filter(Boolean);const priorCategory=fullCategory,priorIndex=fullIndex;FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;showFull();if($('bctGalleryMore'))$('bctGalleryMore').hidden=!fullHasMore}
+  async function loadFull(reset=true){ensureGalleryModal();if(reset){FULL=[];fullPage=0;fullCategory='All';fullIndex=0;}if(!window.supabaseClient){FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,image_text,image_text_translations,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error){if(!FULL.length)FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const items=(data||[]).filter(x=>x.storage_path);const batch=(await Promise.all(items.map(async x=>{const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(x.storage_path,3600);return signed&&signed.signedUrl?{...x,image:signed.signedUrl,image_text:x.image_text||'',image_text_translations:x.image_text_translations||{}}:null}))).filter(Boolean);const priorCategory=fullCategory,priorIndex=fullIndex;FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;showFull();if($('bctGalleryMore'))$('bctGalleryMore').hidden=!fullHasMore}
 
   function ensureGalleryModal(){
     if($('bctGalleryModal'))return;
@@ -127,7 +127,7 @@
   function ensureGalleryModal(){
     if($('bctGalleryModal'))return;
     const m=document.createElement('div');m.id='bctGalleryModal';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');
-    m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">Close</button><label>Category <select id="bctGalleryCategory"><option>All</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← Previous</button><button id="bctGalleryMore" type="button">Load More Photos</button><button id="bctGalleryNext" type="button">Next →</button></div>';
+    m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">'+c.close+'</button><label>'+c.all+' <select id="bctGalleryCategory"><option>'+c.all+'</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← Previous</button><button id="bctGalleryMore" type="button">'+c.more+'</button><button id="bctGalleryNext" type="button">'+c.next+' →</button></div>';
     document.body.appendChild(m);
     $('bctGalleryClose').onclick=()=>m.hidden=true;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryMore').onclick=()=>{fullPage++;loadFull(false)};$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};
     let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});
