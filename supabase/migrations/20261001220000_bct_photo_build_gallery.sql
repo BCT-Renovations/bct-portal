@@ -96,10 +96,3 @@ drop trigger if exists bct_gallery_enforce_home_limit_trigger on public.bct_gall
 create trigger bct_gallery_enforce_home_limit_trigger
 before insert or update on public.bct_gallery_photos
 for each row execute function public.bct_gallery_enforce_limits();
-
--- Image text translation support for photo artwork.
-alter table public.bct_gallery_photos
-  add column if not exists image_text text not null default '',
-  add column if not exists image_text_translations jsonb not null default '{}'::jsonb;
-comment on column public.bct_gallery_photos.image_text is 'Source text visibly represented in the photo artwork, when applicable.';
-comment on column public.bct_gallery_photos.image_text_translations is 'Language-code to translated image-text map.';
