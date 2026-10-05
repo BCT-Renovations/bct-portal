@@ -3,7 +3,7 @@
    No code here can publish a photo. */
 (function(){
 'use strict';
-const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-6';
+const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-7';
 window.AGENT_BCT_PHOTO_RECOMMENDATION_VERSION=VERSION;
 const CATEGORIES=['Kitchen','Bathroom','Gutters','Siding','Roofing','Decks','Doors / Windows','Concrete','Interior','Exterior','Before','After','Other'];
 const $=id=>document.getElementById(id);
@@ -104,35 +104,24 @@ async function runTest(){
 }
 function openExistingPhotoUploader(){
  const status=$('agentBctPhotoRecStatus');
- const find=()=>document.getElementById('bctPhotoUpload');
- const trigger=()=>{
-  const el=find();if(!el)return false;
-  if(status)status.textContent='🟡 Opening the existing BCT Photo Control picker…';
-  try{
-   /* iOS/Safari can suppress change when the same file is selected again unless
-      the existing input is reset before opening. Keep Photo Control as the only
-      upload handler; Agent BCT only opens it and observes the handoff. */
-   try{el.value='';}catch(e){}
-   /* Photo Control owns the change/upload lifecycle and its own status. */
-   const hadCapture=el.hasAttribute('capture');const captureValue=el.getAttribute('capture');
-   if(hadCapture)el.removeAttribute('capture');
-   el.click();
-   if(hadCapture)setTimeout(()=>{try{el.setAttribute('capture',captureValue??'')}catch(e){}},0);
-   return true;
-  }catch(e){if(status)status.textContent='🔴 Could not open the BCT Photo Control picker.';return false;}
- };
- if(trigger())return true;
- if(status)status.textContent='🟡 Waiting for BCT Photo Control to initialize…';
- let tries=0;
- const timer=setInterval(()=>{tries++;if(trigger()||tries>=40){clearInterval(timer);if(tries>=40&&!find()&&status)status.textContent='🔴 BCT Photo Control uploader did not initialize within 10 seconds.';}},250);
- return false;
+ const input=$('agentBctPhotoPicker');
+ if(!input){if(status)status.textContent='🔴 Agent BCT photo picker is unavailable.';return false;}
+ try{input.value='';input.click();if(status)status.textContent='🟡 Choose photos from your library or camera…';return true}
+ catch(e){if(status)status.textContent='🔴 Could not open the photo picker.';return false}
 }
+
 function ensure(){
  const root=$('view-admin');if(!root||$('agentBctPhotoRecommendations'))return;
  style();const section=document.createElement('section');section.id='agentBctPhotoRecommendations';
- section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
+ section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><input id="agentBctPhotoPicker" type="file" accept="image/jpeg,image/png,image/webp" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
  const photoPanel=$('bctPhotoAdmin');if(photoPanel)photoPanel.appendChild(section);else root.appendChild(section);
- $('agentBctPhotoUpload').onclick=openExistingPhotoUploader;$('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
+ $('agentBctPhotoUpload').onclick=openExistingPhotoUploader;
+ $('agentBctPhotoPicker').addEventListener('change',e=>{
+  const files=[...(e.target.files||[])]; if(!files.length)return;
+  const send=()=>{if(window.BCTPhotoControl?.uploadFiles){window.BCTPhotoControl.uploadFiles(files);if($('agentBctPhotoRecStatus'))$('agentBctPhotoRecStatus').textContent='🟡 Sending selected photos to the existing BCT Photo Control uploader…';return true}return false};
+  if(!send()){if($('agentBctPhotoRecStatus'))$('agentBctPhotoRecStatus').textContent='🟡 Waiting for the existing Photo Control upload service…';window.addEventListener('bct-photo-control-ready',send,{once:true});}
+ });
+ $('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
 }
 async function analyzeRequestedPhoto(photoId){
  const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running Agent BCT test recommendation for selected photo…';
