@@ -1318,6 +1318,8 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
 const SUPABASE_URL='https://onpqykpikxbbypfvmtin.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_JToQ3bPaJql-xHq-iyM0bg_Fweenyfh';
 const supabaseClient=window.supabase ? window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY) : null;
+// Expose the existing V46 client to isolated modules. This is the same client instance, not a second system.
+window.supabaseClient=supabaseClient;
 
 const BCT_LANGUAGE_KEY='bctPreferredLanguage';
 const BCT_ENGLISH_FALLBACK={

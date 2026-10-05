@@ -3,7 +3,7 @@
    No code here can publish a photo. */
 (function(){
 'use strict';
-const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-2';
+const VERSION='AGENT-BCT-PHOTO-RECOMMENDATION-2026.10.05-7';
 window.AGENT_BCT_PHOTO_RECOMMENDATION_VERSION=VERSION;
 const CATEGORIES=['Kitchen','Bathroom','Gutters','Siding','Roofing','Decks','Doors / Windows','Concrete','Interior','Exterior','Before','After','Other'];
 const $=id=>document.getElementById(id);
@@ -102,25 +102,33 @@ async function runTest(){
  if(error){if(status)status.textContent='🔴 '+error.message;return}
  try{for(const p of (photos||[])){await saveRecommendation(p.id,await analyzePhoto(p,'test'));}if(status)status.textContent='🟢 Test recommendations saved for '+(photos||[]).length+' photos.';await load();}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation test failed.')}
 }
-function openExistingPhotoUploader(){const input=$('agentBctPhotoFileInput');if(input){input.click();return true;}const existing=$('bctPhotoUpload');if(existing){existing.click();return true;}const status=$('agentBctPhotoRecStatus');if(status)status.textContent='🟡 Upload control is loading. Try again in a moment.';return false;}
-async function runAi(){
- const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running private Agent BCT AI analysis…';
- const {data:photos,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,thumbnail_path,caption,alt_text,category,project_work_date,is_published').order('created_at',{ascending:false}).limit(12);
- if(error){if(status)status.textContent='🔴 '+error.message;return}
- try{for(const p of (photos||[])){await saveRecommendation(p.id,await analyzePhoto(p,'ai'));}if(status)status.textContent='🟢 Private AI recommendations saved. No publication occurred.';await load();}catch(e){if(status)status.textContent='🔴 '+(e.message||'AI analysis failed.')}
+function openExistingPhotoUploader(){
+ const status=$('agentBctPhotoRecStatus');
+ const input=$('agentBctPhotoPicker');
+ if(!input){if(status)status.textContent='🔴 Agent BCT photo picker is unavailable.';return false;}
+ try{input.value='';input.click();if(status)status.textContent='🟡 Choose photos from your library or camera…';return true}
+ catch(e){if(status)status.textContent='🔴 Could not open the photo picker.';return false}
 }
+
 function ensure(){
  const root=$('view-admin');if(!root||$('agentBctPhotoRecommendations'))return;
  style();const section=document.createElement('section');section.id='agentBctPhotoRecommendations';
- section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><input id="agentBctPhotoFileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none"><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
+ section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><input id="agentBctPhotoPicker" type="file" accept="image/jpeg,image/png,image/webp" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
  const photoPanel=$('bctPhotoAdmin');if(photoPanel)photoPanel.appendChild(section);else root.appendChild(section);
- $('agentBctPhotoFileInput').addEventListener('change',e=>{const files=Array.from(e.target.files||[]);window.dispatchEvent(new CustomEvent('bct-agent-photo-upload-files',{detail:{files}}));e.target.value='';});$('agentBctPhotoUpload').onclick=openExistingPhotoUploader;$('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
+ $('agentBctPhotoUpload').onclick=openExistingPhotoUploader;
+ $('agentBctPhotoPicker').addEventListener('change',e=>{
+  const files=[...(e.target.files||[])]; if(!files.length)return;
+  const send=()=>{if(window.BCTPhotoControl?.uploadFiles){window.BCTPhotoControl.uploadFiles(files);if($('agentBctPhotoRecStatus'))$('agentBctPhotoRecStatus').textContent='🟡 Sending selected photos to the existing BCT Photo Control uploader…';return true}return false};
+  if(!send()){if($('agentBctPhotoRecStatus'))$('agentBctPhotoRecStatus').textContent='🟡 Waiting for the existing Photo Control upload service…';window.addEventListener('bct-photo-control-ready',send,{once:true});}
+ });
+ $('agentBctPhotoTest').onclick=runTest;$('agentBctPhotoAi').onclick=runAi;$('agentBctPhotoRefresh').onclick=load;load();
 }
 async function analyzeRequestedPhoto(photoId){
  const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running Agent BCT test recommendation for selected photo…';
  const {data:photo,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,thumbnail_path,caption,alt_text,category,project_work_date,is_published').eq('id',photoId).single();
  if(error||!photo){if(status)status.textContent='🔴 Selected photo could not be loaded.';return}
  try{await saveRecommendation(photo.id,await analyzePhoto(photo,'test'));if(status)status.textContent='🟢 Test recommendation saved for selected photo.';await load();document.getElementById('agentBctPhotoRecommendations')?.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation failed.')}}
+window.addEventListener('bct-agent-photo-upload-started',e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🟡 Uploading '+Number(e.detail?.count||1)+' photo(s)…'});window.addEventListener('bct-agent-photo-upload-error',e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🔴 Photo upload failed: '+(e.detail?.message||'Unknown upload error.')});window.addEventListener('bct-agent-photo-upload-complete',async e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🟢 '+Number(e.detail?.count||1)+' photo(s) uploaded to Photo Control. Refreshing the gallery…';await load();if(s)s.textContent='🟢 '+Number(e.detail?.count||1)+' photo(s) uploaded. The photo is now in Photo Control as hidden until Admin publishes it.'});
 window.addEventListener('bct-agent-photo-request',e=>{if(e.detail?.photoId)analyzeRequestedPhoto(e.detail.photoId)});
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();window.addEventListener('pageshow',ensure);
+let rootObserver=null;function watchForAdminRoot(){if(rootObserver||!document.body)return;rootObserver=new MutationObserver(()=>{if(!$('view-admin'))return;ensure();/* Do not stop watching merely because the Agent panel exists. Photo Control can initialize later. */if($('agentBctPhotoRecommendations')&&$('bctPhotoUpload')){try{rootObserver.disconnect()}catch(_){}rootObserver=null;}});rootObserver.observe(document.body,{childList:true,subtree:true});ensure()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchForAdminRoot);else watchForAdminRoot();window.addEventListener('pageshow',watchForAdminRoot);window.addEventListener('bct-photo-control-ready',()=>{ensure();watchForAdminRoot();});
 })();
