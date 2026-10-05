@@ -6,15 +6,15 @@
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
-    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',coming:'Gallery Coming Soon',close:'Close',prev:'Previous',next:'Next',all:'All',slot:'BCT project photo'},
-    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',full:'Abrir Galería Completa',coming:'Galería Próximamente',close:'Cerrar',prev:'Anterior',next:'Siguiente',all:'Todos',slot:'Foto de proyecto BCT'},
-    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',full:'Ouvrir la Galerie Complète',coming:'Galerie Bientôt Disponible',close:'Fermer',prev:'Précédent',next:'Suivant',all:'Tous',slot:'Photo de projet BCT'},
-    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',full:'Louvri Galri Konplè a',coming:'Galri a Ap Vini Talè',close:'Fèmen',prev:'Anvan',next:'Pwochen',all:'Tout',slot:'Foto pwojè BCT'},
-    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',less:'Ver Menos Projetos',full:'Abrir Galeria Completa',coming:'Galeria em Breve',close:'Fechar',prev:'Anterior',next:'Próximo',all:'Todos',slot:'Foto de projeto BCT'},
-    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',less:'Hiển Thị Ít Hơn',full:'Mở Thư Viện Ảnh Đầy Đủ',coming:'Thư Viện Ảnh Sắp Ra Mắt',close:'Đóng',prev:'Trước',next:'Tiếp',all:'Tất Cả',slot:'Ảnh dự án BCT'},
-    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',less:'收起项目',full:'打开完整图库',coming:'图库即将推出',close:'关闭',prev:'上一张',next:'下一张',all:'全部',slot:'BCT 项目照片'},
-    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',less:'عرض مشاريع أقل',full:'فتح المعرض الكامل',coming:'المعرض قريبًا',close:'إغلاق',prev:'السابق',next:'التالي',all:'الكل',slot:'صورة مشروع BCT'},
-    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',full:'Открыть Полную Галерею',coming:'Галерея Скоро Откроется',close:'Закрыть',prev:'Назад',next:'Далее',all:'Все',slot:'Фото проекта BCT'}
+    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',coming:'Gallery Coming Soon',close:'Close',category:'Category',loadMore:'Load More Photos',prev:'Previous',next:'Next',all:'All',slot:'BCT project photo'},
+    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',full:'Abrir Galería Completa',coming:'Galería Próximamente',close:'Cerrar',category:'Categoría',loadMore:'Cargar más fotos',prev:'Anterior',next:'Siguiente',all:'Todos',slot:'Foto de proyecto BCT'},
+    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',full:'Ouvrir la Galerie Complète',coming:'Galerie Bientôt Disponible',close:'Fermer',category:'Catégorie',loadMore:'Charger plus de photos',prev:'Précédent',next:'Suivant',all:'Tous',slot:'Photo de projet BCT'},
+    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',full:'Louvri Galri Konplè a',coming:'Galri a Ap Vini Talè',close:'Fèmen',category:'Kategori',loadMore:'Chaje plis foto',prev:'Anvan',next:'Pwochen',all:'Tout',slot:'Foto pwojè BCT'},
+    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',less:'Ver Menos Projetos',full:'Abrir Galeria Completa',coming:'Galeria em Breve',close:'Fechar',category:'Categoria',loadMore:'Carregar mais fotos',prev:'Anterior',next:'Próximo',all:'Todos',slot:'Foto de projeto BCT'},
+    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',less:'Hiển Thị Ít Hơn',full:'Mở Thư Viện Ảnh Đầy Đủ',coming:'Thư Viện Ảnh Sắp Ra Mắt',close:'Đóng',category:'Danh mục',loadMore:'Tải thêm ảnh',prev:'Trước',next:'Tiếp',all:'Tất Cả',slot:'Ảnh dự án BCT'},
+    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',less:'收起项目',full:'打开完整图库',coming:'图库即将推出',close:'关闭',category:'类别',loadMore:'加载更多照片',prev:'上一张',next:'下一张',all:'全部',slot:'BCT 项目照片'},
+    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',less:'عرض مشاريع أقل',full:'فتح المعرض الكامل',coming:'المعرض قريبًا',close:'إغلاق',category:'الفئة',loadMore:'تحميل المزيد من الصور',prev:'السابق',next:'التالي',all:'الكل',slot:'صورة مشروع BCT'},
+    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',full:'Открыть Полную Галерею',coming:'Галерея Скоро Откроется',close:'Закрыть',category:'Категория',loadMore:'Загрузить ещё фото',prev:'Назад',next:'Далее',all:'Все',slot:'Фото проекта BCT'}
   };
 
   let PROJECTS=[]; // Loaded from the secure BCT gallery table; never create empty placeholders.
@@ -162,8 +162,10 @@
 
 
   document.addEventListener('change',event=>{
-    if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(render,0);
+    if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(()=>{render();refreshModalCopy();if(!$('bctGalleryModal')||$('bctGalleryModal').hidden===false)showFull();},0);
   },true);
+  function refreshModalCopy(){const m=$('bctGalleryModal');if(!m)return;const c=copy();const close=$('bctGalleryClose'),prev=$('bctGalleryPrev'),next=$('bctGalleryNext'),more=$('bctGalleryMore'),label=$('bctGalleryCategoryLabel');if(close)close.textContent=c.close;if(prev)prev.textContent='← '+c.prev;if(next)next.textContent=c.next+' →';if(more)more.textContent=c.loadMore;if(label)label.textContent=c.category;const sel=$('bctGalleryCategory');if(sel){const current=sel.value;sel.options[0].text=c.all;[...sel.options].slice(1).forEach(o=>o.text=localizedCategory(o.value));sel.value=current;}}
+
   window.addEventListener('pageshow',()=>{ensure();setTimeout(loadProjects,50)});window.addEventListener('bct-gallery-changed',()=>{setTimeout(loadProjects,0)});document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(loadProjects,50)});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
 })();
