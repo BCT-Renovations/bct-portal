@@ -103,24 +103,43 @@
 
 
   function fullList(){return fullCategory==='All'?FULL:FULL.filter(x=>x.category===fullCategory)}
-  function showFull(){const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;$('bctGalleryModalCaption').textContent=[p.caption,p.category,formatDate(p.project_work_date)].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
+  function showFull(){ensureGalleryModal();const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=p.alt||copy().slot;$('bctGalleryModalCaption').textContent=[p.caption,p.category,formatDate(p.project_work_date)].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;$('bctGalleryModal').hidden=false}
   function moveFull(n){const list=fullList();if(!list.length)return;fullIndex=(fullIndex+n+list.length)%list.length;showFull()}
-  async function loadFull(reset=true){if(reset){FULL=[];fullPage=0;fullCategory='All';fullIndex=0;}if(!window.supabaseClient){FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error){if(!FULL.length)FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const items=(data||[]).filter(x=>x.storage_path);const batch=(await Promise.all(items.map(async x=>{const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(x.storage_path,3600);return signed&&signed.signedUrl?{...x,image:signed.signedUrl}:null}))).filter(Boolean);const priorCategory=fullCategory,priorIndex=fullIndex;FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;showFull();if($('bctGalleryMore'))$('bctGalleryMore').hidden=!fullHasMore}
+  async function loadFull(reset=true){ensureGalleryModal();if(reset){FULL=[];fullPage=0;fullCategory='All';fullIndex=0;}if(!window.supabaseClient){FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,alt_text,project_work_date,category,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error){if(!FULL.length)FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const items=(data||[]).filter(x=>x.storage_path);const batch=(await Promise.all(items.map(async x=>{const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(x.storage_path,3600);return signed&&signed.signedUrl?{...x,image:signed.signedUrl}:null}))).filter(Boolean);const priorCategory=fullCategory,priorIndex=fullIndex;FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(x,x)));fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;showFull();if($('bctGalleryMore'))$('bctGalleryMore').hidden=!fullHasMore}
+
+  function ensureGalleryModal(){
+    if($('bctGalleryModal'))return;
+    const m=document.createElement('div');m.id='bctGalleryModal';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');
+    const c=copy();
+    m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">'+c.close+'</button><label>Category <select id="bctGalleryCategory"><option value="All">'+c.all+'</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← '+c.prev+'</button><button id="bctGalleryMore" type="button">Load More Photos</button><button id="bctGalleryNext" type="button">'+c.next+' →</button></div>';
+    document.body.appendChild(m);
+    $('bctGalleryClose').onclick=()=>m.hidden=true;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryMore').onclick=()=>{fullPage++;loadFull(false)};$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};
+    let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')m.hidden=true;else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')moveFull(1)});
+  }
+
+  function wireGalleryControls(section){
+    if(section.dataset.bctGalleryWired==='1')return;
+    section.dataset.bctGalleryWired='1';
+    const toggle=$('bctGalleryToggle');if(toggle)toggle.addEventListener('click',()=>{expanded=!expanded;render()});
+    const full=$('bctGalleryFull');if(full)full.addEventListener('click',()=>{ensureGalleryModal();loadFull(true)});
+  }
 
   function ensure(){
     const home=$('view-home');
     const license=$('bctPublicLicenseBar');
     if(!home||!license)return;
     injectStyle();
-    if($('bctHomeGallery')){render();return}
-
-    const section=document.createElement('section');
-    section.id='bctHomeGallery';
-    section.setAttribute('aria-labelledby','bctHomeGalleryTitle');
-    section.innerHTML='<h2 id="bctHomeGalleryTitle"></h2><p class="bct-gallery-lead"></p><div id="bctHomeGalleryGrid"></div><button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false"></button><button type="button" id="bctGalleryFull">Open Full Gallery</button>';
-    license.insertAdjacentElement('beforebegin',section);
-    section.querySelector('#bctGalleryToggle').addEventListener('click',()=>{expanded=!expanded;render()});section.querySelector('#bctGalleryFull').addEventListener('click',loadFull);
-    if(!$('bctGalleryModal')){const m=document.createElement('div');m.id='bctGalleryModal';m.hidden=true;m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">Close</button><label>Category <select id="bctGalleryCategory"><option>All</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← Previous</button><button id="bctGalleryMore" type="button">Load More Photos</button><button id="bctGalleryNext" type="button">Next →</button></div>';document.body.appendChild(m);$('bctGalleryClose').onclick=()=>m.hidden=true;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryMore').onclick=()=>{fullPage++;loadFull(false)};$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')m.hidden=true;else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')moveFull(1)})}
+    let section=$('bctHomeGallery');
+    if(!section){
+      section=document.createElement('section');
+      section.id='bctHomeGallery';
+      section.setAttribute('aria-labelledby','bctHomeGalleryTitle');
+      section.innerHTML='<h2 id="bctHomeGalleryTitle"></h2><p class="bct-gallery-lead"></p><div id="bctHomeGalleryGrid"></div><button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false"></button><button type="button" id="bctGalleryFull">Open Full Gallery</button>';
+      license.insertAdjacentElement('beforebegin',section);
+    }
+    wireGalleryControls(section);
+    ensureGalleryModal();
+    render();
     loadProjects();
   }
 
