@@ -109,6 +109,12 @@ function openExistingPhotoUploader(){
   const el=find();if(!el)return false;
   if(status)status.textContent='🟡 Opening the existing BCT Photo Control picker…';
   try{
+   /* iOS/Safari can suppress change when the same file is selected again unless
+      the existing input is reset before opening. Keep Photo Control as the only
+      upload handler; Agent BCT only opens it and observes the handoff. */
+   try{el.value='';}catch(e){}
+   const onSelected=()=>{if(status)status.textContent='🟡 Photo selected. BCT Photo Control is processing it…';};
+   el.addEventListener('change',onSelected,{once:true});
    const hadCapture=el.hasAttribute('capture');const captureValue=el.getAttribute('capture');
    if(hadCapture)el.removeAttribute('capture');
    el.click();
