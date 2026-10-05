@@ -105,7 +105,28 @@ async function runTest(){
 function openExistingPhotoUploader(){
  const status=$('agentBctPhotoRecStatus');
  const find=()=>document.getElementById('bctPhotoUpload')||document.querySelector('#bctPhotoAdmin input[type="file"]')||document.querySelector('input[type="file"]');
- const trigger=()=>{const el=find();if(!el)return false;try{const hadCapture=el.hasAttribute('capture');const captureValue=el.getAttribute('capture');if(hadCapture)el.removeAttribute('capture');el.click();if(hadCapture){setTimeout(()=>{try{el.setAttribute('capture',captureValue??'')}catch(e){}},0);}return true;}catch(e){return false;}};
+ const wire=(el)=>{
+  if(!el||el.dataset.agentBctUploadWired==='1')return true;
+  el.dataset.agentBctUploadWired='1';
+  el.addEventListener('change',()=>{
+   const files=el.files;
+   if(!files?.length)return;
+   if(status)status.textContent='🟡 Photo selected. Sending it through Photo Control…';
+   window.dispatchEvent(new CustomEvent('bct-agent-photo-upload-files',{detail:{files}}));
+   setTimeout(()=>{try{el.value=''}catch(e){}},0);
+  });
+  return true;
+ };
+ const trigger=()=>{
+  const el=find();if(!el)return false;wire(el);
+  try{
+   const hadCapture=el.hasAttribute('capture');const captureValue=el.getAttribute('capture');
+   if(hadCapture)el.removeAttribute('capture');
+   el.click();
+   if(hadCapture)setTimeout(()=>{try{el.setAttribute('capture',captureValue??'')}catch(e){ }},0);
+   return true;
+  }catch(e){return false;}
+ };
  if(trigger())return true;
  if(status)status.textContent='';
  let tries=0;
