@@ -2,7 +2,7 @@
    Isolated add-on: does not replace existing landing controls or portal logic. */
 (function(){
   'use strict';
-  const VERSION='BCT-PHOTO-BUILD-2026.10.01-public-foundation-2';
+  const VERSION='BCT-PHOTO-BUILD-2026.10.05-public-translation-3';
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
@@ -24,6 +24,8 @@
   let FULL=[];let fullIndex=0;let fullCategory='All';let fullPage=0;const FULL_PAGE=24;let fullHasMore=false;
   const $=id=>document.getElementById(id);
   function language(){try{return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}catch(_){return 'en'}}
+  function refreshLanguage(){render();if($('bctGalleryModal')&&!$('bctGalleryModal').hidden){const c=copy();const close=$('bctGalleryClose'),cat=$('bctGalleryCategory'),prev=$('bctGalleryPrev'),next=$('bctGalleryNext'),more=$('bctGalleryMore');if(close)close.textContent=c.close;if(cat&&cat.options.length)cat.options[0].textContent=c.all;if(prev)prev.textContent='← '+c.prev;if(next)next.textContent=c.next+' →';if(more)more.textContent='Load More Photos';}}
+
   function copy(){return COPY[language()]||COPY.en}
 
   function injectStyle(){
@@ -162,8 +164,10 @@
 
 
   document.addEventListener('change',event=>{
-    if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(render,0);
+    if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(refreshLanguage,0);
   },true);
+  window.addEventListener('bct-language-changed',refreshLanguage);
+  window.addEventListener('storage',event=>{if(event.key==='bctPreferredLanguage')refreshLanguage()});
   window.addEventListener('pageshow',()=>{ensure();setTimeout(loadProjects,50)});window.addEventListener('bct-gallery-changed',()=>{setTimeout(loadProjects,0)});document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(loadProjects,50)});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
 })();
