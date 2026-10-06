@@ -23,19 +23,20 @@ set search_path = ''
 as $$
   select
     c.id,
-    c.project_number,
-    c.street_address,
-    c.city,
-    c.state,
-    c.zip_code,
-    c.property_name,
-    c.project_type,
-    c.description,
-    c.workflow_status,
+    p.project_number,
+    p.street_address,
+    p.city,
+    p.state,
+    p.zip_code,
+    p.property_name,
+    p.project_type,
+    p.description,
+    p.workflow_status,
     a.status as assignment_status,
     a.assigned_at
   from public.bct_contracts c
-  join public.bct_assignments a on a.project_id = c.id
+  join public.bct_projects p on p.id = c.project_id
+  join public.bct_assignments a on a.project_id = c.project_id
   join public.bct_contractors k on k.id = a.contractor_id
   where k.auth_user_id = (select auth.uid())
     and a.status in ('awarded','accepted','scheduled','in_progress','quality_review','completed')
