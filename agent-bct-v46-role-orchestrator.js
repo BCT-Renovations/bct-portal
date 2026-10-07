@@ -184,6 +184,7 @@
       }
       if(!source)return;
       const type=matched.includes('ResolveManagedApproval')?'approval_action':
+        source==='safety_quality'?'safety_quality_action':
         source==='estimator'?'estimator_action':
         source==='materials_logistics'?'material_action':
         source==='change_order_manager'?'change_order_action':
