@@ -180,6 +180,7 @@
       }
       if(!source)return;
       const type=matched.includes('ResolveManagedApproval')?'approval_action':
+        source==='estimator'?'estimator_action':
         source==='materials_logistics'?'material_action':
         source==='change_order_manager'?'change_order_action':
         source==='project_manager'?'project_management_action':
