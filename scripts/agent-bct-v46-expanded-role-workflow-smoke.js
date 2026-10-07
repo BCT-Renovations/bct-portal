@@ -14,7 +14,7 @@ const roles=[
 'communication_translation','analytics_reporting','escalation_human_review'
 ];
 if((contract.match(/id:'/g)||[]).length<14) throw new Error('Expected 14 role definitions');
-for(const role of roles) must(contract,`id:'\${role}'`,`role ${role}`);
+for(const role of roles) must(contract,`id:'${role}'`,`role ${role}`);
 for(const token of [
   'duplicateSystemsCreated:false','sharedSourceOfTruth:true','adminRemainsFinalAuthority:true',
   'translationRequired:true','privateCustomerProjectPhotos:true','public_photo_or_gallery_publish',
