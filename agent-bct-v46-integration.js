@@ -36,9 +36,11 @@
     const r=await window.supabaseClient.rpc('bct_my_contractor_credentials');
     if(r?.error) return {available:false,reason:r.error.message||'Credential lookup failed.'};
     const rows=Array.isArray(r?.data)?r.data:(r?.data?[r.data]:[]);
-    const required=['general_liability','bond','license_registration','workers_comp'];
+    const required=['general_liability','bond','license_registration'];
     const byType=Object.fromEntries(rows.map(x=>[String(x.credential_type||x.type||'').toLowerCase(),x]));
     const missing=required.filter(k=>!byType[k]);
+    const workersCompSatisfied=!!(byType.workers_comp||byType.workers_comp_exemption);
+    if(!workersCompSatisfied) missing.push('workers_comp_or_exemption');
     const blocked=rows.some(x=>['expired','rejected','unverified'].includes(String(x.status||'').toLowerCase()));
     const ready=!missing.length&&!blocked;
     const result={available:true,ready,missing,blocked,rows};
