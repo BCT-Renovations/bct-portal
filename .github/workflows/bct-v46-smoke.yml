@@ -26,6 +26,12 @@ jobs:
       - name: Source integrity guard
         run: node scripts/bct-source-integrity-smoke-current.mjs
 
+      - name: Agent BCT 14-role orchestration syntax guard
+        run: |
+          node --check agent-bct-14-role-integration.js
+          node --check agent-bct-v46-integration.js
+          node --check agent-bct-v46-role-orchestrator.js
+
       - name: Launch smoke
         run: node scripts/bct-launch-smoke-current.mjs
 
