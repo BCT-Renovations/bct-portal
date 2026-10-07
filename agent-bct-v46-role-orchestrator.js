@@ -69,6 +69,18 @@
       window.addEventListener(name,fn);
       listeners.push([name,fn]);
     }
+    const photoComplete=e=>{
+      const payload=e?.detail||{};
+      dispatch('safety_quality','claims_assistant','photo_evidence_ready',payload);
+      dispatch('safety_quality','analytics_reporting','photo_evidence_observed',payload);
+    };
+    const photoRequest=e=>{
+      const payload=e?.detail||{};
+      dispatch('safety_quality','claims_assistant','photo_review_requested',payload);
+    };
+    window.addEventListener('bct-agent-photo-upload-complete',photoComplete);
+    window.addEventListener('bct-agent-photo-request',photoRequest);
+    listeners.push(['bct-agent-photo-upload-complete',photoComplete],['bct-agent-photo-request',photoRequest]);
   }
 
   function detach(){
