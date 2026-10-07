@@ -580,6 +580,17 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 @media(max-width:480px){#bctEntryActions .bct-native-portal-link{min-height:52px!important;font-size:1rem}}
 </style>
 
+<style>
+/* V46 CONTRACTOR PRIMARY TRADE TOUCH LOCK */
+#applicationForm select[name="trade"]{
+  position:relative!important;
+  z-index:50!important;
+  pointer-events:auto!important;
+  -webkit-appearance:auto!important;
+  appearance:auto!important;
+  touch-action:manipulation!important;
+}
+</style>
 <script>
 /* BCT V46 iPhone startup cache reset: clears older PWA shells that can make the app look unchanged. */
 (function(){
@@ -3250,6 +3261,9 @@ renderAll();
        if(current)sel.value=current;
        sel.disabled=false;
        sel.removeAttribute('aria-busy');
+       sel.addEventListener('pointerdown',function(){
+         try{if(typeof sel.showPicker==='function')sel.showPicker();}catch(_){}
+       },{passive:true});
        sel.style.pointerEvents='auto';
        sel.style.touchAction='manipulation';
      });
