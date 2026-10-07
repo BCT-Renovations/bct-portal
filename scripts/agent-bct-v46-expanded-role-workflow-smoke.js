@@ -39,3 +39,11 @@ must(bridge,'contractor_bid_guard','bid guard');
 must(bridge,'estimator_system','estimator source');
 must(bridge,'admin_control_board','admin source');
 console.log('PASS: Agent BCT V46 expanded role integration static smoke');
+must(orch,'INTERACTION_ADAPTERS','existing V46 interaction adapter map');
+for(const token of ['jobStatusForm','jobScheduleForm','bctLiveVerificationForm','jobMilestoneForm','jobWeatherForm','jobMaterialForm','jobChangeOrderForm','jobApprovalForm','jobFinanceForm','jobEscrowForm']){
+  must(orch,token,'interaction form '+token);
+}
+for(const token of ['bidSubmit-','bctUpdateManagedMilestone-','bctUpdateManagedMaterial-','bctSendManagedChangeOrder-','bctApproveManagedChangeOrder-','bctResolveManagedApproval-']){
+  must(orch,token,'interaction selector '+token);
+}
+
