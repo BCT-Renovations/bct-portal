@@ -105,6 +105,80 @@
     routeChain(source,detail.type||'handoff',detail.payload||detail);
   }
 
+  const INTERACTION_ADAPTERS=Object.freeze({
+    submitForms:Object.freeze({
+      jobStatusForm:'job_coordinator',
+      jobScheduleForm:'job_coordinator',
+      bctLiveVerificationForm:'safety_quality',
+      jobMilestoneForm:'project_manager',
+      jobWeatherForm:'project_manager',
+      jobMaterialForm:'materials_logistics',
+      jobChangeOrderForm:'change_order_manager',
+      jobApprovalForm:'escalation_human_review',
+      jobFinanceForm:'finance_payment',
+      jobEscrowForm:'finance_payment'
+    }),
+    clickSelectors:Object.freeze({
+      '[id^="bidSubmit-"]':'contractor_manager',
+      '[id^="bctUpdateManagedMilestone-"]':'project_manager',
+      '[id^="bctUpdateManagedMaterial-"]':'materials_logistics',
+      '[id^="bctSendManagedChangeOrder-"]':'change_order_manager',
+      '[id^="bctApproveManagedChangeOrder-"]':'change_order_manager',
+      '[id^="bctResolveManagedApproval-"]':'escalation_human_review'
+    })
+  });
+
+  function interactionPayload(event,extra={}){
+    const form=event?.target?.closest?.('form');
+    return Object.assign({
+      sourceElement:form?.id||event?.target?.id||null,
+      eventType:event?.type||null
+    },extra);
+  }
+
+  function attachExistingV46InteractionAdapters(){
+    if(window.__BCT_AGENT_V46_INTERACTION_ADAPTERS_ATTACHED)return;
+    window.__BCT_AGENT_V46_INTERACTION_ADAPTERS_ATTACHED=true;
+
+    document.addEventListener('submit',event=>{
+      const formId=event?.target?.id;
+      const source=INTERACTION_ADAPTERS.submitForms[formId];
+      if(!source)return;
+      const type=source==='finance_payment'?'finance_update':
+        source==='materials_logistics'?'material_update':
+        source==='change_order_manager'?'change_order_update':
+        source==='safety_quality'?'live_verification_update':
+        source==='project_manager'?'project_management_update':
+        'job_management_update';
+      window.dispatchEvent(new CustomEvent('bct:agent-v46-interaction',{detail:interactionPayload(event,{source,type})}));
+      if(source==='escalation_human_review'){
+        escalate('job_coordinator','approval_request_created',interactionPayload(event,{source}));
+      }else{
+        routeChain(source,type,interactionPayload(event,{source}));
+      }
+    },true);
+
+    document.addEventListener('click',event=>{
+      const target=event?.target?.closest?.('button,[role="button"],a');
+      if(!target)return;
+      let source='';
+      let matched='';
+      for(const [selector,role] of Object.entries(INTERACTION_ADAPTERS.clickSelectors)){
+        if(target.matches(selector)){source=role;matched=selector;break}
+      }
+      if(!source)return;
+      const type=source==='finance_payment'?'finance_action':
+        source==='materials_logistics'?'material_action':
+        source==='change_order_manager'?'change_order_action':
+        source==='escalation_human_review'?'approval_action':
+        'contractor_bid_action';
+      const payload=interactionPayload(event,{source,matchedSelector:matched,targetId:target.id});
+      window.dispatchEvent(new CustomEvent('bct:agent-v46-interaction',{detail:payload}));
+      if(source==='escalation_human_review') escalate('escalation_human_review','human_review_required',payload);
+      else routeChain(source,type,payload);
+    },false);
+  }
+
   function attach(){
     if(listeners.length) return;
     const names=[
@@ -114,6 +188,7 @@
       'bct:message-sent','bct:material-updated','bct:claim-evidence-updated'
     ];
     for(const name of names){ window.addEventListener(name,ingest); listeners.push([name,ingest]); }
+    attachExistingV46InteractionAdapters();
     const photoComplete=e=>{
       const payload=e?.detail||{};
       dispatch('safety_quality','claims_assistant','photo_evidence_ready',payload);
@@ -132,13 +207,13 @@
 
   function health(){
     const total=Object.values(stats).reduce((n,x)=>n+x.received,0);
-    return {version:VERSION,roleCount:CONTRACT.ROLES.length,totalEventsObserved:total,stats,attached:listeners.length>0,productionChanged:false,eventSources:Object.keys(EVENT_SOURCES).length};
+    return {version:VERSION,roleCount:CONTRACT.ROLES.length,totalEventsObserved:total,stats,attached:listeners.length>0,productionChanged:false,eventSources:Object.keys(EVENT_SOURCES).length,interactionAdapters:INTERACTION_ADAPTERS};
   }
 
   window.BCT_AGENT_V46_ROLE_ORCHESTRATOR=Object.freeze({
     VERSION,dispatch,escalate,routeChain,routeProjectLifecycle,routeChangeOrder,
     routeMaterials,routeCommunication,routeFinance,routeClaim,routeAnalytics,
-    EVENT_SOURCES,attach,detach,health,snapshot:safeSnapshot
+    EVENT_SOURCES,INTERACTION_ADAPTERS,attach,detach,health,snapshot:safeSnapshot
   });
   attach();
 })();
