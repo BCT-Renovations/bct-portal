@@ -193,6 +193,7 @@
       const payload=interactionPayload(event,{source,matchedSelector:matched,targetId:target.id});
       window.dispatchEvent(new CustomEvent('bct:agent-v46-interaction',{detail:payload}));
       if(type==='approval_action') escalate('project_manager','human_review_required',payload);
+      else if(type==='change_order_action' && matched.includes('ApproveManagedChangeOrder')) escalate('change_order_manager','change_order_approval',payload);
       else routeChain(source,type,payload);
     },false);
   }
