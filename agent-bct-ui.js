@@ -66,12 +66,29 @@ async function send(){
  }
  finally{clearTimeout(timer);pending=null;button.disabled=false;status.textContent="";renderMessages();input.focus({preventScroll:true});}
 }
+function ensureStyles(){
+ if(document.getElementById("bctAgentForcedStyles"))return;
+ const style=document.createElement("style");style.id="bctAgentForcedStyles";
+ style.textContent="#bctAgentRoot{position:relative!important;z-index:2147483000!important}#bctAgentOpen{position:fixed!important;right:12px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 18px)!important;z-index:2147483001!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;min-height:48px!important;padding:12px 16px!important;border:0!important;border-radius:999px!important;font-weight:800!important;background:#0f5f63!important;color:#fff!important;box-shadow:0 8px 24px rgba(0,0,0,.2)!important}#bctAgentPanel{position:fixed!important;right:12px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 76px)!important;z-index:2147483002!important;width:min(420px,calc(100vw - 24px))!important;max-height:min(78vh,720px)!important;overflow:hidden!important;background:#fff!important;border:1px solid #d7e0e1!important;border-radius:18px!important;box-shadow:0 18px 50px rgba(0,0,0,.25)!important}#bctAgentPanel[hidden]{display:none!important}";
+ document.head.appendChild(style);
+}
+function bind(){
+ const openBtn=document.getElementById("bctAgentOpen"),closeBtn=document.getElementById("bctAgentClose"),form=document.getElementById("bctAgentForm");
+ if(!openBtn||!closeBtn||!form)return false;
+ if(!openBtn.dataset.bctBound){openBtn.addEventListener("click",open);openBtn.dataset.bctBound="1";}
+ if(!closeBtn.dataset.bctBound){closeBtn.addEventListener("click",close);closeBtn.dataset.bctBound="1";}
+ if(!form.dataset.bctBound){form.addEventListener("submit",e=>{e.preventDefault();send()});form.dataset.bctBound="1";}
+ return true;
+}
 function mount(){
- if(document.getElementById("bctAgentOpen"))return;
- const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><div><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
- document.body.appendChild(root);
- document.getElementById("bctAgentOpen").addEventListener("click",open);document.getElementById("bctAgentClose").addEventListener("click",close);document.getElementById("bctAgentForm").addEventListener("submit",e=>{e.preventDefault();send()});
- document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("bctAgentPanel").hidden)close()});
+ ensureStyles();
+ let root=document.getElementById("bctAgentRoot");
+ if(!root){
+  root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><div><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
+  document.body.appendChild(root);
+ }
+ bind();
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("bctAgentPanel")?.hidden)close()});
  document.addEventListener("change",e=>{if(e.target?.matches?.("#bctLoginLanguage,#bctLanguage,[data-language-selector]"))requestAnimationFrame(applyCopy)},true);
  if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth?.onAuthStateChange)supabaseClient.auth.onAuthStateChange((event,s)=>{const next=s?.user?.id||"";if(event==="SIGNED_OUT"||(identity&&next&&identity!==next))clearPrivate();identity=next||null;});
  applyCopy();
