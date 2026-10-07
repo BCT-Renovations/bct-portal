@@ -12,7 +12,8 @@ const COPY={
  vi:{open:"Agent BCT",title:"Agent BCT",sub:"Trợ lý AI của BCT Renovations",close:"Đóng Agent BCT",hello:"Agent BCT có thể giúp gì cho bạn?",placeholder:"Hỏi về BCT, dự án của bạn hoặc quy trình…",send:"Gửi",general:"Hướng dẫn chung của BCT",confirmed:"Đã xác nhận từ dự án BCT của bạn",review:"Cần BCT xem xét",unavailable:"Trạng thái trực tiếp không khả dụng",signin:"Vui lòng đăng nhập lại để sử dụng thông tin riêng tư của dự án BCT.",offline:"Agent BCT tạm thời không khả dụng. Bản nháp của bạn vẫn còn.",preview:"Agent BCT đang ở bản xem trước được bảo vệ. Tạo AI trực tiếp chưa được bật."}
 };
 const RTL=new Set(["ar"]);
-const POSITIONS=[["project_manager","Project Manager"],["estimator","Estimator"],["contractor_coordinator","Contractor Coordinator"],["assignment_scheduler","Assignment & Scheduling Coordinator"],["customer_support","Customer Support"],["finance_escrow","Finance & Escrow Coordinator"],["insurance_claims","Insurance & Claims Coordinator"],["property_commercial","Property Management & Commercial Coordinator"],["documents_change_orders","Documents & Change Order Coordinator"],["quality_completion","Quality & Completion Coordinator"],["compliance_credentials","Compliance & Credentials Coordinator"],["admin_escalation","BCT Admin & Escalation Coordinator"]];\nlet selectedPosition=window.BCT_AGENT_POSITION||"customer_support",transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0;
+const POSITIONS=[["project_manager","Project Manager"],["estimator","Estimator"],["contractor_coordinator","Contractor Coordinator"],["assignment_scheduler","Assignment & Scheduling Coordinator"],["customer_support","Customer Support"],["finance_escrow","Finance & Escrow Coordinator"],["insurance_claims","Insurance & Claims Coordinator"],["property_commercial","Property Management & Commercial Coordinator"],["documents_change_orders","Documents & Change Order Coordinator"],["quality_completion","Quality & Completion Coordinator"],["compliance_credentials","Compliance & Credentials Coordinator"],["admin_escalation","BCT Admin & Escalation Coordinator"]];
+let selectedPosition=window.BCT_AGENT_POSITION||"customer_support",transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0;
 function language(){return String(localStorage.getItem("bctPreferredLanguage")||document.getElementById("bctLoginLanguage")?.value||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
 function t(){return COPY[language()]||COPY.en}
 function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -31,7 +32,8 @@ function applyCopy(){
  const x=t(),panel=document.getElementById("bctAgentPanel");if(panel)panel.dir=RTL.has(language())?"rtl":"ltr";
  [["bctAgentOpen","open"],["bctAgentTitle","title"],["bctAgentSubtitle","sub"],["bctAgentSend","send"]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.textContent=x[k]});
  const c=document.getElementById("bctAgentClose");if(c)c.setAttribute("aria-label",x.close);
- const input=document.getElementById("bctAgentInput");if(input)input.placeholder=x.placeholder;\n const select=document.getElementById("bctAgentPosition");if(select)select.value=selectedPosition;
+ const input=document.getElementById("bctAgentInput");if(input)input.placeholder=x.placeholder;
+ const select=document.getElementById("bctAgentPosition");if(select)select.value=selectedPosition;
  renderMessages();
 }
 function open(){
