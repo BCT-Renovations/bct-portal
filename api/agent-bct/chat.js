@@ -37,10 +37,11 @@ export default{async fetch(request){
   const parsed=await parse(request);if(parsed.error)return json({ok:false,error:parsed.error,requestId},parsed.status);
   if(!parsed.value||typeof parsed.value!=="object"||Array.isArray(parsed.value))return json({ok:false,error:"invalid_request",requestId},400);
   const token=bearer(request);let role="public";
+  const previewOnly=!runtimeConfig().generationFlag;
   const limit=checkLocalRateLimit({identity:clientIdentity(request,token),authenticated:Boolean(token)});
   if(!limit.allowed)return json({ok:false,error:"rate_limited",requestId,retryAfterSeconds:limit.retryAfterSeconds},429,{"retry-after":String(limit.retryAfterSeconds)});
   try{
-    if(token)role=roleOf(await rpc("bct_my_permissions",token,{}));
+    if(token && !previewOnly)role=roleOf(await rpc("bct_my_permissions",token,{}));
     const position=normalizeAgentBctPosition(parsed.value?.position);
     const context=buildAgentBctContext({message:parsed.value?.message,history:parsed.value?.history,role,languageCode:typeof parsed.value?.languageCode==="string"?parsed.value.languageCode:"en",liveResults:[],position});
     const runtime=runtimeConfig();
