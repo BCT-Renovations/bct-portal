@@ -14,7 +14,7 @@ const roles=[
 'communication_translation','analytics_reporting','escalation_human_review'
 ];
 if((contract.match(/id:'/g)||[]).length<14) throw new Error('Expected 14 role definitions');
-for(const role of roles) must(contract,\`id:'\${role}'\`,\`role ${role}\`);
+for(const role of roles) must(contract,`id:'\${role}'`,`role ${role}`);
 for(const token of [
   'duplicateSystemsCreated:false','sharedSourceOfTruth:true','adminRemainsFinalAuthority:true',
   'translationRequired:true','privateCustomerProjectPhotos:true','public_photo_or_gallery_publish',
@@ -24,15 +24,15 @@ for(const token of [
   'credential_compliance','job_coordinator','project_manager','change_order_manager','claims_assistant',
   'safety_quality','materials_logistics','finance_payment','communication_translation','analytics_reporting',
   'escalation_human_review'
-]) must(orch,token,\`orchestrator ${token}\`);
+]) must(orch,token,`orchestrator ${token}`);
 for(const event of [
   'bct:job-created','bct:job-updated','bct:assignment-updated','bct:credential-updated','bct:estimate-updated',
   'bct:change-order-updated','bct:payment-updated','bct:project-photo-updated','bct:safety-alert',
   'bct:message-sent','bct:material-updated','bct:claim-evidence-updated',
   'bct-agent-photo-upload-complete','bct-agent-photo-request'
-]) must(orch,event,\`event ${event}\`);
+]) must(orch,event,`event ${event}`);
 for(const token of ['BCT_AGENT_14_ROLE_INTEGRATION','BCT_AGENT_V46_INTEGRATION','BCT_AGENT_V46_ROLE_ORCHESTRATOR']){
-  must(index,token,\`loader ${token}\`);
+  must(index,token,`loader ${token}`);
 }
 must(bridge,'contractor_credentials_board','credential source');
 must(bridge,'contractor_bid_guard','bid guard');
