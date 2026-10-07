@@ -22,8 +22,11 @@
 })();
 // Cross-role handoff integrity: every declared source/target must be a real role,
 // and every human-only boundary must remain represented in the contract.
-for (const [source, targets] of Object.entries(window.BCT_AGENT_14_ROLE_INTEGRATION.HANDOFFS)) {
-  must(roles.includes(source), 'handoff source role '+source);
-  for (const target of targets) must(roles.includes(target), 'handoff target role '+source+' -> '+target);
+for (const [source, targets] of Object.entries(c.HANDOFFS)) {
+  if(!c.getRole(source)) throw new Error('handoff source role '+source);
+  for (const target of targets) if(!c.getRole(target)) throw new Error('handoff target role '+source+' -> '+target);
 }
-for (const action of window.BCT_AGENT_14_ROLE_INTEGRATION.NEVER_AUTO_DECIDE) must(window.BCT_AGENT_14_ROLE_INTEGRATION.requiresHuman(action), 'human boundary '+action);
+for (const role of c.ROLES) {
+  if(!c.canAct(role.id,role.authority)) throw new Error('role authority not actionable: '+role.id);
+}
+for (const action of c.NEVER_AUTO_DECIDE) if(!c.requiresHuman(action)) throw new Error('human boundary '+action);
