@@ -114,7 +114,7 @@
       jobWeatherForm:'project_manager',
       jobMaterialForm:'materials_logistics',
       jobChangeOrderForm:'change_order_manager',
-      jobApprovalForm:'escalation_human_review',
+      jobApprovalForm:'project_manager',
       jobFinanceForm:'finance_payment',
       jobEscrowForm:'finance_payment'
     }),
@@ -124,7 +124,7 @@
       '[id^="bctUpdateManagedMaterial-"]':'materials_logistics',
       '[id^="bctSendManagedChangeOrder-"]':'change_order_manager',
       '[id^="bctApproveManagedChangeOrder-"]':'change_order_manager',
-      '[id^="bctResolveManagedApproval-"]':'escalation_human_review'
+      '[id^="bctResolveManagedApproval-"]':'project_manager'
     })
   });
 
@@ -151,8 +151,8 @@
         source==='project_manager'?'project_management_update':
         'job_management_update';
       window.dispatchEvent(new CustomEvent('bct:agent-v46-interaction',{detail:interactionPayload(event,{source,type})}));
-      if(source==='escalation_human_review'){
-        escalate('job_coordinator','approval_request_created',interactionPayload(event,{source}));
+      if(formId==='jobApprovalForm'){
+        escalate('project_manager','approval_request_created',interactionPayload(event,{source}));
       }else{
         routeChain(source,type,interactionPayload(event,{source}));
       }
@@ -174,7 +174,7 @@
         'contractor_bid_action';
       const payload=interactionPayload(event,{source,matchedSelector:matched,targetId:target.id});
       window.dispatchEvent(new CustomEvent('bct:agent-v46-interaction',{detail:payload}));
-      if(source==='escalation_human_review') escalate('escalation_human_review','human_review_required',payload);
+      if(source==='project_manager' && type==='approval_action') escalate('project_manager','human_review_required',payload);
       else routeChain(source,type,payload);
     },false);
   }
