@@ -12,7 +12,7 @@ const COPY={
  vi:{open:"Agent BCT",title:"Agent BCT",sub:"Trợ lý AI của BCT Renovations",close:"Đóng Agent BCT",hello:"Agent BCT có thể giúp gì cho bạn?",placeholder:"Hỏi về BCT, dự án của bạn hoặc quy trình…",send:"Gửi",general:"Hướng dẫn chung của BCT",confirmed:"Đã xác nhận từ dự án BCT của bạn",review:"Cần BCT xem xét",unavailable:"Trạng thái trực tiếp không khả dụng",signin:"Vui lòng đăng nhập lại để sử dụng thông tin riêng tư của dự án BCT.",offline:"Agent BCT tạm thời không khả dụng. Bản nháp của bạn vẫn còn.",preview:"Agent BCT đang ở bản xem trước được bảo vệ. Tạo AI trực tiếp chưa được bật."}
 };
 const RTL=new Set(["ar"]);
-let transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0;
+const POSITIONS=[["project_manager","Project Manager"],["estimator","Estimator"],["contractor_coordinator","Contractor Coordinator"],["assignment_scheduler","Assignment & Scheduling Coordinator"],["customer_support","Customer Support"],["finance_escrow","Finance & Escrow Coordinator"],["insurance_claims","Insurance & Claims Coordinator"],["property_commercial","Property Management & Commercial Coordinator"],["documents_change_orders","Documents & Change Order Coordinator"],["quality_completion","Quality & Completion Coordinator"],["compliance_credentials","Compliance & Credentials Coordinator"],["admin_escalation","BCT Admin & Escalation Coordinator"]];\nlet selectedPosition=window.BCT_AGENT_POSITION||"customer_support",transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0;
 function language(){return String(localStorage.getItem("bctPreferredLanguage")||document.getElementById("bctLoginLanguage")?.value||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
 function t(){return COPY[language()]||COPY.en}
 function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -31,7 +31,7 @@ function applyCopy(){
  const x=t(),panel=document.getElementById("bctAgentPanel");if(panel)panel.dir=RTL.has(language())?"rtl":"ltr";
  [["bctAgentOpen","open"],["bctAgentTitle","title"],["bctAgentSubtitle","sub"],["bctAgentSend","send"]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.textContent=x[k]});
  const c=document.getElementById("bctAgentClose");if(c)c.setAttribute("aria-label",x.close);
- const input=document.getElementById("bctAgentInput");if(input)input.placeholder=x.placeholder;
+ const input=document.getElementById("bctAgentInput");if(input)input.placeholder=x.placeholder;\n const select=document.getElementById("bctAgentPosition");if(select)select.value=selectedPosition;
  renderMessages();
 }
 function open(){
@@ -53,7 +53,7 @@ async function send(){
  const timer=setTimeout(()=>pending?.abort(),26000);
  try{
   const headers={"content-type":"application/json"};if(s.token)headers.authorization="Bearer "+s.token;
-  const res=await fetch("/api/agent-bct/chat",{method:"POST",headers,cache:"no-store",credentials:"same-origin",signal:pending.signal,body:JSON.stringify({message,languageCode:language(),history:transcript.slice(-12,-1).map(x=>({role:x.role,content:x.text}))})});
+  const res=await fetch("/api/agent-bct/chat",{method:"POST",headers,cache:"no-store",credentials:"same-origin",signal:pending.signal,body:JSON.stringify({message,languageCode:language(),history:transcript.slice(-12,-1).map(x=>({role:x.role,content:x.text})),position:selectedPosition})});
   const body=await res.json().catch(()=>({}));
   if(res.status===401){clearPrivate();transcript.push({role:"assistant",text:t().signin,provenance:"unavailable"});}
   else if(res.ok&&body.answer){transcript.push({role:"assistant",text:body.answer,provenance:body.provenance});}
@@ -68,9 +68,9 @@ async function send(){
 }
 function mount(){
  if(document.getElementById("bctAgentOpen"))return;
- const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><div><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
+ const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><div><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div style="padding:8px 12px;border-bottom:1px solid #d7e0e1;background:#fff"><label for="bctAgentPosition" style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Agent BCT role</label><select id="bctAgentPosition" style="width:100%;min-height:42px;font-size:16px">${POSITIONS.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join("")}</select></div><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
  document.body.appendChild(root);
- document.getElementById("bctAgentOpen").addEventListener("click",open);document.getElementById("bctAgentClose").addEventListener("click",close);document.getElementById("bctAgentForm").addEventListener("submit",e=>{e.preventDefault();send()});
+ document.getElementById("bctAgentOpen").addEventListener("click",open);document.getElementById("bctAgentPosition").addEventListener("change",e=>{selectedPosition=e.target.value;transcript=[];renderMessages();});document.getElementById("bctAgentClose").addEventListener("click",close);document.getElementById("bctAgentForm").addEventListener("submit",e=>{e.preventDefault();send()});
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("bctAgentPanel").hidden)close()});
  document.addEventListener("change",e=>{if(e.target?.matches?.("#bctLoginLanguage,#bctLanguage,[data-language-selector]"))requestAnimationFrame(applyCopy)},true);
  if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth?.onAuthStateChange)supabaseClient.auth.onAuthStateChange((event,s)=>{const next=s?.user?.id||"";if(event==="SIGNED_OUT"||(identity&&next&&identity!==next))clearPrivate();identity=next||null;});
