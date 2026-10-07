@@ -31,6 +31,7 @@ jobs:
           node --check agent-bct-14-role-integration.js
           node --check agent-bct-v46-integration.js
           node --check agent-bct-v46-role-orchestrator.js
+          node --check scripts/agent-bct-v46-expanded-role-workflow-smoke.js
 
       - name: Agent BCT expanded role workflow static smoke
         run: node scripts/agent-bct-v46-expanded-role-workflow-smoke.js
