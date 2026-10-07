@@ -140,6 +140,9 @@
     try{document.dispatchEvent(new CustomEvent('bct:agent-role-snapshot',{detail:snapshot}))}catch(_){}
     return snapshot;
   }
+  window.addEventListener('pageshow',()=>{refresh();setTimeout(refresh,500)});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{refresh();setTimeout(refresh,500)});else{refresh();setTimeout(refresh,500)}
+
   window.BCT_AGENT_14_ROLE_WIRING=Object.freeze({
     VERSION,
     snapshot:liveContext,
