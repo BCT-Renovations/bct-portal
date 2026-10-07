@@ -3261,9 +3261,7 @@ renderAll();
        if(current)sel.value=current;
        sel.disabled=false;
        sel.removeAttribute('aria-busy');
-       sel.addEventListener('pointerdown',function(){
-         try{if(typeof sel.showPicker==='function')sel.showPicker();}catch(_){}
-       },{passive:true});
+       /* iPhone/WebKit: let the native SELECT own the tap. Programmatic showPicker() on pointerdown can suppress the native picker. */
        sel.style.pointerEvents='auto';
        sel.style.touchAction='manipulation';
      });
