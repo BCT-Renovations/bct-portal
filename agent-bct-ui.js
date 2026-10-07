@@ -68,7 +68,12 @@ async function send(){
  }
  finally{clearTimeout(timer);pending=null;button.disabled=false;status.textContent="";renderMessages();input.focus({preventScroll:true});}
 }
+function ensureStyles(){
+ if(document.getElementById("bctAgentInlineStyle"))return;
+ const s=document.createElement("style");s.id="bctAgentInlineStyle";s.textContent="#bctAgentRoot{position:relative!important;z-index:2147483000!important}#bctAgentOpen{position:fixed!important;right:12px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 18px)!important;z-index:2147483001!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;min-height:52px!important;padding:12px 18px!important;border-radius:999px!important;background:#0f5f63!important;color:#fff!important;box-shadow:0 8px 24px rgba(0,0,0,.25)!important}";(document.head||document.documentElement).appendChild(s);
+}
 function mount(){
+ ensureStyles();
  if(document.getElementById("bctAgentOpen"))return;
  const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><div><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div style="padding:8px 12px;border-bottom:1px solid #d7e0e1;background:#fff"><label for="bctAgentPosition" style="font-size:12px;font-weight:700;display:block;margin-bottom:4px">Agent BCT role</label><select id="bctAgentPosition" style="width:100%;min-height:42px;font-size:16px">${POSITIONS.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join("")}</select></div><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
  document.body.appendChild(root);
