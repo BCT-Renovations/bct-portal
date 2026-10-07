@@ -156,7 +156,7 @@
       }else{
         routeChain(source,type,interactionPayload(event,{source}));
       }
-    },true);
+    },false);
 
     document.addEventListener('click',event=>{
       const target=event?.target?.closest?.('button,[role="button"],a');
@@ -167,14 +167,14 @@
         if(target.matches(selector)){source=role;matched=selector;break}
       }
       if(!source)return;
-      const type=source==='finance_payment'?'finance_action':
+      const type=matched.includes('ResolveManagedApproval')?'approval_action':
         source==='materials_logistics'?'material_action':
         source==='change_order_manager'?'change_order_action':
-        source==='escalation_human_review'?'approval_action':
+        source==='project_manager'?'project_management_action':
         'contractor_bid_action';
       const payload=interactionPayload(event,{source,matchedSelector:matched,targetId:target.id});
       window.dispatchEvent(new CustomEvent('bct:agent-v46-interaction',{detail:payload}));
-      if(source==='project_manager' && type==='approval_action') escalate('project_manager','human_review_required',payload);
+      if(type==='approval_action') escalate('project_manager','human_review_required',payload);
       else routeChain(source,type,payload);
     },false);
   }
