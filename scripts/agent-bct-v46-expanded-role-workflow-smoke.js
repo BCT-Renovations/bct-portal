@@ -48,7 +48,7 @@ must(orch,'estimator_action','estimator interaction classification');
 for(const token of ['jobStatusForm','jobScheduleForm','bctLiveVerificationForm','jobMilestoneForm','jobWeatherForm','jobMaterialForm','jobChangeOrderForm','jobApprovalForm','jobFinanceForm','jobEscrowForm','jobForm']){
   must(orch,token,'interaction form '+token);
 }
-for(const token of ['bidSubmit-','bctUpdateManagedMilestone-','bctUpdateManagedMaterial-','bctSendManagedChangeOrder-','bctApproveManagedChangeOrder-','bctResolveManagedApproval-','#bctEstimatorSignIn','#bctEstimatorApplyOpen']){
+for(const token of ['bidSubmit-','bctUpdateManagedMilestone-','bctUpdateManagedMaterial-','bctSendManagedChangeOrder-','bctApproveManagedChangeOrder-','bctResolveManagedApproval-','#bctEstimatorSignIn','#bctEstimatorApplyOpen','[data-live-result="start"]','[data-live-result="passed"]','[data-live-result="needs_correction"]','[data-live-result="recheck_required"]']){
   must(orch,token,'interaction selector '+token);
 }
 
