@@ -73,9 +73,24 @@
   function routeClaim(payload){ return routeChain('claims_assistant','claims_evidence',payload||{}); }
   function routeAnalytics(payload){ return routeChain('analytics_reporting','analytics',payload||{}); }
 
+  const EVENT_SOURCES=Object.freeze({
+    'bct:job-created':'job_coordinator',
+    'bct:job-updated':'job_coordinator',
+    'bct:assignment-updated':'job_coordinator',
+    'bct:credential-updated':'credential_compliance',
+    'bct:estimate-updated':'estimator',
+    'bct:change-order-updated':'change_order_manager',
+    'bct:payment-updated':'finance_payment',
+    'bct:project-photo-updated':'safety_quality',
+    'bct:safety-alert':'safety_quality',
+    'bct:message-sent':'communication_translation',
+    'bct:material-updated':'materials_logistics',
+    'bct:claim-evidence-updated':'claims_assistant'
+  });
+
   function ingest(event){
     const detail=event?.detail||{};
-    const source=String(detail.source||detail.role||'').trim();
+    const source=String(detail.source||detail.role||EVENT_SOURCES[event?.type]||'').trim();
     const target=String(detail.target||'').trim();
     if(!CONTRACT.getRole(source)) return;
     stats[source].received++;
@@ -117,13 +132,13 @@
 
   function health(){
     const total=Object.values(stats).reduce((n,x)=>n+x.received,0);
-    return {version:VERSION,roleCount:CONTRACT.ROLES.length,totalEventsObserved:total,stats,attached:listeners.length>0,productionChanged:false};
+    return {version:VERSION,roleCount:CONTRACT.ROLES.length,totalEventsObserved:total,stats,attached:listeners.length>0,productionChanged:false,eventSources:Object.keys(EVENT_SOURCES).length};
   }
 
   window.BCT_AGENT_V46_ROLE_ORCHESTRATOR=Object.freeze({
     VERSION,dispatch,escalate,routeChain,routeProjectLifecycle,routeChangeOrder,
     routeMaterials,routeCommunication,routeFinance,routeClaim,routeAnalytics,
-    attach,detach,health,snapshot:safeSnapshot
+    EVENT_SOURCES,attach,detach,health,snapshot:safeSnapshot
   });
   attach();
 })();
