@@ -46,6 +46,7 @@ console.log('PASS: Agent BCT V46 expanded role integration static smoke');
 must(orch,'INTERACTION_ADAPTERS','existing V46 interaction adapter map');
 must(orch,'estimator_action','estimator interaction classification');
 must(orch,'safety_quality_action','live verification interaction classification');
+for(const token of ['bct_admin_set_job_status','bct_admin_create_schedule_event','bct_admin_create_milestone','bct_admin_record_weather','bct_admin_add_job_material','bct_admin_create_change_order','bct_admin_create_job_approval','bct_admin_set_financing','bct_admin_set_escrow','bct_admin_update_milestone','bct_admin_update_job_material','bct_admin_send_change_order','bct_admin_approve_change_order','bct_admin_update_job_approval']) must(index,token,'V46 job-management RPC '+token);
 for(const token of ['jobStatusForm','jobScheduleForm','bctLiveVerificationForm','jobMilestoneForm','jobWeatherForm','jobMaterialForm','jobChangeOrderForm','jobApprovalForm','jobFinanceForm','jobEscrowForm','jobForm']){
   must(orch,token,'interaction form '+token);
 }
