@@ -117,6 +117,7 @@
       jobApprovalForm:'project_manager',
       jobFinanceForm:'finance_payment',
       jobEscrowForm:'finance_payment',
+      jobForm:'job_coordinator',
       bctAssessmentPackage:'estimator',
       bctEstimatorApplication:'estimator',
       customerProjectForm:'homeowner_support',
@@ -129,7 +130,9 @@
       '[id^="bctUpdateManagedMaterial-"]':'materials_logistics',
       '[id^="bctSendManagedChangeOrder-"]':'change_order_manager',
       '[id^="bctApproveManagedChangeOrder-"]':'change_order_manager',
-      '[id^="bctResolveManagedApproval-"]':'project_manager'
+      '[id^="bctResolveManagedApproval-"]':'project_manager',
+      '#bctEstimatorSignIn':'estimator',
+      '#bctEstimatorApplyOpen':'estimator'
     })
   });
 
