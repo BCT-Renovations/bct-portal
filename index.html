@@ -702,6 +702,16 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
 @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
+<style id="bct-contractor-terms-fix-20261007">
+.bct-contractor-terms-card{border:2px solid #0f5f63;background:#e8f5ec}
+.bct-contractor-terms-scroll{max-height:190px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:12px 14px;margin:8px 0 10px;border:1px solid #9bc7aa;border-radius:10px;background:#f5fbf7;color:var(--text)}
+.bct-contractor-terms-scroll:focus{outline:3px solid #7dd3fc;outline-offset:2px}
+.bct-terms-checkbox{display:flex;align-items:flex-start;gap:9px;padding:12px;margin:0;border:2px solid #0f5f63;border-radius:10px;background:#fff;font-size:15px;line-height:1.4}
+.bct-terms-checkbox input{flex:0 0 auto;margin-top:3px}
+.bct-terms-status{margin-top:8px;font-weight:700}
+#contractorScreeningTest.bct-screening-locked{opacity:.62}
+@media(max-width:820px){.bct-contractor-terms-scroll{max-height:210px;font-size:14px}.bct-terms-checkbox{font-size:14px}}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -1006,10 +1016,14 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
       <label id="photoCertLabel"><input type="checkbox" name="photoCert" style="width:auto"> I certify the uploaded photos represent work I performed or helped perform. <small>(Required only if photos are uploaded.)</small></label>
       <label><input type="checkbox" name="referenceAuth" required style="width:auto"> I authorize BCT to contact my listed references.</label>
       <label><input type="checkbox" name="screeningAck" required style="width:auto"> I understand a separate background-screening authorization may be required.</label>
-      <div class="stage section" id="contractorTermsAgreement">
+      <div class="stage section bct-contractor-terms-card" id="contractorTermsAgreement">
         <h3>BCT Contractor Terms & Acknowledgment</h3>
-        <p class="muted">By submitting this pre-application, you acknowledge that BCT controls contractor approval, customer contact, private bidding, customer-facing pricing, job assignment, required credentials and documents, and any exception to the one-active-job rule. Submission does not guarantee approval, a BCT job, or a bid opportunity. You agree to follow BCT policies and to provide truthful, complete information.</p>
-        <label><input type="checkbox" name="termsAgreement" required style="width:auto"> I have read and agree to the BCT Contractor Terms & Acknowledgment above.</label>
+        <div class="bct-contractor-terms-scroll" tabindex="0" aria-label="BCT Contractor Terms & Acknowledgment">
+          <p class="muted">By submitting this pre-application, you acknowledge that BCT controls contractor approval, customer contact, private bidding, customer-facing pricing, job assignment, required credentials and documents, and any exception to the one-active-job rule. Submission does not guarantee approval, a BCT job, or a bid opportunity.</p>
+          <p class="muted">You agree to follow BCT policies, protect customer and project information, provide truthful and complete information, maintain required credentials, and follow BCT instructions regarding customer contact, bidding, job assignments, and changes to authorized work.</p>
+        </div>
+        <label class="bct-terms-checkbox"><input type="checkbox" name="termsAgreement" required style="width:auto"> <strong>I have read and agree to the BCT Contractor Terms & Acknowledgment above.</strong></label>
+        <div id="contractorTermsStatus" class="muted bct-terms-status">You must agree to these terms before the pre-approval screening test is available.</div>
       </div>
       <label><input type="checkbox" name="contractorRulesAck" required style="width:auto"> I understand BCT controls customer contact, private bidding, customer-facing pricing, job assignment, required documents, and any second active job exception.</label>
       <div class="stage section" id="contractorScreeningTest">
@@ -4287,5 +4301,28 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
 
 <script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261005-3" defer></script>
+<script id="bct-contractor-terms-gate-20261007">
+(function(){
+  function initContractorTermsGate(){
+    const form=document.getElementById('applicationForm');
+    const terms=document.querySelector('#contractorTermsAgreement input[name="termsAgreement"]');
+    const test=document.getElementById('contractorScreeningTest');
+    const status=document.getElementById('contractorTermsStatus');
+    if(!form||!terms||!test)return;
+    const testFields=[...test.querySelectorAll('select,input,textarea,button')];
+    function apply(){
+      const agreed=terms.checked;
+      test.classList.toggle('bct-screening-locked',!agreed);
+      testFields.forEach(el=>{el.disabled=!agreed});
+      test.setAttribute('aria-disabled',String(!agreed));
+      if(status)status.textContent=agreed?'✓ Terms acknowledged. The contractor pre-approval screening test is now available.':'You must agree to these terms before the pre-approval screening test is available.';
+    }
+    terms.addEventListener('change',apply);
+    apply();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initContractorTermsGate);
+  else initContractorTermsGate();
+})();
+</script>
 </body>
 </html>
