@@ -8,7 +8,7 @@
   const BRIDGE=window.BCT_AGENT_V46_INTEGRATION;
   if(!CONTRACT||!BRIDGE) throw new Error('Agent BCT role contract and integration bridge must load first.');
 
-  const VERSION='Agent-BCT-V46-Role-Orchestrator-2026.10.07-3';
+  const VERSION='Agent-BCT-V46-Role-Orchestrator-2026.10.07-4';
   const listeners=[];
   const stats=Object.fromEntries(CONTRACT.ROLE_IDS.map(id=>[id,{received:0,forwarded:0,escalated:0}]));
 
@@ -132,7 +132,11 @@
       '[id^="bctApproveManagedChangeOrder-"]':'change_order_manager',
       '[id^="bctResolveManagedApproval-"]':'project_manager',
       '#bctEstimatorSignIn':'estimator',
-      '#bctEstimatorApplyOpen':'estimator'
+      '#bctEstimatorApplyOpen':'estimator',
+      '[data-live-result="start"]':'safety_quality',
+      '[data-live-result="passed"]':'safety_quality',
+      '[data-live-result="needs_correction"]':'safety_quality',
+      '[data-live-result="recheck_required"]':'safety_quality'
     })
   });
 
