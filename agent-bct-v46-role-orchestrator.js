@@ -85,11 +85,7 @@
     'bct:safety-alert':'safety_quality',
     'bct:message-sent':'communication_translation',
     'bct:material-updated':'materials_logistics',
-    'bct:claim-evidence-updated':'claims_assistant',
-    'bct:live-verification-updated':'safety_quality',
-    'bct:weather-updated':'project_manager',
-    'bct:milestone-updated':'project_manager',
-    'bct:escrow-updated':'finance_payment'
+    'bct:claim-evidence-updated':'claims_assistant'
   });
 
   function ingest(event){
