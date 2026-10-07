@@ -20,3 +20,10 @@
   if(x.snapshot().productionChanged!==false) throw new Error('Production must remain unchanged');
   console.log('PASS: Agent BCT V46 role orchestrator');
 })();
+// Cross-role handoff integrity: every declared source/target must be a real role,
+// and every human-only boundary must remain represented in the contract.
+for (const [source, targets] of Object.entries(window.BCT_AGENT_14_ROLE_INTEGRATION.HANDOFFS)) {
+  must(roles.includes(source), 'handoff source role '+source);
+  for (const target of targets) must(roles.includes(target), 'handoff target role '+source+' -> '+target);
+}
+for (const action of window.BCT_AGENT_14_ROLE_INTEGRATION.NEVER_AUTO_DECIDE) must(window.BCT_AGENT_14_ROLE_INTEGRATION.requiresHuman(action), 'human boundary '+action);
