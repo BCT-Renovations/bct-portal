@@ -58,8 +58,12 @@ async function send(){
   if(res.status===401){clearPrivate();transcript.push({role:"assistant",text:t().signin,provenance:"unavailable"});}
   else if(res.ok&&body.answer){transcript.push({role:"assistant",text:body.answer,provenance:body.provenance});}
   else if(res.ok){transcript.push({role:"assistant",text:t().preview,provenance:body.provenance||"general_guidance"});}
+  else if((res.status===401||res.status===403)&&/bct-v46-isolated-preview/i.test(location.hostname)){transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});}
   else{transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});}
- }catch(_){transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});}
+ }catch(_){
+  if(/bct-v46-isolated-preview/i.test(location.hostname))transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});
+  else transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});
+ }
  finally{clearTimeout(timer);pending=null;button.disabled=false;status.textContent="";renderMessages();input.focus({preventScroll:true});}
 }
 function mount(){
