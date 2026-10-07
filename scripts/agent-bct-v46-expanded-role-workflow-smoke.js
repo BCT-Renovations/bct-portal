@@ -44,10 +44,10 @@ for(const token of ['bctAssessmentPackage','bctEstimatorApplication','customerPr
 }
 console.log('PASS: Agent BCT V46 expanded role integration static smoke');
 must(orch,'INTERACTION_ADAPTERS','existing V46 interaction adapter map');
-for(const token of ['jobStatusForm','jobScheduleForm','bctLiveVerificationForm','jobMilestoneForm','jobWeatherForm','jobMaterialForm','jobChangeOrderForm','jobApprovalForm','jobFinanceForm','jobEscrowForm']){
+for(const token of ['jobStatusForm','jobScheduleForm','bctLiveVerificationForm','jobMilestoneForm','jobWeatherForm','jobMaterialForm','jobChangeOrderForm','jobApprovalForm','jobFinanceForm','jobEscrowForm','jobForm','bctEstimatorSignIn','bctEstimatorApplyOpen']){
   must(orch,token,'interaction form '+token);
 }
-for(const token of ['bidSubmit-','bctUpdateManagedMilestone-','bctUpdateManagedMaterial-','bctSendManagedChangeOrder-','bctApproveManagedChangeOrder-','bctResolveManagedApproval-']){
+for(const token of ['bidSubmit-','bctUpdateManagedMilestone-','bctUpdateManagedMaterial-','bctSendManagedChangeOrder-','bctApproveManagedChangeOrder-','bctResolveManagedApproval-','#bctEstimatorSignIn','#bctEstimatorApplyOpen']){
   must(orch,token,'interaction selector '+token);
 }
 
