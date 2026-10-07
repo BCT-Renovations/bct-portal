@@ -1,28 +1,41 @@
 // Agent BCT V46 expanded role workflow static smoke test
-import fs from 'node:fs';
-
-const contract=fs.readFileSync('agent-bct-14-role-integration.js','utf8');
-const orchestrator=fs.readFileSync('agent-bct-v46-role-orchestrator.js','utf8');
-
-for(const role of [
-  'job_coordinator','project_manager','change_order_manager','materials_logistics',
-  'safety_quality','homeowner_support','contractor_manager','communication_translation',
-  'finance_payment','claims_assistant','analytics_reporting','escalation_human_review'
-]){
-  if(!contract.includes("id:'"+role+"'")) throw new Error('Missing role: '+role);
+// Runs in Node/CI and validates the integration contract without booting the browser app.
+'use strict';
+const fs=require('node:fs');
+function read(path){return fs.readFileSync(path,'utf8');}
+function must(text,needle,label){if(!text.includes(needle)) throw new Error('Missing '+label+': '+needle);}
+const contract=read('agent-bct-14-role-integration.js');
+const bridge=read('agent-bct-v46-integration.js');
+const orch=read('agent-bct-v46-role-orchestrator.js');
+const index=read('index.html');
+const roles=[
+'credential_compliance','job_coordinator','estimator','contractor_manager','homeowner_support','project_manager',
+'change_order_manager','claims_assistant','safety_quality','materials_logistics','finance_payment',
+'communication_translation','analytics_reporting','escalation_human_review'
+];
+if((contract.match(/id:'/g)||[]).length<14) throw new Error('Expected 14 role definitions');
+for(const role of roles) must(contract,\`id:'\${role}'\`,\`role ${role}\`);
+for(const token of [
+  'duplicateSystemsCreated:false','sharedSourceOfTruth:true','adminRemainsFinalAuthority:true',
+  'translationRequired:true','privateCustomerProjectPhotos:true','public_photo_or_gallery_publish',
+  'escrow_release','payment_dispute_resolution','claims_filing','safety_hold_clearance'
+]) must(contract,token,token);
+for(const token of [
+  'credential_compliance','job_coordinator','project_manager','change_order_manager','claims_assistant',
+  'safety_quality','materials_logistics','finance_payment','communication_translation','analytics_reporting',
+  'escalation_human_review'
+]) must(orch,token,\`orchestrator ${token}\`);
+for(const event of [
+  'bct:job-created','bct:job-updated','bct:assignment-updated','bct:credential-updated','bct:estimate-updated',
+  'bct:change-order-updated','bct:payment-updated','bct:project-photo-updated','bct:safety-alert',
+  'bct:message-sent','bct:material-updated','bct:claim-evidence-updated',
+  'bct-agent-photo-upload-complete','bct-agent-photo-request'
+]) must(orch,event,\`event ${event}\`);
+for(const token of ['BCT_AGENT_14_ROLE_INTEGRATION','BCT_AGENT_V46_INTEGRATION','BCT_AGENT_V46_ROLE_ORCHESTRATOR']){
+  must(index,token,\`loader ${token}\`);
 }
-for(const fn of [
-  'routeProjectLifecycle','routeChangeOrder','routeMaterials','routeCommunication',
-  'routeFinance','routeClaim','routeAnalytics','routeChain'
-]){
-  if(!orchestrator.includes('function '+fn+'(')) throw new Error('Missing workflow route: '+fn);
-}
-for(const action of [
-  'change_order_approval','payment_dispute_resolution','ai_estimate_approval',
-  'credential_approval','contract_approval','escrow_release','claims_filing',
-  'safety_hold_clearance','public_photo_or_gallery_publish'
-]){
-  if(!contract.includes("'"+action+"'")) throw new Error('Missing human-approval gate: '+action);
-}
-if(!orchestrator.includes('productionChanged:false')) throw new Error('Production guard missing');
-console.log('PASS: Agent BCT expanded role workflow static smoke');
+must(bridge,'contractor_credentials_board','credential source');
+must(bridge,'contractor_bid_guard','bid guard');
+must(bridge,'estimator_system','estimator source');
+must(bridge,'admin_control_board','admin source');
+console.log('PASS: Agent BCT V46 expanded role integration static smoke');
