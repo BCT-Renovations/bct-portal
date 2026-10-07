@@ -116,7 +116,12 @@
       jobChangeOrderForm:'change_order_manager',
       jobApprovalForm:'project_manager',
       jobFinanceForm:'finance_payment',
-      jobEscrowForm:'finance_payment'
+      jobEscrowForm:'finance_payment',
+      bctAssessmentPackage:'estimator',
+      bctEstimatorApplication:'estimator',
+      customerProjectForm:'homeowner_support',
+      applicationForm:'contractor_manager',
+      serviceCallForm:'claims_assistant'
     }),
     clickSelectors:Object.freeze({
       '[id^="bidSubmit-"]':'contractor_manager',
@@ -144,7 +149,11 @@
       const formId=event?.target?.id;
       const source=INTERACTION_ADAPTERS.submitForms[formId];
       if(!source)return;
-      const type=source==='finance_payment'?'finance_update':
+      const type=source==='estimator'?'estimator_workflow':
+        source==='homeowner_support'?'homeowner_request':
+        source==='contractor_manager'?'contractor_workflow':
+        source==='claims_assistant'?'claim_service_call':
+        source==='finance_payment'?'finance_update':
         source==='materials_logistics'?'material_update':
         source==='change_order_manager'?'change_order_update':
         source==='safety_quality'?'live_verification_update':
