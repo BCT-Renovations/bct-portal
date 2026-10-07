@@ -29,11 +29,30 @@ function securityHeaders(){return{"referrer-policy":"no-referrer","permissions-p
 function previewAnswer(context,position){
   const profile=positionProfile(position);
   const focus=profile.allowedFocus.slice(0,3).join(", ");
-  const message=context.userMessage.trim().toLowerCase();
-  if(/approve|release|assign|award|pay|refund|authorize/.test(message)){
+  const message=context.userMessage.trim();
+  const lower=message.toLowerCase();
+
+  if(/approve|release|assign|award|pay|refund|authorize/.test(lower)){
     return "I can help prepare this for BCT, but I cannot approve, release funds, assign a contractor, or make another decision that requires BCT authority. In the " + profile.label + " role, I can organize the request around " + focus + " and identify the next human-review step.";
   }
-  return "I'm Agent BCT in the " + profile.label + " role. I can help with " + profile.purpose.toLowerCase() + " For your request, I would focus on " + focus + ". I can organize the information, explain the BCT process, and tell you the next step; decisions reserved for BCT Admin stay with BCT Admin.";
+
+  if(position === "customer_support"){
+    if(/what can you help|what do you do|how can you help|help me/.test(lower)){
+      return "I’m Agent BCT, your Customer Support assistant. I can help homeowners and customers understand how BCT works, explain what happens next with a request or project, explain status updates, organize questions or information for BCT, and help identify the right next step. I can also explain things in your preferred language. I cannot make BCT Admin decisions about pricing, contracts, contractor assignment, payments, refunds, or approvals."; 
+    }
+    if(/submit|request|start|begin|renovation request|project request/.test(lower)){
+      return "When a homeowner submits a renovation request, BCT first reviews the information provided and determines what is needed to move the project forward. BCT may request photos, documents, an estimate, or a site assessment if more information is needed. After review, BCT determines the appropriate next step and handles contractor assignment through the BCT process. The homeowner does not choose a contractor based on competing bids. I can explain any step in that process in more detail."; 
+    }
+    if(/bid|bidding|contractor/.test(lower)){
+      return "BCT manages the contractor side of the process. Qualified contractors are reviewed for the applicable trade, jurisdiction, and required credentials before they can participate. Contractor bids are handled confidentially by BCT; the homeowner does not select the contractor by comparing bids. I can explain what the homeowner sees next or what a contractor needs to do."; 
+    }
+    if(/status|next step|what happens next|where.*project|project.*where/.test(lower)){
+      return "I can help explain a project’s status and next step using the information available to BCT. I can organize what has happened, what is still needed, and what normally comes next. If the next step requires an Admin decision, I’ll identify that rather than making the decision myself."; 
+    }
+    return "I’m Agent BCT in the Customer Support role. I can answer questions about BCT’s homeowner process, project requests, status and next steps, contractor-related process questions, and general BCT procedures. Ask me the specific question you want answered, and I’ll explain it directly."; 
+  }
+
+  return "I’m Agent BCT in the " + profile.label + " role. I can help with " + profile.purpose.toLowerCase() + " Based on your question, I’ll organize the relevant BCT information around " + focus + " and explain the next step. Decisions reserved for BCT Admin stay with BCT Admin.";
 }
 
 function modelSystem(context){
