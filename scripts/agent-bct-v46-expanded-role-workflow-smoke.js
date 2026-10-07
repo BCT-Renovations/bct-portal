@@ -31,7 +31,7 @@ for(const event of [
   'bct:message-sent','bct:material-updated','bct:claim-evidence-updated',
   'bct-agent-photo-upload-complete','bct-agent-photo-request'
 ]) must(orch,event,`event ${event}`);
-for(const token of ['BCT_AGENT_14_ROLE_INTEGRATION','BCT_AGENT_V46_INTEGRATION','BCT_AGENT_V46_ROLE_ORCHESTRATOR']){
+for(const token of ['/agent-bct-14-role-integration.js','/agent-bct-v46-integration.js','/agent-bct-v46-role-orchestrator.js']){
   must(index,token,`loader ${token}`);
 }
 must(bridge,'contractor_credentials_board','credential source');
