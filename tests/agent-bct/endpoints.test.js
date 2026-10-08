@@ -1,0 +1,101 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import health from "../../api/agent-bct/health.js";
+import session from "../../api/agent-bct/session.js";
+import tool from "../../api/agent-bct/tool.js";
+
+function req(url,{method="GET",headers={},body}={}){return new Request(url,{method,headers,body});}
+
+test("health is GET-only and explicitly non-production",async()=>{
+  const ok=await health.fetch(req("https://example.test/api/agent-bct/health"));
+  const body=await ok.json();
+  assert.equal(ok.status,200);
+  assert.equal(body.productionIntegrated,false);
+  assert.equal(body.liveWritesEnabled,false);
+  assert.equal(body.voiceEnabled,false);
+  assert.match(ok.headers.get("permissions-policy")||"",/microphone=\(\)/);
+  const bad=await health.fetch(req("https://example.test/api/agent-bct/health",{method:"POST"}));
+  assert.equal(bad.status,405);
+});
+
+test("session rejects unauthenticated request before backend access",async()=>{
+  const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+  const body=await res.json();
+  assert.equal(res.status,401);assert.equal(body.error,"authentication_required");
+});
+
+test("tool executor rejects unauthenticated request",async()=>{
+  const res=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+  assert.equal(res.status,401);
+});
+
+test("session and tool enforce JSON content type",async()=>{
+  const s=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",body:"{}"}));
+  const t=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{authorization:"Bearer fake"},body:"{}"}));
+  assert.equal(s.status,400);assert.equal(t.status,400);
+});
+
+test("oversized declared session body is rejected",async()=>{
+  const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json","content-length":"20000",authorization:"Bearer fake"},body:"{}"}));
+  assert.equal(res.status,413);
+});
+
+test("Agent endpoints use no-store and no-referrer privacy headers",async()=>{
+  const h=await health.fetch(req("https://example.test/api/agent-bct/health"));
+  const s=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+  const t=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json"},body:"{}"}));
+  for(const res of [h,s,t]){assert.equal(res.headers.get("cache-control"),"no-store");assert.equal(res.headers.get("referrer-policy"),"no-referrer");assert.match(res.headers.get("permissions-policy")||"",/microphone=\(\)/);}
+});
+
+test("tool endpoint rejects scalar JSON request bodies before tool execution",async()=>{
+  const original=globalThis.fetch;globalThis.fetch=async()=>new Response(JSON.stringify({role:"homeowner",permissions:[]}),{status:200});
+  try{
+    const res=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer fake"},body:"123"}));
+    assert.equal(res.status,400);assert.equal((await res.json()).error,"invalid_request");
+  }finally{globalThis.fetch=original;}
+});
+test("tool endpoint rejects array tool input",async()=>{
+  const original=globalThis.fetch;globalThis.fetch=async()=>new Response(JSON.stringify({role:"homeowner",permissions:[]}),{status:200});
+  try{
+    const res=await tool.fetch(req("https://example.test/api/agent-bct/tool",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer fake"},body:JSON.stringify({tool:"project.list",input:[]})}));
+    assert.equal(res.status,400);assert.equal((await res.json()).error,"invalid_tool_input");
+  }finally{globalThis.fetch=original;}
+});
+
+test("session rejects malformed JSON shapes before authentication or backend access",async()=>{
+  for(const body of ["[]","123","null"]){
+    const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer fake"},body}));
+    assert.equal(res.status,400);assert.equal((await res.json()).error,"invalid_request");
+  }
+});
+test("health does not advertise production-only capabilities",async()=>{
+  const res=await health.fetch(req("https://example.test/api/agent-bct/health"));
+  const body=await res.json();
+  assert.equal(body.productionIntegrated,false);
+  assert.equal(body.liveWritesEnabled,false);
+  assert.equal(body.estimatorLiveToolsEnabled,false);
+  assert.equal(body.voiceEnabled,false);
+});
+
+test("health keeps all irreversible Agent capabilities disabled",async()=>{
+  const res=await health.fetch(req("https://example.test/api/agent-bct/health"));
+  const body=await res.json();
+  assert.equal(body.productionIntegrated,false);
+  assert.equal(body.liveWritesEnabled,false);
+  assert.equal(body.estimatorLiveToolsEnabled,false);
+  assert.equal(body.voiceEnabled,false);
+});
+
+test("session filters malformed backend permission labels",async()=>{
+  const original=globalThis.fetch,oldUrl=process.env.SUPABASE_URL,oldKey=process.env.SUPABASE_ANON_KEY;
+  process.env.SUPABASE_URL="https://example.supabase.co";process.env.SUPABASE_ANON_KEY="test";
+  globalThis.fetch=async()=>new Response(JSON.stringify({role:"homeowner",permissions:["project.read","bad permission","x".repeat(100),7]}),{status:200});
+  try{
+    const res=await session.fetch(req("https://example.test/api/agent-bct/session",{method:"POST",headers:{"content-type":"application/json",authorization:"Bearer fake"},body:"{}"}));
+    assert.equal(res.status,200);assert.deepEqual((await res.json()).permissions.permissions,["project.read"]);
+  }finally{
+    globalThis.fetch=original;
+    if(oldUrl===undefined)delete process.env.SUPABASE_URL;else process.env.SUPABASE_URL=oldUrl;
+    if(oldKey===undefined)delete process.env.SUPABASE_ANON_KEY;else process.env.SUPABASE_ANON_KEY=oldKey;
+  }
+});
