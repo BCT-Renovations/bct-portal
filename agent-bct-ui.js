@@ -80,21 +80,15 @@ async function send(){
 function mount(){
  const logo=document.querySelector(".brand-logo");
  if(logo){
-  logo.src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008";
-  logo.alt="BCT Renovations, LLC";
+  logo.src="/bct-home-logo.webp?v=20261008";
+  logo.alt="BCT Renovations, LLC — Your General Contractor";
   const wrap=logo.closest(".bct-logo-crop");
-  if(wrap&&!wrap.querySelector(".bct-logo-punctuation-fix")){
-   const fix=document.createElement("span");
-   fix.className="bct-logo-punctuation-fix";
-   fix.setAttribute("aria-hidden","true");
-   wrap.appendChild(fix);
+  if(wrap){
+   wrap.querySelectorAll(".bct-logo-punctuation-fix").forEach(el=>el.remove());
+   const slogan=wrap.querySelector(".bct-dynamic-slogan");
+   if(slogan)slogan.remove();
   }
-  if(!document.getElementById("bctLogoPunctuationFixStyle")){
-   const style=document.createElement("style");
-   style.id="bctLogoPunctuationFixStyle";
-   style.textContent=".bct-logo-punctuation-fix{position:absolute!important;z-index:4!important;left:66.9%!important;top:65.5%!important;width:3.8%!important;height:10.5%!important;background:#edf5ea!important;display:block!important;pointer-events:none!important}.bct-logo-punctuation-fix::after{content:\",\";position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);color:#0a5159;font-family:Arial,sans-serif;font-size:clamp(18px,5.4vw,40px);font-weight:900;line-height:1}";
-   document.head.appendChild(style);
-  }
+ }
  }
 
  if(document.getElementById("bctAgentOpen"))return;
