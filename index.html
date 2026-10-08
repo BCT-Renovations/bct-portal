@@ -3407,6 +3407,9 @@ renderAll();
       const activeUser=await user().catch(()=>null);
       if(activeUser?.app_metadata?.role==='admin')throw new Error('Sign out of the BCT Admin account before submitting a contractor pre-application.');
       const fd=new FormData(f),email=String(fd.get('email')||'').trim(),p1=String(fd.get('contractorPassword')||''),p2=String(fd.get('contractorPassword2')||'');
+      const requiredChecks=[['truth','Information certification'],['referenceAuth','Reference authorization'],['screeningAck','Background screening acknowledgment'],['termsAgreement','BCT Contractor Terms'],['contractorRulesAck','Contractor rules acknowledgment']];
+      const missingCheck=requiredChecks.find(([name])=>!f.querySelector(`input[name="${name}"]`)?.checked);
+      if(missingCheck)throw new Error(`Please check the required "${missingCheck[1]}" acknowledgment before submitting.`);
       if(!activeUser){if(!email)throw new Error('Email is required.');validMatchingPassword(p1,p2);}
       const refs=[];for(let i=1;i<=5;i++){const name=String(fd.get('ref'+i)||'').trim(),contact=String(fd.get('ref'+i+'contact')||'').trim();if(name&&contact)refs.push({name,contact})}if(refs.length!==5)throw new Error('All five professional references and their contact information are required.');
       const langs=[...f.querySelectorAll('input[name="spokenLanguage"]:checked')].map(x=>x.value);if(!langs.length)langs.push($('bctLanguage')?.value||'en');
