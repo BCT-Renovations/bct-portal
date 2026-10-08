@@ -7,7 +7,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BCT Renovations" />
-<link rel="apple-touch-icon" href="/bct-app-icon-v46-ios.png?v=20261007-2" />
 <link rel="manifest" href="/manifest.webmanifest?v=20261007-2" />
 <!-- V28: comprehensive French UI sweep -->
 <!-- BCT V32: full translation sweep for vi/zh/ar/ru -->
@@ -580,28 +579,21 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 </style>
 
 <script>
-/* BCT V46 iPhone startup cache reset: clears older PWA shells that can make the app look unchanged. */
+/* BCT V46 iPhone/PWA isolation cleanup — no service-worker registration on this test build. */
 (function(){
-  var cacheName='bct-portal-shell-v27-app-icon-cache-reset', resetKey='bct-v46-app-icon-reset-v27';
   try{
     if('serviceWorker' in navigator){
       navigator.serviceWorker.getRegistrations().then(function(regs){
-        regs.forEach(function(reg){
-          try{ if(reg.active) reg.active.postMessage({type:'BCT_CLEAR_STARTUP_CACHES'}); reg.update&&reg.update(); }catch(_){}
-        });
-      });
+        return Promise.all(regs.map(function(reg){return reg.unregister().catch(function(){return false;});}));
+      }).catch(function(){});
     }
     if('caches' in window){
       caches.keys().then(function(keys){
-        return Promise.all(keys.filter(function(k){return /^bct-portal-shell-/.test(k)&&k!==cacheName}).map(function(k){return caches.delete(k)}));
-      }).then(function(){
-        /* Do not rewrite the iPhone/PWA URL. Safari and Home Screen now share the same production entry path. */
-        try{sessionStorage.setItem(resetKey,'1');}catch(_){}
-      });
+        return Promise.all(keys.filter(function(k){return /^bct-portal-shell-/.test(k);}).map(function(k){return caches.delete(k);}));
+      }).catch(function(){});
     }
   }catch(_){}
-})();
-</script>
+})();</script>
 <!-- BCT V46 production redeploy trigger: shared-link visual lock 2026-09-28 -->
 <!-- V46 production redeploy trigger 1663 current-main -->
 <style>
@@ -1319,7 +1311,6 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
 const SUPABASE_URL='https://onpqykpikxbbypfvmtin.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_JToQ3bPaJql-xHq-iyM0bg_Fweenyfh';
 const supabaseClient=window.supabase ? window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY) : null;
