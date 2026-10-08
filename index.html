@@ -463,11 +463,9 @@ body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;marg
 
 /* BCT V46 LANGUAGE-AWARE BRAND SLOGAN — master-reference treatment */
 .bct-dynamic-brand{width:100%;display:flex;justify-content:center;background:#e8f5ec}
-.bct-logo-crop{width:min(100vw,630px);overflow:hidden;background:#e8f5ec;line-height:0;position:relative!important}
+.bct-logo-crop{width:min(100vw,700px);overflow:hidden;background:#e8f5ec;line-height:0;position:relative!important}
 .bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;margin:0!important;transform:none!important;mix-blend-mode:normal!important}
-.bct-logo-crop::after{content:"";position:absolute;left:0;right:0;bottom:0;height:19%;background:#e8f5ec;z-index:2;pointer-events:none}
-.bct-dynamic-slogan{position:absolute;left:0;right:0;bottom:5.1%;z-index:3;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.35rem,5.2vw,2.35rem);font-weight:600;font-style:italic;line-height:1;color:#004b57;text-align:center;white-space:nowrap;padding:0 8px;margin:0;background:transparent}
-@media(max-width:480px){.bct-logo-crop{width:100%}.bct-logo-crop::after{height:19%}.bct-dynamic-slogan{font-size:clamp(1.25rem,5.2vw,2.15rem);bottom:5.1%}}
+@media(max-width:480px){.bct-logo-crop{width:100%}}
 
 
 /* BCT V46 IPHONE SIGNED-OUT MASTER LAYOUT — screenshot-driven */
@@ -694,6 +692,12 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 <link rel="stylesheet" href="/agent-bct-ui.css?v=20261007-2" />
+
+<style id="bct-uploaded-logo-lock">
+/* V46: uploaded logo already contains the complete BCT branding and slogan. */
+body:not(.bct-authenticated) .bct-logo-crop::after{display:none!important;content:none!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{display:none!important}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -714,7 +718,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
       </select>
     </div>
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band-20260929a" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=20261008-master-logo" alt="BCT Renovations logo"></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -3403,6 +3407,9 @@ renderAll();
       const activeUser=await user().catch(()=>null);
       if(activeUser?.app_metadata?.role==='admin')throw new Error('Sign out of the BCT Admin account before submitting a contractor pre-application.');
       const fd=new FormData(f),email=String(fd.get('email')||'').trim(),p1=String(fd.get('contractorPassword')||''),p2=String(fd.get('contractorPassword2')||'');
+      const requiredChecks=[['truth','Information certification'],['referenceAuth','Reference authorization'],['screeningAck','Background screening acknowledgment'],['termsAgreement','BCT Contractor Terms'],['contractorRulesAck','Contractor rules acknowledgment']];
+      const missingCheck=requiredChecks.find(([name])=>!f.querySelector(`input[name="${name}"]`)?.checked);
+      if(missingCheck)throw new Error(`Please check the required "${missingCheck[1]}" acknowledgment before submitting.`);
       if(!activeUser){if(!email)throw new Error('Email is required.');validMatchingPassword(p1,p2);}
       const refs=[];for(let i=1;i<=5;i++){const name=String(fd.get('ref'+i)||'').trim(),contact=String(fd.get('ref'+i+'contact')||'').trim();if(name&&contact)refs.push({name,contact})}if(refs.length!==5)throw new Error('All five professional references and their contact information are required.');
       const langs=[...f.querySelectorAll('input[name="spokenLanguage"]:checked')].map(x=>x.value);if(!langs.length)langs.push($('bctLanguage')?.value||'en');
@@ -4273,6 +4280,11 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
 })();
 </script>
+<link rel="stylesheet" href="/bct-handyman-portal.css?v=20261008-2" />
+<script src="/bct-handyman-portal.js?v=20261008-2" defer></script>
+<script src="/bct-handyman-admin.js?v=20261008-2" defer></script>
+<script src="/bct-handyman-i18n.js?v=20261008-1" defer></script>
+<script src="/bct-handyman-operations.js?v=20261008-1" defer></script>
 <script src="/bct-admin-sections.js?v=20261005-2"></script>
 <script src="/bct-admin-control-board.js?v=20260930-2"></script>
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
