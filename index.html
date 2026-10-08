@@ -4277,6 +4277,8 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
  function render(){const t=COPY[lang()]||COPY.en, c=document.getElementById('bctNewClientWhyBCT'),k=document.getElementById('bctContractorApplicantWhyBCT');if(c)c.innerHTML='<h2>'+t.ch+'</h2><p>'+t.cb+'</p><p><strong>'+t.cc+'</strong></p>';if(k)k.innerHTML='<h2>'+t.th+'</h2><p>'+t.tb+'</p><p><strong>'+t.tc+'</strong></p>'}
  document.addEventListener('change',e=>{if(e.target.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(render)},true);
  document.addEventListener('click',e=>{if(e.target.closest?.('#bctHomeSignupBtn,#bctContractorSignupBtn'))requestAnimationFrame(ensure)},true);
+<script src="/bct-handyman-portal.js?v=20261008-1" defer></script>
+<script src="/bct-handyman-admin.js?v=20261008-1" defer></script>
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
 })();
 </script>
