@@ -692,6 +692,12 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 <link rel="stylesheet" href="/agent-bct-ui.css?v=20261007-2" />
+
+<style id="bct-uploaded-logo-lock">
+/* V46: uploaded logo already contains the complete BCT branding and slogan. */
+body:not(.bct-authenticated) .bct-logo-crop::after{display:none!important;content:none!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{display:none!important}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
