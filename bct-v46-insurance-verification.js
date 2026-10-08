@@ -1,6 +1,35 @@
 (function(){
 "use strict";
 const KEY="bct_v46_insurance_verification_preview_v1";
+const LANG_KEY="bct_v46_insurance_language_v1";
+const LANGS={en:"English",es:"Español",fr:"Français",vi:"Tiếng Việt",zh:"中文",ar:"العربية",ru:"Русский"};
+const T={
+"Insurance Verification & Authorization":{es:"Verificación y autorización del seguro",fr:"Vérification et autorisation d’assurance",vi:"Xác minh và ủy quyền bảo hiểm",zh:"保险验证与授权",ar:"التحقق من التأمين والتفويض",ru:"Проверка и авторизация страхования"},
+"BCT verifies insurance coverage independently of the carrier. Your carrier, broker, or an authorized insurance-data provider may be contacted to confirm current policy status.":{es:"BCT verifica la cobertura de seguro de forma independiente de la aseguradora. Se puede contactar a su aseguradora, corredor o proveedor autorizado de datos de seguros para confirmar el estado actual de la póliza.",fr:"BCT vérifie la couverture d’assurance indépendamment de l’assureur. Votre assureur, courtier ou fournisseur autorisé de données d’assurance peut être contacté pour confirmer le statut actuel de la police.",vi:"BCT xác minh bảo hiểm độc lập với công ty bảo hiểm. BCT có thể liên hệ công ty bảo hiểm, môi giới hoặc nhà cung cấp dữ liệu bảo hiểm được ủy quyền để xác nhận tình trạng hợp đồng hiện tại.",zh:"BCT 独立于保险公司核实保险范围。我们可能联系您的保险公司、经纪人或授权保险数据提供商，以确认保单当前状态。",ar:"تتحقق BCT من التغطية التأمينية بشكل مستقل عن شركة التأمين. قد يتم التواصل مع شركة التأمين أو الوسيط أو مزود بيانات التأمين المعتمد لتأكيد حالة الوثيقة الحالية.",ru:"BCT проверяет страховое покрытие независимо от страховщика. Для подтверждения текущего статуса полиса можно связаться со страховщиком, брокером или уполномоченным поставщиком страховых данных."},
+"Policy Type":{es:"Tipo de póliza",fr:"Type de police",vi:"Loại hợp đồng",zh:"保单类型",ar:"نوع الوثيقة",ru:"Тип полиса"},
+"Insurance Carrier":{es:"Aseguradora",fr:"Compagnie d’assurance",vi:"Công ty bảo hiểm",zh:"保险公司",ar:"شركة التأمين",ru:"Страховая компания"},
+"Policy Number":{es:"Número de póliza",fr:"Numéro de police",vi:"Số hợp đồng",zh:"保单号码",ar:"رقم الوثيقة",ru:"Номер полиса"},
+"Coverage Amount":{es:"Monto de cobertura",fr:"Montant de couverture",vi:"Mức bảo hiểm",zh:"保险金额",ar:"مبلغ التغطية",ru:"Размер покрытия"},
+"Effective Date":{es:"Fecha de inicio",fr:"Date d’effet",vi:"Ngày hiệu lực",zh:"生效日期",ar:"تاريخ السريان",ru:"Дата начала"},
+"Expiration Date":{es:"Fecha de vencimiento",fr:"Date d’expiration",vi:"Ngày hết hạn",zh:"到期日期",ar:"تاريخ الانتهاء",ru:"Дата окончания"},
+"Contractor Authorization":{es:"Autorización del contratista",fr:"Autorisation du contractant",vi:"Ủy quyền của nhà thầu",zh:"承包商授权",ar:"تفويض المقاول",ru:"Авторизация подрядчика"},
+"I authorize BCT to perform this insurance verification.":{es:"Autorizo a BCT a realizar esta verificación del seguro.",fr:"J’autorise BCT à effectuer cette vérification d’assurance.",vi:"Tôi ủy quyền cho BCT thực hiện xác minh bảo hiểm này.",zh:"我授权 BCT 执行此次保险验证。",ar:"أفوّض BCT بإجراء هذا التحقق من التأمين.",ru:"Я разрешаю BCT выполнить эту проверку страхования."},
+"Electronic Signature (type your full legal/business name)":{es:"Firma electrónica (escriba su nombre legal/comercial completo)",fr:"Signature électronique (saisissez votre nom légal/commercial complet)",vi:"Chữ ký điện tử (nhập đầy đủ tên pháp lý/tên doanh nghiệp)",zh:"电子签名（输入您的完整法定/企业名称）",ar:"التوقيع الإلكتروني (اكتب اسمك القانوني/التجاري الكامل)",ru:"Электронная подпись (введите полное юридическое/деловое имя)"},
+"Save Insurance + Authorization":{es:"Guardar seguro y autorización",fr:"Enregistrer l’assurance et l’autorisation",vi:"Lưu bảo hiểm và ủy quyền",zh:"保存保险和授权",ar:"حفظ التأمين والتفويض",ru:"Сохранить страхование и авторизацию"},
+"Refresh":{es:"Actualizar",fr:"Actualiser",vi:"Làm mới",zh:"刷新",ar:"تحديث",ru:"Обновить"},
+"Current BCT Insurance Records":{es:"Registros de seguros BCT actuales",fr:"Dossiers d’assurance BCT actuels",vi:"Hồ sơ bảo hiểm BCT hiện tại",zh:"当前 BCT 保险记录",ar:"سجلات تأمين BCT الحالية",ru:"Текущие страховые записи BCT"},
+"Carrier independent:":{es:"Independiente de la aseguradora:",fr:"Indépendant de l’assureur :",vi:"Độc lập với công ty bảo hiểm:",zh:"不限定保险公司：",ar:"مستقل عن شركة التأمين:",ru:"Независимость от страховщика:"},
+"Insurance Verification Layer":{es:"Capa de verificación de seguros",fr:"Couche de vérification d’assurance",vi:"Lớp xác minh bảo hiểm",zh:"保险验证层",ar:"طبقة التحقق من التأمين",ru:"Слой проверки страхования"},
+"Verification paths":{es:"Métodos de verificación",fr:"Méthodes de vérification",vi:"Phương thức xác minh",zh:"验证方式",ar:"مسارات التحقق",ru:"Способы проверки"},
+"Direct carrier / agent verification":{es:"Verificación directa con aseguradora / agente",fr:"Vérification directe auprès de l’assureur / agent",vi:"Xác minh trực tiếp với công ty bảo hiểm / đại lý",zh:"直接向保险公司/代理人验证",ar:"التحقق المباشر من شركة التأمين / الوكيل",ru:"Прямая проверка у страховщика / агента"},
+"Carrier-independent verification provider":{es:"Proveedor de verificación independiente",fr:"Fournisseur de vérification indépendant",vi:"Nhà cung cấp xác minh độc lập",zh:"独立保险验证服务商",ar:"مزود تحقق مستقل عن شركة التأمين",ru:"Независимый поставщик проверки"},
+"ACORD / COI document verification":{es:"Verificación de documentos ACORD / COI",fr:"Vérification de documents ACORD / COI",vi:"Xác minh tài liệu ACORD / COI",zh:"ACORD / COI 文件验证",ar:"التحقق من مستندات ACORD / COI",ru:"Проверка документов ACORD / COI"},
+"Manual BCT verification":{es:"Verificación manual de BCT",fr:"Vérification manuelle BCT",vi:"Xác minh thủ công của BCT",zh:"BCT 手动验证",ar:"التحقق اليدوي من BCT",ru:"Ручная проверка BCT"}
+};
+function currentLang(){try{return localStorage.getItem(LANG_KEY)||"en"}catch(_){return"en"}}
+function tr(s){const l=currentLang();return l==="en"?s:(T[s]?.[l]||s)}
+function applyInsuranceTranslation(root){if(!root)return;root.querySelectorAll("[data-bct-ins-text]").forEach(el=>{const k=el.getAttribute("data-bct-ins-text");el.textContent=tr(k)});root.querySelectorAll("[data-bct-ins-placeholder]").forEach(el=>el.placeholder=tr(el.getAttribute("data-bct-ins-placeholder")));root.querySelectorAll("[data-bct-ins-option]").forEach(el=>{el.textContent=tr(el.getAttribute("data-bct-ins-option"))});const dir=currentLang()==="ar"?"rtl":"ltr";root.dir=dir}
+function languageControl(){return '<label style="min-width:150px">Language<select id="bctInsLanguage">'+Object.entries(LANGS).map(([k,v])=>'<option value="'+k+'"'+(k===currentLang()?" selected":"")+'>'+esc(v)+'</option>').join("")+'</select></label>'}
 const CARRIER_SUGGESTIONS=["The Hartford","Travelers","Nationwide","State Farm","Progressive","Liberty Mutual","CNA","Chubb","Zurich","Erie","Other / Regional Carrier"];
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function supa(){return typeof supabaseClient!=="undefined"&&supabaseClient?supabaseClient:null}
