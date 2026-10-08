@@ -8,6 +8,14 @@
   "background_color": "#0f5f63",
   "theme_color": "#0f5f63",
   "description": "BCT Renovations homeowner, contractor, and admin project portal.",
+  "icons": [
+    {
+      "src": "/bct-app-icon-v46-ios.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Start a Project",
