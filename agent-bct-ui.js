@@ -92,7 +92,7 @@ function mount(){
   if(!document.getElementById("bctLogoPunctuationFixStyle")){
    const style=document.createElement("style");
    style.id="bctLogoPunctuationFixStyle";
-   style.textContent=".bct-logo-punctuation-fix{position:absolute!important;z-index:4!important;left:68.9%!important;top:70.8%!important;width:3.1%!important;height:8.2%!important;background:#e8f5ec!important;display:block!important;pointer-events:none!important}.bct-logo-punctuation-fix::after{content:\",\";position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);color:#0a5159;font-family:Arial,sans-serif;font-size:clamp(18px,5.4vw,40px);font-weight:900;line-height:1}";
+   style.textContent=".bct-logo-punctuation-fix{position:absolute!important;z-index:4!important;left:66.9%!important;top:65.5%!important;width:3.8%!important;height:10.5%!important;background:#edf5ea!important;display:block!important;pointer-events:none!important}.bct-logo-punctuation-fix::after{content:\",\";position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);color:#0a5159;font-family:Arial,sans-serif;font-size:clamp(18px,5.4vw,40px);font-weight:900;line-height:1}";
    document.head.appendChild(style);
   }
  }
