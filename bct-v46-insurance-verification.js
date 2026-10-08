@@ -60,15 +60,16 @@ async function renderAdmin(){
  '<div class="section">'+(rows.length?rows.map(x=>'<div class="stage"><div class="toolbar"><div><b>'+esc(x.policy_type.replaceAll("_"," "))+'</b><div class="muted">'+esc(x.carrier)+'</div></div><span class="badge '+(health(x)==="good"?"good":health(x)==="warn"?"warn":"bad")+'">'+badge(health(x))+'</span></div><small>Expires '+esc(x.expires_on)+' • Status '+esc(x.status)+'</small></div>').join(""):'<div class="muted">No insurance policy records returned.</div>')+'</div>';
 }
 function inject(){
+ let changed=false;
  const docs=document.getElementById("bctContractorDocsPanel");
  if(docs&&!document.getElementById("bctInsuranceVerificationPanel")){
-  const el=document.createElement("section");el.id="bctInsuranceVerificationPanel";el.className="card section";docs.appendChild(el);
+  const el=document.createElement("section");el.id="bctInsuranceVerificationPanel";el.className="card section";docs.appendChild(el);changed=true;
  }
  const board=document.getElementById("adminContractorCredentials");
  if(board&&!document.getElementById("bctInsuranceVerificationAdminPanel")){
-  const el=document.createElement("section");el.id="bctInsuranceVerificationAdminPanel";el.className="stage section";board.appendChild(el);
+  const el=document.createElement("section");el.id="bctInsuranceVerificationAdminPanel";el.className="stage section";board.appendChild(el);changed=true;
  }
- renderContractor();renderAdmin();
+ if(changed){renderContractor();renderAdmin();}
 }
 document.addEventListener("click",e=>{if(e.target.closest?.("#bctContractorLoginBtn,#bctContractorLogoutBtn,#refreshContractorCredentialsBtn,[data-view='status']"))setTimeout(inject,500)},true);
 document.addEventListener("DOMContentLoaded",()=>setTimeout(inject,700));
