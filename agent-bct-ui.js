@@ -79,7 +79,23 @@ async function send(){
 }
 function mount(){
  const logo=document.querySelector(".brand-logo");
- if(logo){logo.src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008";logo.alt="BCT Renovations, LLC";}
+ if(logo){
+  logo.src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008";
+  logo.alt="BCT Renovations, LLC";
+  const wrap=logo.closest(".bct-logo-crop");
+  if(wrap&&!wrap.querySelector(".bct-logo-punctuation-fix")){
+   const fix=document.createElement("span");
+   fix.className="bct-logo-punctuation-fix";
+   fix.setAttribute("aria-hidden","true");
+   wrap.appendChild(fix);
+  }
+  if(!document.getElementById("bctLogoPunctuationFixStyle")){
+   const style=document.createElement("style");
+   style.id="bctLogoPunctuationFixStyle";
+   style.textContent=".bct-logo-punctuation-fix{position:absolute!important;z-index:4!important;left:68.9%!important;top:70.8%!important;width:3.1%!important;height:8.2%!important;background:#e8f5ec!important;display:block!important;pointer-events:none!important}.bct-logo-punctuation-fix::after{content:\",\";position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);color:#0a5159;font-family:Arial,sans-serif;font-size:clamp(18px,5.4vw,40px);font-weight:900;line-height:1}";
+   document.head.appendChild(style);
+  }
+ }
 
  if(document.getElementById("bctAgentOpen"))return;
  const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><div><button id="bctAgentHome" type="button" class="bct-agent-home">⌂ Home</button><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
