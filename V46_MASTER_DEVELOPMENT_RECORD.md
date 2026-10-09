@@ -86,7 +86,7 @@ Unless a row specifies otherwise, relevant implementation commit is the audited 
 | File types / sizes / counts / downloads / unauthorized edits | BUILT BUT UNVERIFIED | Existing upload validators and tests | Targeted isolated failures and download checks |
 | Confirmations / approval-rejection / updates / expiry / contracts / change orders / completion / admin notifications | BUILT BUT UNVERIFIED | Existing notification queue; AUDIT_NOTIFICATION_READINESS.md | Verify actual Resend authorization/delivery, not presence of code |
 | Mandatory translation / multilingual fonts / RTL / preference | PARTIALLY IMPLEMENTED | Nine-language maps; Agent Home/Message and Handyman entry/intro/RTL fixed | Remaining dynamic errors, admin/operations strings, roles, generated contracts require coverage audit |
-| Official logo and no duplicate slogan | BROKEN | Current `bct-logo-master.png` visually reads comma + “Your General Contractor” | Required asset must include “We Are Your General Contractor”; locate exact supplied logo; do not regenerate/edit substitute |
+| Official logo and translatable slogan | PARTIALLY IMPLEMENTED | Current `bct-logo-master.png` remains the approved logo artwork source; homepage masks the non-translatable embedded lower slogan and overlays the translated slogan text | Deploy and visually verify logo masking, translated slogan, and no duplicate visible slogan |
 | Homepage colors/type/layout / About/footer | BUILT BUT UNVERIFIED | Preserved current styling and copy; only required entry position changed | Compare new deployment with main; verify approved messaging |
 | iPhone / Android / mobile forms/uploads/navigation | BUILT BUT UNVERIFIED | Existing mobile CSS/tests retained | Browser engine/device checks pending; no physical-device claims |
 | GitHub / Vercel | COMPLETED AND VERIFIED | Branch SHA and READY deployment metadata match | Verify new commit deployment before sharing |
@@ -118,7 +118,7 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 
 1. Commit this batch on the existing isolated branch; confirm READY deployment and exact SHA.
 2. Verify Agent open, opaque panel, Home and Handyman entry/Back in deployed browser. Record observable limits.
-3. Resolve official-logo source; never invent approvals or substitute an unofficial logo.
+3. Verify deployed homepage renders the logo plus a separate translated slogan overlay, with no duplicate embedded slogan visible.
 4. Obtain/select isolated Supabase environment before applying preserved Handyman migrations or submitting test data.
 5. Wire role selection and Handyman admin access with existing auth, then complete translation/permission coverage and remaining workflows in scoped batches.
 
@@ -129,7 +129,7 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Browser: Agent panel full viewport (1363 × 936), opaque white background, homepage absent from Agent accessibility tree; Home returns landing.
 - Browser: Handyman entry appears exactly between Contractor and BCT Estimator. Initial click exposed legacy signed-out CSS hiding its form: portal display none although hidden class removed. Fixed scoped portal-entered/class routing and CSS, plus Back and Agent Home cleanup.
 - Browser: Agent header inherited mint landing background with white text. Fixed dialog-scoped dark teal header, preserving homepage CSS.
-- Required logo still mismatched; no asset rewritten. Newest known IMG_9589.png is a screenshot, not the official standalone logo. Search did not resolve the October 8 replacement file.
+- Logo handling corrected per owner clarification: “We Are Your General Contractor” must be translatable page text, so the homepage uses the Live-style masked logo plus separate dynamic slogan overlay.
 - These follow-up changes require new deployment/browser confirmation. No actual Handyman submissions performed against shared DB.
 
 - Follow-up deployment `8284e25`, `dpl_C1RgZpq5ZytQTzNvFHg9gMPC8K6Z`, READY verified. Browser found higher-specificity legacy signed-out visibility rules still overriding Handyman styles. Applied scoped inline display on open and removed it on Back/Home; targeted override avoids modifying existing portal selectors or homepage design. Recheck required.
@@ -140,7 +140,7 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - COMPLETED AND VERIFIED (desktop cloud-browser scope): Handyman homepage entry order, form opens, Back returns home; Agent opens, opaque full-screen panel, dark teal header, Home returns home; body and html overflow hidden during Agent. Full-screen panel dimensions 1363 × 936. No physical-device or authenticated data claims.
 - Browser translation inspection found old broad selectors mislabeled Stage 1 as Check Application Status and Services as Background Check Authorization. Corrected selectors target their specific containers. Translation follow-up requires browser confirmation.
 - BLOCKED: Handyman actual save/review/assignment until isolated DB with preserved migrations is available. Insurance-company connectivity remains unconfirmed.
-- BLOCKED: exact official asset with embedded “We Are Your General Contractor” is not resolved; current asset preserved.
+- UPDATED: current logo asset remains preserved, but the non-translatable lower slogan is masked and replaced by separate translated page text.
 - BUILT BUT UNVERIFIED: owner decision applied to keep a single Admin Escalation & Human Review role, avoiding duplicate escalation handoff. Analytics & Reporting and Photo Recommendation are now in the role catalog for the 14-role target.
 
 ## Final batch checkpoint
@@ -148,8 +148,8 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Code commit `b4dfc916b471516479a4bd9d60c31b7d9ab9a6d1` deployed READY in `dpl_8PfUJLm8QLTPtVqvc9Lo6i8o58m8`; exact requested branch confirmed. Isolated public alias assigned to that deployment.
 - Arabic browser test PASSED: Handyman entry translation, Stage 1 title, services label, authorization/terms labels, status heading and RTL (`dir=rtl`). Back returned home. English preference restored afterward. No data submitted.
 - Homepage translation gaps observed: BCT Estimator entry and photo captions/alt text still English in Arabic; coverage remains PARTIALLY IMPLEMENTED.
-- The broad release remains NOT READY. No preview link delivered as approved/final because official-logo requirement fails. No paid services, Live releases, DB writes, or duplicate systems introduced.
-- Next authorized work: deployed browser verification for the 14-role selector, role-specific workflow checks, admin entry and translation coverage. Required inputs: exact approved logo file; isolated database configuration before end-to-end data tests.
+- The broad release remains NOT READY. No paid services, Live releases, DB writes, or duplicate systems introduced.
+- Next authorized work: deployed browser verification for the 14-role selector, role-specific workflow checks, admin entry and translation coverage. Required input remains isolated database configuration before end-to-end data tests.
 
 ## Local continuation checkpoint — October 9
 
@@ -157,3 +157,9 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Local isolated commit `9ce29f0` fixes the BCT Estimator homepage translation key, static gallery translation keys, gallery cache version, and the missing translated `morePhotos` copy used by the full-gallery modal.
 - Focused checks passed locally: `node --check agent-bct-ui.js`; `node --check bct-home-gallery.js`; `node scripts/agent-bct-mobile-smoke.mjs`; `node scripts/agent-bct-positions-smoke.mjs`; `node --test tests/agent-bct/*.test.js`; `node tests/v46-gallery-image-text-translation.mjs`; `node tests/v46-home-gallery.mjs`; `git diff --check`.
 - Push/deployed verification is BLOCKED in this terminal: `git push origin feature/v46-handyman-combined-latest` failed because no GitHub credentials were available. Branch is locally ahead of origin by two commits. Live remains untouched.
+
+## Logo decision update — October 9
+
+- Owner clarified that the slogan “We Are Your General Contractor” must remain translatable.
+- Current rule: continue the Live-style logo plus slogan treatment. Preserve the approved BCT logo image, mask the non-translatable embedded lower slogan where needed, and display a separate dynamic slogan overlay.
+- Homepage code restores the `data-bct-slogan` element so `syncBrandSlogan()` can translate the slogan with the selected language preference.

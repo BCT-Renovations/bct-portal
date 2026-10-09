@@ -465,7 +465,8 @@ body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;marg
 .bct-dynamic-brand{width:100%;display:flex;justify-content:center;background:#e8f5ec}
 .bct-logo-crop{width:min(100vw,700px);overflow:hidden;background:#e8f5ec;line-height:0;position:relative!important}
 .bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;margin:0!important;transform:none!important;mix-blend-mode:normal!important}
-@media(max-width:480px){.bct-logo-crop{width:100%}}
+.bct-dynamic-slogan{position:absolute;left:0;right:0;bottom:5.1%;z-index:3;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.35rem,5.2vw,2.35rem);font-weight:600;font-style:italic;line-height:1;color:#004b57;text-align:center;white-space:nowrap;padding:0 8px;margin:0;background:transparent}
+@media(max-width:480px){.bct-logo-crop{width:100%}.bct-logo-crop::after{height:19%}.bct-dynamic-slogan{font-size:clamp(1.25rem,5.2vw,2.15rem);bottom:5.1%}}
 
 
 /* BCT V46 IPHONE SIGNED-OUT MASTER LAYOUT — screenshot-driven */
@@ -693,11 +694,6 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 </style>
 <link rel="stylesheet" href="/agent-bct-ui.css?v=20261009-3" />
 
-<style id="bct-uploaded-logo-lock">
-/* V46: uploaded logo already contains the complete BCT branding and slogan. */
-body:not(.bct-authenticated) .bct-logo-crop::after{display:none!important;content:none!important}
-body:not(.bct-authenticated) .bct-dynamic-slogan{display:none!important}
-</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -718,7 +714,7 @@ body:not(.bct-authenticated) .bct-dynamic-slogan{display:none!important}
       </select>
     </div>
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008" alt="BCT Renovations logo"></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
