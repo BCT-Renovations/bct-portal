@@ -1,7 +1,9 @@
 import fs from "node:fs";
 import assert from "node:assert/strict";
+import vm from "node:vm";
 
 const js=fs.readFileSync(new URL("../agent-bct-ui.js",import.meta.url),"utf8");
+new vm.Script(js,{filename:"agent-bct-ui.js"});
 const css=fs.readFileSync(new URL("../agent-bct-ui.css",import.meta.url),"utf8");
 const html=fs.readFileSync(new URL("../index.html",import.meta.url),"utf8");
 

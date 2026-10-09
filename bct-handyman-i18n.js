@@ -15,9 +15,11 @@ ru:{portal:'ПОРТАЛ МАСТЕРА BCT',title:'Заявка мастера'
 function lang(){return (localStorage.getItem('bctPreferredLanguage')||localStorage.getItem('bct_language')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}
 function apply(){
  const t=T[lang()]||T.en, p=document.getElementById('bctHandymanPortalMount'), a=document.getElementById('bctHandymanAdminMount');
+ const entry=document.getElementById('bctHandymanPortalBtn');if(entry)entry.textContent=({en:'Handyman',es:'Manitas',fr:'Bricoleur',ht:'Handyman',pt:'Handyman',vi:'Thợ đa năng',zh:'多能工',ar:'الحرفي',ru:'Мастер'})[lang()]||'Handyman';
  if(p){
+  p.dir=lang()==='ar'?'rtl':'ltr';
   const set=(sel,key)=>p.querySelector(sel)&&(p.querySelector(sel).textContent=t[key]);
-  set('.badge.info','portal');set('h2','title');set('#bctHandymanBackBtn','back');
+  set('.badge.info','portal');set('h2','title');set('.toolbar .muted','intro');set('#bctHandymanBackBtn','back');
   const hs=p.querySelectorAll('.bct-handyman-grid>div>h3');['apply','bg','review','approval'].forEach((k,i)=>{if(hs[i])hs[i].textContent=t[k]});
   const ps=p.querySelectorAll('.bct-handyman-grid>div>p');['applyp','bgp','reviewp','approvalp'].forEach((k,i)=>{if(ps[i])ps[i].textContent=t[k]});
   const map={legal_name:'legal',business_name:'business',phone:'phone',email:'email',city:'city',state:'state',years_experience:'years',service_area:'area',services:'services'};
@@ -25,7 +27,7 @@ function apply(){
   const ta=p.querySelector('[name="services"]');if(ta)ta.placeholder=t.serviceph;
   const labels=p.querySelectorAll('.bct-handyman-note label');if(labels[0])labels[0].lastChild.textContent=' '+t.authtext;if(labels[1])labels[1].lastChild.textContent=' '+t.termstext;
   const noteLabels=p.querySelectorAll('form>div.full>label');if(noteLabels[0])noteLabels[0].textContent=t.auth;if(noteLabels[1])noteLabels[1].textContent=t.terms;
-  set('form button[type="submit"]','submit');set('.bct-handyman-card h3','status');set('#bctHandymanStatusId','appid');set('#bctHandymanCheckStatus','check');
+  set('form button[type="submit"]','submit');set('.bct-handyman-card h3','status');const idLabel=p.querySelector('#bctHandymanStatusId')?.previousElementSibling;if(idLabel)idLabel.textContent=t.appid;set('#bctHandymanCheckStatus','check');
  }
  if(a){const h=a.querySelector('.badge.info');if(h)h.textContent=t.admin;const h2=a.querySelector('h2');if(h2)h2.textContent=t.adminTitle;const intro=a.querySelector('.muted');if(intro)intro.textContent=t.adminIntro;const close=a.querySelector('#bctHandymanAdminClose');if(close)close.textContent=t.close;}
 }
