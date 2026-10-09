@@ -138,3 +138,11 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - BLOCKED: Handyman actual save/review/assignment until isolated DB with preserved migrations is available. Insurance-company connectivity remains unconfirmed.
 - BLOCKED: exact official asset with embedded “We Are Your General Contractor” is not resolved; current asset preserved.
 - BLOCKED: distinct purpose of added Escalation & Human Review versus existing Admin & Escalation needs owner decision. Analytics & Reporting is named in history but not integrated. No duplicate roles added.
+
+## Final batch checkpoint
+
+- Code commit `b4dfc916b471516479a4bd9d60c31b7d9ab9a6d1` deployed READY in `dpl_8PfUJLm8QLTPtVqvc9Lo6i8o58m8`; exact requested branch confirmed. Isolated public alias assigned to that deployment.
+- Arabic browser test PASSED: Handyman entry translation, Stage 1 title, services label, authorization/terms labels, status heading and RTL (`dir=rtl`). Back returned home. English preference restored afterward. No data submitted.
+- Homepage translation gaps observed: BCT Estimator entry and photo captions/alt text still English in Arabic; coverage remains PARTIALLY IMPLEMENTED.
+- The broad release remains NOT READY. No preview link delivered as approved/final because official-logo requirement fails. No paid services, Live releases, DB writes, or duplicate systems introduced.
+- Next authorized work: role-selection wiring, nonduplicative reporting role, admin entry and translation coverage. Required inputs: exact approved logo file; distinct Escalation & Human Review responsibility; isolated database configuration before end-to-end data tests.
