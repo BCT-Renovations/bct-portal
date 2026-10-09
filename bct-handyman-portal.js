@@ -20,7 +20,7 @@ function render(){
  form.onsubmit=async e=>{e.preventDefault();const msg=document.getElementById('bctHandymanApplicationMessage');if(!supabase?.from){msg.innerHTML='<div class="bct-handyman-note">Handyman application backend is not connected on this preview.</div>';return;}const fd=new FormData(form);const payload=Object.fromEntries(fd.entries());payload.background_check_authorized=fd.get('background_check_authorized')==='on';payload.terms_agreed=fd.get('terms_agreed')==='on';delete payload.background_check_authorized;delete payload.terms_agreed;try{const {data,error}=await supabase.rpc('bct_submit_handyman_application',{p_legal_name:payload.legal_name,p_business_name:payload.business_name||null,p_phone:payload.phone,p_email:payload.email,p_city:payload.city,p_state:payload.state.toUpperCase(),p_years_experience:Number(payload.years_experience),p_service_area:payload.service_area,p_services:payload.services,p_background_check_authorized:true,p_terms_agreed:true});if(error)throw error;const id=data?.application_id||data?.[0]?.application_id||data?.[0]?.id||data?.id;msg.innerHTML='<div class="bct-handyman-note"><b>✓ Application Submitted</b><br>Application ID: <b>'+esc(id||'Submitted')+'</b><br>Status: Pending BCT Review. Background check: Pending scheduling.</div>';form.reset();}catch(err){msg.innerHTML='<div class="bct-handyman-note">Unable to submit this application yet. '+esc(err.message||'Please try again.')+'</div>';}};
  document.getElementById('bctHandymanCheckStatus').onclick=async()=>{const id=document.getElementById('bctHandymanStatusId').value.trim(),email=document.getElementById('bctHandymanStatusEmail').value.trim();const out=document.getElementById('bctHandymanStatusResult');if(!id||!email){out.innerHTML='<div class="bct-handyman-note">Enter both the Application ID and email.</div>';return;}try{const {data,error}=await supabase.rpc('bct_handyman_application_status',{p_application_id:id,p_email:email});if(error)throw error;const a=Array.isArray(data)?data[0]:data;if(!a){out.innerHTML='<div class="bct-handyman-note">No matching application was found.</div>';return;}out.innerHTML='<div class="bct-handyman-note"><b>'+esc(a.legal_name)+'</b><br>Application: '+esc(a.application_status)+'<br>Background Check: '+esc(a.background_check_status)+'<br>BCT Approval: '+esc(a.approval_status)+'</div>';}catch(err){out.innerHTML='<div class="bct-handyman-note">Status lookup is unavailable on this preview.</div>';}};
 }
-function open(){mount();document.getElementById(MOUNT_ID)?.classList.remove('hidden');window.scrollTo({top:document.getElementById(MOUNT_ID).offsetTop-70,behavior:'smooth'});}
+function open(){mount();if(typeof window.setVisibleView==='function')window.setVisibleView('home');document.querySelectorAll('main > section.view').forEach(v=>v.classList.add('hidden'));document.getElementById(MOUNT_ID)?.classList.remove('hidden');window.scrollTo({top:0,behavior:'auto'});}
 window.BCTHandymanPortal={open,mount};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();addEntryButton();});else{mount();addEntryButton();}
 function addEntryButton(){
@@ -28,14 +28,18 @@ function addEntryButton(){
   const nav=document.querySelector('nav');
   if(nav){const b=document.createElement('button');b.id='bctHandymanPortalBtn';b.type='button';b.className='secondary';b.textContent='Handyman Portal';b.onclick=open;nav.appendChild(b);}
  }
- // Public V46 homepage entry: navigation may be hidden for signed-out visitors.
- if(!document.getElementById('bctHandymanHomeEntry')){
-  const home=document.getElementById('view-home');
-  if(home){
-   const wrap=document.createElement('div');wrap.id='bctHandymanHomeEntry';wrap.style.cssText='max-width:760px;margin:16px auto;text-align:center;padding:12px';
-   const b=document.createElement('button');b.type='button';b.id='bctHandymanHomeButton';b.className='secondary';b.textContent='Handyman Portal';b.style.cssText='display:inline-block;min-height:48px;padding:12px 24px;font-weight:700';
-   b.addEventListener('click',open);wrap.appendChild(b);home.appendChild(wrap);
-  }
+ // Put the entry alongside the existing public sign-in choices, not below the long homepage.
+ const actions=document.getElementById('bctEntryActions');
+ if(actions && !document.getElementById('bctHandymanHomeButton')){
+  const button=document.createElement('button');
+  button.type='button';button.id='bctHandymanHomeButton';
+  button.textContent='Handyman Portal';
+  button.className='secondary';
+  button.addEventListener('click',open);
+  const contractor=actions.querySelector('[data-entry-login="contractor"]');
+  if(contractor)contractor.insertAdjacentElement('afterend',button);
+  else actions.appendChild(button);
  }
+
 }
 })();
