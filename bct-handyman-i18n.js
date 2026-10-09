@@ -26,8 +26,8 @@ function apply(){
   Object.entries(map).forEach(([n,k])=>{const el=p.querySelector('[name="'+n+'"]');if(el){const l=el.closest('div')?.querySelector('label');if(l)l.textContent=t[k]}});
   const ta=p.querySelector('[name="services"]');if(ta)ta.placeholder=t.serviceph;
   const labels=p.querySelectorAll('.bct-handyman-note label');if(labels[0])labels[0].lastChild.textContent=' '+t.authtext;if(labels[1])labels[1].lastChild.textContent=' '+t.termstext;
-  const noteLabels=p.querySelectorAll('form>div.full>label');if(noteLabels[0])noteLabels[0].textContent=t.auth;if(noteLabels[1])noteLabels[1].textContent=t.terms;
-  set('form button[type="submit"]','submit');set('.bct-handyman-card h3','status');const idLabel=p.querySelector('#bctHandymanStatusId')?.previousElementSibling;if(idLabel)idLabel.textContent=t.appid;set('#bctHandymanCheckStatus','check');
+  const authLabel=p.querySelector('[name="background_check_authorized"]')?.closest('div.full')?.querySelector(':scope>label');if(authLabel)authLabel.textContent=t.auth;const termsLabel=p.querySelector('[name="terms_agreed"]')?.closest('div.full')?.querySelector(':scope>label');if(termsLabel)termsLabel.textContent=t.terms;
+  set('form button[type="submit"]','submit');const statusTitle=p.querySelector('#bctHandymanStatusId')?.closest('.bct-handyman-card')?.querySelector('h3');if(statusTitle)statusTitle.textContent=t.status;const idLabel=p.querySelector('#bctHandymanStatusId')?.previousElementSibling;if(idLabel)idLabel.textContent=t.appid;set('#bctHandymanCheckStatus','check');
  }
  if(a){const h=a.querySelector('.badge.info');if(h)h.textContent=t.admin;const h2=a.querySelector('h2');if(h2)h2.textContent=t.adminTitle;const intro=a.querySelector('.muted');if(intro)intro.textContent=t.adminIntro;const close=a.querySelector('#bctHandymanAdminClose');if(close)close.textContent=t.close;}
 }

@@ -129,3 +129,12 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - These follow-up changes require new deployment/browser confirmation. No actual Handyman submissions performed against shared DB.
 
 - Follow-up deployment `8284e25`, `dpl_C1RgZpq5ZytQTzNvFHg9gMPC8K6Z`, READY verified. Browser found higher-specificity legacy signed-out visibility rules still overriding Handyman styles. Applied scoped inline display on open and removed it on Back/Home; targeted override avoids modifying existing portal selectors or homepage design. Recheck required.
+
+## Verified deployed results — October 9
+
+- Commit `e9304a3164e6093be92ba2372a86d2133ed7668e`, deployment `dpl_63xSYe66RjyVhCC79tV2fx8wgRKn`: READY, exact isolated branch/SHA verified. Existing isolated alias updated, Live untouched.
+- COMPLETED AND VERIFIED (desktop cloud-browser scope): Handyman homepage entry order, form opens, Back returns home; Agent opens, opaque full-screen panel, dark teal header, Home returns home; body and html overflow hidden during Agent. Full-screen panel dimensions 1363 × 936. No physical-device or authenticated data claims.
+- Browser translation inspection found old broad selectors mislabeled Stage 1 as Check Application Status and Services as Background Check Authorization. Corrected selectors target their specific containers. Translation follow-up requires browser confirmation.
+- BLOCKED: Handyman actual save/review/assignment until isolated DB with preserved migrations is available. Insurance-company connectivity remains unconfirmed.
+- BLOCKED: exact official asset with embedded “We Are Your General Contractor” is not resolved; current asset preserved.
+- BLOCKED: distinct purpose of added Escalation & Human Review versus existing Admin & Escalation needs owner decision. Analytics & Reporting is named in history but not integrated. No duplicate roles added.
