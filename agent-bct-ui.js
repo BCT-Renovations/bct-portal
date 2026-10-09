@@ -42,6 +42,8 @@ function goHome(){
  if(!document.body.classList.contains("bct-authenticated"))document.body.classList.remove("bct-portal-entered");
  window.scrollTo({top:0,left:0,behavior:"auto"});
  const home=document.getElementById("view-home");
+ home?.style.removeProperty("display");
+ const handyman=document.getElementById("bctHandymanPortalMount");handyman?.classList.add("hidden");handyman?.style.removeProperty("display");
  if(typeof setVisibleView==="function")setVisibleView("home");
  document.querySelectorAll("[id^=\"view-\"]").forEach(v=>{if(v!==home&&v.id!=="view-home")v.classList.add("hidden");});
  home?.classList.remove("hidden","bct-signedout-hidden");

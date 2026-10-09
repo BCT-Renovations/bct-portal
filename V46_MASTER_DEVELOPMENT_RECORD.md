@@ -127,3 +127,5 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Browser: Agent header inherited mint landing background with white text. Fixed dialog-scoped dark teal header, preserving homepage CSS.
 - Required logo still mismatched; no asset rewritten. Newest known IMG_9589.png is a screenshot, not the official standalone logo. Search did not resolve the October 8 replacement file.
 - These follow-up changes require new deployment/browser confirmation. No actual Handyman submissions performed against shared DB.
+
+- Follow-up deployment `8284e25`, `dpl_C1RgZpq5ZytQTzNvFHg9gMPC8K6Z`, READY verified. Browser found higher-specificity legacy signed-out visibility rules still overriding Handyman styles. Applied scoped inline display on open and removed it on Back/Home; targeted override avoids modifying existing portal selectors or homepage design. Recheck required.
