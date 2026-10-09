@@ -23,5 +23,19 @@ function render(){
 function open(){mount();document.getElementById(MOUNT_ID)?.classList.remove('hidden');window.scrollTo({top:document.getElementById(MOUNT_ID).offsetTop-70,behavior:'smooth'});}
 window.BCTHandymanPortal={open,mount};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();addEntryButton();});else{mount();addEntryButton();}
-function addEntryButton(){if(document.getElementById('bctHandymanPortalBtn'))return;const nav=document.querySelector('nav');if(!nav)return;const b=document.createElement('button');b.id='bctHandymanPortalBtn';b.type='button';b.className='secondary';b.textContent='Handyman Portal';b.onclick=open;nav.appendChild(b);}
+function addEntryButton(){
+ if(!document.getElementById('bctHandymanPortalBtn')){
+  const nav=document.querySelector('nav');
+  if(nav){const b=document.createElement('button');b.id='bctHandymanPortalBtn';b.type='button';b.className='secondary';b.textContent='Handyman Portal';b.onclick=open;nav.appendChild(b);}
+ }
+ // Public V46 homepage entry: navigation may be hidden for signed-out visitors.
+ if(!document.getElementById('bctHandymanHomeEntry')){
+  const home=document.getElementById('view-home');
+  if(home){
+   const wrap=document.createElement('div');wrap.id='bctHandymanHomeEntry';wrap.style.cssText='max-width:760px;margin:16px auto;text-align:center;padding:12px';
+   const b=document.createElement('button');b.type='button';b.id='bctHandymanHomeButton';b.className='secondary';b.textContent='Handyman Portal';b.style.cssText='display:inline-block;min-height:48px;padding:12px 24px;font-weight:700';
+   b.addEventListener('click',open);wrap.appendChild(b);home.appendChild(wrap);
+  }
+ }
+}
 })();
