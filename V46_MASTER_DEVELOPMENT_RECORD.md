@@ -163,3 +163,6 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Owner clarified that the slogan “We Are Your General Contractor” must remain translatable.
 - Current rule: continue the Live-style logo plus slogan treatment. Preserve the approved BCT logo image, mask the non-translatable embedded lower slogan where needed, and display a separate dynamic slogan overlay.
 - Homepage code restores the `data-bct-slogan` element so `syncBrandSlogan()` can translate the slogan with the selected language preference.
+- Isolated deployment `dpl_7kE66f3Qm1MynBnUSkQ1DhpqfVN5` for commit `94257ddcf954f5cdd192fa8a07ab83ce35a2e576` is READY and assigned to the isolated preview alias only.
+- Browser verification PASSED on the isolated preview: English slogan displays as separate text; Arabic slogan displays as `“نحن المقاول العام الخاص بك”`; document direction changes to `rtl`; logo mask pseudo-element is active; homepage entry order remains Client / Homeowner, Contractor, Handyman, BCT Estimator, Admin.
+- Remaining translation gap observed during the same check: BCT Estimator entry remains English in Arabic mode.
