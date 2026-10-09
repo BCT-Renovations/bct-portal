@@ -1,7 +1,9 @@
 import fs from "node:fs";
 import assert from "node:assert/strict";
+import vm from "node:vm";
 
 const js=fs.readFileSync(new URL("../agent-bct-ui.js",import.meta.url),"utf8");
+new vm.Script(js,{filename:"agent-bct-ui.js"});
 const css=fs.readFileSync(new URL("../agent-bct-ui.css",import.meta.url),"utf8");
 const html=fs.readFileSync(new URL("../index.html",import.meta.url),"utf8");
 
@@ -12,6 +14,12 @@ assert.match(js,/onAuthStateChange/);
 assert.match(js,/SIGNED_OUT/);
 assert.match(js,/clearPrivate\(\)/);
 assert.match(js,/authorization="Bearer "/);
+assert.match(js,/const POSITIONS=\[/);
+assert.match(js,/analytics_reporting/);
+assert.match(js,/admin_escalation/);
+assert.match(js,/photo_recommendation/);
+assert.match(js,/id="bctAgentPosition"/);
+assert.match(js,/body:JSON\.stringify\(\{message,position,languageCode/);
 assert.doesNotMatch(js,/localStorage\.setItem|sessionStorage\.setItem/);
 assert.doesNotMatch(js,/getUserMedia|MediaRecorder|SpeechRecognition|webkitSpeechRecognition/);
 assert.match(js,/AbortController/);
@@ -25,6 +33,7 @@ assert.match(js,/maxlength="6000"/);
 assert.match(css,/100dvh/);
 assert.match(css,/safe-area-inset/);
 assert.match(css,/overflow:hidden/);
+assert.match(css,/\.bct-agent-position/);
 assert.match(css,/prefers-reduced-motion/);
 assert.match(css,/-webkit-overflow-scrolling:touch/);
 assert.match(html,/agent-bct-ui\.css/);

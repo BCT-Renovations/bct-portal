@@ -2,19 +2,19 @@
    Isolated add-on: does not replace existing landing controls or portal logic. */
 (function(){
   'use strict';
-  const VERSION='BCT-PHOTO-BUILD-2026.10.05-image-text-translation-1';
+  const VERSION='BCT-PHOTO-BUILD-2026.10.09-translation-shell-1';
   window.BCT_HOME_GALLERY_VERSION=VERSION;
 
   const COPY={
-    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',less:'Show Fewer Projects',full:'Open Full Gallery',coming:'Gallery Coming Soon',close:'Close',prev:'Previous',next:'Next',all:'All',category:'Category',slot:'BCT project photo'},
-    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',less:'Ver Menos Proyectos',full:'Abrir Galería Completa',coming:'Galería Próximamente',close:'Cerrar',prev:'Anterior',next:'Siguiente',all:'Todos',category:'Categoría',slot:'Foto de proyecto BCT'},
-    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',less:'Voir Moins de Projets',full:'Ouvrir la Galerie Complète',coming:'Galerie Bientôt Disponible',close:'Fermer',prev:'Précédent',next:'Suivant',all:'Tous',category:'Catégorie',slot:'Photo de projet BCT'},
-    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',less:'Montre Mwens Pwojè',full:'Louvri Galri Konplè a',coming:'Galri a Ap Vini Talè',close:'Fèmen',prev:'Anvan',next:'Pwochen',all:'Tout',category:'Kategori',slot:'Foto pwojè BCT'},
-    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',less:'Ver Menos Projetos',full:'Abrir Galeria Completa',coming:'Galeria em Breve',close:'Fechar',prev:'Anterior',next:'Próximo',all:'Todos',category:'Categoria',slot:'Foto de projeto BCT'},
-    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',less:'Hiển Thị Ít Hơn',full:'Mở Thư Viện Ảnh Đầy Đủ',coming:'Thư Viện Ảnh Sắp Ra Mắt',close:'Đóng',prev:'Trước',next:'Tiếp',all:'Tất Cả',category:'Danh mục',slot:'Ảnh dự án BCT'},
-    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',less:'收起项目',full:'打开完整图库',coming:'图库即将推出',close:'关闭',prev:'上一张',next:'下一张',all:'全部',category:'分类',slot:'BCT 项目照片'},
-    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',less:'عرض مشاريع أقل',full:'فتح المعرض الكامل',coming:'المعرض قريبًا',close:'إغلاق',prev:'السابق',next:'التالي',all:'الكل',category:'الفئة',slot:'صورة مشروع BCT'},
-    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',less:'Показать Меньше',full:'Открыть Полную Галерею',coming:'Галерея Скоро Откроется',close:'Закрыть',prev:'Назад',next:'Далее',all:'Все',category:'Категория',slot:'Фото проекта BCT'}
+    en:{title:'Our Work',lead:'A look at recent BCT Renovations projects.',more:'View More Projects',morePhotos:'More Photos',less:'Show Fewer Projects',full:'Open Full Gallery',coming:'Gallery Coming Soon',close:'Close',prev:'Previous',next:'Next',all:'All',category:'Category',slot:'BCT project photo'},
+    es:{title:'Nuestro Trabajo',lead:'Una muestra de proyectos recientes de BCT Renovations.',more:'Ver Más Proyectos',morePhotos:'Más Fotos',less:'Ver Menos Proyectos',full:'Abrir Galería Completa',coming:'Galería Próximamente',close:'Cerrar',prev:'Anterior',next:'Siguiente',all:'Todos',category:'Categoría',slot:'Foto de proyecto BCT'},
+    fr:{title:'Nos Réalisations',lead:'Un aperçu de projets récents de BCT Renovations.',more:'Voir Plus de Projets',morePhotos:'Plus de Photos',less:'Voir Moins de Projets',full:'Ouvrir la Galerie Complète',coming:'Galerie Bientôt Disponible',close:'Fermer',prev:'Précédent',next:'Suivant',all:'Tous',category:'Catégorie',slot:'Photo de projet BCT'},
+    ht:{title:'Travay Nou',lead:'Yon gade sou kèk pwojè BCT Renovations resan.',more:'Gade Plis Pwojè',morePhotos:'Plis Foto',less:'Montre Mwens Pwojè',full:'Louvri Galri Konplè a',coming:'Galri a Ap Vini Talè',close:'Fèmen',prev:'Anvan',next:'Pwochen',all:'Tout',category:'Kategori',slot:'Foto pwojè BCT'},
+    pt:{title:'Nosso Trabalho',lead:'Uma amostra de projetos recentes da BCT Renovations.',more:'Ver Mais Projetos',morePhotos:'Mais Fotos',less:'Ver Menos Projetos',full:'Abrir Galeria Completa',coming:'Galeria em Breve',close:'Fechar',prev:'Anterior',next:'Próximo',all:'Todos',category:'Categoria',slot:'Foto de projeto BCT'},
+    vi:{title:'Công Trình Của Chúng Tôi',lead:'Một số dự án gần đây của BCT Renovations.',more:'Xem Thêm Dự Án',morePhotos:'Thêm Ảnh',less:'Hiển Thị Ít Hơn',full:'Mở Thư Viện Ảnh Đầy Đủ',coming:'Thư Viện Ảnh Sắp Ra Mắt',close:'Đóng',prev:'Trước',next:'Tiếp',all:'Tất Cả',category:'Danh mục',slot:'Ảnh dự án BCT'},
+    zh:{title:'我们的工程',lead:'查看 BCT Renovations 最近的部分项目。',more:'查看更多项目',morePhotos:'更多照片',less:'收起项目',full:'打开完整图库',coming:'图库即将推出',close:'关闭',prev:'上一张',next:'下一张',all:'全部',category:'分类',slot:'BCT 项目照片'},
+    ar:{title:'أعمالنا',lead:'نظرة على بعض مشاريع BCT Renovations الحديثة.',more:'عرض المزيد من المشاريع',morePhotos:'المزيد من الصور',less:'عرض مشاريع أقل',full:'فتح المعرض الكامل',coming:'المعرض قريبًا',close:'إغلاق',prev:'السابق',next:'التالي',all:'الكل',category:'الفئة',slot:'صورة مشروع BCT'},
+    ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',morePhotos:'Больше Фото',less:'Показать Меньше',full:'Открыть Полную Галерею',coming:'Галерея Скоро Откроется',close:'Закрыть',prev:'Назад',next:'Далее',all:'Все',category:'Категория',slot:'Фото проекта BCT'}
   };
 
   let PROJECTS=[]; // Loaded from the secure BCT gallery table; never create empty placeholders.
