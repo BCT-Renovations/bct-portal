@@ -4,3 +4,6 @@ html:has(body.bct-agent-open),body.bct-agent-open{overflow:hidden!important}
 body.bct-agent-open #bctAgentRoot{position:fixed!important;inset:0!important;z-index:2147483646!important;isolation:isolate!important;pointer-events:auto!important;background:#fff!important}
 body.bct-agent-open #bctAgentPanel:not([hidden]){position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;min-height:100dvh!important;max-height:none!important;z-index:2147483647!important;background:#fff!important;opacity:1!important;visibility:visible!important;transform:none!important;backdrop-filter:none!important;display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important}
 body.bct-agent-open #bctAgentMessages{min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+
+/* Keep landing header rules out of the Agent dialog. */
+body.bct-agent-open #bctAgentPanel>header{background:#0f5f63!important;color:#fff!important}

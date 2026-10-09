@@ -117,3 +117,13 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 3. Resolve official-logo source and two-role overlap; never invent approvals.
 4. Obtain/select isolated Supabase environment before applying preserved Handyman migrations or submitting test data.
 5. Wire role selection and Handyman admin access with existing auth, then complete translation/permission coverage and remaining workflows in scoped batches.
+
+## Deployed verification follow-up
+
+- Batch commit `2d7bbb5597837dc49c2bb7b1b0c457f44ea4ffe0` deployed READY: `dpl_9jzApdMtrFZQjW16ZGpjhhCN9e6N`, exact branch/SHA verified.
+- Existing isolated public alias reassigned to that deployment, only within isolated project. Live project unchanged.
+- Browser: Agent panel full viewport (1363 × 936), opaque white background, homepage absent from Agent accessibility tree; Home returns landing.
+- Browser: Handyman entry appears exactly between Contractor and BCT Estimator. Initial click exposed legacy signed-out CSS hiding its form: portal display none although hidden class removed. Fixed scoped portal-entered/class routing and CSS, plus Back and Agent Home cleanup.
+- Browser: Agent header inherited mint landing background with white text. Fixed dialog-scoped dark teal header, preserving homepage CSS.
+- Required logo still mismatched; no asset rewritten. Newest known IMG_9589.png is a screenshot, not the official standalone logo. Search did not resolve the October 8 replacement file.
+- These follow-up changes require new deployment/browser confirmation. No actual Handyman submissions performed against shared DB.

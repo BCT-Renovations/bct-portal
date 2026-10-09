@@ -38,7 +38,8 @@ function applyCopy(){
 function goHome(){
  const panel=document.getElementById("bctAgentPanel");
  if(panel)panel.hidden=true;
- document.body.classList.remove("bct-agent-open");
+ document.body.classList.remove("bct-agent-open","bct-entry-handyman");
+ if(!document.body.classList.contains("bct-authenticated"))document.body.classList.remove("bct-portal-entered");
  window.scrollTo({top:0,left:0,behavior:"auto"});
  const home=document.getElementById("view-home");
  if(typeof setVisibleView==="function")setVisibleView("home");
