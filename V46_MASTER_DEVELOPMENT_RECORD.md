@@ -166,3 +166,9 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Isolated deployment `dpl_7kE66f3Qm1MynBnUSkQ1DhpqfVN5` for commit `94257ddcf954f5cdd192fa8a07ab83ce35a2e576` is READY and assigned to the isolated preview alias only.
 - Browser verification PASSED on the isolated preview: English slogan displays as separate text; Arabic slogan displays as `“نحن المقاول العام الخاص بك”`; document direction changes to `rtl`; logo mask pseudo-element is active; homepage entry order remains Client / Homeowner, Contractor, Handyman, BCT Estimator, Admin.
 - Remaining translation gap observed during the same check: BCT Estimator entry remains English in Arabic mode.
+
+## Deployment readiness cleanup — October 9
+
+- Code fix added for the BCT Estimator homepage language gap: Estimator is now included in `BCT_ENTRY_TRANSLATION_KEYS`, `BCT_LOGIN_LANGUAGE_UI`, and the signed-out entry button refresh loop.
+- Local checks passed after the fix: `node --check agent-bct-ui.js`; `node --check bct-home-gallery.js`; `node scripts/agent-bct-mobile-smoke.mjs`; `node scripts/agent-bct-positions-smoke.mjs`; `node tests/v46-home-gallery.mjs`; `node tests/v46-gallery-image-text-translation.mjs`; `git diff --check`.
+- Status: BUILT BUT UNVERIFIED until the isolated preview deployment confirms Estimator translates in browser.

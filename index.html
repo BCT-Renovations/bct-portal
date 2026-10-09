@@ -2483,17 +2483,17 @@ function syncBrandSlogan(language){
  el.dir=(language==='ar')?'rtl':'ltr';
 }
 // BCT V46 opening-screen translation keys are merged locally so the landing page never depends on a network translation call.
-const BCT_ENTRY_TRANSLATION_KEYS={signin:'entry.signin',signup:'entry.signup',client:'entry.client',contractor:'entry.contractor',admin:'entry.admin'};
+const BCT_ENTRY_TRANSLATION_KEYS={signin:'entry.signin',signup:'entry.signup',client:'entry.client',contractor:'entry.contractor',estimator:'entry.estimator',admin:'entry.admin'};
 const BCT_LOGIN_LANGUAGE_UI={
-  en:{label:'Choose Your Language',signin:'Sign In',signup:'Sign Up',client:'Client / Homeowner',contractor:'Contractor',admin:'Admin'},
-  es:{label:'Elija su idioma',signin:'Iniciar sesión',signup:'Registrarse',client:'Cliente',contractor:'Contratista',admin:'Administrador'},
-  fr:{label:'Choisissez votre langue',signin:'Se connecter',signup:'S’inscrire',client:'Client',contractor:'Entrepreneur',admin:'Administrateur'},
-  ht:{label:'Chwazi lang ou',signin:'Konekte',signup:'Enskri',client:'Kliyan',contractor:'Kontraktè',admin:'Administratè'},
-  pt:{label:'Escolha seu idioma',signin:'Entrar',signup:'Cadastrar-se',client:'Cliente',contractor:'Empreiteiro',admin:'Administrador'},
-  vi:{label:'Chọn ngôn ngữ của bạn',signin:'Đăng nhập',signup:'Đăng ký',client:'Khách hàng',contractor:'Nhà thầu',admin:'Quản trị viên'},
-  zh:{label:'选择您的语言',signin:'登录',signup:'注册',client:'客户',contractor:'承包商',admin:'管理员'},
-  ar:{label:'اختر لغتك',signin:'تسجيل الدخول',signup:'إنشاء حساب',client:'العميل',contractor:'المقاول',admin:'المسؤول'},
-  ru:{label:'Выберите язык',signin:'Войти',signup:'Зарегистрироваться',client:'Клиент',contractor:'Подрядчик',admin:'Администратор'}
+  en:{label:'Choose Your Language',signin:'Sign In',signup:'Sign Up',client:'Client / Homeowner',contractor:'Contractor',estimator:'BCT Estimator',admin:'Admin'},
+  es:{label:'Elija su idioma',signin:'Iniciar sesión',signup:'Registrarse',client:'Cliente',contractor:'Contratista',estimator:'Estimador BCT',admin:'Administrador'},
+  fr:{label:'Choisissez votre langue',signin:'Se connecter',signup:'S’inscrire',client:'Client',contractor:'Entrepreneur',estimator:'Estimateur BCT',admin:'Administrateur'},
+  ht:{label:'Chwazi lang ou',signin:'Konekte',signup:'Enskri',client:'Kliyan',contractor:'Kontraktè',estimator:'Estimasyon BCT',admin:'Administratè'},
+  pt:{label:'Escolha seu idioma',signin:'Entrar',signup:'Cadastrar-se',client:'Cliente',contractor:'Empreiteiro',estimator:'Estimador BCT',admin:'Administrador'},
+  vi:{label:'Chọn ngôn ngữ của bạn',signin:'Đăng nhập',signup:'Đăng ký',client:'Khách hàng',contractor:'Nhà thầu',estimator:'Người ước tính BCT',admin:'Quản trị viên'},
+  zh:{label:'选择您的语言',signin:'登录',signup:'注册',client:'客户',contractor:'承包商',estimator:'BCT 估价员',admin:'管理员'},
+  ar:{label:'اختر لغتك',signin:'تسجيل الدخول',signup:'إنشاء حساب',client:'العميل',contractor:'المقاول',estimator:'مقدّر BCT',admin:'المسؤول'},
+  ru:{label:'Выберите язык',signin:'Войти',signup:'Зарегистрироваться',client:'Клиент',contractor:'Подрядчик',estimator:'Оценщик BCT',admin:'Администратор'}
 };
 function syncLoginLanguageUI(language){
   const ui=BCT_LOGIN_LANGUAGE_UI[language]||BCT_LOGIN_LANGUAGE_UI.en;
@@ -2503,7 +2503,7 @@ function syncLoginLanguageUI(language){
   const label=document.querySelector('[data-login-language-label]'); if(label) label.textContent=ui.label;
   const heading=document.querySelector('[data-login-signin-heading]'); if(heading) heading.textContent=ui.signin;
   const signup=document.querySelector('[data-i18n="entry.signup"]'); if(signup) signup.textContent=ui.signup;
-  ['client','contractor','admin'].forEach(role=>{const btn=document.querySelector('[data-entry-login="'+role+'"]');if(btn)btn.textContent=ui[role]});
+  ['client','contractor','estimator','admin'].forEach(role=>{const btn=document.querySelector('[data-entry-login="'+role+'"]');if(btn)btn.textContent=ui[role]});
 }
 const bctLoginLanguageSelector=document.getElementById('bctLoginLanguage');
 if(bctLoginLanguageSelector){
