@@ -22,6 +22,7 @@ Owner: Ty Perry — BCT Renovations, LLC. Updated October 9, 2026.
 - Moved existing Handyman entry into homepage actions between Contractor and BCT Estimator. Uses existing portal, no duplicate application.
 - Handyman navigation hides other views, Back restores home, submission disables its button while pending and rejects repeated clicks. Successful submission still resets form.
 - Localized Handyman entry and intro, added Arabic direction, repaired application-ID label translation (previous code wrote text onto an input).
+- Added Agent BCT role selector to the full-screen dialog and sends the selected position to the protected chat endpoint; bumped Agent UI cache assets.
 - Refreshed changed JS cache versions. Added JS parsing to existing mobile smoke check.
 
 ## Verification ledger
@@ -30,9 +31,9 @@ Owner: Ty Perry — BCT Renovations, LLC. Updated October 9, 2026.
 |---|---|---|
 | Starting Agent UI `node --check` | FAILED: Unexpected token if, line 98 | Direct root cause for missing Agent |
 | Corrected Agent UI, Handyman portal/i18n parse | PASS | Source compilation, not rendering |
-| `node scripts/agent-bct-positions-smoke.mjs` | PASS: 12 roles and voice profiles, authority boundary | Structure, not 12 live workflow demonstrations |
-| `node scripts/agent-bct-mobile-smoke.mjs` | PASS including new JS compilation | Source checks, not physical iPhone/Android |
-| `node --test tests/agent-bct/*.test.js` | PASS: 148 tests, 0 failed, 0 skipped | Backend tests with fixtures; no real provider connectivity claim |
+| `node scripts/agent-bct-positions-smoke.mjs` | PASS: 14 roles and voice profiles, authority boundary | Structure, not 14 live workflow demonstrations |
+| `node scripts/agent-bct-mobile-smoke.mjs` | PASS including JS compilation and Agent role selector wiring | Source checks, not physical iPhone/Android |
+| `node --test tests/agent-bct/*.test.js` | PASS: 14 test files, 0 failed, 0 skipped | Backend tests with fixtures; no real provider connectivity claim |
 | `git diff --check` | PASS | Whitespace |
 | Supabase routine inventory | No Handyman routines; seven insurance routines | Read-only catalog query, no user data |
 | Supabase applied migrations | Latest listed: `20261005211303 bct_gallery_translation_fields`; no October 8 Handyman migrations | Existing migration files preserved |
@@ -46,9 +47,10 @@ Unless a row specifies otherwise, relevant implementation commit is the audited 
 | Feature | Status | Existing implementation / evidence | Remaining work, dependencies and next action |
 |---|---|---|---|
 | Agent fullscreen / background scrolling / Home | BUILT BUT UNVERIFIED | Existing CSS `c881157`, corrected UI in this batch | Deploy then browser open/Home/scroll checks |
-| Original 12 Agent roles | PARTIALLY IMPLEMENTED | `_positions.js`, context/policy/session; structure and 148 backend tests pass | UI currently does not send selected position; verify role selection and authorized workflow per role |
-| Analytics & Reporting addition | BUILT BUT UNVERIFIED | Historical proposal recovered, no implementation found in current role catalog | Confirm exact agreed boundaries and connect authorized reporting tools |
-| Escalation & Human Review addition | BLOCKED | Historical proposal overlaps existing Admin & Escalation | Owner decision: clarify distinct responsibility before making a duplicate role |
+| Original 12 Agent roles | PARTIALLY IMPLEMENTED | `_positions.js`, context/policy/session; structure and Agent backend tests pass; UI now sends selected position | Browser-verify selector and role-specific responses; verify authorized workflow per role |
+| Analytics & Reporting addition | BUILT BUT UNVERIFIED | Added to role catalog and session count on October 9 | Connect authorized reporting tools and verify role-specific responses |
+| Admin Escalation & Human Review | BUILT BUT UNVERIFIED | Owner approved combining escalation/human review into one nonduplicative role; existing admin escalation role renamed and widened | Verify routing for disputes, complaints, exceptions, unsafe issues, and final approvals |
+| Photo Recommendation addition | BUILT BUT UNVERIFIED | Added to role catalog and session count to preserve the 14-role target without duplicating escalation | Connect existing photo-recommendation workflow and verify Admin-only recommendation behavior |
 | Handyman homepage entry/navigation | BUILT BUT UNVERIFIED | Existing portal moved into required order this batch | Browser verify current deployment |
 | Handyman applications / status | BLOCKED | Existing portal and 3 migration files | Required RPCs absent in connected DB; provision/select isolated backend before migration/tests |
 | Handyman references / tools / transport / work history / crew | PARTIALLY IMPLEMENTED | Foundation portal form has basic identity, services, experience | Map requirements to existing schema; extend only missing fields |
@@ -108,13 +110,15 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 9. Documents & Change Order Coordinator (`documents_change_orders`)
 10. Quality & Completion Coordinator (`quality_completion`)
 11. Compliance & Credentials Coordinator (`compliance_credentials`)
-12. BCT Admin & Escalation Coordinator (`admin_escalation`)
+12. Admin Escalation & Human Review Coordinator (`admin_escalation`)
+13. Analytics & Reporting Coordinator (`analytics_reporting`)
+14. Photo Recommendation Coordinator (`photo_recommendation`)
 
 ## Next actions
 
 1. Commit this batch on the existing isolated branch; confirm READY deployment and exact SHA.
 2. Verify Agent open, opaque panel, Home and Handyman entry/Back in deployed browser. Record observable limits.
-3. Resolve official-logo source and two-role overlap; never invent approvals.
+3. Resolve official-logo source; never invent approvals or substitute an unofficial logo.
 4. Obtain/select isolated Supabase environment before applying preserved Handyman migrations or submitting test data.
 5. Wire role selection and Handyman admin access with existing auth, then complete translation/permission coverage and remaining workflows in scoped batches.
 
@@ -137,7 +141,7 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Browser translation inspection found old broad selectors mislabeled Stage 1 as Check Application Status and Services as Background Check Authorization. Corrected selectors target their specific containers. Translation follow-up requires browser confirmation.
 - BLOCKED: Handyman actual save/review/assignment until isolated DB with preserved migrations is available. Insurance-company connectivity remains unconfirmed.
 - BLOCKED: exact official asset with embedded “We Are Your General Contractor” is not resolved; current asset preserved.
-- BLOCKED: distinct purpose of added Escalation & Human Review versus existing Admin & Escalation needs owner decision. Analytics & Reporting is named in history but not integrated. No duplicate roles added.
+- BUILT BUT UNVERIFIED: owner decision applied to keep a single Admin Escalation & Human Review role, avoiding duplicate escalation handoff. Analytics & Reporting and Photo Recommendation are now in the role catalog for the 14-role target.
 
 ## Final batch checkpoint
 
@@ -145,4 +149,11 @@ Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring ver
 - Arabic browser test PASSED: Handyman entry translation, Stage 1 title, services label, authorization/terms labels, status heading and RTL (`dir=rtl`). Back returned home. English preference restored afterward. No data submitted.
 - Homepage translation gaps observed: BCT Estimator entry and photo captions/alt text still English in Arabic; coverage remains PARTIALLY IMPLEMENTED.
 - The broad release remains NOT READY. No preview link delivered as approved/final because official-logo requirement fails. No paid services, Live releases, DB writes, or duplicate systems introduced.
-- Next authorized work: role-selection wiring, nonduplicative reporting role, admin entry and translation coverage. Required inputs: exact approved logo file; distinct Escalation & Human Review responsibility; isolated database configuration before end-to-end data tests.
+- Next authorized work: deployed browser verification for the 14-role selector, role-specific workflow checks, admin entry and translation coverage. Required inputs: exact approved logo file; isolated database configuration before end-to-end data tests.
+
+## Local continuation checkpoint — October 9
+
+- Local isolated commit `9639dabd57276846d72bde9dbd00da55c42e6848` adds the 14-role Agent BCT catalog, keeps one Admin Escalation & Human Review role, adds Analytics & Reporting and Photo Recommendation, wires the full-screen role selector, and updates source smoke coverage.
+- Local isolated commit `9ce29f0` fixes the BCT Estimator homepage translation key, static gallery translation keys, gallery cache version, and the missing translated `morePhotos` copy used by the full-gallery modal.
+- Focused checks passed locally: `node --check agent-bct-ui.js`; `node --check bct-home-gallery.js`; `node scripts/agent-bct-mobile-smoke.mjs`; `node scripts/agent-bct-positions-smoke.mjs`; `node --test tests/agent-bct/*.test.js`; `node tests/v46-gallery-image-text-translation.mjs`; `node tests/v46-home-gallery.mjs`; `git diff --check`.
+- Push/deployed verification is BLOCKED in this terminal: `git push origin feature/v46-handyman-combined-latest` failed because no GitHub credentials were available. Branch is locally ahead of origin by two commits. Live remains untouched.

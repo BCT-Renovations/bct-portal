@@ -65,11 +65,23 @@ export const AGENT_BCT_POSITIONS = Object.freeze({
     voiceProfile: "compliance_coordinator",
     allowedFocus: ["credentials","insurance","background_checks","compliance"],
   },
+  analytics_reporting: {
+    label: "Analytics & Reporting Coordinator",
+    purpose: "Summarize authorized BCT operational data, readiness metrics, job health signals, and reporting questions without exposing restricted records.",
+    voiceProfile: "analytics_reporting",
+    allowedFocus: ["reporting","job_health","readiness_metrics","trend_summaries","admin_insights"],
+  },
   admin_escalation: {
-    label: "BCT Admin & Escalation Coordinator",
-    purpose: "Prepare high-risk, exception, dispute, approval, and policy matters for authorized BCT human review.",
+    label: "Admin Escalation & Human Review Coordinator",
+    purpose: "Prepare high-risk, exception, dispute, complaint, final-approval, unsafe, and policy matters for authorized BCT human review.",
     voiceProfile: "senior_admin",
-    allowedFocus: ["escalation","exceptions","disputes","approvals","policy_questions"],
+    allowedFocus: ["escalation","human_review","exceptions","disputes","complaints","approvals","policy_questions"],
+  },
+  photo_recommendation: {
+    label: "Photo Recommendation Coordinator",
+    purpose: "Review project photo context and prepare BCT-only recommendations while keeping publishing and final decisions under Admin control.",
+    voiceProfile: "photo_recommendation",
+    allowedFocus: ["photo_context","recommendations","admin_review","project_evidence"],
   },
 });
 

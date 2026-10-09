@@ -1,5 +1,5 @@
-const VERSION = "agent-bct-2026.10.03-session-positions-1";
-const AGENT_POSITION_KEYS = Object.freeze(["project_manager","estimator","contractor_coordinator","assignment_scheduler","customer_support","finance_escrow","insurance_claims","property_commercial","documents_change_orders","quality_completion","compliance_credentials","admin_escalation"]);
+const VERSION = "agent-bct-2026.10.09-session-positions-14";
+const AGENT_POSITION_KEYS = Object.freeze(["project_manager","estimator","contractor_coordinator","assignment_scheduler","customer_support","finance_escrow","insurance_claims","property_commercial","documents_change_orders","quality_completion","compliance_credentials","analytics_reporting","admin_escalation","photo_recommendation"]);
 const MAX_BODY_BYTES = 16 * 1024;
 
 function json(body, status = 200, extraHeaders = {}) {

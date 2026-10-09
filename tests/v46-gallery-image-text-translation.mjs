@@ -9,7 +9,8 @@ const checks=[
   ['admin edits image text', admin.includes('data-f="image_text"')],
   ['admin edits Spanish image text', admin.includes('data-f="image_text_es"')],
   ['migration adds image text columns', migration.includes('image_text_translations')],
-  ['gallery cache is busted', index.includes('bct-home-gallery.js?v=20261005-2')]
+  ['gallery cache is busted', index.includes('bct-home-gallery.js?v=20261009-1')],
+  ['gallery more photos copy is translated', gallery.includes("morePhotos:'More Photos'")]
 ];
 for(const [name,ok] of checks) if(!ok) throw new Error('FAIL: '+name);
 console.log('PASS',checks.map(([n])=>n).join(' | '));

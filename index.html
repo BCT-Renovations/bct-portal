@@ -691,7 +691,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
 @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
-<link rel="stylesheet" href="/agent-bct-ui.css?v=20261009-2" />
+<link rel="stylesheet" href="/agent-bct-ui.css?v=20261009-3" />
 
 <style id="bct-uploaded-logo-lock">
 /* V46: uploaded logo already contains the complete BCT branding and slogan. */
@@ -744,7 +744,7 @@ body:not(.bct-authenticated) .bct-dynamic-slogan{display:none!important}
     <div class="bct-entry-actions" id="bctEntryActions">
       <button type="button" data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>
       <button type="button" data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>
-      <button type="button" data-entry-login="estimator">BCT Estimator</button>
+      <button type="button" data-entry-login="estimator" data-i18n="entry.estimator">BCT Estimator</button>
       <button type="button" data-entry-login="admin" data-i18n="entry.admin">Admin</button>
     </div>
     <div class="bct-share-referral">
@@ -754,11 +754,11 @@ body:not(.bct-authenticated) .bct-dynamic-slogan{display:none!important}
     </div>
   </div>
   <section id="bctHomeGallery" aria-labelledby="bctHomeGalleryTitle" class="bct-home-gallery-static">
-    <h2 id="bctHomeGalleryTitle">Our Work</h2>
-    <p class="bct-gallery-lead">A look at recent BCT Renovations projects.</p>
+    <h2 id="bctHomeGalleryTitle" data-i18n="gallery.title">Our Work</h2>
+    <p class="bct-gallery-lead" data-i18n="gallery.lead">A look at recent BCT Renovations projects.</p>
     <div id="bctHomeGalleryGrid"></div>
-    <button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false">View More Projects</button>
-    <button type="button" id="bctGalleryFull">Open Full Gallery</button>
+    <button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false" data-i18n="gallery.more">View More Projects</button>
+    <button type="button" id="bctGalleryFull" data-i18n="gallery.full">Open Full Gallery</button>
   </section>
 
   <div id="bctPublicLicenseBar" class="bct-public-license-bar" data-i18n="about.licensed">Licensed • Bonded • Insured</div>
@@ -1343,7 +1343,12 @@ const BCT_ENGLISH_FALLBACK={
   'entry.signup':'Sign Up',
   'entry.client':'Client / Homeowner',
   'entry.contractor':'Contractor',
+  'entry.estimator':'BCT Estimator',
   'entry.admin':'Admin',
+  'gallery.title':'Our Work',
+  'gallery.lead':'A look at recent BCT Renovations projects.',
+  'gallery.more':'View More Projects',
+  'gallery.full':'Open Full Gallery',
   'about.licensed':'Licensed • Bonded • Insured',
   'home.license_badge':'Licensed • Bonded • Insured',
   'about.title':'About BCT Renovations',
@@ -1477,6 +1482,11 @@ const BCT_ENGLISH_FALLBACK={
 };
 const BCT_LOCAL_TRANSLATIONS={
   "es": {
+    "entry.estimator": "Estimador BCT",
+    "gallery.title": "Nuestro Trabajo",
+    "gallery.lead": "Una muestra de proyectos recientes de BCT Renovations.",
+    "gallery.more": "Ver Más Proyectos",
+    "gallery.full": "Abrir Galería Completa",
     "contractor.signin_title": "Inicio de sesión del contratista",
     "status.title": 'Estado de la solicitud',
     "status.application_id": 'ID de la solicitud',
@@ -1497,6 +1507,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "estimator.email": "Correo electrónico"
   },
   "fr": {
+    "entry.estimator": "Estimateur BCT",
+    "gallery.title": "Nos Réalisations",
+    "gallery.lead": "Un aperçu de projets récents de BCT Renovations.",
+    "gallery.more": "Voir Plus de Projets",
+    "gallery.full": "Ouvrir la Galerie Complète",
     "contractor.signin_title": "Connexion entrepreneur",
     "status.title": 'Statut de la candidature',
     "status.application_id": 'ID de la candidature',
@@ -1510,6 +1525,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "E-mail"
   },
   "ht": {
+    "entry.estimator": "Estimasyon BCT",
+    "gallery.title": "Travay Nou",
+    "gallery.lead": "Yon gade sou kèk pwojè BCT Renovations resan.",
+    "gallery.more": "Gade Plis Pwojè",
+    "gallery.full": "Louvri Galri Konplè a",
     "contractor.signin_title": "Koneksyon kontraktè",
     "status.title": 'Estati aplikasyon',
     "status.application_id": 'ID aplikasyon',
@@ -1523,6 +1543,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "Imèl"
   },
   "pt": {
+    "entry.estimator": "Estimador BCT",
+    "gallery.title": "Nosso Trabalho",
+    "gallery.lead": "Uma amostra de projetos recentes da BCT Renovations.",
+    "gallery.more": "Ver Mais Projetos",
+    "gallery.full": "Abrir Galeria Completa",
     "contractor.signin_title": "Login do empreiteiro",
     "status.title": 'Status da inscrição',
     "status.application_id": 'ID da inscrição',
@@ -1536,6 +1561,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "E-mail"
   },
   "vi": {
+    "entry.estimator": "Người ước tính BCT",
+    "gallery.title": "Công Trình Của Chúng Tôi",
+    "gallery.lead": "Một số dự án gần đây của BCT Renovations.",
+    "gallery.more": "Xem Thêm Dự Án",
+    "gallery.full": "Mở Thư Viện Ảnh Đầy Đủ",
     "contractor.signin_title": "Đăng nhập nhà thầu",
     "status.title": 'Trạng thái đơn đăng ký',
     "status.application_id": 'Mã đơn đăng ký',
@@ -1549,6 +1579,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "Email"
   },
   "zh": {
+    "entry.estimator": "BCT 估价员",
+    "gallery.title": "我们的工程",
+    "gallery.lead": "查看 BCT Renovations 最近的部分项目。",
+    "gallery.more": "查看更多项目",
+    "gallery.full": "打开完整图库",
     "contractor.signin_title": "承包商登录",
     "status.title": '申请状态',
     "status.application_id": '申请编号',
@@ -1562,6 +1597,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "电子邮件"
   },
   "ar": {
+    "entry.estimator": "مقدّر BCT",
+    "gallery.title": "أعمالنا",
+    "gallery.lead": "نظرة على بعض مشاريع BCT Renovations الحديثة.",
+    "gallery.more": "عرض المزيد من المشاريع",
+    "gallery.full": "فتح المعرض الكامل",
     "contractor.signin_title": "تسجيل دخول المقاول",
     "status.title": 'حالة الطلب',
     "status.application_id": 'معرّف الطلب',
@@ -1576,6 +1616,7 @@ const BCT_LOCAL_TRANSLATIONS={
   }
   ,
   "ru": {
+    "entry.estimator":"Оценщик BCT","gallery.title":"Наши Работы","gallery.lead":"Некоторые недавние проекты BCT Renovations.","gallery.more":"Показать Больше Проектов","gallery.full":"Открыть Полную Галерею",
     "contractor.signin_title": "Вход подрядчика",
     "status.title":"Статус заявки","status.application_id":"ID заявки","status.check_status":"Проверить статус",
     "jobs.available_title":"Доступные работы BCT","jobs.approved_only":"В рабочей версии заявки могут подавать только одобренные субподрядчики.","jobs.none_posted":"Работы BCT пока не опубликованы.",
@@ -4289,7 +4330,7 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
 <script src="/bct-admin-control-board.js?v=20260930-2"></script>
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
 
-<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261005-3" defer></script>
-<script src="/agent-bct-ui.js?v=20261009-2" defer></script>
+<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261009-1" defer></script>
+<script src="/agent-bct-ui.js?v=20261009-3" defer></script>
 </body>
 </html>
