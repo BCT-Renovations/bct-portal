@@ -93,7 +93,7 @@
     toggle.setAttribute('aria-expanded',String(expanded));
     // Keep the gallery section and its entry buttons visible even when the public photo query is empty or temporarily unavailable.\n    // This preserves the existing gallery system and prevents the Full Gallery entry point from disappearing.\n    section.hidden=false;
     const full=$('bctGalleryFull');
-    if(full){const hasPhotos=PROJECTS.length>0;full.disabled=!hasPhotos;full.textContent=hasPhotos?c.full:c.coming;full.setAttribute('aria-disabled',String(!hasPhotos));}
+    if(full){const hasPhotos=PROJECTS.length>0;full.disabled=false;full.textContent=hasPhotos?c.full:c.coming;full.setAttribute('aria-disabled',String(!hasPhotos));}
   }
 
   async function loadProjects(){
@@ -132,7 +132,7 @@
     if(section.dataset.bctGalleryWired==='1')return;
     section.dataset.bctGalleryWired='1';
     const toggle=$('bctGalleryToggle');if(toggle)toggle.addEventListener('click',()=>{expanded=!expanded;render()});
-    const full=$('bctGalleryFull');if(full)full.addEventListener('click',()=>{ensureGalleryModal();loadFull(true)});
+    const full=$('bctGalleryFull');if(full)full.addEventListener('click',()=>{ensureGalleryModal();if(PROJECTS.length){FULL=PROJECTS.slice();fullCategory='All';fullIndex=0;showFull()}loadFull(true)});
   }
 
     function ensure(){
