@@ -12,7 +12,7 @@
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
 // bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
 // bct-public-home-auth-shell-fix keeps the public landing visually signed out until a portal is deliberately entered.
-const CACHE_NAME='bct-portal-shell-v35-admin-control-board';
+const CACHE_NAME='bct-portal-shell-v36-logo-comma-cache-bust';
 const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
@@ -201,6 +201,7 @@ self.addEventListener('fetch',event=>{
       const type=response.headers.get('content-type')||'';
       if(!type.includes('text/html'))return response;
       let patched=await response.text();
+      patched=patched.replaceAll('official-bct-logo-v46-comma-20261008','official-bct-logo-v46-comma-20261010');
       if(!patched.includes('bct-signup-home-nav-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_SIGNUP_HOME_NAV_PATCH+'\n</body>'):patched+BCT_SIGNUP_HOME_NAV_PATCH;
       if(!patched.includes('bct-runtime-guardrails-20260929'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_RUNTIME_GUARDRAIL_PATCH+'\n</body>'):patched+BCT_RUNTIME_GUARDRAIL_PATCH;
       if(!patched.includes('bct-admin-mobile-controls-hotfix-script'))patched=patched.includes('</body>')?patched.replace('</body>',BCT_ADMIN_MOBILE_PATCH+'\n</body>'):patched+BCT_ADMIN_MOBILE_PATCH;
