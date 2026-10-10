@@ -2,14 +2,14 @@
 "use strict";
 const COPY={
  en:{home:"Home",message:"Message",role:"Role",open:"Agent BCT",title:"Agent BCT",sub:"BCT Renovations’ AI assistant",close:"Close Agent BCT",hello:"How can Agent BCT help?",placeholder:"Ask about BCT, your project, or the process…",send:"Send",general:"BCT general guidance",confirmed:"Confirmed from your BCT project",review:"BCT review required",unavailable:"Live status unavailable",signin:"Please sign in again to use private BCT project information.",offline:"Agent BCT is temporarily unavailable. Your draft is still here.",preview:"Agent BCT is in protected preview. Live AI generation is not enabled on this preview yet."},
- es:{home:"Inicio",message:"Mensaje",role:"Rol",open:"Agent BCT",title:"Agent BCT",sub:"Asistente de IA de BCT Renovations",close:"Cerrar Agent BCT",hello:"¿Cómo puede ayudar Agent BCT?",placeholder:"Pregunte sobre BCT, su proyecto o el proceso…",send:"Enviar",general:"Orientación general de BCT",confirmed:"Confirmado desde su proyecto BCT",review:"Se requiere revisión de BCT",unavailable:"Estado en vivo no disponible",signin:"Vuelva a iniciar sesión para usar información privada de su proyecto BCT.",offline:"Agent BCT no está disponible temporalmente. Su borrador sigue aquí.",preview:"Agent BCT está en vista previa protegida. La generación de IA en vivo aún no está habilitada."},
+ es:{home:"Inicio",message:"Mensaje",role:"Rol",open:"Agente BCT",title:"Agente BCT",sub:"Asistente de IA de BCT Renovations",close:"Cerrar Agente BCT",hello:"¿Cómo puede ayudar Agente BCT?",placeholder:"Pregunte sobre BCT, su proyecto o el proceso…",send:"Enviar",general:"Orientación general de BCT",confirmed:"Confirmado desde su proyecto BCT",review:"Se requiere revisión de BCT",unavailable:"Estado en vivo no disponible",signin:"Vuelva a iniciar sesión para usar información privada de su proyecto BCT.",offline:"Agente BCT no está disponible temporalmente. Su borrador sigue aquí.",preview:"Agente BCT está en vista previa protegida. La generación de IA en vivo aún no está habilitada."},
  fr:{home:"Accueil",message:"Message",role:"Rôle",open:"Agent BCT",title:"Agent BCT",sub:"Assistant IA de BCT Renovations",close:"Fermer Agent BCT",hello:"Comment Agent BCT peut-il vous aider ?",placeholder:"Posez une question sur BCT, votre projet ou le processus…",send:"Envoyer",general:"Conseils généraux BCT",confirmed:"Confirmé depuis votre projet BCT",review:"Révision BCT requise",unavailable:"Statut en direct indisponible",signin:"Reconnectez-vous pour utiliser les informations privées de votre projet BCT.",offline:"Agent BCT est temporairement indisponible. Votre brouillon est conservé.",preview:"Agent BCT est en aperçu protégé. La génération IA en direct n’est pas encore activée."},
- ar:{home:"الرئيسية",message:"رسالة",role:"الدور",open:"Agent BCT",title:"Agent BCT",sub:"مساعد الذكاء الاصطناعي من BCT Renovations",close:"إغلاق Agent BCT",hello:"كيف يمكن لـ Agent BCT مساعدتك؟",placeholder:"اسأل عن BCT أو مشروعك أو العملية…",send:"إرسال",general:"إرشادات عامة من BCT",confirmed:"مؤكد من مشروع BCT الخاص بك",review:"مراجعة BCT مطلوبة",unavailable:"الحالة المباشرة غير متاحة",signin:"يرجى تسجيل الدخول مرة أخرى لاستخدام معلومات مشروع BCT الخاصة.",offline:"Agent BCT غير متاح مؤقتًا. ما زالت مسودتك هنا.",preview:"Agent BCT في معاينة محمية. إنشاء الذكاء الاصطناعي المباشر غير مفعّل بعد."},
- zh:{home:"主页",message:"消息",role:"角色",open:"Agent BCT",title:"Agent BCT",sub:"BCT Renovations AI 助手",close:"关闭 Agent BCT",hello:"Agent BCT 可以如何帮助您？",placeholder:"询问 BCT、您的项目或流程…",send:"发送",general:"BCT 一般指导",confirmed:"已从您的 BCT 项目确认",review:"需要 BCT 审核",unavailable:"实时状态不可用",signin:"请重新登录以使用您的 BCT 项目私人信息。",offline:"Agent BCT 暂时不可用。您的草稿仍保留。",preview:"Agent BCT 处于受保护预览中。实时 AI 生成功能尚未启用。"},
- ht:{home:"Akèy",message:"Mesaj",role:"Wòl",open:"Agent BCT",title:"Agent BCT",sub:"Asistan AI BCT Renovations",close:"Fèmen Agent BCT",hello:"Kijan Agent BCT ka ede w?",placeholder:"Poze kesyon sou BCT, pwojè w, oswa pwosesis la…",send:"Voye",general:"Gid jeneral BCT",confirmed:"Konfime nan pwojè BCT ou",review:"Revizyon BCT obligatwa",unavailable:"Estati an dirèk pa disponib",signin:"Tanpri konekte ankò pou itilize enfòmasyon prive pwojè BCT ou.",offline:"Agent BCT pa disponib pou kounye a. Bouyon ou toujou la.",preview:"Agent BCT nan yon previzyon pwoteje. Jenerasyon AI an dirèk poko aktive."},
- pt:{home:"Início",message:"Mensagem",role:"Função",open:"Agent BCT",title:"Agent BCT",sub:"Assistente de IA da BCT Renovations",close:"Fechar Agent BCT",hello:"Como o Agent BCT pode ajudar?",placeholder:"Pergunte sobre a BCT, seu projeto ou o processo…",send:"Enviar",general:"Orientação geral da BCT",confirmed:"Confirmado no seu projeto BCT",review:"Revisão da BCT necessária",unavailable:"Status ao vivo indisponível",signin:"Entre novamente para usar informações privadas do seu projeto BCT.",offline:"O Agent BCT está temporariamente indisponível. Seu rascunho continua aqui.",preview:"O Agent BCT está em prévia protegida. A geração de IA ao vivo ainda não está ativada."},
- ru:{home:"Главная",message:"Сообщение",role:"Роль",open:"Agent BCT",title:"Agent BCT",sub:"ИИ-помощник BCT Renovations",close:"Закрыть Agent BCT",hello:"Чем может помочь Agent BCT?",placeholder:"Спросите о BCT, вашем проекте или процессе…",send:"Отправить",general:"Общие рекомендации BCT",confirmed:"Подтверждено из вашего проекта BCT",review:"Требуется проверка BCT",unavailable:"Текущий статус недоступен",signin:"Войдите снова, чтобы использовать закрытую информацию проекта BCT.",offline:"Agent BCT временно недоступен. Ваш черновик сохранён.",preview:"Agent BCT работает в защищённом режиме предварительного просмотра. Реальная генерация ИИ пока не включена."},
- vi:{home:"Trang chủ",message:"Tin nhắn",role:"Vai trò",open:"Agent BCT",title:"Agent BCT",sub:"Trợ lý AI của BCT Renovations",close:"Đóng Agent BCT",hello:"Agent BCT có thể giúp gì cho bạn?",placeholder:"Hỏi về BCT, dự án của bạn hoặc quy trình…",send:"Gửi",general:"Hướng dẫn chung của BCT",confirmed:"Đã xác nhận từ dự án BCT của bạn",review:"Cần BCT xem xét",unavailable:"Trạng thái trực tiếp không khả dụng",signin:"Vui lòng đăng nhập lại để sử dụng thông tin riêng tư của dự án BCT.",offline:"Agent BCT tạm thời không khả dụng. Bản nháp của bạn vẫn còn.",preview:"Agent BCT đang ở bản xem trước được bảo vệ. Tạo AI trực tiếp chưa được bật."}
+ ar:{home:"الرئيسية",message:"رسالة",role:"الدور",open:"وكيل BCT",title:"وكيل BCT",sub:"مساعد الذكاء الاصطناعي من BCT Renovations",close:"إغلاق وكيل BCT",hello:"كيف يمكن لـ وكيل BCT مساعدتك؟",placeholder:"اسأل عن BCT أو مشروعك أو العملية…",send:"إرسال",general:"إرشادات عامة من BCT",confirmed:"مؤكد من مشروع BCT الخاص بك",review:"مراجعة BCT مطلوبة",unavailable:"الحالة المباشرة غير متاحة",signin:"يرجى تسجيل الدخول مرة أخرى لاستخدام معلومات مشروع BCT الخاصة.",offline:"وكيل BCT غير متاح مؤقتًا. ما زالت مسودتك هنا.",preview:"وكيل BCT في معاينة محمية. إنشاء الذكاء الاصطناعي المباشر غير مفعّل بعد."},
+ zh:{home:"主页",message:"消息",role:"角色",open:"BCT 助理",title:"BCT 助理",sub:"BCT Renovations AI 助手",close:"关闭 BCT 助理",hello:"BCT 助理 可以如何帮助您？",placeholder:"询问 BCT、您的项目或流程…",send:"发送",general:"BCT 一般指导",confirmed:"已从您的 BCT 项目确认",review:"需要 BCT 审核",unavailable:"实时状态不可用",signin:"请重新登录以使用您的 BCT 项目私人信息。",offline:"BCT 助理 暂时不可用。您的草稿仍保留。",preview:"BCT 助理 处于受保护预览中。实时 AI 生成功能尚未启用。"},
+ ht:{home:"Akèy",message:"Mesaj",role:"Wòl",open:"Ajan BCT",title:"Ajan BCT",sub:"Asistan AI BCT Renovations",close:"Fèmen Ajan BCT",hello:"Kijan Ajan BCT ka ede w?",placeholder:"Poze kesyon sou BCT, pwojè w, oswa pwosesis la…",send:"Voye",general:"Gid jeneral BCT",confirmed:"Konfime nan pwojè BCT ou",review:"Revizyon BCT obligatwa",unavailable:"Estati an dirèk pa disponib",signin:"Tanpri konekte ankò pou itilize enfòmasyon prive pwojè BCT ou.",offline:"Ajan BCT pa disponib pou kounye a. Bouyon ou toujou la.",preview:"Ajan BCT nan yon previzyon pwoteje. Jenerasyon AI an dirèk poko aktive."},
+ pt:{home:"Início",message:"Mensagem",role:"Função",open:"Agente BCT",title:"Agente BCT",sub:"Assistente de IA da BCT Renovations",close:"Fechar Agente BCT",hello:"Como o Agente BCT pode ajudar?",placeholder:"Pergunte sobre a BCT, seu projeto ou o processo…",send:"Enviar",general:"Orientação geral da BCT",confirmed:"Confirmado no seu projeto BCT",review:"Revisão da BCT necessária",unavailable:"Status ao vivo indisponível",signin:"Entre novamente para usar informações privadas do seu projeto BCT.",offline:"O Agente BCT está temporariamente indisponível. Seu rascunho continua aqui.",preview:"O Agente BCT está em prévia protegida. A geração de IA ao vivo ainda não está ativada."},
+ ru:{home:"Главная",message:"Сообщение",role:"Роль",open:"Агент BCT",title:"Агент BCT",sub:"ИИ-помощник BCT Renovations",close:"Закрыть Агент BCT",hello:"Чем может помочь Агент BCT?",placeholder:"Спросите о BCT, вашем проекте или процессе…",send:"Отправить",general:"Общие рекомендации BCT",confirmed:"Подтверждено из вашего проекта BCT",review:"Требуется проверка BCT",unavailable:"Текущий статус недоступен",signin:"Войдите снова, чтобы использовать закрытую информацию проекта BCT.",offline:"Агент BCT временно недоступен. Ваш черновик сохранён.",preview:"Агент BCT работает в защищённом режиме предварительного просмотра. Реальная генерация ИИ пока не включена."},
+ vi:{home:"Trang chủ",message:"Tin nhắn",role:"Vai trò",open:"Trợ lý BCT",title:"Trợ lý BCT",sub:"Trợ lý AI của BCT Renovations",close:"Đóng Trợ lý BCT",hello:"Trợ lý BCT có thể giúp gì cho bạn?",placeholder:"Hỏi về BCT, dự án của bạn hoặc quy trình…",send:"Gửi",general:"Hướng dẫn chung của BCT",confirmed:"Đã xác nhận từ dự án BCT của bạn",review:"Cần BCT xem xét",unavailable:"Trạng thái trực tiếp không khả dụng",signin:"Vui lòng đăng nhập lại để sử dụng thông tin riêng tư của dự án BCT.",offline:"Trợ lý BCT tạm thời không khả dụng. Bản nháp của bạn vẫn còn.",preview:"Trợ lý BCT đang ở bản xem trước được bảo vệ. Tạo AI trực tiếp chưa được bật."}
 };
 const RTL=new Set(["ar"]);
 const POSITIONS=[
@@ -28,11 +28,35 @@ const POSITIONS=[
  ["admin_escalation","Admin Escalation & Human Review Coordinator"],
  ["photo_recommendation","Photo Recommendation Coordinator"]
 ];
+const ROLE_GROUPS={
+ client:["customer_support","project_manager","finance_escrow","assignment_scheduler","photo_recommendation"],
+ contractor:["contractor_coordinator","compliance_credentials","project_manager","assignment_scheduler","admin_escalation"],
+ handyman:["contractor_coordinator","compliance_credentials","quality_completion","assignment_scheduler","admin_escalation"],
+ estimator:["estimator","project_manager","assignment_scheduler","admin_escalation"],
+ admin:POSITIONS.map(([value])=>value)
+};
 let transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0;
 function language(){return String(localStorage.getItem("bctPreferredLanguage")||document.getElementById("bctLoginLanguage")?.value||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
 function t(){return COPY[language()]||COPY.en}
 function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function provenance(p){const x=t();return p==="confirmed_live"?x.confirmed:p==="human_review_required"?x.review:p==="unavailable"?x.unavailable:x.general}
+function viewOpen(id){const el=document.getElementById(id);return !!el&&!el.classList.contains("hidden")&&getComputedStyle(el).display!=="none"}
+function portalKind(){
+ const b=document.body;
+ if(b.classList.contains("bct-authenticated")&&viewOpen("view-admin"))return "admin";
+ if(b.classList.contains("bct-entry-handyman"))return "handyman";
+ if(b.classList.contains("bct-entry-estimator")||viewOpen("view-estimator"))return "estimator";
+ if(b.classList.contains("bct-entry-contractor")||b.classList.contains("bct-contractor-signup")||viewOpen("view-status")||viewOpen("view-apply"))return "contractor";
+ if(b.classList.contains("bct-entry-client")||b.classList.contains("bct-home-signup")||viewOpen("view-customer"))return "client";
+ return "client";
+}
+function syncRoleOptions(){
+ const select=document.getElementById("bctAgentPosition");if(!select)return;
+ const allowed=new Set(ROLE_GROUPS[portalKind()]||ROLE_GROUPS.client);
+ const current=select.value;
+ select.innerHTML=POSITIONS.filter(([value])=>allowed.has(value)).map(([value,label])=>'<option value="'+escapeHtml(value)+'">'+escapeHtml(label)+'</option>').join("");
+ if(allowed.has(current))select.value=current;
+}
 function clearPrivate(){transcript=[];identity=null;if(pending){pending.abort();pending=null}renderMessages()}
 async function session(){
  if(typeof supabaseClient==="undefined"||!supabaseClient)return {token:"",userId:""};
@@ -45,6 +69,7 @@ function renderMessages(){
 }
 function applyCopy(){
  const x=t(),panel=document.getElementById("bctAgentPanel");if(panel)panel.dir=RTL.has(language())?"rtl":"ltr";
+ syncRoleOptions();
  [["bctAgentHome","home"],["bctAgentOpen","open"],["bctAgentTitle","title"],["bctAgentSubtitle","sub"],["bctAgentSend","send"]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.textContent=x[k]});
  const c=document.getElementById("bctAgentClose");if(c)c.setAttribute("aria-label",x.close);
  const input=document.getElementById("bctAgentInput");if(input)input.placeholder=x.placeholder;
@@ -68,7 +93,7 @@ function goHome(){
 }
 function open(){
  const panel=document.getElementById("bctAgentPanel");if(!panel)return;
- lastFocus=document.activeElement;scrollY=window.scrollY;panel.hidden=false;document.body.classList.add("bct-agent-open");applyCopy();setTimeout(()=>document.getElementById("bctAgentInput")?.focus({preventScroll:true}),0);
+ lastFocus=document.activeElement;scrollY=window.scrollY;panel.hidden=false;document.body.classList.add("bct-agent-open");syncRoleOptions();applyCopy();setTimeout(()=>document.getElementById("bctAgentInput")?.focus({preventScroll:true}),0);
 }
 function close(){
  const panel=document.getElementById("bctAgentPanel");if(!panel)return;
