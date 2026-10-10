@@ -7,3 +7,6 @@ body.bct-agent-open #bctAgentMessages{min-height:0!important;overflow-y:auto!imp
 
 /* Keep landing header rules out of the Agent dialog. */
 body.bct-agent-open #bctAgentPanel>header{background:#0f5f63!important;color:#fff!important}
+
+/* Move Agent BCT away from gallery navigation while the photo viewer is open. */
+body.bct-gallery-modal-open #bctAgentOpen{top:max(76px,calc(env(safe-area-inset-top) + 64px));bottom:auto!important;right:max(16px,env(safe-area-inset-right))}
