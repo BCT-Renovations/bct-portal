@@ -12,8 +12,8 @@
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
 // bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
 // bct-public-home-auth-shell-fix keeps the public landing visually signed out until a portal is deliberately entered.
-const CACHE_NAME='bct-portal-shell-v35-admin-control-board';
-const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
+const CACHE_NAME='bct-portal-shell-v36-ios-icon-integrity';
+const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png','/bct-app-icon-v46-ios.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
 <style id="bct-signup-home-nav-hotfix-style">
