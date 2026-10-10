@@ -526,8 +526,8 @@ body:not(.bct-authenticated) header .brand,
 body:not(.bct-authenticated) .bct-dynamic-brand{width:100%!important;max-width:100%!important;overflow:hidden!important}
 body:not(.bct-authenticated) .bct-logo-crop{position:relative!important;width:min(100vw,680px)!important;max-width:100%!important;margin:0 auto!important;background:#e8f5ec!important;overflow:hidden!important;line-height:0!important}
 body:not(.bct-authenticated) .bct-logo-crop .brand-logo{position:relative!important;z-index:1!important;width:100%!important;max-width:100%!important;height:auto!important;display:block!important;margin:0 auto!important;object-fit:contain!important}
-body:not(.bct-authenticated) .bct-logo-crop::after{content:none!important;display:none!important}
-body:not(.bct-authenticated) .bct-dynamic-slogan{display:none!important}
+body:not(.bct-authenticated) .bct-logo-crop::after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:25%!important;background:#e8f5ec!important;z-index:2!important;pointer-events:none!important}
+body:not(.bct-authenticated) .bct-dynamic-slogan{bottom:5.5%!important;z-index:4!important;font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive!important;font-weight:900!important;font-size:clamp(20px,5.9vw,34px)!important;color:#07383b!important;text-shadow:0 1px 0 #e8f5ec!important}
 body:not(.bct-authenticated) main.wrap{background:#e8f5ec!important;max-width:620px!important;margin:0 auto!important;padding:4px 12px 24px!important}
 body:not(.bct-authenticated) #bctSignedOutEntry{background:#fff!important;border:1px solid #d7e0e1!important;border-radius:16px!important;margin:0 auto 14px!important}
 body:not(.bct-authenticated) #bctAboutPublic{background:#eef7f1!important;border:1px solid #c8dfcf!important;border-radius:18px!important;padding:22px 0 0!important;margin:18px 0 0!important;overflow:hidden!important;box-shadow:0 8px 24px rgba(23,36,39,.06)!important}
