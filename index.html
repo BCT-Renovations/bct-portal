@@ -7,9 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BCT Renovations" />
-<link rel="apple-touch-icon" sizes="512x512" href="/bct-app-icon-v46.png" />
-<link rel="icon" type="image/png" sizes="512x512" href="/bct-app-icon-v46.png" />
 <link rel="manifest" href="/manifest.webmanifest" />
+<link rel="apple-touch-icon" href="/bct-app-icon-v46-ios.png" />
 <!-- V28: comprehensive French UI sweep -->
 <!-- BCT V32: full translation sweep for vi/zh/ar/ru -->
 <title>BCT Renovations Project Network — V46 Launch Cutover</title>
@@ -465,9 +464,8 @@ body:not(.bct-authenticated) .bct-signin-heading{min-height:108px!important;marg
 
 /* BCT V46 LANGUAGE-AWARE BRAND SLOGAN — master-reference treatment */
 .bct-dynamic-brand{width:100%;display:flex;justify-content:center;background:#e8f5ec}
-.bct-logo-crop{width:min(100vw,630px);overflow:hidden;background:#e8f5ec;line-height:0;position:relative!important}
+.bct-logo-crop{width:min(100vw,700px);overflow:hidden;background:#e8f5ec;line-height:0;position:relative!important}
 .bct-logo-crop .brand-logo{width:100%!important;max-width:100%!important;height:auto!important;display:block!important;margin:0!important;transform:none!important;mix-blend-mode:normal!important}
-.bct-logo-crop::after{content:"";position:absolute;left:0;right:0;bottom:0;height:19%;background:#e8f5ec;z-index:2;pointer-events:none}
 .bct-dynamic-slogan{position:absolute;left:0;right:0;bottom:5.1%;z-index:3;font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-size:clamp(1.35rem,5.2vw,2.35rem);font-weight:600;font-style:italic;line-height:1;color:#004b57;text-align:center;white-space:nowrap;padding:0 8px;margin:0;background:transparent}
 @media(max-width:480px){.bct-logo-crop{width:100%}.bct-logo-crop::after{height:19%}.bct-dynamic-slogan{font-size:clamp(1.25rem,5.2vw,2.15rem);bottom:5.1%}}
 
@@ -529,7 +527,7 @@ body:not(.bct-authenticated) header .brand,
 body:not(.bct-authenticated) .bct-dynamic-brand{width:100%!important;max-width:100%!important;overflow:hidden!important}
 body:not(.bct-authenticated) .bct-logo-crop{position:relative!important;width:min(100vw,680px)!important;max-width:100%!important;margin:0 auto!important;background:#e8f5ec!important;overflow:hidden!important;line-height:0!important}
 body:not(.bct-authenticated) .bct-logo-crop .brand-logo{position:relative!important;z-index:1!important;width:100%!important;max-width:100%!important;height:auto!important;display:block!important;margin:0 auto!important;object-fit:contain!important}
-body:not(.bct-authenticated) .bct-logo-crop::after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:25%!important;background:#e8f5ec!important;z-index:2!important;pointer-events:none!important}
+body:not(.bct-authenticated) .bct-logo-crop::after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:22%!important;background:#e8f5ec!important;z-index:2!important;pointer-events:none!important}
 body:not(.bct-authenticated) .bct-dynamic-slogan{bottom:5.5%!important;z-index:4!important;font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive!important;font-weight:900!important;font-size:clamp(20px,5.9vw,34px)!important;color:#07383b!important;text-shadow:0 1px 0 #e8f5ec!important}
 body:not(.bct-authenticated) main.wrap{background:#e8f5ec!important;max-width:620px!important;margin:0 auto!important;padding:4px 12px 24px!important}
 body:not(.bct-authenticated) #bctSignedOutEntry{background:#fff!important;border:1px solid #d7e0e1!important;border-radius:16px!important;margin:0 auto 14px!important}
@@ -581,28 +579,21 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 </style>
 
 <script>
-/* BCT V46 iPhone startup cache reset: clears older PWA shells that can make the app look unchanged. */
+/* BCT V46 iPhone/PWA isolation cleanup — no service-worker registration on this test build. */
 (function(){
-  var cacheName='bct-portal-shell-v27-app-icon-cache-reset', resetKey='bct-v46-app-icon-reset-v27';
   try{
     if('serviceWorker' in navigator){
       navigator.serviceWorker.getRegistrations().then(function(regs){
-        regs.forEach(function(reg){
-          try{ if(reg.active) reg.active.postMessage({type:'BCT_CLEAR_STARTUP_CACHES'}); reg.update&&reg.update(); }catch(_){}
-        });
-      });
+        return Promise.all(regs.map(function(reg){return reg.unregister().catch(function(){return false;});}));
+      }).catch(function(){});
     }
     if('caches' in window){
       caches.keys().then(function(keys){
-        return Promise.all(keys.filter(function(k){return /^bct-portal-shell-/.test(k)&&k!==cacheName}).map(function(k){return caches.delete(k)}));
-      }).then(function(){
-        /* Do not rewrite the iPhone/PWA URL. Safari and Home Screen now share the same production entry path. */
-        try{sessionStorage.setItem(resetKey,'1');}catch(_){}
-      });
+        return Promise.all(keys.filter(function(k){return /^bct-portal-shell-/.test(k);}).map(function(k){return caches.delete(k);}));
+      }).catch(function(){});
     }
   }catch(_){}
-})();
-</script>
+})();</script>
 <!-- BCT V46 production redeploy trigger: shared-link visual lock 2026-09-28 -->
 <!-- V46 production redeploy trigger 1663 current-main -->
 <style>
@@ -693,6 +684,17 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
   transform:translateY(1px);
 }
 </style>
+
+<style id="bct-gallery-static-anchor-20261005">
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:block;margin:14px 0 0;padding:16px;background:#fff;border:1px solid #d7e0e1;border-radius:16px;box-shadow:0 8px 24px rgba(23,36,39,.06)}
+#bctHomeGallery h2{margin:0;text-align:center;color:#0a4549;font-size:clamp(24px,6vw,32px)}
+#bctHomeGallery .bct-gallery-lead{text-align:center;margin:6px 0 14px;color:#5f6f73;line-height:1.4}
+#bctHomeGalleryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
+@media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+<link rel="stylesheet" href="/agent-bct-ui.css?v=20261009-3" />
+
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -713,7 +715,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
       </select>
     </div>
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band-20260929a" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261010" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -739,7 +741,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
     <div class="bct-entry-actions" id="bctEntryActions">
       <button type="button" data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>
       <button type="button" data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>
-      <button type="button" data-entry-login="estimator">BCT Estimator</button>
+      <button type="button" data-entry-login="estimator" data-i18n="entry.estimator">BCT Estimator</button>
       <button type="button" data-entry-login="admin" data-i18n="entry.admin">Admin</button>
     </div>
     <div class="bct-share-referral">
@@ -748,6 +750,14 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
       <div id="bctShareAppStatus" class="muted" role="status" aria-live="polite"></div>
     </div>
   </div>
+  <section id="bctHomeGallery" aria-labelledby="bctHomeGalleryTitle" class="bct-home-gallery-static">
+    <h2 id="bctHomeGalleryTitle" data-i18n="gallery.title">Our Work</h2>
+    <p class="bct-gallery-lead" data-i18n="gallery.lead">A look at recent BCT Renovations projects.</p>
+    <div id="bctHomeGalleryGrid"></div>
+    <button type="button" id="bctGalleryToggle" aria-controls="bctHomeGalleryGrid" aria-expanded="false" data-i18n="gallery.more">View More Projects</button>
+    <button type="button" id="bctGalleryFull" data-i18n="gallery.full">Open Full Gallery</button>
+  </section>
+
   <div id="bctPublicLicenseBar" class="bct-public-license-bar" data-i18n="about.licensed">Licensed • Bonded • Insured</div>
 
   <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle">
@@ -989,6 +999,11 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
       <label id="photoCertLabel"><input type="checkbox" name="photoCert" style="width:auto"> I certify the uploaded photos represent work I performed or helped perform. <small>(Required only if photos are uploaded.)</small></label>
       <label><input type="checkbox" name="referenceAuth" required style="width:auto"> I authorize BCT to contact my listed references.</label>
       <label><input type="checkbox" name="screeningAck" required style="width:auto"> I understand a separate background-screening authorization may be required.</label>
+      <div class="stage section" id="contractorTermsAgreement">
+        <h3>BCT Contractor Terms & Acknowledgment</h3>
+        <p class="muted">By submitting this pre-application, you acknowledge that BCT controls contractor approval, customer contact, private bidding, customer-facing pricing, job assignment, required credentials and documents, and any exception to the one-active-job rule. Submission does not guarantee approval, a BCT job, or a bid opportunity. You agree to follow BCT policies and to provide truthful, complete information.</p>
+        <label><input type="checkbox" name="termsAgreement" required style="width:auto"> I have read and agree to the BCT Contractor Terms & Acknowledgment above.</label>
+      </div>
       <label><input type="checkbox" name="contractorRulesAck" required style="width:auto"> I understand BCT controls customer contact, private bidding, customer-facing pricing, job assignment, required documents, and any second active job exception.</label>
       <div class="stage section" id="contractorScreeningTest">
         <h3>Contractor Pre-Approval Screening Test</h3>
@@ -1297,7 +1312,6 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{position:r
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
 const SUPABASE_URL='https://onpqykpikxbbypfvmtin.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_JToQ3bPaJql-xHq-iyM0bg_Fweenyfh';
 const supabaseClient=window.supabase ? window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY) : null;
@@ -1326,7 +1340,12 @@ const BCT_ENGLISH_FALLBACK={
   'entry.signup':'Sign Up',
   'entry.client':'Client / Homeowner',
   'entry.contractor':'Contractor',
+  'entry.estimator':'BCT Estimator',
   'entry.admin':'Admin',
+  'gallery.title':'Our Work',
+  'gallery.lead':'A look at recent BCT Renovations projects.',
+  'gallery.more':'View More Projects',
+  'gallery.full':'Open Full Gallery',
   'about.licensed':'Licensed • Bonded • Insured',
   'home.license_badge':'Licensed • Bonded • Insured',
   'about.title':'About BCT Renovations',
@@ -1460,6 +1479,11 @@ const BCT_ENGLISH_FALLBACK={
 };
 const BCT_LOCAL_TRANSLATIONS={
   "es": {
+    "entry.estimator": "Estimador BCT",
+    "gallery.title": "Nuestro Trabajo",
+    "gallery.lead": "Una muestra de proyectos recientes de BCT Renovations.",
+    "gallery.more": "Ver Más Proyectos",
+    "gallery.full": "Abrir Galería Completa",
     "contractor.signin_title": "Inicio de sesión del contratista",
     "status.title": 'Estado de la solicitud',
     "status.application_id": 'ID de la solicitud',
@@ -1480,6 +1504,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "estimator.email": "Correo electrónico"
   },
   "fr": {
+    "entry.estimator": "Estimateur BCT",
+    "gallery.title": "Nos Réalisations",
+    "gallery.lead": "Un aperçu de projets récents de BCT Renovations.",
+    "gallery.more": "Voir Plus de Projets",
+    "gallery.full": "Ouvrir la Galerie Complète",
     "contractor.signin_title": "Connexion entrepreneur",
     "status.title": 'Statut de la candidature',
     "status.application_id": 'ID de la candidature',
@@ -1493,6 +1522,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "E-mail"
   },
   "ht": {
+    "entry.estimator": "Estimasyon BCT",
+    "gallery.title": "Travay Nou",
+    "gallery.lead": "Yon gade sou kèk pwojè BCT Renovations resan.",
+    "gallery.more": "Gade Plis Pwojè",
+    "gallery.full": "Louvri Galri Konplè a",
     "contractor.signin_title": "Koneksyon kontraktè",
     "status.title": 'Estati aplikasyon',
     "status.application_id": 'ID aplikasyon',
@@ -1506,6 +1540,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "Imèl"
   },
   "pt": {
+    "entry.estimator": "Estimador BCT",
+    "gallery.title": "Nosso Trabalho",
+    "gallery.lead": "Uma amostra de projetos recentes da BCT Renovations.",
+    "gallery.more": "Ver Mais Projetos",
+    "gallery.full": "Abrir Galeria Completa",
     "contractor.signin_title": "Login do empreiteiro",
     "status.title": 'Status da inscrição',
     "status.application_id": 'ID da inscrição',
@@ -1519,6 +1558,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "E-mail"
   },
   "vi": {
+    "entry.estimator": "Người ước tính BCT",
+    "gallery.title": "Công Trình Của Chúng Tôi",
+    "gallery.lead": "Một số dự án gần đây của BCT Renovations.",
+    "gallery.more": "Xem Thêm Dự Án",
+    "gallery.full": "Mở Thư Viện Ảnh Đầy Đủ",
     "contractor.signin_title": "Đăng nhập nhà thầu",
     "status.title": 'Trạng thái đơn đăng ký',
     "status.application_id": 'Mã đơn đăng ký',
@@ -1532,6 +1576,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "Email"
   },
   "zh": {
+    "entry.estimator": "BCT 估价员",
+    "gallery.title": "我们的工程",
+    "gallery.lead": "查看 BCT Renovations 最近的部分项目。",
+    "gallery.more": "查看更多项目",
+    "gallery.full": "打开完整图库",
     "contractor.signin_title": "承包商登录",
     "status.title": '申请状态',
     "status.application_id": '申请编号',
@@ -1545,6 +1594,11 @@ const BCT_LOCAL_TRANSLATIONS={
     "admin.email": "电子邮件"
   },
   "ar": {
+    "entry.estimator": "مقدّر BCT",
+    "gallery.title": "أعمالنا",
+    "gallery.lead": "نظرة على بعض مشاريع BCT Renovations الحديثة.",
+    "gallery.more": "عرض المزيد من المشاريع",
+    "gallery.full": "فتح المعرض الكامل",
     "contractor.signin_title": "تسجيل دخول المقاول",
     "status.title": 'حالة الطلب',
     "status.application_id": 'معرّف الطلب',
@@ -1559,6 +1613,7 @@ const BCT_LOCAL_TRANSLATIONS={
   }
   ,
   "ru": {
+    "entry.estimator":"Оценщик BCT","gallery.title":"Наши Работы","gallery.lead":"Некоторые недавние проекты BCT Renovations.","gallery.more":"Показать Больше Проектов","gallery.full":"Открыть Полную Галерею",
     "contractor.signin_title": "Вход подрядчика",
     "status.title":"Статус заявки","status.application_id":"ID заявки","status.check_status":"Проверить статус",
     "jobs.available_title":"Доступные работы BCT","jobs.approved_only":"В рабочей версии заявки могут подавать только одобренные субподрядчики.","jobs.none_posted":"Работы BCT пока не опубликованы.",
@@ -2429,17 +2484,17 @@ function syncBrandSlogan(language){
  el.dir=(language==='ar')?'rtl':'ltr';
 }
 // BCT V46 opening-screen translation keys are merged locally so the landing page never depends on a network translation call.
-const BCT_ENTRY_TRANSLATION_KEYS={signin:'entry.signin',signup:'entry.signup',client:'entry.client',contractor:'entry.contractor',admin:'entry.admin'};
+const BCT_ENTRY_TRANSLATION_KEYS={signin:'entry.signin',signup:'entry.signup',client:'entry.client',contractor:'entry.contractor',estimator:'entry.estimator',admin:'entry.admin'};
 const BCT_LOGIN_LANGUAGE_UI={
-  en:{label:'Choose Your Language',signin:'Sign In',signup:'Sign Up',client:'Client / Homeowner',contractor:'Contractor',admin:'Admin'},
-  es:{label:'Elija su idioma',signin:'Iniciar sesión',signup:'Registrarse',client:'Cliente',contractor:'Contratista',admin:'Administrador'},
-  fr:{label:'Choisissez votre langue',signin:'Se connecter',signup:'S’inscrire',client:'Client',contractor:'Entrepreneur',admin:'Administrateur'},
-  ht:{label:'Chwazi lang ou',signin:'Konekte',signup:'Enskri',client:'Kliyan',contractor:'Kontraktè',admin:'Administratè'},
-  pt:{label:'Escolha seu idioma',signin:'Entrar',signup:'Cadastrar-se',client:'Cliente',contractor:'Empreiteiro',admin:'Administrador'},
-  vi:{label:'Chọn ngôn ngữ của bạn',signin:'Đăng nhập',signup:'Đăng ký',client:'Khách hàng',contractor:'Nhà thầu',admin:'Quản trị viên'},
-  zh:{label:'选择您的语言',signin:'登录',signup:'注册',client:'客户',contractor:'承包商',admin:'管理员'},
-  ar:{label:'اختر لغتك',signin:'تسجيل الدخول',signup:'إنشاء حساب',client:'العميل',contractor:'المقاول',admin:'المسؤول'},
-  ru:{label:'Выберите язык',signin:'Войти',signup:'Зарегистрироваться',client:'Клиент',contractor:'Подрядчик',admin:'Администратор'}
+  en:{label:'Choose Your Language',signin:'Sign In',signup:'Sign Up',client:'Client / Homeowner',contractor:'Contractor',estimator:'BCT Estimator',admin:'Admin'},
+  es:{label:'Elija su idioma',signin:'Iniciar sesión',signup:'Registrarse',client:'Cliente',contractor:'Contratista',estimator:'Estimador BCT',admin:'Administrador'},
+  fr:{label:'Choisissez votre langue',signin:'Se connecter',signup:'S’inscrire',client:'Client',contractor:'Entrepreneur',estimator:'Estimateur BCT',admin:'Administrateur'},
+  ht:{label:'Chwazi lang ou',signin:'Konekte',signup:'Enskri',client:'Kliyan',contractor:'Kontraktè',estimator:'Estimasyon BCT',admin:'Administratè'},
+  pt:{label:'Escolha seu idioma',signin:'Entrar',signup:'Cadastrar-se',client:'Cliente',contractor:'Empreiteiro',estimator:'Estimador BCT',admin:'Administrador'},
+  vi:{label:'Chọn ngôn ngữ của bạn',signin:'Đăng nhập',signup:'Đăng ký',client:'Khách hàng',contractor:'Nhà thầu',estimator:'Người ước tính BCT',admin:'Quản trị viên'},
+  zh:{label:'选择您的语言',signin:'登录',signup:'注册',client:'客户',contractor:'承包商',estimator:'BCT 估价员',admin:'管理员'},
+  ar:{label:'اختر لغتك',signin:'تسجيل الدخول',signup:'إنشاء حساب',client:'العميل',contractor:'المقاول',estimator:'مقدّر BCT',admin:'المسؤول'},
+  ru:{label:'Выберите язык',signin:'Войти',signup:'Зарегистрироваться',client:'Клиент',contractor:'Подрядчик',estimator:'Оценщик BCT',admin:'Администратор'}
 };
 function syncLoginLanguageUI(language){
   const ui=BCT_LOGIN_LANGUAGE_UI[language]||BCT_LOGIN_LANGUAGE_UI.en;
@@ -2449,7 +2504,7 @@ function syncLoginLanguageUI(language){
   const label=document.querySelector('[data-login-language-label]'); if(label) label.textContent=ui.label;
   const heading=document.querySelector('[data-login-signin-heading]'); if(heading) heading.textContent=ui.signin;
   const signup=document.querySelector('[data-i18n="entry.signup"]'); if(signup) signup.textContent=ui.signup;
-  ['client','contractor','admin'].forEach(role=>{const btn=document.querySelector('[data-entry-login="'+role+'"]');if(btn)btn.textContent=ui[role]});
+  ['client','contractor','estimator','admin'].forEach(role=>{const btn=document.querySelector('[data-entry-login="'+role+'"]');if(btn)btn.textContent=ui[role]});
 }
 const bctLoginLanguageSelector=document.getElementById('bctLoginLanguage');
 if(bctLoginLanguageSelector){
@@ -3204,12 +3259,47 @@ renderAll();
   function adminRef(collection,id,fallback=''){const row=(adminState?.[collection]||[]).find(x=>[x.id,x.application_id,x.project_id,x.customer_id,x.bid_id,x.job_id].includes(id));return row?.application_number||row?.project_number||row?.job_number||row?.service_call_number||fallback||id||''}
 
   async function loadPublic(){
-    publicBoot=await rpc('bct_frontend_public_bootstrap');
-    const services=publicBoot?.homeowner_form?.services||publicBoot?.services||[];
+    const fallbackServices=[
+      {code:'gutters_drainage',label:'Gutters & Drainage'},
+      {code:'siding',label:'Siding'},
+      {code:'windows_doors',label:'Windows & Doors'},
+      {code:'drywall',label:'Drywall'},
+      {code:'painting',label:'Painting'},
+      {code:'flooring',label:'Flooring'},
+      {code:'kitchen_remodeling',label:'Kitchen Remodeling'},
+      {code:'bathroom_remodeling',label:'Bathroom Remodeling'},
+      {code:'decks_porch',label:'Decks & Porches'},
+      {code:'electrical',label:'Electrical'},
+      {code:'plumbing',label:'Plumbing'},
+      {code:'carpentry',label:'Carpentry'},
+      {code:'water_flood_damage',label:'Water / Flood Damage'},
+      {code:'full_renovation',label:'Full Renovation'},
+      {code:'handyman_services',label:'Handyman Services'},
+      {code:'other',label:'Other'}
+    ];
+    try{
+      const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('BCT service list timed out')),3500));
+      publicBoot=await Promise.race([rpc('bct_frontend_public_bootstrap'),timeout]);
+    }catch(e){
+      console.warn('BCT public bootstrap unavailable; using local BCT service list.',e);
+      publicBoot={};
+    }
+    const services=publicBoot?.homeowner_form?.services?.length
+      ?publicBoot.homeowner_form.services
+      :(publicBoot?.services?.length?publicBoot.services:fallbackServices);
     const customerGrid=document.querySelector('#customerProjectForm .check-grid');
     if(customerGrid)customerGrid.innerHTML=services.map(s=>`<div class="check-tile"><label><input type="checkbox" name="service" value="${esc(s.code)}">${esc(s.label||s.display_name)}</label></div>`).join('');
     const tradeSelects=[document.querySelector('#applicationForm select[name="trade"]'),document.querySelector('#jobForm select[name="trade"]')].filter(Boolean);
-    tradeSelects.forEach(sel=>sel.innerHTML='<option value="">Select BCT service</option>'+services.map(s=>`<option value="${esc(s.code)}">${esc(s.label||s.display_name)}</option>`).join(''));
+    tradeSelects.forEach(sel=>{
+      const current=sel.value;
+      sel.innerHTML='<option value="">Select BCT service</option>'+services.map(s=>`<option value="${esc(s.code)}">${esc(s.label||s.display_name)}</option>`).join('');
+      if(current)sel.value=current;
+      sel.disabled=false;
+      sel.removeAttribute('aria-busy');
+      sel.style.pointerEvents='auto';
+      sel.style.touchAction='manipulation';
+      sel.setAttribute('aria-busy','false');
+    });
     const langs=publicBoot?.contractor_form?.languages||publicBoot?.languages||[];
     const lbox=$('contractorLanguageOptions');
     if(lbox)lbox.innerHTML=langs.map(l=>`<div class="check-tile"><label><input type="checkbox" name="spokenLanguage" value="${esc(l.code)}" ${l.code==='en'?'checked':''}>${esc(l.native_name||l.name)}</label></div>`).join('');
@@ -3355,11 +3445,14 @@ renderAll();
       const activeUser=await user().catch(()=>null);
       if(activeUser?.app_metadata?.role==='admin')throw new Error('Sign out of the BCT Admin account before submitting a contractor pre-application.');
       const fd=new FormData(f),email=String(fd.get('email')||'').trim(),p1=String(fd.get('contractorPassword')||''),p2=String(fd.get('contractorPassword2')||'');
+      const requiredChecks=[['truth','Information certification'],['referenceAuth','Reference authorization'],['screeningAck','Background screening acknowledgment'],['termsAgreement','BCT Contractor Terms'],['contractorRulesAck','Contractor rules acknowledgment']];
+      const missingCheck=requiredChecks.find(([name])=>!f.querySelector(`input[name="${name}"]`)?.checked);
+      if(missingCheck)throw new Error(`Please check the required "${missingCheck[1]}" acknowledgment before submitting.`);
       if(!activeUser){if(!email)throw new Error('Email is required.');validMatchingPassword(p1,p2);}
       const refs=[];for(let i=1;i<=5;i++){const name=String(fd.get('ref'+i)||'').trim(),contact=String(fd.get('ref'+i+'contact')||'').trim();if(name&&contact)refs.push({name,contact})}if(refs.length!==5)throw new Error('All five professional references and their contact information are required.');
       const langs=[...f.querySelectorAll('input[name="spokenLanguage"]:checked')].map(x=>x.value);if(!langs.length)langs.push($('bctLanguage')?.value||'en');
       const photos=[...(window.bctAccumulatedFiles?.workPhotos||[])],screeningResult=runContractorScreening(f,email);
-      const applicationPayload={email,legal_name:String(fd.get('legalName')||'').trim(),business_name:String(fd.get('businessName')||'').trim(),phone:String(fd.get('phone')||'').trim(),city_state:[fd.get('city'),fd.get('state')].filter(Boolean).join(', '),years_experience:Number(fd.get('years')||0),primary_trade:String(fd.get('trade')||''),crew_size:Number(fd.get('crewSize')||1),service_area:String(fd.get('serviceArea')||'').trim(),reliable_vehicle:fd.get('vehicle')==='Yes',other_trades:String(fd.get('otherTrades')||'').trim(),tools_equipment:String(fd.get('tools')||'').trim(),recent_employer:String(fd.get('employer1')||'').trim(),dates_worked:String(fd.get('dates1')||'').trim(),reason_for_leaving:String(fd.get('reason')||'').trim(),work_performed:String(fd.get('duties1')||'').trim(),additional_work_history:String(fd.get('history2')||'').trim(),currently_insured:fd.get('insured')==='Yes',can_provide_coi:fd.get('coiAvailable')==='Yes',information_certified:fd.get('truth')==='on',photo_certified:!photos.length||fd.get('photoCert')==='on',references_authorized:fd.get('referenceAuth')==='on',background_acknowledged:fd.get('screeningAck')==='on',contractor_rules_acknowledged:fd.get('contractorRulesAck')==='on',spoken_languages:langs,trade_capabilities:[String(fd.get('trade')||'')],references,screening_result:screeningResult,screening_status:screeningResult.pass?'passed':'failed',screening_score:screeningResult.score,screening_passed:screeningResult.pass};
+      const applicationPayload={email,legal_name:String(fd.get('legalName')||'').trim(),business_name:String(fd.get('businessName')||'').trim(),phone:String(fd.get('phone')||'').trim(),city_state:[fd.get('city'),fd.get('state')].filter(Boolean).join(', '),years_experience:Number(fd.get('years')||0),primary_trade:String(fd.get('trade')||''),crew_size:Number(fd.get('crewSize')||1),service_area:String(fd.get('serviceArea')||'').trim(),reliable_vehicle:fd.get('vehicle')==='Yes',other_trades:String(fd.get('otherTrades')||'').trim(),tools_equipment:String(fd.get('tools')||'').trim(),recent_employer:String(fd.get('employer1')||'').trim(),dates_worked:String(fd.get('dates1')||'').trim(),reason_for_leaving:String(fd.get('reason')||'').trim(),work_performed:String(fd.get('duties1')||'').trim(),additional_work_history:String(fd.get('history2')||'').trim(),currently_insured:fd.get('insured')==='Yes',can_provide_coi:fd.get('coiAvailable')==='Yes',information_certified:fd.get('truth')==='on',photo_certified:!photos.length||fd.get('photoCert')==='on',references_authorized:fd.get('referenceAuth')==='on',background_acknowledged:fd.get('screeningAck')==='on',contractor_rules_acknowledged:fd.get('contractorRulesAck')==='on',terms_agreed:fd.get('termsAgreement')==='on',spoken_languages:langs,trade_capabilities:[String(fd.get('trade')||'')],references:refs,screening_result:screeningResult,screening_status:screeningResult.pass?'passed':'failed',screening_score:screeningResult.score,screening_passed:screeningResult.pass};
       let application=null,applicationNumber='',needsEmailConfirmation=false;
       if(activeUser){application=await rpc('bct_submit_contractor_application',{p_payload:applicationPayload});await loadContractorState();applicationNumber=application.application_number||'';}
       else{
@@ -4225,10 +4318,16 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
 })();
 </script>
+<link rel="stylesheet" href="/bct-handyman-portal.css?v=20261009-2" />
+<script src="/bct-handyman-portal.js?v=20261009-2" defer></script>
+<script src="/bct-handyman-admin.js?v=20261008-2" defer></script>
+<script src="/bct-handyman-i18n.js?v=20261009-1" defer></script>
+<script src="/bct-handyman-operations.js?v=20261008-1" defer></script>
 <script src="/bct-admin-sections.js?v=20261005-2"></script>
 <script src="/bct-admin-control-board.js?v=20260930-2"></script>
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
 
-<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20260930-1" defer></script>
+<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261009-1" defer></script>
+<script src="/agent-bct-ui.js?v=20261009-3" defer></script>
 </body>
 </html>

@@ -1,0 +1,179 @@
+# BCT V46 master development record
+
+Owner: Ty Perry — BCT Renovations, LLC. Updated October 9, 2026.
+
+## Boundaries and evidence
+
+- Only develop `feature/v46-handyman-combined-latest`. Never merge to main or release Live without explicit approval.
+- Audited starting branch SHA: `c88115726773b25e03989bc4481e77ccc72f8d33`.
+- Read-only main baseline: `3fbbeb283d493f484e026cd7c094748feaeb31b2`.
+- Existing combination: `81dc7ff`; logo cache update: `2334744`; fullscreen CSS: `c881157`.
+- Isolated Vercel project: `prj_Ds2ru0QG7r7Jr1uHvtaWcNYt2HmX`, `bct-v46-isolated-preview`.
+- Starting deployment `dpl_7dQVHnvFVvNkfdqDQ1fFYwDK41Hs` READY and matches starting branch SHA. CSS deployed, but Agent UI JS fails parsing.
+- Public isolated alias initially pointed to older deployment `dpl_HU92V38MFVAuwCTj4u9N3L72GrYk`. Never call that latest without checking its commit.
+- Connected Supabase project: `onpqykpikxbbypfvmtin`. Read-only metadata checks only. No migrations or test records applied. No isolated database identified; shared backend must remain untouched.
+- Preserved existing test files, migrations, LAUNCH_STATUS.md, LAUNCH_DRY_RUN_CHECKLIST.md and PAID_SERVICES_CHECKLIST.md. Prior assertions are evidence records, not automatic proof of current runtime behavior.
+- Status vocabulary: COMPLETED AND VERIFIED; BUILT BUT UNVERIFIED; PARTIALLY IMPLEMENTED; MISSING; BROKEN; BLOCKED; READY FOR DEPLOYMENT.
+
+## Changes in this batch
+
+- Removed duplicated Agent UI mount block and unmatched brace causing SyntaxError. Retained the original Agent and existing opaque CSS.
+- Added Home and Message translations for all nine existing languages; Arabic direction retained.
+- Moved existing Handyman entry into homepage actions between Contractor and BCT Estimator. Uses existing portal, no duplicate application.
+- Handyman navigation hides other views, Back restores home, submission disables its button while pending and rejects repeated clicks. Successful submission still resets form.
+- Localized Handyman entry and intro, added Arabic direction, repaired application-ID label translation (previous code wrote text onto an input).
+- Added Agent BCT role selector to the full-screen dialog and sends the selected position to the protected chat endpoint; bumped Agent UI cache assets.
+- Refreshed changed JS cache versions. Added JS parsing to existing mobile smoke check.
+
+## Verification ledger
+
+| Check | Result | Limits |
+|---|---|---|
+| Starting Agent UI `node --check` | FAILED: Unexpected token if, line 98 | Direct root cause for missing Agent |
+| Corrected Agent UI, Handyman portal/i18n parse | PASS | Source compilation, not rendering |
+| `node scripts/agent-bct-positions-smoke.mjs` | PASS: 14 roles and voice profiles, authority boundary | Structure, not 14 live workflow demonstrations |
+| `node scripts/agent-bct-mobile-smoke.mjs` | PASS including JS compilation and Agent role selector wiring | Source checks, not physical iPhone/Android |
+| `node --test tests/agent-bct/*.test.js` | PASS: 14 test files, 0 failed, 0 skipped | Backend tests with fixtures; no real provider connectivity claim |
+| `git diff --check` | PASS | Whitespace |
+| Supabase routine inventory | No Handyman routines; seven insurance routines | Read-only catalog query, no user data |
+| Supabase applied migrations | Latest listed: `20261005211303 bct_gallery_translation_fields`; no October 8 Handyman migrations | Existing migration files preserved |
+| Existing alias browser inspection | V46 homepage, no Handyman entry; older deployment | Not evidence for this batch |
+| Local Playwright installation | BLOCKED: browser absent; download truncated | Cloud browser used for deployed verification |
+
+## Requirement reconciliation
+
+Unless a row specifies otherwise, relevant implementation commit is the audited base `c881157` (existing work), test evidence is source/catalog inspection only, and next action is targeted isolated runtime testing. BUILT BUT UNVERIFIED never means launch-ready.
+
+| Feature | Status | Existing implementation / evidence | Remaining work, dependencies and next action |
+|---|---|---|---|
+| Agent fullscreen / background scrolling / Home | BUILT BUT UNVERIFIED | Existing CSS `c881157`, corrected UI in this batch | Deploy then browser open/Home/scroll checks |
+| Original 12 Agent roles | PARTIALLY IMPLEMENTED | `_positions.js`, context/policy/session; structure and Agent backend tests pass; UI now sends selected position | Browser-verify selector and role-specific responses; verify authorized workflow per role |
+| Analytics & Reporting addition | BUILT BUT UNVERIFIED | Added to role catalog and session count on October 9 | Connect authorized reporting tools and verify role-specific responses |
+| Admin Escalation & Human Review | BUILT BUT UNVERIFIED | Owner approved combining escalation/human review into one nonduplicative role; existing admin escalation role renamed and widened | Verify routing for disputes, complaints, exceptions, unsafe issues, and final approvals |
+| Photo Recommendation addition | BUILT BUT UNVERIFIED | Added to role catalog and session count to preserve the 14-role target without duplicating escalation | Connect existing photo-recommendation workflow and verify Admin-only recommendation behavior |
+| Handyman homepage entry/navigation | BUILT BUT UNVERIFIED | Existing portal moved into required order this batch | Browser verify current deployment |
+| Handyman applications / status | BLOCKED | Existing portal and 3 migration files | Required RPCs absent in connected DB; provision/select isolated backend before migration/tests |
+| Handyman references / tools / transport / work history / crew | PARTIALLY IMPLEMENTED | Foundation portal form has basic identity, services, experience | Map requirements to existing schema; extend only missing fields |
+| Handyman screening / credentials / assignments | BLOCKED | Operations/admin files and migration scaffolding | Isolated DB missing; provider authorization unconfirmed; end-to-end approvals required |
+| Handyman document expiration / notifications | BUILT BUT UNVERIFIED | Credential and operations foundations | Verify scheduler, delivery and private access |
+| Insurance uploads / coverage review / expiration | BUILT BUT UNVERIFIED | Existing contractor docs UI; 7 insurance DB routines | Test private upload/review/expiration and authorized access |
+| Insurance-company connectivity / claims | BLOCKED | Insurance role exists; no carrier adapter found in current api/functions; separate insurance portal files absent | Obtain authorized provider/partner and isolate tests; code existence is insufficient |
+| Homeowner registration / login / recovery | BUILT BUT UNVERIFIED | Existing index auth and portal | Test targeted recovery/delivery with authorized test accounts |
+| Homeowner submission / measurements / scope / budget / scheduling | BUILT BUT UNVERIFIED | Existing forms, RPCs and migrations | Preserve prior evidence; targeted isolated lifecycle test |
+| Homeowner multi-upload / confirmations / duplicate prevention | BUILT BUT UNVERIFIED | Existing upload validations and notifications | Test changed boundary only; no writes to shared Live DB |
+| Homeowner verification / status / messages / contracts / financing / completion | BUILT BUT UNVERIFIED | Existing portal and operational RPCs | Authorized test lifecycle |
+| Contractor application / five references / screening | BUILT BUT UNVERIFIED | Existing form; five-reference migration in applied inventory | Verify client/server count and approval gates |
+| Contractor insurance / credentials / work photos / equipment / transport / crew | BUILT BUT UNVERIFIED | Existing portal documents and credential controls | Targeted uploads/access/expiry checks |
+| Contractor bids / BCT selection / one-active-job gate | BUILT BUT UNVERIFIED | Existing bids/assignment rules and migrations | Test cross-user confidentiality and active-job boundary |
+| Property manager properties / buildings / units / status | BUILT BUT UNVERIFIED | Existing property management migration history | Confirm accessible portal and CRUD in isolated DB |
+| Resident privacy / assigned-contractor access instructions | BUILT BUT UNVERIFIED | Existing privacy/access policies | Cross-role isolated tests; never expose resident records in audit output |
+| Admin applications / verification / approvals / assignments | BUILT BUT UNVERIFIED | Existing control board and admin RPCs | Handyman board entry missing; verify role gate before exposing controls |
+| Admin pricing / contracts / AI approval / finances | BUILT BUT UNVERIFIED | Existing admin tools and financial/estimate migrations | Authorized lifecycle checks |
+| Job Health On Track / Needs Attention / Delayed / Critical | BUILT BUT UNVERIFIED | Existing dashboard and migrations | Verify actual data/status mapping, not empty counters |
+| Admin alerts / audit / reporting | BUILT BUT UNVERIFIED | Existing notification/security/operations infrastructure | Verify production configuration through read-only metadata, isolated delivery tests |
+| AI estimating drafts / edit / recalculate / markup | BUILT BUT UNVERIFIED | AI_ESTIMATING.md, existing estimate code and migrations | Verify no automatic approval/assignment; protect customer price boundary |
+| Job/contract numbers / schedule / progress / weather / materials | BUILT BUT UNVERIFIED | Existing numbering, operational RPCs, weather readiness record | Verify manual vs provider-connected weather and lifecycle |
+| Photos / notes / change orders / approvals / signatures / messaging | BUILT BUT UNVERIFIED | Existing portals, migrations and tests | Verify ownership and sign-off flow in isolated backend |
+| Warranty / disputes / completion sign-off | BUILT BUT UNVERIFIED | Existing closeout/case migrations | Isolated lifecycle and immutable evidence tests |
+| Acorn qualification link | BUILT BUT UNVERIFIED | Existing financing config and UI | Verify current correct link and launch behavior |
+| Escrow / completion-based release / BCT financial controls | BUILT BUT UNVERIFIED | Existing escrow/payment workflow code | Verify actual third-party arrangement, not just internal status fields |
+| 15% senior / 15% veteran / 20% combined cap | BUILT BUT UNVERIFIED | Existing discount migration | Test pricing boundaries and display |
+| Authentication / role permissions / secure documents | BUILT BUT UNVERIFIED | Existing RLS/auth/UI; Agent security fixtures pass | Cross-role real isolated tests |
+| Password confirmation / 7 chars / number / special / previous 5 | BUILT BUT UNVERIFIED | Password history/policy migrations present in applied inventory | Real recovery/change-password tests and history behavior |
+| Authenticator / MFA | BUILT BUT UNVERIFIED | Existing MFA controls/migration | Verify enrollment and enforcement with test account |
+| Backups / database protection / recovery | BUILT BUT UNVERIFIED | PAID_SERVICES_CHECKLIST.md and recovery plan | Verify current plan/config; no paid upgrades authorized |
+| Forms reset / duplicates / lockout / clear errors | PARTIALLY IMPLEMENTED | Existing core controls; Handyman pending-click guard added | Handyman server dedup and safe error messages need review |
+| File types / sizes / counts / downloads / unauthorized edits | BUILT BUT UNVERIFIED | Existing upload validators and tests | Targeted isolated failures and download checks |
+| Confirmations / approval-rejection / updates / expiry / contracts / change orders / completion / admin notifications | BUILT BUT UNVERIFIED | Existing notification queue; AUDIT_NOTIFICATION_READINESS.md | Verify actual Resend authorization/delivery, not presence of code |
+| Mandatory translation / multilingual fonts / RTL / preference | PARTIALLY IMPLEMENTED | Nine-language maps; Agent Home/Message and Handyman entry/intro/RTL fixed | Remaining dynamic errors, admin/operations strings, roles, generated contracts require coverage audit |
+| Official logo and translatable slogan | PARTIALLY IMPLEMENTED | Current `bct-logo-master.png` remains the approved logo artwork source; homepage masks the non-translatable embedded lower slogan and overlays the translated slogan text | Deploy and visually verify logo masking, translated slogan, and no duplicate visible slogan |
+| Homepage colors/type/layout / About/footer | BUILT BUT UNVERIFIED | Preserved current styling and copy; only required entry position changed | Compare new deployment with main; verify approved messaging |
+| iPhone / Android / mobile forms/uploads/navigation | BUILT BUT UNVERIFIED | Existing mobile CSS/tests retained | Browser engine/device checks pending; no physical-device claims |
+| GitHub / Vercel | COMPLETED AND VERIFIED | Branch SHA and READY deployment metadata match | Verify new commit deployment before sharing |
+| Supabase | COMPLETED AND VERIFIED | Connected project ACTIVE_HEALTHY; read-only routine/migration queries succeeded | Connection confirmed only; individual workflows remain unverified |
+| Resend / existing email / document integrations | BUILT BUT UNVERIFIED | Existing queue/code/config records | Confirm deployment env flags and authorized delivery |
+| Business rules: BCT authority / bid privacy / homeowner privacy | BUILT BUT UNVERIFIED | Existing policies; Agent fixtures enforce persona-only authority | Real cross-role flow testing |
+| Isolated preview / Live release | BLOCKED | Correct isolated project located; code ready for preview build | Logo mismatch and backend gaps block release readiness; Live approval required independently |
+
+## Original Agent role ledger
+
+Each role is PARTIALLY IMPLEMENTED: catalog, voice profile and policy wiring verified by source smoke; actual role-specific frontend/API/data/response flow remains unverified. All share authoritative permissions; selecting a persona must never elevate access.
+
+1. Project Manager (`project_manager`)
+2. Estimator (`estimator`)
+3. Contractor Coordinator (`contractor_coordinator`)
+4. Assignment & Scheduling Coordinator (`assignment_scheduler`)
+5. Customer Support (`customer_support`)
+6. Finance & Escrow Coordinator (`finance_escrow`)
+7. Insurance & Claims Coordinator (`insurance_claims`)
+8. Property Management & Commercial Coordinator (`property_commercial`)
+9. Documents & Change Order Coordinator (`documents_change_orders`)
+10. Quality & Completion Coordinator (`quality_completion`)
+11. Compliance & Credentials Coordinator (`compliance_credentials`)
+12. Admin Escalation & Human Review Coordinator (`admin_escalation`)
+13. Analytics & Reporting Coordinator (`analytics_reporting`)
+14. Photo Recommendation Coordinator (`photo_recommendation`)
+
+## Next actions
+
+1. Commit this batch on the existing isolated branch; confirm READY deployment and exact SHA.
+2. Verify Agent open, opaque panel, Home and Handyman entry/Back in deployed browser. Record observable limits.
+3. Verify deployed homepage renders the logo plus a separate translated slogan overlay, with no duplicate embedded slogan visible.
+4. Obtain/select isolated Supabase environment before applying preserved Handyman migrations or submitting test data.
+5. Wire role selection and Handyman admin access with existing auth, then complete translation/permission coverage and remaining workflows in scoped batches.
+
+## Deployed verification follow-up
+
+- Batch commit `2d7bbb5597837dc49c2bb7b1b0c457f44ea4ffe0` deployed READY: `dpl_9jzApdMtrFZQjW16ZGpjhhCN9e6N`, exact branch/SHA verified.
+- Existing isolated public alias reassigned to that deployment, only within isolated project. Live project unchanged.
+- Browser: Agent panel full viewport (1363 × 936), opaque white background, homepage absent from Agent accessibility tree; Home returns landing.
+- Browser: Handyman entry appears exactly between Contractor and BCT Estimator. Initial click exposed legacy signed-out CSS hiding its form: portal display none although hidden class removed. Fixed scoped portal-entered/class routing and CSS, plus Back and Agent Home cleanup.
+- Browser: Agent header inherited mint landing background with white text. Fixed dialog-scoped dark teal header, preserving homepage CSS.
+- Logo handling corrected per owner clarification: “We Are Your General Contractor” must be translatable page text, so the homepage uses the Live-style masked logo plus separate dynamic slogan overlay.
+- These follow-up changes require new deployment/browser confirmation. No actual Handyman submissions performed against shared DB.
+
+- Follow-up deployment `8284e25`, `dpl_C1RgZpq5ZytQTzNvFHg9gMPC8K6Z`, READY verified. Browser found higher-specificity legacy signed-out visibility rules still overriding Handyman styles. Applied scoped inline display on open and removed it on Back/Home; targeted override avoids modifying existing portal selectors or homepage design. Recheck required.
+
+## Verified deployed results — October 9
+
+- Commit `e9304a3164e6093be92ba2372a86d2133ed7668e`, deployment `dpl_63xSYe66RjyVhCC79tV2fx8wgRKn`: READY, exact isolated branch/SHA verified. Existing isolated alias updated, Live untouched.
+- COMPLETED AND VERIFIED (desktop cloud-browser scope): Handyman homepage entry order, form opens, Back returns home; Agent opens, opaque full-screen panel, dark teal header, Home returns home; body and html overflow hidden during Agent. Full-screen panel dimensions 1363 × 936. No physical-device or authenticated data claims.
+- Browser translation inspection found old broad selectors mislabeled Stage 1 as Check Application Status and Services as Background Check Authorization. Corrected selectors target their specific containers. Translation follow-up requires browser confirmation.
+- BLOCKED: Handyman actual save/review/assignment until isolated DB with preserved migrations is available. Insurance-company connectivity remains unconfirmed.
+- UPDATED: current logo asset remains preserved, but the non-translatable lower slogan is masked and replaced by separate translated page text.
+- BUILT BUT UNVERIFIED: owner decision applied to keep a single Admin Escalation & Human Review role, avoiding duplicate escalation handoff. Analytics & Reporting and Photo Recommendation are now in the role catalog for the 14-role target.
+
+## Final batch checkpoint
+
+- Code commit `b4dfc916b471516479a4bd9d60c31b7d9ab9a6d1` deployed READY in `dpl_8PfUJLm8QLTPtVqvc9Lo6i8o58m8`; exact requested branch confirmed. Isolated public alias assigned to that deployment.
+- Arabic browser test PASSED: Handyman entry translation, Stage 1 title, services label, authorization/terms labels, status heading and RTL (`dir=rtl`). Back returned home. English preference restored afterward. No data submitted.
+- Homepage translation gaps observed: BCT Estimator entry and photo captions/alt text still English in Arabic; coverage remains PARTIALLY IMPLEMENTED.
+- The broad release remains NOT READY. No paid services, Live releases, DB writes, or duplicate systems introduced.
+- Next authorized work: deployed browser verification for the 14-role selector, role-specific workflow checks, admin entry and translation coverage. Required input remains isolated database configuration before end-to-end data tests.
+
+## Local continuation checkpoint — October 9
+
+- Local isolated commit `9639dabd57276846d72bde9dbd00da55c42e6848` adds the 14-role Agent BCT catalog, keeps one Admin Escalation & Human Review role, adds Analytics & Reporting and Photo Recommendation, wires the full-screen role selector, and updates source smoke coverage.
+- Local isolated commit `9ce29f0` fixes the BCT Estimator homepage translation key, static gallery translation keys, gallery cache version, and the missing translated `morePhotos` copy used by the full-gallery modal.
+- Focused checks passed locally: `node --check agent-bct-ui.js`; `node --check bct-home-gallery.js`; `node scripts/agent-bct-mobile-smoke.mjs`; `node scripts/agent-bct-positions-smoke.mjs`; `node --test tests/agent-bct/*.test.js`; `node tests/v46-gallery-image-text-translation.mjs`; `node tests/v46-home-gallery.mjs`; `git diff --check`.
+- Push/deployed verification is BLOCKED in this terminal: `git push origin feature/v46-handyman-combined-latest` failed because no GitHub credentials were available. Branch is locally ahead of origin by two commits. Live remains untouched.
+
+## Logo decision update — October 9
+
+- Owner clarified that the slogan “We Are Your General Contractor” must remain translatable.
+- Current rule: continue the Live-style logo plus slogan treatment. Preserve the approved BCT logo image, mask the non-translatable embedded lower slogan where needed, and display a separate dynamic slogan overlay.
+- Homepage code restores the `data-bct-slogan` element so `syncBrandSlogan()` can translate the slogan with the selected language preference.
+- Isolated deployment `dpl_7kE66f3Qm1MynBnUSkQ1DhpqfVN5` for commit `94257ddcf954f5cdd192fa8a07ab83ce35a2e576` is READY and assigned to the isolated preview alias only.
+- Browser verification PASSED on the isolated preview: English slogan displays as separate text; Arabic slogan displays as `“نحن المقاول العام الخاص بك”`; document direction changes to `rtl`; logo mask pseudo-element is active; homepage entry order remains Client / Homeowner, Contractor, Handyman, BCT Estimator, Admin.
+- RESOLVED in follow-up deployment: BCT Estimator entry now translates in Arabic mode.
+
+## Deployment readiness cleanup — October 9
+
+- Code fix added for the BCT Estimator homepage language gap: Estimator is now included in `BCT_ENTRY_TRANSLATION_KEYS`, `BCT_LOGIN_LANGUAGE_UI`, and the signed-out entry button refresh loop.
+- Local checks passed after the fix: `node --check agent-bct-ui.js`; `node --check bct-home-gallery.js`; `node scripts/agent-bct-mobile-smoke.mjs`; `node scripts/agent-bct-positions-smoke.mjs`; `node tests/v46-home-gallery.mjs`; `node tests/v46-gallery-image-text-translation.mjs`; `git diff --check`.
+- Isolated deployment `dpl_BDQxKHjtGwm1Q4ErKFSs9zVVJ5Yo` for commit `bf495974f3c7141b9c11e9b9a861ecefd476780a` is READY and assigned to the isolated preview alias only.
+- Browser verification PASSED on the isolated preview: Arabic homepage entry order is `العميل`, `المقاول`, `الحرفي`, `مقدّر BCT`, `المسؤول`; Arabic slogan remains `“نحن المقاول العام الخاص بك”`; document direction remains `rtl`; logo remains visible. English preference was restored afterward.
+- Readiness smoke found the Handyman source label could report `Handyman Portal` before translation finished. Source label updated to `Handyman` with `aria-label="Handyman Portal"` so the visible homepage order is stable while preserving accessibility context.
+- Local checks passed after the label fix: `node --check bct-handyman-portal.js`; `node --check agent-bct-ui.js`; `node scripts/agent-bct-mobile-smoke.mjs`; `node tests/v46-home-gallery.mjs`; `git diff --check`.
+- Isolated deployment `dpl_CA7UKoBXP8M3H2qLyDEHu1737TBx` for commit `7c9b07989447f32e7219a16a9be1a6625138fdbc` is READY and assigned to the isolated preview alias only.
+- Browser verification PASSED on the isolated preview: English visible entry order is Client / Homeowner, Contractor, Handyman, BCT Estimator, Admin; Arabic visible entry order is `العميل`, `المقاول`, `الحرفي`, `مقدّر BCT`, `المسؤول`; Handyman keeps `aria-label="Handyman Portal"`; translated slogan and visible logo remain intact. English preference was restored afterward.
