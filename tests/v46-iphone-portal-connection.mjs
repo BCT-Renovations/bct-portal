@@ -115,6 +115,11 @@ async function verifyContractor(){
     await page.waitForTimeout(700);
     await expectVisible(page,'#view-apply','contractor application');
     await expectVisible(page,'#applicationForm','contractor application');
+    const appTitle=(await page.locator('#view-apply [data-i18n="contractor.application_title"]').textContent().catch(()=>'')).trim();
+    if(appTitle!=='Contractor Application') failures.push('contractor signup: application title was '+JSON.stringify(appTitle));
+    const portalTitle=(await page.locator('#bctContractorApplyPortalTitle').textContent().catch(()=>'')).trim();
+    if(/handyman/i.test(portalTitle)) failures.push('contractor signup: contractor portal title still includes handyman text');
+    if(await page.locator('#view-apply :text("Handyman Application")').count().catch(()=>0)) failures.push('contractor signup: handyman application text appeared inside contractor application');
     if(errors.length) failures.push('contractor signup page errors: '+errors.join(' | '));
     await context.close();
   }
