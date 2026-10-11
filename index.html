@@ -702,6 +702,13 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 #bctContractorForgotBtn.bct-contractor-teal-action,#bctContractorResendBtn.bct-contractor-teal-action{background:#0f5f63!important;color:#fff!important;border:1px solid #0f5f63!important;font-weight:800}
 #bctContractorForgotBtn.bct-contractor-teal-action:hover,#bctContractorResendBtn.bct-contractor-teal-action:hover{background:#0a4c50!important}
 </style>
+<style id="bct-v46-portal-isolation-20261011">
+/* A hidden portal must never be made visible by a role-specific display override.
+   Preserve the existing sign-in-first order within each active portal. */
+main#bctMain > section.view.hidden { display:none!important; }
+body.bct-contractor-signup:not(.bct-authenticated) #view-status { display:none!important; }
+body.bct-contractor-signup #bctContractorApplicantWhyBCT { display:none!important; }
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
