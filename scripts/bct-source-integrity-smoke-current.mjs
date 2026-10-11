@@ -48,7 +48,7 @@ assert(!adminControlBoard.includes("addEventListener('pageshow'"), 'Admin Contro
 assert(!adminControlBoard.includes("addEventListener('hashchange'"), 'Admin Control Board must not reposition on hashchange.');
 assert(!adminControlBoard.includes('position:sticky'), 'Admin Control Board navigation must not use sticky positioning.');
 assert(adminSections.includes('script[src*="/bct-admin-control-board.js"]'), 'Admin section loader must prevent duplicate Control Board script loading.');
-assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']"), 'service worker static cache must stay limited to the official logo and app icon.');
+assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png','/bct-apple-touch-icon.png','/bct-pwa-icon-192.png','/bct-pwa-icon-512.png','/bct-app-icon-v46.png','/bct-app-icon-v46-ios.png']"), 'service worker static cache must stay limited to safe branded image assets.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'service worker must not cache the root HTML startup path.');
 assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'service worker must not cache index.html.');
 assert(serviceWorker.includes("if(!STATIC_ASSETS.includes(url.pathname)||url.search)return;"), 'service worker must refuse to cache non-asset routes and query-string responses.');

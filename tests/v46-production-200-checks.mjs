@@ -215,7 +215,7 @@ for(const id of requiredIds){
 check('V46 title marker',()=>html.includes('V46 Launch Cutover'));
 check('mobile viewport configured',()=>html.includes('viewport-fit=cover'));
 check('PWA manifest linked',()=>html.includes('/manifest.webmanifest'));
-check('official BCT logo asset used',()=>html.includes('/bct-logo-master.png?v=official-bct-logo-v46-green-band'));
+check('official BCT logo asset used',()=>html.includes('/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008'));
 check('Supabase production auth present',()=>html.includes('supabaseClient')&&html.includes('signInWithPassword'));
 check('portal page isolation present',()=>html.includes('BCT V46 PORTAL PAGE ISOLATION'));
 

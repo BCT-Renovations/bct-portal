@@ -7,7 +7,10 @@ const sourceUrl = new URL('./bct-launch-smoke.mjs', import.meta.url);
 let source = fs.readFileSync(sourceUrl, 'utf8');
 const simpleReplacements = [
   ["['native iPhone portal boot', 'bct-native-portal-boot-20260929'],", "['authoritative iPhone portal router', 'V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'],"],
-  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v35-admin-control-board']
+  ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v36-ios-icon-rebuild'],
+  ['/bct-logo-master.png?v=official-bct-logo-v46-green-band-20260929a', '/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008'],
+  ['BCT V46 iPhone startup cache reset', 'BCT V46 iPhone/PWA isolation cleanup'],
+  ["const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']", "const STATIC_ASSETS=['/bct-logo-master.png','/bct-apple-touch-icon.png','/bct-pwa-icon-192.png','/bct-pwa-icon-512.png','/bct-app-icon-v46.png','/bct-app-icon-v46-ios.png']"]
 ];
 for (const [stale,current] of simpleReplacements) {
   if (!source.includes(stale)) throw new Error('Launch-smoke current wrapper could not find retired marker: '+stale);
@@ -17,7 +20,7 @@ for (const [stale,current] of simpleReplacements) {
 const serviceWorker = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
 const indexHtml = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const sourceGuard = "const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;";
-if (!serviceWorker.includes('bct-portal-shell-v35-admin-control-board')) throw new Error('Current V46 cache generation is missing.');
+if (!serviceWorker.includes('bct-portal-shell-v36-ios-icon-rebuild')) throw new Error('Current V46 cache generation is missing.');
 if (serviceWorker.includes('patchPublicHomeAuthShell')) throw new Error('Retired service-worker auth-shell source rewrite must not be reintroduced.');
 if (!indexHtml.includes(sourceGuard)) throw new Error('Source-level cold-launch public-home auth-shell correction is missing.');
 if (serviceWorker.includes('bct-startup-home-state-hotfix-script')) throw new Error('Retired late startup-home patch must not be reintroduced.');
