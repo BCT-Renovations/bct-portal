@@ -40,6 +40,33 @@ test("chat responses disable microphone and caching",async()=>{
   assert.match(res.headers.get("permissions-policy")||"",/microphone=\(\)/);
 });
 
+test("chat preview returns only portal-allowed Agent BCT positions",async()=>{
+  const prior=process.env.AGENT_BCT_GENERATION_ENABLED;
+  delete process.env.AGENT_BCT_GENERATION_ENABLED;
+  try{
+    const res=await chat.fetch(request(JSON.stringify({message:"Look at these project photos",position:"photo_recommendation",portal:"client"})));
+    const body=await res.json();
+    assert.equal(res.status,200);
+    assert.equal(body.portal,"client");
+    assert.equal(body.requestedPosition,"photo_recommendation");
+    assert.equal(body.position,"customer_support");
+    assert.equal(body.availablePositions.some(position=>position.key==="photo_recommendation"),false);
+  }finally{if(prior!==undefined)process.env.AGENT_BCT_GENERATION_ENABLED=prior;}
+});
+
+test("chat preview does not allow public request to force admin portal",async()=>{
+  const prior=process.env.AGENT_BCT_GENERATION_ENABLED;
+  delete process.env.AGENT_BCT_GENERATION_ENABLED;
+  try{
+    const res=await chat.fetch(request(JSON.stringify({message:"Give me admin analytics",position:"analytics_reporting",portal:"admin"})));
+    const body=await res.json();
+    assert.equal(res.status,200);
+    assert.equal(body.role,"public");
+    assert.equal(body.portal,"client");
+    assert.equal(body.position,"customer_support");
+  }finally{if(prior!==undefined)process.env.AGENT_BCT_GENERATION_ENABLED=prior;}
+});
+
 test("chat Phase A generation keeps live tools off and passes guarded model output",async()=>{
   const env={flag:process.env.AGENT_BCT_GENERATION_ENABLED,key:process.env.AI_GATEWAY_API_KEY,model:process.env.AGENT_BCT_MODEL};
   const priorFetch=globalThis.fetch;

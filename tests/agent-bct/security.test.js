@@ -5,6 +5,7 @@ import { sanitizeConversation, detectHighRiskRequest, wrapUntrustedData } from "
 import { retrieveApprovedKnowledge } from "../../api/agent-bct/_knowledge.js";
 import { buildAgentBctContext } from "../../api/agent-bct/_context.js";
 import { resolveAgentBctTool, listAgentBctTools } from "../../api/agent-bct/_tool-registry.js";
+import { allowedPositionsForPortal, resolveAllowedAgentBctPosition } from "../../api/agent-bct/_role-access.js";
 
 test("system policy preserves BCT authority boundaries", () => {
   const policy=systemPolicy({role:"homeowner",languageCode:"en"});
@@ -230,4 +231,25 @@ test("object projectors reject array-shaped backend results",()=>{
   assert.deepEqual(identity,{role:"unknown",permissions:[]});
   const summary=resolveAgentBctTool("contract.summary","homeowner",{}).project([{contracts:999}]);
   assert.deepEqual(summary,{});
+});
+
+test("Agent BCT portal role groups keep Photo Recommendation admin-only",()=>{
+  for(const portal of ["client","contractor","handyman","estimator"]){
+    assert.equal(allowedPositionsForPortal(portal).includes("photo_recommendation"),false);
+  }
+  assert.equal(allowedPositionsForPortal("admin").includes("photo_recommendation"),true);
+});
+
+test("Agent BCT backend role access blocks forced admin-only position",()=>{
+  const client=resolveAllowedAgentBctPosition({position:"photo_recommendation",role:"public",portal:"client"});
+  assert.equal(client.position,"customer_support");
+  assert.equal(client.effectivePortal,"client");
+
+  const fakeAdmin=resolveAllowedAgentBctPosition({position:"analytics_reporting",role:"public",portal:"admin"});
+  assert.equal(fakeAdmin.position,"customer_support");
+  assert.equal(fakeAdmin.effectivePortal,"client");
+
+  const admin=resolveAllowedAgentBctPosition({position:"photo_recommendation",role:"admin",portal:"client"});
+  assert.equal(admin.position,"photo_recommendation");
+  assert.equal(admin.effectivePortal,"admin");
 });

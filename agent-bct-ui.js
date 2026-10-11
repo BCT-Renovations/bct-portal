@@ -29,7 +29,7 @@ const POSITIONS=[
  ["photo_recommendation","Photo Recommendation Coordinator"]
 ];
 const ROLE_GROUPS={
- client:["customer_support","project_manager","finance_escrow","assignment_scheduler","photo_recommendation"],
+ client:["customer_support","project_manager","finance_escrow","assignment_scheduler"],
  contractor:["contractor_coordinator","compliance_credentials","project_manager","assignment_scheduler","admin_escalation"],
  handyman:["contractor_coordinator","compliance_credentials","quality_completion","assignment_scheduler","admin_escalation"],
  estimator:["estimator","project_manager","assignment_scheduler","admin_escalation"],
@@ -111,7 +111,7 @@ async function send(){
  try{
   const headers={"content-type":"application/json"};if(s.token)headers.authorization="Bearer "+s.token;
   const position=document.getElementById("bctAgentPosition")?.value||"customer_support";
-  const res=await fetch("/api/agent-bct/chat",{method:"POST",headers,cache:"no-store",credentials:"same-origin",signal:pending.signal,body:JSON.stringify({message,position,languageCode:language(),history:transcript.slice(-12,-1).map(x=>({role:x.role,content:x.text}))})});
+  const res=await fetch("/api/agent-bct/chat",{method:"POST",headers,cache:"no-store",credentials:"same-origin",signal:pending.signal,body:JSON.stringify({message,position,portal:portalKind(),languageCode:language(),history:transcript.slice(-12,-1).map(x=>({role:x.role,content:x.text}))})});
   const body=await res.json().catch(()=>({}));
   if(res.status===401){clearPrivate();transcript.push({role:"assistant",text:t().signin,provenance:"unavailable"});}
   else if(res.ok&&body.answer){transcript.push({role:"assistant",text:body.answer,provenance:body.provenance});}
