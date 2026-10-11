@@ -14,7 +14,7 @@ body.bct-gallery-modal-open #bctAgentOpen{display:none!important}
 /* V46 role lock: only Admin can see the full Agent BCT role selector. */
 body:not(:has(#view-admin:not(.hidden))) .bct-agent-position{display:none!important}
 body:not(:has(#view-admin:not(.hidden))) #bctAgentPanel{grid-template-rows:auto minmax(0,1fr) auto!important}
-body.bct-entry-handyman #bctAgentOpen{z-index:2147483645!important;bottom:max(78px,calc(env(safe-area-inset-bottom) + 72px))!important}
+body.bct-entry-handyman #bctAgentOpen{z-index:2147483645!important;touch-action:none!important;resize:none!important;max-height:44px!important;min-height:40px!important;bottom:auto}body.bct-entry-handyman #bctAgentOpen:not([style*="top:"]){bottom:max(78px,calc(env(safe-area-inset-bottom) + 72px))}
 body.bct-entry-handyman.bct-agent-open #bctAgentRoot{display:block!important;visibility:visible!important;pointer-events:auto!important}
 
 /* Isolated preview: compact floating Agent BCT launcher on narrow screens. */
