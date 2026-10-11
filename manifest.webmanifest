@@ -1,8 +1,8 @@
 {
   "name": "BCT Renovations Project Network",
   "short_name": "BCT Renovations",
-  "id": "/#admin",
-  "start_url": "/#admin",
+  "id": "/",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0f5f63",
