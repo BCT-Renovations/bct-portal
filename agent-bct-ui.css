@@ -16,3 +16,6 @@ body:not(:has(#view-admin:not(.hidden))) .bct-agent-position{display:none!import
 body:not(:has(#view-admin:not(.hidden))) #bctAgentPanel{grid-template-rows:auto minmax(0,1fr) auto!important}
 body.bct-entry-handyman #bctAgentOpen{z-index:2147483645!important;bottom:max(78px,calc(env(safe-area-inset-bottom) + 72px))!important}
 body.bct-entry-handyman.bct-agent-open #bctAgentRoot{display:block!important;visibility:visible!important;pointer-events:auto!important}
+
+/* Isolated preview: compact floating Agent BCT launcher on narrow screens. */
+@media(max-width:600px){#bctAgentRoot #bctAgentOpen{width:fit-content!important;max-width:112px!important;min-width:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;flex:none!important;}}
