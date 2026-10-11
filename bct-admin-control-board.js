@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const VERSION='V46-2026.09.30-admin-control-board-5-credentials-live';
+  const VERSION='V46-2026.10.11-admin-control-board-6-handyman-live';
   const ROOT_ID='view-admin';
   const PANEL_HIDDEN='bct-admin-board-panel-hidden';
   const BOARD_ID='bctAdminControlBoard';
@@ -18,8 +18,8 @@
   window.BCT_ADMIN_CONTROL_BOARD_VERSION=VERSION;
 
   const COPY={
-    en:{title:'Admin Control Board',sub:'Choose the area you need. Only the selected Admin section opens.',urgent:'Urgent Attention',jobs:'JOBS',contractors:'CONTRACTORS',clients:'CLIENTS / HOMEOWNERS',noJobs:'No Urgent Job Items',noContractors:'No Urgent Contractor Items',noClients:'No Urgent Client Items',areas:'Admin Portals',back:'← Back',board:'Admin Control Board',home:'Back to Home',none:'No urgent items in this category.',open:'Open'},
-    es:{title:'Panel de control administrativo',sub:'Elija el área que necesita. Solo se abre la sección administrativa seleccionada.',urgent:'Atención urgente',jobs:'TRABAJOS',contractors:'CONTRATISTAS',clients:'CLIENTES / PROPIETARIOS',noJobs:'No hay trabajos urgentes',noContractors:'No hay contratistas urgentes',noClients:'No hay clientes urgentes',areas:'Portales administrativos',back:'← Volver',board:'Panel administrativo',home:'Volver al inicio',none:'No hay asuntos urgentes en esta categoría.',open:'Abrir'},
+    en:{title:'Admin Control Board',sub:'Choose the area you need. Only the selected Admin section opens.',urgent:'Urgent Attention',jobs:'JOBS',contractors:'CONTRACTORS',handymen:'HANDYMEN',clients:'CLIENTS / HOMEOWNERS',noJobs:'No Urgent Job Items',noContractors:'No Urgent Contractor Items',noHandymen:'No Urgent Handyman Items',noClients:'No Urgent Client Items',areas:'Admin Portals',back:'← Back',board:'Admin Control Board',home:'Back to Home',none:'No urgent items in this category.',open:'Open',openSection:'Open Section',viewApplications:'View Applications'},
+    es:{title:'Panel de control administrativo',sub:'Elija el área que necesita. Solo se abre la sección administrativa seleccionada.',urgent:'Atención urgente',jobs:'TRABAJOS',contractors:'CONTRATISTAS',handymen:'HANDYMEN',clients:'CLIENTES / PROPIETARIOS',noJobs:'No hay trabajos urgentes',noContractors:'No hay contratistas urgentes',noHandymen:'No hay asuntos urgentes de handyman',noClients:'No hay clientes urgentes',areas:'Portales administrativos',back:'← Volver',board:'Panel administrativo',home:'Volver al inicio',none:'No hay asuntos urgentes en esta categoría.',open:'Abrir',openSection:'Abrir sección',viewApplications:'Ver aplicaciones'},
     fr:{title:'Tableau de contrôle admin',sub:'Choisissez la zone nécessaire. Seule la section sélectionnée s’ouvre.',urgent:'Attention urgente',jobs:'CHANTIERS',contractors:'ENTREPRENEURS',clients:'CLIENTS / PROPRIÉTAIRES',noJobs:'Aucun chantier urgent',noContractors:'Aucun entrepreneur urgent',noClients:'Aucun client urgent',areas:'Portails administrateur',back:'← Retour',board:'Tableau admin',home:'Retour à l’accueil',none:'Aucun élément urgent dans cette catégorie.',open:'Ouvrir'},
     ht:{title:'Tablo Kontwòl Administrasyon',sub:'Chwazi zòn ou bezwen an. Se sèlman seksyon ou chwazi a ki louvri.',urgent:'Atansyon Ijan',jobs:'TRAVAY',contractors:'KONTRAKTÈ',clients:'KLIYAN / PWOPRIYETÈ',noJobs:'Pa gen travay ijan',noContractors:'Pa gen kontraktè ijan',noClients:'Pa gen kliyan ijan',areas:'Pòtay Administrasyon',back:'← Retounen',board:'Tablo Administrasyon',home:'Retounen lakay',none:'Pa gen bagay ijan nan kategori sa a.',open:'Louvri'},
     pt:{title:'Painel de Controle Administrativo',sub:'Escolha a área necessária. Somente a seção selecionada será aberta.',urgent:'Atenção urgente',jobs:'TRABALHOS',contractors:'CONTRATADOS',clients:'CLIENTES / PROPRIETÁRIOS',noJobs:'Nenhum trabalho urgente',noContractors:'Nenhum contratado urgente',noClients:'Nenhum cliente urgente',areas:'Portais administrativos',back:'← Voltar',board:'Painel Administrativo',home:'Voltar ao início',none:'Nenhum item urgente nesta categoria.',open:'Abrir'},
@@ -89,8 +89,8 @@
       .bct-admin-portal-wrap h3{margin:0 0 10px;color:#172427}
       .bct-admin-portal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
       .bct-admin-portal-card{background:#0f5f63!important;color:#fff!important;border:1px solid #0a4549!important;border-radius:14px!important;min-height:86px!important;padding:13px!important;text-align:left!important;box-shadow:0 4px 12px rgba(15,95,99,.15)!important;touch-action:manipulation!important}
-      .bct-admin-portal-card strong{display:block;font-size:15px;line-height:1.25}
-      .bct-admin-portal-card small{display:block;margin-top:5px;color:#d9f1ee;line-height:1.25}
+      .bct-admin-portal-card strong{display:block;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+      .bct-admin-portal-card small{display:block;margin-top:9px;color:#d9f1ee;line-height:1.25;font-size:13px;font-weight:800;opacity:.96;overflow-wrap:anywhere}
       .bct-admin-panel-nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px;background:#fff;padding:6px 0;position:relative;top:auto;z-index:7}
       .bct-admin-panel-nav .bct-admin-board-button{flex:1;min-width:132px}
       .bct-admin-urgent-list{display:grid;gap:10px;margin-top:12px}
@@ -173,8 +173,9 @@
 
   function categoryForPanel(panel){
     const forced=panel?.dataset?.bctUrgentCategory;
-    if(forced==='jobs'||forced==='contractors'||forced==='clients')return forced;
+    if(forced==='jobs'||forced==='contractors'||forced==='clients'||forced==='handymen')return forced;
     const hay=(panelPage(panel)+' '+(panel?.id||'')+' '+panelTitle(panel)).toLowerCase();
+    if(/handyman/.test(hay))return 'handymen';
     if(/estimator|assessment/.test(hay))return 'jobs';
     if(/contractor|applicant|safety|training|crew|credential|insurance|bond|license|workers.? comp|compliance/.test(hay))return 'contractors';
     if(/client|customer|homeowner|resident|property account/.test(hay))return 'clients';
@@ -185,18 +186,18 @@
   function severity(text){
     const s=String(text||'').toLowerCase();
     if(/critical|failed|blocked|dispute|emergency|security failure|serious delay|payment blocked|escrow hold|inspection failed|safety violation|background check failed/.test(s))return 'critical';
-    if(/expired|expiring|expires|30.day|14.day|7.day|delayed|overdue|needs attention|action required|pending approval|pending review|awaiting approval|awaiting response|unanswered|on hold|missing|required action|failure|change order|inspection due|schedule issue|completion sign-off|financing pending|payment due|insurance due|bond due|license due|workers.? comp|credential|training overdue|compliance hold/.test(s))return 'warning';
+    if(/expired|expiring|expires|30.day|14.day|7.day|delayed|overdue|needs attention|action required|pending approval|pending review|pending bct review|pending handyman review|awaiting approval|awaiting response|unanswered|on hold|missing|required action|failure|change order|inspection due|schedule issue|completion sign-off|financing pending|payment due|insurance due|bond due|license due|workers.? comp|credential|training overdue|compliance hold/.test(s))return 'warning';
     return '';
   }
 
   function collectUrgent(){
-    const results={jobs:[],contractors:[],clients:[]};
+    const results={jobs:[],contractors:[],handymen:[],clients:[]};
     const seen=new Set();
     panels().forEach(panel=>{
       if(!boardEligible(panel)&&panel.id!=='jobManagementPanel')return;
       const category=categoryForPanel(panel);
       if(!category)return;
-      const candidates=panel.querySelectorAll('.badge.bad,.badge.warn,.backend-warn,[data-status],[data-state],[data-severity],[aria-label*="critical" i],[aria-label*="urgent" i]');
+      const candidates=panel.querySelectorAll('.badge.bad,.badge.warn,.backend-warn,.bct-handyman-status,[data-status],[data-state],[data-severity],[aria-label*="critical" i],[aria-label*="urgent" i]');
       candidates.forEach(node=>{
         const text=((node.getAttribute('data-status')||'')+' '+(node.getAttribute('data-state')||'')+' '+(node.getAttribute('data-severity')||'')+' '+(node.getAttribute('aria-label')||'')+' '+(node.textContent||'')).replace(/\s+/g,' ').trim();
         const level=severity(text);if(!level)return;
@@ -211,7 +212,7 @@
 
   function renderUrgentCards(board){
     const t=copy(),data=collectUrgent();
-    const defs=[['jobs',t.jobs,t.noJobs],['contractors',t.contractors,t.noContractors],['clients',t.clients,t.noClients]];
+    const defs=[['jobs',t.jobs,t.noJobs],['contractors',t.contractors,t.noContractors],['handymen',t.handymen||'HANDYMEN',t.noHandymen||'No Urgent Handyman Items'],['clients',t.clients,t.noClients]];
     const grid=board.querySelector('.bct-admin-urgent-grid');if(!grid)return;
     const renderKey=defs.map(([key,label,empty])=>{
       const items=data[key];
@@ -226,6 +227,13 @@
     }));
   }
 
+  function boardActionLabel(panel){
+    const t=copy();
+    const hay=(panelTitle(panel)+' '+(panel?.id||'')+' '+panelPage(panel)).toLowerCase();
+    if(/applicant|application|estimator management|handyman review/.test(hay))return t.viewApplications||'View Applications';
+    return t.openSection||t.open||'Open';
+  }
+
   function renderPortalCards(board){
     const grid=board.querySelector('.bct-admin-portal-grid');if(!grid)return;
     const list=panels().filter(boardEligible);
@@ -233,7 +241,7 @@
     if(grid.dataset.renderKey===key)return;grid.dataset.renderKey=key;
     grid.replaceChildren(...list.map(panel=>{
       const button=document.createElement('button');button.type='button';button.className='bct-admin-portal-card';button.dataset.bctOpenPanel=panel.id;
-      button.innerHTML=`<strong>${panelTitle(panel)}</strong><small>${pageLabel(panelPage(panel))}</small>`;
+      button.innerHTML=`<strong>${panelTitle(panel)}</strong><small>${boardActionLabel(panel)}</small>`;
       return button;
     }));
   }
@@ -261,7 +269,7 @@
   function showUrgent(category){
     const data=collectUrgent()[category]||[],t=copy();
     let view=$(URGENT_ID);if(!view){view=document.createElement('section');view.id=URGENT_ID;ensureBoard()?.insertAdjacentElement('afterend',view)}
-    const labels={jobs:t.jobs,contractors:t.contractors,clients:t.clients};
+    const labels={jobs:t.jobs,contractors:t.contractors,handymen:t.handymen||'HANDYMEN',clients:t.clients};
     view.innerHTML='<div class="bct-admin-board-head"><div><h2></h2><p></p></div><div><button type="button" class="bct-admin-board-back" data-bct-board-homeboard></button> <button type="button" class="bct-admin-board-home" data-bct-board-publichome></button></div></div><div class="bct-admin-urgent-list"></div>';
     view.querySelector('h2').textContent=`${t.urgent}: ${labels[category]||category}`;
     view.querySelector('p').textContent=data.length?`${data.length} ${t.urgent}`:t.none;
@@ -309,7 +317,7 @@
     if(!adminVisible())return;
     const r=root();if(!r)return;
     const portal=event.target?.closest?.('[data-bct-open-panel]');
-    if(portal&&r.contains(portal)){event.preventDefault();event.stopPropagation();const panel=$(portal.dataset.bctOpenPanel);if(panel){openPanel(panel,true);if(panel.id==='adminContractorCredentials')loadCredentialsBoard()}return}
+    if(portal&&r.contains(portal)){event.preventDefault();event.stopPropagation();const panel=$(portal.dataset.bctOpenPanel);if(panel){openPanel(panel,true);if(panel.id==='adminContractorCredentials')loadCredentialsBoard();if(panel.id==='bctHandymanAdminMount'&&window.BCTHandymanAdmin?.load)window.BCTHandymanAdmin.load()}return}
     const urgent=event.target?.closest?.('[data-bct-urgent-category]');
     if(urgent&&r.contains(urgent)){event.preventDefault();event.stopPropagation();showUrgent(urgent.dataset.bctUrgentCategory);return}
     const back=event.target?.closest?.('[data-bct-board-back]');
