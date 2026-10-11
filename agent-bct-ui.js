@@ -159,8 +159,8 @@ async function send(){
   else if((res.status===401||res.status===403)&&/bct-v46-isolated-preview/i.test(location.hostname)){transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});saveTranscript();}
   else{transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();}
  }catch(_){
-  if(/bct-v46-isolated-preview/i.test(location.hostname))transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});saveTranscript();
-  else transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();
+  if(/bct-v46-isolated-preview/i.test(location.hostname)){transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});saveTranscript();}
+  else{transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();}
  }
  finally{clearTimeout(timer);pending=null;button.disabled=false;status.textContent="";renderMessages();input.focus({preventScroll:true});}
 }
