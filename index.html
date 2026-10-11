@@ -2640,6 +2640,7 @@ function openNewContractorSignup(){
   requestAnimationFrame(()=>{window.scrollTo({top:0,left:0,behavior:'auto'});document.querySelector('#applicationForm input[name="legalName"]')?.focus({preventScroll:true});});
 }
 document.getElementById('bctContractorSignupBtn')?.addEventListener('click',openNewContractorSignup);
+document.getElementById('bctContractorSignupBottomBtn')?.addEventListener('click',openNewContractorSignup);
 function showCustomerPage(page){
   document.querySelectorAll('[data-customer-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.customerPage===page));
   document.querySelectorAll('[data-customer-page-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.customerPagePanel===page));
