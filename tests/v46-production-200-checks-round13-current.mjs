@@ -24,6 +24,10 @@ check('retired native public role links are absent',!html.includes('data-entry-n
 `;
 
 source = source.slice(0, start) + currentBlock + source.slice(resume);
+source = source.replace(
+  `"serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}))"`,
+  `"serviceWorker.getRegistrations().then(function(regs){"`
+);
 const tempUrl = new URL(`./.v46-round13-current-${process.pid}.mjs`, import.meta.url);
 fs.writeFileSync(tempUrl, source, 'utf8');
 try {
