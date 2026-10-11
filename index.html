@@ -708,6 +708,9 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 main#bctMain > section.view.hidden { display:none!important; }
 body.bct-contractor-signup:not(.bct-authenticated) #view-status { display:none!important; }
 body.bct-contractor-signup #bctContractorApplicantWhyBCT { display:none!important; }
+/* New contractor signup opens the application itself, not the marketing/portal navigation. */
+body.bct-contractor-signup:not(.bct-authenticated) #view-apply #bctContractorApplyPortalTitle { display:none!important; }
+body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-page-nav] { display:none!important; }
 </style>
 </head>
 <body>
