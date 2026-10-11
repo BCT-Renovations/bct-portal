@@ -4182,7 +4182,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  ru:{ce:'Электронная почта',cp:'Пароль',si:'Войти',fp:'Забыли пароль?',bh:'На главную',so:'Выйти',rc:'Повторно отправить письмо подтверждения',sp:'Показать пароль'}
  };
  const map={'contractor.email':'ce','contractor.password':'cp','contractor.signin_button':'si','contractor.forgot_password':'fp','contractor.back_home':'bh','contractor.signout_button':'so','contractor.resend_confirmation':'rc','admin.show_password':'sp','admin.forgot_password':'fp'};
- function apply(){const l=localStorage.getItem('bctPreferredLanguage')||'en';if(l==='en'||!A[l])return;for(const [key,k] of Object.entries(map))document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>el.textContent=A[l][k]);}
+ function apply(){const l=localStorage.getItem('bctPreferredLanguage')||'en';const english={ce:'Email',cp:'Password',si:'Sign In',fp:'Forgot Password?',bh:'Back to Home',so:'Sign Out',rc:'Resend Confirmation Email',sp:'Show Password'};const copy=A[l]||english;for(const [key,k] of Object.entries(map))document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>el.textContent=copy[k]||english[k]);}
  window.bctApplyAuthEntryTranslations=apply;
  document.addEventListener('change',e=>{if(e.target.matches('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(apply)},true);
  requestAnimationFrame(apply);
