@@ -12,8 +12,9 @@
 // bct-runtime-guardrails wires existing backend feature flags, authenticated client-error logging, and admin build visibility.
 // bct-admin-mobile-controls-hotfix guarantees signed-in Admin touch targets and loads the Spanish Admin stability patch.
 // bct-public-home-auth-shell-fix keeps the public landing visually signed out until a portal is deliberately entered.
-const CACHE_NAME='bct-portal-shell-v36-logo-comma-cache-bust';
-const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png'];
+// bct-ios-icon-cache-fix forces installed iPhone clients to cache the same Apple icon used by the manifest.
+const CACHE_NAME='bct-portal-shell-v37-ios-icon-cache-bust';
+const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46-ios.png'];
 const HTML_PATHS=new Set(['/','/index.html']);
 const BCT_SIGNUP_HOME_NAV_PATCH=`
 <style id="bct-signup-home-nav-hotfix-style">
@@ -93,14 +94,14 @@ const BCT_RUNTIME_GUARDRAIL_PATCH=`
     const weather=window.bctFeatureEnabled('weather_external_provider_enabled',false);
     const errors=window.bctFeatureEnabled('client_error_tracking_enabled',true);
     const ai=window.bctFeatureEnabled('ai_estimating_enabled',true);
-    card.innerHTML='<div class="toolbar"><div><h3>Runtime Safety & Build</h3><p class="muted">Protective controls only; this does not change project, payment, or approval data.</p></div><button type="button" class="secondary" id="bctToggleAdminSafeMode">'+(safe?'Turn Safe Mode Off':'Turn Safe Mode On')+'</button></div>'+
+    card.innerHTML='<div class="toolbar"><div><h3>Runtime Safety & Build</h3><p class="muted">Protective controls only; this does not change project, payment, or approval data.</p></div><button type="button" class="secondary" id="bctToggleAdminSafeMode">'+(safe?'Turn Safe Mode Off':'Turn Safe Mode On')+'</button></div>'+ 
       '<div class="grid grid-2 section">'+
-      '<div class="stage"><b>Build</b><br><small>'+BUILD+'<br>API '+String(api).replace(/[<>&]/g,'')+'</small></div>'+
-      '<div class="stage"><b>Admin Safe Mode</b><br>'+statusBadge(safe)+'<br><small>On this device, optional integrations are held off while core portals remain available.</small></div>'+
-      '<div class="stage"><b>AI Estimating</b><br>'+statusBadge(ai)+'</div>'+
-      '<div class="stage"><b>Live Weather Provider</b><br>'+statusBadge(weather)+'<br><small>'+(f.weather_provider||'Provider not reported')+'</small></div>'+
-      '<div class="stage"><b>Client Error Tracking</b><br>'+statusBadge(errors)+'</div>'+
-      '<div class="stage"><b>External AI Engine</b><br>'+statusBadge(window.bctFeatureEnabled('ai_estimating_external_engine_enabled',false))+'</div>'+
+      '<div class="stage"><b>Build</b><br><small>'+BUILD+'<br>API '+String(api).replace(/[<>&]/g,'')+'</small></div>'+ 
+      '<div class="stage"><b>Admin Safe Mode</b><br>'+statusBadge(safe)+'<br><small>On this device, optional integrations are held off while core portals remain available.</small></div>'+ 
+      '<div class="stage"><b>AI Estimating</b><br>'+statusBadge(ai)+'</div>'+ 
+      '<div class="stage"><b>Live Weather Provider</b><br>'+statusBadge(weather)+'<br><small>'+(f.weather_provider||'Provider not reported')+'</small></div>'+ 
+      '<div class="stage"><b>Client Error Tracking</b><br>'+statusBadge(errors)+'</div>'+ 
+      '<div class="stage"><b>External AI Engine</b><br>'+statusBadge(window.bctFeatureEnabled('ai_estimating_external_engine_enabled',false))+'</div>'+ 
       '</div>';
   }
   async function loadFlags(){
