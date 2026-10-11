@@ -3968,8 +3968,9 @@ body.bct-entry-admin:not(.bct-authenticated) .bct-portal-about{display:none!impo
    }else if(kind==='contractor'){
      const login=document.getElementById('bctContractorLoginBtn')?.closest('.card');
      let about=document.getElementById('bctContractorAbout');
-     if(!about&&login){login.after(contractorAbout);about=contractorAbout;}
-     if(about&&login&&about.previousElementSibling!==login)login.after(about);
+     const signup=document.getElementById('bctContractorSignupCard');
+     if(!about&&signup){signup.after(contractorAbout);about=contractorAbout;}
+     if(about&&signup&&about.previousElementSibling!==signup)signup.after(about);
    }
    const lang=localStorage.getItem(BCT_LANGUAGE_KEY)||document.documentElement.lang||'en';
    try{applyBctLanguage(String(lang).toLowerCase());}catch(_){}
@@ -3989,7 +3990,7 @@ body.bct-portal-entered #view-home{display:none!important}
 body.bct-portal-entered main.wrap{padding-top:0!important;margin-top:0!important}
 body.bct-portal-entered .view:not(.hidden){margin-top:0!important}
 body.bct-portal-entered #bctMain{padding-top:0!important}
-body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContractorPortalTitle):not(#bctContractorSignupCard):not(.bct-public-contractor-login):not(#bctContractorAbout){display:none!important}
+body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContractorPortalTitle):not(#bctContractorSignupCard):not(.bct-public-contractor-login):not(#bctContractorAbout):not(#bctContractorBottomActions){display:none!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorSignupCard,
 body.bct-entry-contractor:not(.bct-authenticated) .bct-public-contractor-login{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
@@ -4018,9 +4019,9 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
  const contractorSignup=document.getElementById('bctContractorSignupCard');
  const contractorTitle=document.getElementById('bctContractorPortalTitle');
  if(contractorView&&contractorTitle)contractorView.prepend(contractorTitle);
- if(contractorView&&contractorSignup)contractorTitle?.after(contractorSignup);
- if(contractorView&&contractorLogin)contractorSignup?.after(contractorLogin);
- if(contractorAbout&&contractorLogin&&contractorView)contractorLogin.after(contractorAbout);
+ if(contractorView&&contractorLogin)contractorTitle?.after(contractorLogin);
+ if(contractorView&&contractorSignup&&contractorLogin)contractorLogin.after(contractorSignup);
+ if(contractorAbout&&contractorSignup&&contractorView)contractorSignup.after(contractorAbout);
  const homeView=document.getElementById('view-customer'),homeLogin=document.getElementById('bctHomeownerLoginCard'),homeSignup=document.getElementById('bctHomeownerSignupCard'),homeAbout=document.getElementById('bctAboutPublic');
  const homeTitle=document.getElementById('bctClientPortalTitle'),homePublicAbout=document.getElementById('bctClientPublicAbout'),homeBack=document.getElementById('bctClientBackHomeTop');
  if(homeView&&homeTitle)homeView.prepend(homeTitle);
