@@ -35,11 +35,45 @@ const ROLE_GROUPS={
  estimator:["estimator","project_manager","assignment_scheduler","admin_escalation"],
  admin:POSITIONS.map(([value])=>value)
 };
-let transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0;
+let transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0,conversationKey="",activePortal="";
 function language(){return String(localStorage.getItem("bctPreferredLanguage")||document.getElementById("bctLoginLanguage")?.value||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
 function t(){return COPY[language()]||COPY.en}
 function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function provenance(p){const x=t();return p==="confirmed_live"?x.confirmed:p==="human_review_required"?x.review:p==="unavailable"?x.unavailable:x.general}
+function anonymousConversationId(){
+ try{
+  let id=sessionStorage.getItem("bctAgentAnonymousSessionId");
+  if(!id){
+   const rand=window.crypto?.randomUUID?.()||String(Date.now())+"-"+Math.random().toString(36).slice(2);
+   id="anon-"+rand;
+   sessionStorage.setItem("bctAgentAnonymousSessionId",id);
+  }
+  return id;
+ }catch(_){return "anon-session"}
+}
+function transcriptStorageKey(portal,userId){
+ const principal=userId?("user:"+userId):("anon:"+anonymousConversationId());
+ return "bctAgentTranscript:v2:"+portal+":"+principal;
+}
+function loadTranscript(key){
+ try{
+  const raw=localStorage.getItem(key);
+  const parsed=raw?JSON.parse(raw):[];
+  return Array.isArray(parsed)?parsed.filter(m=>m&&["user","assistant"].includes(m.role)&&typeof m.text==="string").slice(-40):[];
+ }catch(_){return []}
+}
+function saveTranscript(){
+ if(!conversationKey)return;
+ try{localStorage.setItem(conversationKey,JSON.stringify(transcript.slice(-40)))}catch(_){}
+}
+function switchConversation(key,portal){
+ if(key===conversationKey)return;
+ saveTranscript();
+ conversationKey=key;
+ activePortal=portal;
+ transcript=loadTranscript(key);
+ renderMessages();
+}
 function viewOpen(id){const el=document.getElementById(id);return !!el&&!el.classList.contains("hidden")&&getComputedStyle(el).display!=="none"}
 function portalKind(){
  const b=document.body;
@@ -58,10 +92,17 @@ function syncRoleOptions(){
  select.innerHTML=POSITIONS.filter(([value])=>allowed.has(value)).map(([value,label])=>'<option value="'+escapeHtml(value)+'">'+escapeHtml(label)+'</option>').join("");
  if(allowed.has(current))select.value=current;
 }
-function clearPrivate(){transcript=[];identity=null;if(pending){pending.abort();pending=null}renderMessages()}
+function clearPrivate(){transcript=[];identity=null;if(pending){pending.abort();pending=null}saveTranscript();renderMessages()}
 async function session(){
  if(typeof supabaseClient==="undefined"||!supabaseClient)return {token:"",userId:""};
  try{const r=await supabaseClient.auth.getSession(),s=r?.data?.session;return {token:s?.access_token||"",userId:s?.user?.id||""}}catch(_){return {token:"",userId:""}}
+}
+async function refreshConversationScope(){
+ const s=await session();
+ const portal=portalKind();
+ switchConversation(transcriptStorageKey(portal,s.userId),portal);
+ identity=s.userId||"public";
+ return s;
 }
 function renderMessages(){
  const host=document.getElementById("bctAgentMessages");if(!host)return;
@@ -94,7 +135,7 @@ function goHome(){
 }
 function open(){
  const panel=document.getElementById("bctAgentPanel");if(!panel)return;
- lastFocus=document.activeElement;scrollY=window.scrollY;panel.hidden=false;document.body.classList.add("bct-agent-open");syncRoleOptions();applyCopy();setTimeout(()=>document.getElementById("bctAgentInput")?.focus({preventScroll:true}),0);
+ lastFocus=document.activeElement;scrollY=window.scrollY;panel.hidden=false;document.body.classList.add("bct-agent-open");syncRoleOptions();applyCopy();refreshConversationScope().then(applyCopy).catch(()=>{});setTimeout(()=>document.getElementById("bctAgentInput")?.focus({preventScroll:true}),0);
 }
 function close(){
  const panel=document.getElementById("bctAgentPanel");if(!panel)return;
@@ -103,10 +144,8 @@ function close(){
 async function send(){
  const input=document.getElementById("bctAgentInput"),status=document.getElementById("bctAgentStatus"),button=document.getElementById("bctAgentSend");if(!input||pending)return;
  const message=input.value.trim();if(!message)return;
- const s=await session();
- if(identity&&s.userId&&identity!==s.userId)clearPrivate();
- identity=s.userId||"public";
- transcript.push({role:"user",text:message});input.value="";renderMessages();
+ const s=await refreshConversationScope();
+ transcript.push({role:"user",text:message});input.value="";saveTranscript();renderMessages();
  pending=new AbortController();button.disabled=true;status.textContent="…";
  const timer=setTimeout(()=>pending?.abort(),26000);
  try{
@@ -114,14 +153,14 @@ async function send(){
   const position=document.getElementById("bctAgentPosition")?.value||"customer_support";
   const res=await fetch("/api/agent-bct/chat",{method:"POST",headers,cache:"no-store",credentials:"same-origin",signal:pending.signal,body:JSON.stringify({message,position,portal:portalKind(),languageCode:language(),history:transcript.slice(-12,-1).map(x=>({role:x.role,content:x.text}))})});
   const body=await res.json().catch(()=>({}));
-  if(res.status===401){clearPrivate();transcript.push({role:"assistant",text:t().signin,provenance:"unavailable"});}
-  else if(res.ok&&body.answer){transcript.push({role:"assistant",text:body.answer,provenance:body.provenance});}
-  else if(res.ok){transcript.push({role:"assistant",text:t().preview,provenance:body.provenance||"general_guidance"});}
-  else if((res.status===401||res.status===403)&&/bct-v46-isolated-preview/i.test(location.hostname)){transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});}
-  else{transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});}
+  if(res.status===401){clearPrivate();transcript.push({role:"assistant",text:t().signin,provenance:"unavailable"});saveTranscript();}
+  else if(res.ok&&body.answer){transcript.push({role:"assistant",text:body.answer,provenance:body.provenance});saveTranscript();}
+  else if(res.ok){transcript.push({role:"assistant",text:t().preview,provenance:body.provenance||"general_guidance"});saveTranscript();}
+  else if((res.status===401||res.status===403)&&/bct-v46-isolated-preview/i.test(location.hostname)){transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});saveTranscript();}
+  else{transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();}
  }catch(_){
-  if(/bct-v46-isolated-preview/i.test(location.hostname))transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});
-  else transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});
+  if(/bct-v46-isolated-preview/i.test(location.hostname))transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});saveTranscript();
+  else transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();
  }
  finally{clearTimeout(timer);pending=null;button.disabled=false;status.textContent="";renderMessages();input.focus({preventScroll:true});}
 }
@@ -133,11 +172,11 @@ function mount(){
  document.getElementById("bctAgentOpen").addEventListener("click",open);document.getElementById("bctAgentClose").addEventListener("click",close);document.getElementById("bctAgentHome").addEventListener("click",goHome);document.getElementById("bctAgentForm").addEventListener("submit",e=>{e.preventDefault();send()});
  document.getElementById("bctAgentPosition").addEventListener("pointerdown",syncRoleOptions);
  document.getElementById("bctAgentPosition").addEventListener("focus",syncRoleOptions);
- document.addEventListener("bct:portal-change",syncRoleOptions);
+ document.addEventListener("bct:portal-change",()=>{syncRoleOptions();refreshConversationScope().then(applyCopy).catch(()=>{})});
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("bctAgentPanel").hidden)close()});
  document.addEventListener("change",e=>{if(e.target?.matches?.("#bctLoginLanguage,#bctLanguage,[data-language-selector]"))requestAnimationFrame(applyCopy)},true);
- if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth?.onAuthStateChange)supabaseClient.auth.onAuthStateChange((event,s)=>{const next=s?.user?.id||"";if(event==="SIGNED_OUT"||(identity&&next&&identity!==next))clearPrivate();identity=next||null;});
- applyCopy();
+ if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth?.onAuthStateChange)supabaseClient.auth.onAuthStateChange((event,s)=>{identity=s?.user?.id||null;refreshConversationScope().then(applyCopy).catch(()=>{})});
+ applyCopy();refreshConversationScope().then(applyCopy).catch(()=>{});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount);else mount();
 })();
