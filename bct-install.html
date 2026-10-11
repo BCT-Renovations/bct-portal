@@ -19,13 +19,21 @@ strong{display:block;font-size:22px;line-height:1.2;margin-bottom:8px}
 span{display:block;font-size:15px;line-height:1.4;color:#315b5e}
 small{display:block;margin-top:16px;font-size:13px;line-height:1.35;color:#4b6468}
 </style>
+<script>
+(function(){
+  var isHomeScreenLaunch = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  if (isHomeScreenLaunch) {
+    window.location.replace('/');
+  }
+})();
+</script>
 </head>
 <body>
 <main class="box">
 <img class="logo" src="/bct-app-icon-v46-ios.png" width="132" height="132" alt="BCT Renovations">
 <strong>BCT Renovations</strong>
 <span>Add this page to your iPhone Home Screen.</span>
-<small>This page uses the square BCT app icon. It does not open the portal, redirect, reload, start scripts, register a service worker, or use the web app manifest.</small>
+<small>This page uses the square BCT app icon. When opened from your Home Screen, it sends you into the BCT portal.</small>
 </main>
 </body>
 </html>
