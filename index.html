@@ -4193,6 +4193,15 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
  const map={'contractor.email':'ce','contractor.password':'cp','contractor.signin_button':'si','contractor.forgot_password':'fp','contractor.back_home':'bh','contractor.signout_button':'so','contractor.resend_confirmation':'rc','admin.show_password':'sp','admin.forgot_password':'fp'};
  function apply(){const l=localStorage.getItem('bctPreferredLanguage')||'en';const english={ce:'Email',cp:'Password',si:'Sign In',fp:'Forgot Password?',bh:'Back to Home',so:'Sign Out',rc:'Resend Confirmation Email',sp:'Show Password'};const copy=A[l]||english;for(const [key,k] of Object.entries(map))document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>el.textContent=copy[k]||english[k]);}
  window.bctApplyAuthEntryTranslations=apply;
+ // Other async translation passes can render raw keys after initial page load.
+ // Repair only the known auth labels when they regress to untranslated keys.
+ function restoreAuthKeys(){
+   const keys=Object.keys(map);
+   if(keys.some(key=>Array.from(document.querySelectorAll('[data-i18n="'+key+'"]')).some(el=>el.textContent.trim()===key)))apply();
+ }
+ window.addEventListener('pageshow',restoreAuthKeys);
+ document.addEventListener('click',()=>setTimeout(restoreAuthKeys,0),true);
+ setTimeout(restoreAuthKeys,500);
  document.addEventListener('change',e=>{if(e.target.matches('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(apply)},true);
  requestAnimationFrame(apply);
 })();
@@ -4272,6 +4281,8 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
     document.body.classList.remove('bct-entry-client','bct-entry-admin');
     if(typeof setVisibleView==='function') setVisibleView('apply');
     const v=document.getElementById('view-apply'); v?.classList.remove('hidden','bct-signedout-hidden');
+    document.getElementById('view-status')?.classList.add('hidden');
+    document.getElementById('view-home')?.classList.add('hidden');
     top();
   }
   document.addEventListener('click',function(e){
