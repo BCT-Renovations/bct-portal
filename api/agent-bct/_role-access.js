@@ -3,7 +3,7 @@ import { normalizeAgentBctPosition, listAgentBctPositions } from "./_positions.j
 export const AGENT_BCT_ROLE_GROUPS = Object.freeze({
   client: Object.freeze(["customer_support", "project_manager", "finance_escrow", "assignment_scheduler"]),
   contractor: Object.freeze(["contractor_coordinator", "compliance_credentials", "project_manager", "assignment_scheduler", "admin_escalation"]),
-  handyman: Object.freeze(["contractor_coordinator", "compliance_credentials", "quality_completion", "assignment_scheduler", "admin_escalation"]),
+  handyman: Object.freeze(["contractor_coordinator"]),
   estimator: Object.freeze(["estimator", "project_manager", "assignment_scheduler", "admin_escalation"]),
   admin: Object.freeze(listAgentBctPositions().map(position => position.key)),
 });

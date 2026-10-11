@@ -31,7 +31,7 @@ const POSITIONS=[
 const ROLE_GROUPS={
  client:["customer_support","project_manager","finance_escrow","assignment_scheduler"],
  contractor:["contractor_coordinator","compliance_credentials","project_manager","assignment_scheduler","admin_escalation"],
- handyman:["contractor_coordinator","compliance_credentials","quality_completion","assignment_scheduler","admin_escalation"],
+ handyman:["contractor_coordinator"],
  estimator:["estimator","project_manager","assignment_scheduler","admin_escalation"],
  admin:POSITIONS.map(([value])=>value)
 };
@@ -43,8 +43,9 @@ function provenance(p){const x=t();return p==="confirmed_live"?x.confirmed:p==="
 function viewOpen(id){const el=document.getElementById(id);return !!el&&!el.classList.contains("hidden")&&getComputedStyle(el).display!=="none"}
 function portalKind(){
  const b=document.body;
+ const handyman=document.getElementById("bctHandymanPortalMount");
+ if(b.classList.contains("bct-entry-handyman")||viewOpen("bctHandymanPortalMount")||handyman?.style?.display==="block")return "handyman";
  if(b.classList.contains("bct-authenticated")&&viewOpen("view-admin"))return "admin";
- if(b.classList.contains("bct-entry-handyman"))return "handyman";
  if(b.classList.contains("bct-entry-estimator")||viewOpen("view-estimator"))return "estimator";
  if(b.classList.contains("bct-entry-contractor")||b.classList.contains("bct-contractor-signup")||viewOpen("view-status")||viewOpen("view-apply"))return "contractor";
  if(b.classList.contains("bct-entry-client")||b.classList.contains("bct-home-signup")||viewOpen("view-customer"))return "client";
@@ -130,6 +131,9 @@ function mount(){
  const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><div><button id="bctAgentHome" type="button" class="bct-agent-home">⌂ Home</button><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div class="bct-agent-position"><label for="bctAgentPosition">Role</label><select id="bctAgentPosition">'+positionOptions+'</select></div><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
  document.body.appendChild(root);
  document.getElementById("bctAgentOpen").addEventListener("click",open);document.getElementById("bctAgentClose").addEventListener("click",close);document.getElementById("bctAgentHome").addEventListener("click",goHome);document.getElementById("bctAgentForm").addEventListener("submit",e=>{e.preventDefault();send()});
+ document.getElementById("bctAgentPosition").addEventListener("pointerdown",syncRoleOptions);
+ document.getElementById("bctAgentPosition").addEventListener("focus",syncRoleOptions);
+ document.addEventListener("bct:portal-change",syncRoleOptions);
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("bctAgentPanel").hidden)close()});
  document.addEventListener("change",e=>{if(e.target?.matches?.("#bctLoginLanguage,#bctLanguage,[data-language-selector]"))requestAnimationFrame(applyCopy)},true);
  if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth?.onAuthStateChange)supabaseClient.auth.onAuthStateChange((event,s)=>{const next=s?.user?.id||"";if(event==="SIGNED_OUT"||(identity&&next&&identity!==next))clearPrivate();identity=next||null;});

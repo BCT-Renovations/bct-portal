@@ -237,6 +237,8 @@ test("Agent BCT portal role groups keep Photo Recommendation admin-only",()=>{
   for(const portal of ["client","contractor","handyman","estimator"]){
     assert.equal(allowedPositionsForPortal(portal).includes("photo_recommendation"),false);
   }
+  assert.deepEqual(allowedPositionsForPortal("handyman"),["contractor_coordinator"]);
+  assert.equal(allowedPositionsForPortal("admin").length,14);
   assert.equal(allowedPositionsForPortal("admin").includes("photo_recommendation"),true);
 });
 
