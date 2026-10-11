@@ -10,7 +10,13 @@
   "description": "BCT Renovations homeowner, contractor, and admin project portal.",
   "icons": [
     {
-      "src": "/bct-app-icon-v46-ios.png",
+      "src": "/bct-app-icon-v46-ios.png?v=20261011-icon-refresh",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/bct-app-icon-v46.png?v=20261011-icon-refresh",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
