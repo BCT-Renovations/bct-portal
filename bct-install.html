@@ -7,16 +7,18 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BCT Renovations">
-<link rel="apple-touch-icon" sizes="180x180" href="/bct-app-icon-v46-ios.png?v=20261011-clean-install-2">
-<link rel="apple-touch-icon-precomposed" sizes="180x180" href="/bct-app-icon-v46-ios.png?v=20261011-clean-install-2">
-<link rel="icon" type="image/png" sizes="512x512" href="/bct-app-icon-v46-ios.png?v=20261011-clean-install-2">
+<link rel="apple-touch-icon" sizes="180x180" href="/bct-app-icon-v46-ios.png?v=20261011-clean-install-3">
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="/bct-app-icon-v46-ios.png?v=20261011-clean-install-3">
+<link rel="icon" type="image/png" sizes="512x512" href="/bct-app-icon-v46-ios.png?v=20261011-clean-install-3">
 <title>BCT Renovations</title>
 <style>
 html,body{margin:0;min-height:100%;background:#e8f5ec;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
 body{display:grid;place-items:center;color:#0a4549;text-align:center}
 .box{padding:24px;max-width:340px}
-img{width:112px;height:112px;border-radius:24px;display:block;margin:0 auto 16px;object-fit:cover}
-strong{display:block;font-size:22px;line-height:1.2}
+.bct-tile{width:112px;height:112px;border-radius:24px;margin:0 auto 16px;background:#0f5f63;display:grid;place-items:center;box-shadow:0 8px 22px rgba(15,95,99,.22)}
+.bct-tile strong{display:block;color:#b7f7d2;font-size:36px;line-height:1;font-weight:900;letter-spacing:-2px}
+img{position:absolute;width:1px;height:1px;opacity:.01;pointer-events:none}
+.title{display:block;font-size:22px;line-height:1.2;font-weight:800;color:#0a4549}
 span{display:block;margin-top:8px;font-size:14px;line-height:1.35;color:#0f5f63}
 small{display:block;margin-top:14px;color:#4b6468;line-height:1.35}
 a{display:inline-block;margin-top:18px;padding:12px 18px;border-radius:999px;background:#0f5f63;color:white;text-decoration:none;font-weight:700}
@@ -24,8 +26,9 @@ a{display:inline-block;margin-top:18px;padding:12px 18px;border-radius:999px;bac
 </head>
 <body>
 <main class="box">
-<img src="/bct-app-icon-v46-ios.png?v=20261011-clean-install-2" width="112" height="112" alt="BCT Renovations">
-<strong>BCT Renovations</strong>
+<div class="bct-tile" aria-label="BCT Renovations"><strong>BCT</strong></div>
+<img src="/bct-app-icon-v46-ios.png?v=20261011-clean-install-3" width="1" height="1" alt="">
+<strong class="title">BCT Renovations</strong>
 <span>Save this clean page to Home Screen.</span>
 <small>No app scripts, no Agent BCT layer, no admin board, and no service-worker startup behavior loads on this page.</small>
 <a href="/#admin">Open BCT Portal</a>
