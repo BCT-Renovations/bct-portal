@@ -3783,7 +3783,13 @@ renderAll();
    const name=(location.hash||'#home').slice(1);
    if(name==='home'){
      entryIntent=null;
-     document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');
+     // Restore the landing shell when Safari history returns from any portal.
+     // openEntry hides the header/home with inline !important, which must be cleared.
+     document.body.classList.remove('bct-portal-entered','bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');
+     const landing=document.getElementById('view-home');
+     if(landing){landing.classList.remove('hidden');landing.removeAttribute('aria-hidden');landing.style.removeProperty('display');}
+     document.querySelector('body>header')?.style.removeProperty('display');
+     setVisibleView('home',{history:false});
      sessionNow().then(setAuthShell);
    }
  });
