@@ -711,6 +711,10 @@ body.bct-contractor-signup #bctContractorApplicantWhyBCT { display:none!importan
 /* New contractor signup opens the application itself, not the marketing/portal navigation. */
 body.bct-contractor-signup:not(.bct-authenticated) #view-apply #bctContractorApplyPortalTitle { display:none!important; }
 body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-page-nav] { display:none!important; }
+/* Returning homeowner sign-in must precede new client signup. */
+#view-customer:has(#bctHomeownerLoginCard) { display:flex; flex-direction:column; }
+#view-customer #bctHomeownerLoginCard { order:-2!important; }
+#view-customer #bctHomeownerSignupCard { order:-1!important; }
 </style>
 </head>
 <body>
@@ -1059,7 +1063,7 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
 <div class="card section" id="bctContractorSignupCard">
     <h3 data-i18n="contractor.signup_title">New Contractor — Sign Up</h3>
     <p class="muted" data-i18n="contractor.signup_description">New to the BCT Contractor Network? Create your contractor account and start your BCT pre-application.</p>
-    <button type="button" id="bctContractorSignupBtn" data-i18n="contractor.signup_button">Sign Up / Start Handyman Application</button>
+    <button type="button" id="bctContractorSignupBtn" data-i18n="contractor.signup_button">Sign Up for New Contractor</button>
   </div>
   <div class="card">
     <h2 data-i18n="status.title">Applicant Status</h2>
@@ -1070,7 +1074,7 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
     </div>
     <div id="statusResult" class="section"></div>
   </div>
-<div id="bctContractorBottomActions" class="card section"><button type="button" id="bctContractorSignupBottomBtn" data-i18n="contractor.signup_button">Sign Up / Start Handyman Application</button></div>
+<div id="bctContractorBottomActions" class="card section"><button type="button" id="bctContractorSignupBottomBtn" data-i18n="contractor.signup_button">Sign Up for New Contractor</button></div>
 </section>
 
 <section id="view-jobs" class="view section hidden">
