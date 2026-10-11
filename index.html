@@ -557,8 +557,8 @@ body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
 body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{
  display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important;
 }
-body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard{order:1!important}
-body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:2!important}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{order:1!important}
+body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard{order:2!important}
 @media(max-width:820px){
  body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
  body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{display:block!important}
@@ -828,13 +828,6 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
     <button type="button" data-customer-page="completion" data-i18n="homeowner.tab_completion">Final Walkthrough</button>
   </div>
 
-  <div class="card section portal-page active" data-customer-page-panel="overview" id="bctHomeownerSignupCard">
-    <h3 data-i18n="homeowner.signup_title">New Client — Sign Up</h3>
-    <p class="muted" data-i18n="homeowner.signup_description">New to BCT? Create your private client account and start your project.</p>
-    <button type="button" id="bctHomeSignupBtn" data-i18n="homeowner.signup_button">Sign Up / Start as a New Client</button>
-    <button type="button" class="secondary hidden" id="bctHomeSignupBackBtn" data-i18n="homeowner.back_choices">← Back to Client Sign Up / Sign In</button>
-  </div>
-
   <div class="card section portal-page active" data-customer-page-panel="overview" id="bctHomeownerLoginCard">
     <h3 data-i18n="homeowner.returning_title">Returning Client — Sign In</h3>
     <p class="muted" data-i18n="homeowner.returning_description">Sign in to see your real BCT project status and upload private project files.</p>
@@ -846,6 +839,13 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
       <div class="stage" data-i18n="homeowner.submitted_note">Submitted projects: Returning clients can sign in here and use each tab to review status, files, estimates, payments, progress, messages, and completion.</div>
     </div>
     <div id="bctHomeProjects" class="grid section"></div>
+  </div>
+
+  <div class="card section portal-page active" data-customer-page-panel="overview" id="bctHomeownerSignupCard">
+    <h3 data-i18n="homeowner.signup_title">New Client — Sign Up</h3>
+    <p class="muted" data-i18n="homeowner.signup_description">New to BCT? Create your private client account and start your project.</p>
+    <button type="button" id="bctHomeSignupBtn" data-i18n="homeowner.signup_button">Sign Up / Start as a New Client</button>
+    <button type="button" class="secondary hidden" id="bctHomeSignupBackBtn" data-i18n="homeowner.back_choices">← Back to Client Sign Up / Sign In</button>
   </div>
 
   <div class="card section portal-page" data-customer-page-panel="details">
@@ -954,10 +954,10 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
 </section>
 
 <section id="view-apply" class="view section hidden">
-  <div id="bctContractorApplyPortalTitle" class="bct-portal-title">NEW CONTRACTOR / HANDYMAN APPLICATION</div>
+  <div id="bctContractorApplyPortalTitle" class="bct-portal-title">NEW CONTRACTOR APPLICATION</div>
   <div class="card section">
     <span class="badge info" data-i18n="contractor.portal_badge">BCT Contractor Portal</span>
-    <h2 data-i18n="contractor.application_title">Handyman Application</h2>
+    <h2 data-i18n="contractor.application_title">Contractor Application</h2>
     <p class="muted" data-i18n="contractor.application_description">Apply, check status, upload documents, and view authorized jobs from separate contractor pages.</p>
     <div class="portal-tabs" aria-label="Contractor portal pages">
       <button type="button" class="active" data-contractor-view="apply" data-i18n="contractor.tab_application">Application</button>
@@ -1479,7 +1479,7 @@ const BCT_ENGLISH_FALLBACK={
   'admin.page_service':'Service Calls',
   'admin.page_post':'Post Job',
   'contractor.portal_badge':'BCT Contractor Portal',
-  'contractor.application_title':'Handyman Application',
+  'contractor.application_title':'Contractor Application',
   'contractor.application_description':'Apply, check status, upload documents, and view authorized jobs from separate contractor pages.',
   'contractor.signin_title':'Existing Contractor — Sign In',
   'contractor.signup_title':'New Contractor — Sign Up',
@@ -4050,8 +4050,8 @@ body.bct-entry-contractor:not(.bct-authenticated) #statusResult{display:none!imp
  if(homeView&&homeTitle)homeView.prepend(homeTitle);
  if(homeTitle&&homePublicAbout)homeTitle.after(homePublicAbout);
  if(homePublicAbout&&homeBack)homePublicAbout.after(homeBack);
- if(homeBack&&homeSignup)homeBack.after(homeSignup);
- if(homeSignup&&homeLogin)homeSignup.after(homeLogin);
+ if(homeBack&&homeLogin)homeBack.after(homeLogin);
+ if(homeLogin&&homeSignup)homeLogin.after(homeSignup);
  if(homeAbout)homeAbout.style.display='none';
 })();
 </script>
