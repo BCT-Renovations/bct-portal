@@ -699,6 +699,8 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 #view-status .bct-contractor-home-bottom{background:#0f5f63;color:#fff;border:0;border-radius:8px;padding:10px 14px;width:auto;min-width:110px;font-weight:800}
 #bctContractorBottomActions{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 #bctContractorSignupBottomBtn{background:#0f5f63;color:white}
+#bctContractorForgotBtn.bct-contractor-teal-action,#bctContractorResendBtn.bct-contractor-teal-action{background:#0f5f63!important;color:#fff!important;border:1px solid #0f5f63!important;font-weight:800}
+#bctContractorForgotBtn.bct-contractor-teal-action:hover,#bctContractorResendBtn.bct-contractor-teal-action:hover{background:#0a4c50!important}
 </style>
 </head>
 <body>
@@ -1043,7 +1045,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
       <button type="button" data-contractor-view="jobs" data-i18n="contractor.tab_jobs">Authorized Jobs</button>
     </div>
   </div>
-    <div class="card section bct-public-contractor-login" id="bctContractorLoginCard"><h3 data-i18n="contractor.signin_title">Existing Contractor — Sign In</h3><div class="grid grid-2"><div><label data-i18n="contractor.email">Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label data-i18n="contractor.password">Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn" data-i18n="contractor.signin_button">Sign In</button><button type="button" class="secondary" id="bctContractorForgotBtn" data-i18n="contractor.forgot_password">Forgot Password?</button><button type="button" class="secondary" id="bctContractorLogoutBtn" data-i18n="contractor.signout_button">Sign Out</button><button type="button" class="secondary" id="bctContractorResendBtn" data-i18n="contractor.resend_confirmation">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
+    <div class="card section bct-public-contractor-login" id="bctContractorLoginCard"><h3 data-i18n="contractor.signin_title">Existing Contractor — Sign In</h3><div class="grid grid-2"><div><label data-i18n="contractor.email">Email</label><input id="bctContractorEmail" type="email" autocomplete="email"></div><div><label data-i18n="contractor.password">Password</label><input id="bctContractorPassword" type="password" autocomplete="current-password"></div></div><div class="admin-project-actions"><button type="button" id="bctContractorLoginBtn" data-i18n="contractor.signin_button">Sign In</button><button type="button" class="secondary bct-contractor-teal-action" id="bctContractorForgotBtn" data-i18n="contractor.forgot_password">Forgot Password?</button><button type="button" class="secondary" id="bctContractorLogoutBtn" data-i18n="contractor.signout_button">Sign Out</button><button type="button" class="secondary bct-contractor-teal-action" id="bctContractorResendBtn" data-i18n="contractor.resend_confirmation">Resend Confirmation Email</button></div><div id="bctContractorAuthStatus" class="section"></div><div id="bctContractorDocsPanel" class="section"></div></div>
 <div class="card section" id="bctContractorSignupCard">
     <h3 data-i18n="contractor.signup_title">New Contractor — Sign Up</h3>
     <p class="muted" data-i18n="contractor.signup_description">New to the BCT Contractor Network? Create your contractor account and start your BCT pre-application.</p>
@@ -1058,7 +1060,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
     </div>
     <div id="statusResult" class="section"></div>
   </div>
-<div id="bctContractorBottomActions" class="card section"><button type="button" id="bctContractorSignupBottomBtn" data-i18n="contractor.signup_button">Sign Up / Start Contractor Application</button><div style="margin-top:12px"><button type="button" id="bctContractorBackHomeBtn" class="bct-contractor-home-bottom" data-i18n="contractor.back_home">Back to Home</button></div></div>
+<div id="bctContractorBottomActions" class="card section"><button type="button" id="bctContractorSignupBottomBtn" data-i18n="contractor.signup_button">Sign Up / Start Contractor Application</button></div>
 </section>
 
 <section id="view-jobs" class="view section hidden">
