@@ -62,3 +62,8 @@ test('About remains hidden until explicitly opened and has newcomer entry',()=>{
 test('customer tabs scroll to active visible panel, not hidden duplicate',()=>{
  assert.match(html,/panel\.dataset\.customerPagePanel===page && panel\.classList\.contains\('active'\) && !panel\.classList\.contains\('hidden'\)/);
 });
+
+test('returning client sign-in precedes new signup in public entry order',()=>{
+ assert.match(html,/body\.bct-entry-client:not\(\.bct-authenticated\) #bctHomeownerSignupCard\{order:2\}/);
+ assert.match(html,/body\.bct-entry-client:not\(\.bct-authenticated\) #bctHomeownerLoginCard\{order:1\}/);
+});
