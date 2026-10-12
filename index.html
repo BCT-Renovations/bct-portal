@@ -4674,5 +4674,27 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
 <script>/* October 11 matching contractor signup CTA */
 document.addEventListener("click",function(e){const btn=e.target.closest?.("#bctContractorSignupBottomBtn");if(!btn)return;e.preventDefault();document.getElementById("bctContractorSignupBtn")?.click();});
 </script>
+
+<style id="bct-v46-about-isolated-page">
+/* Keep informational About content out of the project form until requested. */
+#bctClientPublicAbout{display:none!important}
+#bctClientAboutPanel{display:none!important}
+#bctClientAboutPanel.bct-about-page-open{display:block!important;position:fixed!important;inset:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px) 0!important;overflow-y:auto!important;z-index:9999!important;max-width:none!important;margin:0!important;border-radius:0!important;padding:28px max(18px,calc((100vw - 760px)/2))!important;background:#e8f5ec!important}
+#bctClientAboutPanel.bct-about-page-open #bctClientAboutClose{display:block!important;margin-top:24px!important}
+</style>
+<script id="bct-v46-about-isolated-navigation">
+(function(){
+ const panel=document.getElementById('bctClientAboutPanel');
+ const btn=document.getElementById('bctClientAboutBtn');
+ if(!panel||!btn)return;
+ const signup=document.getElementById('bctHomeownerSignupCard');
+ if(signup){const holder=document.createElement('div');holder.id='bctNewClientAboutAccess';holder.style.cssText='margin:10px 0 14px';const newcomer=btn.cloneNode(true);newcomer.id='bctNewClientAboutBtn';newcomer.removeAttribute('data-customer-page');holder.appendChild(newcomer);signup.insertBefore(holder,signup.querySelector('#bctHomeSignupBtn')||signup.firstChild);}
+ let previousFocus=null;
+ function open(e){e.preventDefault();e.stopImmediatePropagation();previousFocus=document.activeElement;panel.classList.remove('hidden');panel.classList.add('bct-about-page-open');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','About BCT Renovations');document.getElementById('bctClientAboutClose')?.focus();}
+ function close(e){if(e){e.preventDefault();e.stopImmediatePropagation();}panel.classList.remove('bct-about-page-open');panel.classList.add('hidden');panel.removeAttribute('aria-modal');previousFocus?.focus?.();}
+ document.addEventListener('click',function(e){if(e.target.closest('#bctClientAboutBtn,#bctNewClientAboutBtn'))open(e);else if(e.target.closest('#bctClientAboutClose'))close(e);},true);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel.classList.contains('bct-about-page-open'))close(e);});
+})();
+</script>
 </body>
 </html>
