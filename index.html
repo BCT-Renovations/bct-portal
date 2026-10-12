@@ -4581,7 +4581,7 @@ function applyWorkerRole(code,opts={}){
     const matching=Array.from(primaryTrade.options).find(option=>option.value===role.label||option.value===role.code||option.textContent.trim()===role.label);
     if(matching&&!primaryTrade.dataset.bctTradeManuallyChanged)primaryTrade.value=matching.value;
   }else setValueIfEmpty(primaryTrade,role.label);
-  const categories=selectedCategoryInputs();if(categories.length&&!categories.some(input=>input.checked)){const initial=categories.find(input=>input.value===role.code);if(initial)initial.checked=true;}
+  const categories=selectedCategoryInputs();if(categories.length&&!categories.some(input=>input.value===role.code&&input.checked)){const initial=categories.find(input=>input.value===role.code);if(initial)initial.checked=true;}
   updateApplicationCopy(role);
   updateAgentRole(role);
   if(opts.scroll) (login||signup).scrollIntoView({behavior:'smooth',block:'start'});
