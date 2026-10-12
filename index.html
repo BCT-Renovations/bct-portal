@@ -4723,7 +4723,9 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
 /* A first-time application must not display authenticated status/jobs navigation. */
 body.bct-new-contractor-application #view-apply .portal-tabs,
 body.bct-new-contractor-application #view-apply .badge.info{display:none!important}
-body.bct-new-contractor-application:not(.bct-authenticated) #bctContractorApplyPortalTitle{display:block!important}
+body.bct-new-contractor-application #bctContractorApplyPortalTitle{display:block!important}
+body.bct-new-contractor-application #view-apply>.card.section>p.muted{display:none!important}
+body.bct-new-contractor-application #view-apply>.card.section{padding-bottom:10px!important}
 </style>
 <script id="bct-v46-new-contractor-application-entry">
 (function(){
