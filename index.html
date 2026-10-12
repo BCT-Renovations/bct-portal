@@ -4546,7 +4546,7 @@ function updateAgentRole(role){
 
 function updateApplicationCopy(role){
   const formHeading=$('applicationForm')?.closest('.card')?.querySelector('h2');[formHeading].filter(Boolean).forEach(heading=>{
-    if(/(?:Handyman|Contractor|Electrician|Plumber|HVAC|Painter|Roofer|Carpenter|Flooring|Siding|Drywall|Gutter|General)\s+(?:Network\s+)?Pre-Application|Contractor Application/i.test(heading.textContent)){
+    if(/Pre-Application|Contractor Application/i.test(heading.textContent)){
       heading.textContent='Stage 1 - '+role.short+' Pre-Application';
     }
   });
