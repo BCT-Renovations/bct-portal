@@ -4682,6 +4682,12 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
 #bctClientAboutPanel.bct-about-page-open{display:block!important;position:fixed!important;inset:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px) 0!important;overflow-y:auto!important;z-index:9999!important;max-width:none!important;margin:0!important;border-radius:0!important;padding:28px max(18px,calc((100vw - 760px)/2))!important;background:#e8f5ec!important}
 #bctClientAboutPanel.bct-about-page-open #bctClientAboutClose{display:block!important;margin-top:24px!important}
 </style>
+<style id="bct-v46-contractor-role-legibility">
+/* Keep role labels distinct from descriptions at mobile widths. */
+#bctContractorRoleRouter .bct-worker-role-grid button b{display:block!important;font-size:1.22rem!important;line-height:1.35!important;margin-bottom:7px!important;overflow-wrap:anywhere}
+#bctContractorRoleRouter .bct-worker-role-grid button span{display:block!important;font-size:1rem!important;line-height:1.45!important;font-weight:400!important}
+#bctContractorRoleRouter .bct-worker-role-grid button{height:auto!important;min-height:78px!important;text-align:left!important;padding:14px 16px!important;white-space:normal!important}
+</style>
 <script id="bct-v46-about-isolated-navigation">
 (function(){
  const panel=document.getElementById('bctClientAboutPanel');
