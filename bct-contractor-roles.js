@@ -53,14 +53,14 @@ function installRenterFlow(){
     '<div class="notice"><b>Status lock:</b> Waiting for Landlord Signature. BCT Admin must review before assignment.</div>'
   ].join('');
   propertyCard.appendChild(panel);
-  const sync=()=>panel.classList.toggle('hidden',owner.value!=='Renter / tenant - landlord approval required');
+  const sync=()=>panel.classList.toggle('hidden',!(/^(no|renter|tenant)/i.test(String(owner.value||'').trim())));
   owner.addEventListener('change',sync);
   sync();
 }
 
 function readRenter(form,fail){
   const owner=form.elements.ownerStatus;
-  const isRenter=owner&&owner.value==='Renter / tenant - landlord approval required';
+  const isRenter=owner&&/^(no|renter|tenant)/i.test(String(owner.value||'').trim());
   if(!isRenter)return {is_renter:false};
   const required=['landlordName','landlordPhone','landlordEmail','renterPaymentResponsibility'];
   for(const name of required){
