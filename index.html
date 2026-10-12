@@ -693,7 +693,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
 @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
-<link rel="stylesheet" href="/agent-bct-ui.css?v=20261009-3" />
+<link rel="stylesheet" href="/agent-bct-ui.css?v=20261012-ace1" />
 
 <style>/* Oct 11 isolated contractor layout */
 #view-status .bct-contractor-home-bottom{background:#0f5f63;color:#fff;border:0;border-radius:8px;padding:10px 14px;width:auto;min-width:110px;font-weight:800}
@@ -4687,10 +4687,12 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
 #bctClientAboutPanel.bct-about-page-open #bctClientAboutClose{display:block!important;margin-top:24px!important}
 </style>
 <style id="bct-v46-contractor-role-legibility">
-/* Keep role labels distinct from descriptions at mobile widths. */
-#bctContractorRoleRouter .bct-worker-role-grid button b{display:block!important;font-size:1.22rem!important;line-height:1.35!important;margin-bottom:7px!important;overflow-wrap:anywhere}
-#bctContractorRoleRouter .bct-worker-role-grid button span{display:block!important;font-size:1rem!important;line-height:1.45!important;font-weight:400!important}
-#bctContractorRoleRouter .bct-worker-role-grid button{height:auto!important;min-height:78px!important;text-align:left!important;padding:14px 16px!important;white-space:normal!important}
+/* Ace of Spades: compact four-choice layout with distinct headings. */
+#bctContractorRoleRouter .bct-worker-role-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+#bctContractorRoleRouter .bct-worker-role-grid button{height:auto!important;min-height:78px!important;text-align:left!important;padding:14px 12px!important;white-space:normal!important;min-width:0!important}
+#bctContractorRoleRouter .bct-worker-role-grid button b{display:block!important;font-size:1.22rem!important;font-weight:800!important;color:#cbd5e1!important;line-height:1.28!important;margin-bottom:7px!important;overflow-wrap:anywhere}
+#bctContractorRoleRouter .bct-worker-role-grid button span{display:block!important;font-size:.95rem!important;line-height:1.42!important;font-weight:400!important;color:#fff!important}
+@media(max-width:600px){#bctContractorRoleRouter .bct-worker-role-grid{gap:6px!important}#bctContractorRoleRouter .bct-worker-role-grid button{min-height:66px!important;padding:8px 5px!important;border-radius:8px!important}#bctContractorRoleRouter .bct-worker-role-grid button b{font-size:.75rem!important;line-height:1.12!important;margin-bottom:4px!important}#bctContractorRoleRouter .bct-worker-role-grid button span{font-size:.60rem!important;line-height:1.15!important}}
 </style>
 <style id="bct-v46-mobile-review-repairs">
 /* Approved contractor footer actions: compact side-by-side, with clear footer clearance. */
