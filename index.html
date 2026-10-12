@@ -2670,7 +2670,7 @@ function showCustomerPage(page){
   document.querySelectorAll('[data-customer-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.customerPage===page));
   document.querySelectorAll('[data-customer-page-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.customerPagePanel===page));
   // Scroll to the selected content, not the top of the client portal.
-  const selectedPanel=[...document.querySelectorAll('[data-customer-page-panel]')].find(panel=>panel.dataset.customerPagePanel===page);
+  const selectedPanel=[...document.querySelectorAll('[data-customer-page-panel]')].find(panel=>panel.dataset.customerPagePanel===page && panel.classList.contains('active') && !panel.classList.contains('hidden'));
   const view=document.getElementById('view-customer');
   if(view&&!view.classList.contains('hidden')&&selectedPanel){
     requestAnimationFrame(()=>selectedPanel.scrollIntoView({behavior:'smooth',block:'start'}));
