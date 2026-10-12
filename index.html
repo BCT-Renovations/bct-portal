@@ -4577,7 +4577,7 @@ function applyWorkerRole(code,opts={}){
   setText(start,role.apply);
   if(start)start.setAttribute('data-bct-selected-role',role.code);
   setValueIfEmpty(field('trade'),role.label);
-  selectedCategoryInputs().forEach(input=>{input.checked=input.value===role.code});
+  const categories=selectedCategoryInputs();if(categories.length&&!categories.some(input=>input.checked)){const initial=categories.find(input=>input.value===role.code);if(initial)initial.checked=true;}
   updateApplicationCopy(role);
   updateAgentRole(role);
   if(opts.scroll) (login||signup).scrollIntoView({behavior:'smooth',block:'start'});
