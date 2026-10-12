@@ -50,3 +50,11 @@ test('client tabs scroll to selected panel rather than portal top',()=>{
  assert.match(html,/selectedPanel\.scrollIntoView\(\{behavior:'smooth',block:'start'\}\)/);
  assert.doesNotMatch(html,/window\.scrollTo\(\{top:view\.offsetTop-80,behavior:'smooth'\}\)/);
 });
+
+test('About remains hidden until explicitly opened and has newcomer entry',()=>{
+ assert.ok(html.includes('#bctClientPublicAbout{display:none!important}'));
+ assert.ok(html.includes('bct-v46-about-isolated-navigation'));
+ assert.ok(html.includes('bctNewClientAboutBtn'));
+ assert.ok(html.includes('bct-about-page-open'));
+ assert.ok(html.includes('previousFocus?.focus?.()'));
+});
