@@ -72,3 +72,25 @@ test('new client About control translates with language changes',()=>{
  assert.ok(html.includes('if(n)n.textContent=t.about'));
  assert.ok(html.includes("newcomer.setAttribute('aria-haspopup','dialog')"));
 });
+
+test('standalone and inline role scripts preserve multiple selected work categories',()=>{
+ for(const [name,source] of [['standalone',script],['inline',html]]){
+  assert.match(source,/!categories\.some\(input=>input\.checked\)/,name+' resets multi-role selections');
+  assert.doesNotMatch(source,/selectedCategoryInputs\(\)\.forEach\(input=>\{input\.checked=input\.value===role\.code\}\)/,name+' resets selected categories');
+  assert.match(source,/Array\.from\(primaryTrade\.options\)\.find/,name+' fails to validate primary trade option');
+ }
+});
+test('pre-application heading is scoped to its form card in both role scripts',()=>{
+ for(const [name,source] of [['standalone',script],['inline',html]]){
+  assert.match(source,/const formHeading=\$\('applicationForm'\)\?\.closest\('\.card'\)\?\.querySelector\('h2'\)/,name+' can overwrite portal headings');
+ }
+});
+test('new contractor entry hides protected tabs and preserves a return home action',()=>{
+ assert.match(html,/body\.bct-new-contractor-application #view-apply \.portal-tabs/);
+ assert.match(html,/bctContractorFooterBackHome/);
+ assert.match(html,/window\.bctReturnToPublicLanding\(\)/);
+});
+test('contractor footer has both side-by-side actions',()=>{
+ assert.match(html,/#bctContractorBottomActions\{display:flex;flex-direction:row/);
+ assert.match(html,/signup\.textContent='Sign Up Now'/);
+});
