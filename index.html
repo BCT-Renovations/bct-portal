@@ -2435,6 +2435,12 @@ async function applyBctLanguage(languageCode){
       }catch(e){ console.warn('BCT translation fallback used for',key,e); }
       if(BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) translated=BCT_HOME_TRANSLATION_OVERRIDES[language][key];
     }
+    // Client About labels are local and must never render raw translation keys.
+    if(key==='homeowner.about_button'||key==='homeowner.about_close'){
+      const aboutLabels={en:['About','Close About'],es:['Acerca de','Cerrar información'],fr:['À propos','Fermer'],ht:['Konsènan','Fèmen'],pt:['Sobre','Fechar'],vi:['Giới thiệu','Đóng'],zh:['关于','关闭'],ar:['حول','إغلاق'],ru:['О компании','Закрыть']};
+      const pair=aboutLabels[language]||aboutLabels.en;
+      translated=pair[key==='homeowner.about_button'?0:1];
+    }
     if(requestId===BCT_LANGUAGE_REQUEST_ID && localStorage.getItem(BCT_LANGUAGE_KEY)===language) node.textContent=translated;
   }));
   if(requestId!==BCT_LANGUAGE_REQUEST_ID || localStorage.getItem(BCT_LANGUAGE_KEY)!==language) return;
