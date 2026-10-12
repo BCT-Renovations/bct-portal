@@ -4545,7 +4545,7 @@ function updateAgentRole(role){
 }
 
 function updateApplicationCopy(role){
-  document.querySelectorAll('#view-apply h2').forEach(heading=>{
+  document.querySelectorAll('#view-apply h2').forEach(heading=>{if(heading.hasAttribute('data-i18n')&&heading.closest('.portal-tabs,.card.section'))return;
     if(/(?:Handyman|Contractor|Electrician|Plumber|HVAC|Painter|Roofer|Carpenter|Flooring|Siding|Drywall|Gutter|General)\s+(?:Network\s+)?Pre-Application|Contractor Application/i.test(heading.textContent)){
       heading.textContent='Stage 1 - '+role.short+' Pre-Application';
     }
