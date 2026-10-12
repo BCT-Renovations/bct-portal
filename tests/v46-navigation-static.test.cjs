@@ -20,3 +20,10 @@ test('contractor click listener is installed only once',()=>{
 test('page restore listener is present',()=>{
  assert.match(script,/addEventListener\('pageshow'/);
 });
+
+test('renter approval appears for No selection in both implementations',()=>{
+ for(const [name,source] of [['standalone',script],['inline',html]]){
+  assert.match(source,/\^\(no\|renter\|tenant\)/i,name+' missing renter No branch');
+  assert.match(source,/waiting_for_landlord_signature/,name+' missing assignment hold');
+ }
+});
