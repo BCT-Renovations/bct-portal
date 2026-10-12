@@ -19,3 +19,10 @@ body.bct-entry-handyman.bct-agent-open #bctAgentRoot{display:block!important;vis
 
 /* Isolated preview: compact floating Agent BCT launcher on narrow screens. */
 @media(max-width:600px){#bctAgentRoot #bctAgentOpen{width:fit-content!important;max-width:112px!important;min-width:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;flex:none!important;}}
+
+/* Ace of Spades: isolate Agent BCT mobile header from landing-page header rules. */
+body.bct-agent-open #bctAgentPanel>header{box-sizing:border-box!important;position:relative!important;top:auto!important;left:auto!important;right:auto!important;width:100%!important;min-width:0!important;height:auto!important;min-height:calc(64px + env(safe-area-inset-top,0px))!important;margin:0!important;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;flex-wrap:nowrap!important}
+body.bct-agent-open #bctAgentPanel>header>*{position:static!important;transform:none!important;margin:0!important;min-width:0}
+body.bct-agent-open #bctAgentPanel>header .bct-agent-home,body.bct-agent-open #bctAgentPanel>header #bctAgentClose{flex:0 0 auto!important}
+body.bct-agent-open #bctAgentPanel>header h1,body.bct-agent-open #bctAgentPanel>header h2{margin:0!important;line-height:1.2!important}
+@media(max-width:390px){body.bct-agent-open #bctAgentPanel>header{gap:6px!important;padding-left:8px!important;padding-right:8px!important}body.bct-agent-open #bctAgentPanel>header .bct-agent-home{padding:6px 8px!important}}
