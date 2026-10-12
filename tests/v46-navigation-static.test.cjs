@@ -94,3 +94,18 @@ test('contractor footer has both side-by-side actions',()=>{
  assert.match(html,/#bctContractorBottomActions\{display:flex;flex-direction:row/);
  assert.match(html,/signup\.textContent='Sign Up Now'/);
 });
+
+test('iOS Home Screen manifest and install bridge remain consistent',()=>{
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
+ const install=fs.readFileSync(path.join(root,'bct-install.html'),'utf8');
+ assert.equal(manifest.id,'/bct-install.html');
+ assert.equal(manifest.start_url,'/bct-install.html');
+ assert.equal(manifest.display,'standalone');
+ assert.ok(manifest.icons.some(icon=>icon.src==='/bct-app-icon-v46-ios.png'&&icon.type==='image/png'));
+ assert.match(install,/apple-touch-icon/);
+ assert.match(install,/navigator\.standalone/);
+ assert.match(install,/window\.location\.replace\('\/'\)/);
+ assert.match(html,/rel="manifest" href="\/manifest\.webmanifest"/);
+ assert.match(html,/rel="apple-touch-icon" href="\/bct-app-icon-v46-ios\.png"/);
+ assert.ok(fs.statSync(path.join(root,'bct-app-icon-v46-ios.png')).size>0);
+});
