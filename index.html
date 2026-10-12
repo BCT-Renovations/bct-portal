@@ -4576,7 +4576,11 @@ function applyWorkerRole(code,opts={}){
   const start=$('bctContractorSignupBtn');
   setText(start,role.apply);
   if(start)start.setAttribute('data-bct-selected-role',role.code);
-  setValueIfEmpty(field('trade'),role.label);
+  const primaryTrade=field('trade');
+  if(primaryTrade&&primaryTrade.tagName==='SELECT'){
+    const matching=Array.from(primaryTrade.options).find(option=>option.value===role.label||option.value===role.code||option.textContent.trim()===role.label);
+    if(matching&&!primaryTrade.dataset.bctTradeManuallyChanged)primaryTrade.value=matching.value;
+  }else setValueIfEmpty(primaryTrade,role.label);
   const categories=selectedCategoryInputs();if(categories.length&&!categories.some(input=>input.checked)){const initial=categories.find(input=>input.value===role.code);if(initial)initial.checked=true;}
   updateApplicationCopy(role);
   updateAgentRole(role);
