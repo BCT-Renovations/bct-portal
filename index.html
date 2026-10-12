@@ -4688,6 +4688,26 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
 #bctContractorRoleRouter .bct-worker-role-grid button span{display:block!important;font-size:1rem!important;line-height:1.45!important;font-weight:400!important}
 #bctContractorRoleRouter .bct-worker-role-grid button{height:auto!important;min-height:78px!important;text-align:left!important;padding:14px 16px!important;white-space:normal!important}
 </style>
+<style id="bct-v46-mobile-review-repairs">
+/* Approved contractor footer actions: compact side-by-side, with clear footer clearance. */
+#bctContractorBottomActions{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;flex-wrap:wrap!important;padding:16px!important;margin:18px 0 32px!important}
+#bctContractorBottomActions button{background:#0f5f63!important;color:#fff!important;border:1px solid #0f5f63!important;border-radius:8px!important;min-height:44px!important;width:auto!important;max-width:48%!important;padding:10px 14px!important;font-size:.92rem!important;white-space:normal!important}
+#bctClientBackHomeTop{background:#0f5f63!important;color:#fff!important;border:1px solid #0f5f63!important}
+#bctClientBackHomeTop:hover,#bctContractorBottomActions button:hover{background:#0a4c50!important;color:#fff!important}
+</style>
+<script id="bct-v46-contractor-footer-actions">
+(function(){
+ const footer=document.getElementById('bctContractorBottomActions');
+ if(!footer)return;
+ const about=document.getElementById('bctContractorAbout');
+ if(about)about.insertAdjacentElement('afterend',footer);
+ const signup=document.getElementById('bctContractorSignupBottomBtn');
+ if(signup){signup.textContent='Sign Up Now';signup.removeAttribute('data-i18n');}
+ let back=document.getElementById('bctContractorFooterBackHome');
+ if(!back){back=document.createElement('button');back.type='button';back.id='bctContractorFooterBackHome';back.textContent='Back to Home';footer.insertBefore(back,signup||footer.firstChild);}
+ back.addEventListener('click',function(){const home=document.querySelector('#bctContractorBackHomeTop,#bctContractorBackHome,.bct-contractor-home-bottom');if(home)home.click();else if(typeof window.showView==='function')window.showView('home');});
+})();
+</script>
 <script id="bct-v46-about-isolated-navigation">
 (function(){
  const panel=document.getElementById('bctClientAboutPanel');
