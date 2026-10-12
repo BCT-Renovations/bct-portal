@@ -22,6 +22,6 @@ function render(){
 }
 function open(){mount();document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-estimator','bct-entry-admin');document.body.classList.add('bct-entry-handyman','bct-portal-entered');document.querySelectorAll('main .view').forEach(v=>{v.classList.add('hidden');v.style.setProperty('display','none','important')});const section=document.getElementById(MOUNT_ID);section?.classList.remove('hidden');section?.style.setProperty('display','block','important');document.getElementById('view-home')?.style.setProperty('display','none','important');document.dispatchEvent(new CustomEvent('bct:portal-change',{detail:{portal:'handyman'}}));window.scrollTo({top:0,behavior:'auto'});}
 window.BCTHandymanPortal={open,mount};
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();addEntryButton();});else{mount();addEntryButton();}
-function addEntryButton(){if(document.getElementById('bctHandymanPortalBtn'))return;const nav=document.getElementById('bctEntryActions');if(!nav)return;const b=document.createElement('button');b.id='bctHandymanPortalBtn';b.type='button';b.textContent='Handyman';b.setAttribute('aria-label','Handyman Portal');b.onclick=open;const estimator=nav.querySelector('[data-entry-login="estimator"]');nav.insertBefore(b,estimator);}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();});else{mount();}
+function addEntryButton(){return;}
 })();

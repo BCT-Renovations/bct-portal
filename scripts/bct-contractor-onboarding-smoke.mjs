@@ -17,7 +17,9 @@ for (let i = 1; i <= 5; i += 1) {
 assert(indexHtml.includes('for(let i=1;i<=5;i++)'), 'Contractor submit handler must collect all five references.');
 assert(indexHtml.includes("refs.length!==5"), 'Contractor submit handler must reject incomplete reference sets.');
 assert(indexHtml.includes('All five professional references and their contact information are required.'), 'Contractor reference validation must show exact-five wording.');
-assert(indexHtml.includes('references,screening_result:screeningResult'), 'Contractor payload must include references and screening result together.');
+assert(indexHtml.includes('references:refs'), 'Contractor payload must include references.');
+assert(indexHtml.includes('screening_result:screeningResult'), 'Contractor payload must include the screening result.');
+assert(indexHtml.includes('role_approval_statuses:roleApprovalStatuses'), 'Contractor payload must preserve per-category BCT approval status.');
 assert(bootstrapSql.includes("'minimum_contractor_references',5"), 'Public bootstrap must advertise five minimum contractor references.');
 assert(bootstrapSql.includes("'maximum_contractor_references',5"), 'Public bootstrap must advertise five maximum contractor references.');
 assert(launchStatus.includes('Production Supabase verification confirms `bct_submit_contractor_application` rejects fewer than five or more than five complete professional references'), 'Launch status must record live Supabase contractor-reference verification.');
