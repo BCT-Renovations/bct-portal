@@ -67,3 +67,8 @@ test('returning client sign-in precedes new signup in public entry order',()=>{
  assert.match(html,/body\.bct-entry-client:not\(\.bct-authenticated\) #bctHomeownerSignupCard\{order:2\}/);
  assert.match(html,/body\.bct-entry-client:not\(\.bct-authenticated\) #bctHomeownerLoginCard\{order:1\}/);
 });
+
+test('new client About control translates with language changes',()=>{
+ assert.ok(html.includes('if(n)n.textContent=t.about'));
+ assert.ok(html.includes("newcomer.setAttribute('aria-haspopup','dialog')"));
+});
