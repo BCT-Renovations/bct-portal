@@ -698,6 +698,30 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 </style>
 <link rel="stylesheet" href="/agent-bct-ui.css?v=20261009-3" />
 
+
+<style id="bct-v46-ios-home-layout-repair-20261012">
+/* Isolated signed-out mobile landing repair. Preserve portal workflows. */
+@media (max-width: 767px) {
+  html, body { width:100%!important; max-width:100%!important; overflow-x:hidden!important; }
+  body:not(.bct-authenticated) header,
+  body:not(.bct-authenticated) header .wrap,
+  body:not(.bct-authenticated) header .brand,
+  body:not(.bct-authenticated) header .bct-dynamic-brand,
+  body:not(.bct-authenticated) main.wrap,
+  body:not(.bct-authenticated) #view-home,
+  body:not(.bct-authenticated) #bctSignedOutEntry { box-sizing:border-box!important; width:100%!important; min-width:0!important; max-width:100%!important; }
+  body:not(.bct-authenticated) header .brand { display:block!important; }
+  body:not(.bct-authenticated) header .bct-dynamic-brand { display:block!important; }
+  body:not(.bct-authenticated) header .bct-logo-crop { width:min(92vw,520px)!important; max-width:100%!important; overflow:hidden!important; margin:0 auto!important; }
+  body:not(.bct-authenticated) header .bct-logo-crop img { display:block!important; width:100%!important; max-width:100%!important; height:auto!important; }
+  /* The official image already includes its slogan; never draw a second slogan over it. */
+  body:not(.bct-authenticated) header .bct-dynamic-slogan { display:none!important; }
+  body:not(.bct-authenticated) main.wrap { display:block!important; margin:0 auto!important; padding:8px 14px 24px!important; }
+  body:not(.bct-authenticated) #bctSignedOutEntry,
+  body:not(.bct-authenticated) #bctEntryActions { display:block!important; min-width:0!important; max-width:100%!important; }
+  body:not(.bct-authenticated) #bctEntryActions button { box-sizing:border-box!important; max-width:100%!important; white-space:normal!important; }
+}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
