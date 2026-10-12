@@ -144,6 +144,18 @@ function updateAgentRole(role){
   document.dispatchEvent(new CustomEvent('bct:contractor-role-change',{detail:{role:role.code,agentRole:role.agent,label:role.label}}));
 }
 
+function updateApplicationCopy(role){
+  document.querySelectorAll('#view-apply h2').forEach(heading=>{
+    if(/Handyman Pre-Application|Contractor Network Pre-Application|Contractor Application/i.test(heading.textContent)){
+      heading.textContent='Stage 1 - '+role.short+' Pre-Application';
+    }
+  });
+  const form=$('applicationForm');
+  const formCard=form&&form.closest('.card');
+  const intro=formCard&&Array.from(formCard.querySelectorAll('p.muted')).find(p=>/This form helps BCT learn/i.test(p.textContent));
+  if(intro)intro.textContent='This form helps BCT learn who the '+role.short.toLowerCase()+' applicant is, what credentials must be verified, and what work category BCT should review before assignment.';
+}
+
 function applyWorkerRole(code,opts={}){
   const role=roleByCode(code);
   activeRole=role;
@@ -166,6 +178,7 @@ function applyWorkerRole(code,opts={}){
   if(start)start.setAttribute('data-bct-selected-role',role.code);
   setValueIfEmpty(field('trade'),role.label);
   selectedCategoryInputs().forEach(input=>{input.checked=input.value===role.code});
+  updateApplicationCopy(role);
   updateAgentRole(role);
   if(opts.scroll) (login||signup).scrollIntoView({behavior:'smooth',block:'start'});
 }
