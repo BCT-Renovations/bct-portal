@@ -75,7 +75,7 @@ test('new client About control translates with language changes',()=>{
 
 test('standalone and inline role scripts preserve multiple selected work categories',()=>{
  for(const [name,source] of [['standalone',script],['inline',html]]){
-  assert.match(source,/!categories\.some\(input=>input\.checked\)/,name+' resets multi-role selections');
+  assert.match(source,/!categories\.some\(input=>input\.value===role\.code&&input\.checked\)/,name+' fails to add chosen role while preserving others');
   assert.doesNotMatch(source,/selectedCategoryInputs\(\)\.forEach\(input=>\{input\.checked=input\.value===role\.code\}\)/,name+' resets selected categories');
   assert.match(source,/Array\.from\(primaryTrade\.options\)\.find/,name+' fails to validate primary trade option');
  }
