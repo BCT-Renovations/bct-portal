@@ -4499,7 +4499,7 @@ function ensureRoleRouter(){
     '<h3>Choose Your Contractor Role</h3>',
     '<p class="muted">Tap the square that matches how you are signing in or applying. The sign-in box, application button, Admin label, and Agent BCT support role follow this selection.</p>',
     '<div class="bct-worker-role-grid">',
-    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'"><b>'+esc(role.short)+'</b><span>'+esc(role.copy)+'</span></button>').join(''),
+    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'"><b style="display:block;font-size:1.35rem;line-height:1.3;font-weight:800;color:#b9c5c7;margin-bottom:0.55rem">'+esc(role.short)+'</b><span style="display:block;font-size:0.95rem;line-height:1.45;color:#fff;font-weight:500">'+esc(role.copy)+'</span></button>').join(''),
     '</div>',
     '<div id="bctActiveRoleNotice" class="notice"><b>Selected:</b> <span></span></div>'
   ].join('');
