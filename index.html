@@ -4139,7 +4139,7 @@ body.bct-authenticated #bctClientPublicAbout{display:none!important}
    const l=localStorage.getItem('bctPreferredLanguage')||'en',t=T[l]||T.en;
    if(window.BCT_ENGLISH_FALLBACK){BCT_ENGLISH_FALLBACK['homeowner.about_button']='About';BCT_ENGLISH_FALLBACK['homeowner.about_close']='Close About';}
    if(l!=='en'&&window.BCT_HOME_TRANSLATION_OVERRIDES){BCT_HOME_TRANSLATION_OVERRIDES[l]=BCT_HOME_TRANSLATION_OVERRIDES[l]||{};BCT_HOME_TRANSLATION_OVERRIDES[l]['homeowner.about_button']=t.about;BCT_HOME_TRANSLATION_OVERRIDES[l]['homeowner.about_close']=t.close;}
-   const b=document.getElementById('bctClientAboutBtn'),x=document.getElementById('bctClientAboutClose');if(b)b.textContent=t.about;if(x)x.textContent=t.close;
+   const b=document.getElementById('bctClientAboutBtn'),n=document.getElementById('bctNewClientAboutBtn'),x=document.getElementById('bctClientAboutClose');if(b)b.textContent=t.about;if(n)n.textContent=t.about;if(x)x.textContent=t.close;
  }
  document.addEventListener('click',e=>{
    if(e.target.closest('#bctClientAboutBtn')){document.getElementById('bctClientAboutPanel')?.classList.remove('hidden');document.getElementById('bctClientAboutPanel')?.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -4688,7 +4688,7 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
  const btn=document.getElementById('bctClientAboutBtn');
  if(!panel||!btn)return;
  const signup=document.getElementById('bctHomeownerSignupCard');
- if(signup){const holder=document.createElement('div');holder.id='bctNewClientAboutAccess';holder.style.cssText='margin:10px 0 14px';const newcomer=btn.cloneNode(true);newcomer.id='bctNewClientAboutBtn';newcomer.removeAttribute('data-customer-page');holder.appendChild(newcomer);signup.insertBefore(holder,signup.querySelector('#bctHomeSignupBtn')||signup.firstChild);}
+ if(signup){const holder=document.createElement('div');holder.id='bctNewClientAboutAccess';holder.style.cssText='margin:10px 0 14px';const newcomer=btn.cloneNode(true);newcomer.id='bctNewClientAboutBtn';newcomer.removeAttribute('data-customer-page');newcomer.setAttribute('aria-haspopup','dialog');holder.appendChild(newcomer);signup.insertBefore(holder,signup.querySelector('#bctHomeSignupBtn')||signup.firstChild);}
  let previousFocus=null;
  function open(e){e.preventDefault();e.stopImmediatePropagation();previousFocus=document.activeElement;panel.classList.remove('hidden');panel.classList.add('bct-about-page-open');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','About BCT Renovations');document.getElementById('bctClientAboutClose')?.focus();}
  function close(e){if(e){e.preventDefault();e.stopImmediatePropagation();}panel.classList.remove('bct-about-page-open');panel.classList.add('hidden');panel.removeAttribute('aria-modal');previousFocus?.focus?.();}
