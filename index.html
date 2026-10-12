@@ -4629,6 +4629,10 @@ function install(){
   installContractorNetwork();
   repairLanding();
   repairAuthLabels();
+  if(!window.__bctLabelRepairObserver){
+    window.__bctLabelRepairObserver=new MutationObserver(()=>repairAuthLabels());
+    window.__bctLabelRepairObserver.observe(document.body,{childList:true,subtree:true});
+  }
 }
 
 window.BCTRenterFlow={read:readRenter};
