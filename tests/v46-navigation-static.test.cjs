@@ -44,3 +44,9 @@ test('Client About labels never fall through to raw translation keys',()=>{
  assert.match(html,/translated=pair\[key==='homeowner\.about_button'\?0:1\]/);
  for(const lang of ['en','es','fr','ht','pt','vi','zh','ar','ru']) assert.match(html,new RegExp('\\b'+lang+':\\['));
 });
+
+test('client tabs scroll to selected panel rather than portal top',()=>{
+ assert.match(html,/const selectedPanel=\[\.\.\.document\.querySelectorAll\('\[data-customer-page-panel\]'\)\]/);
+ assert.match(html,/selectedPanel\.scrollIntoView\(\{behavior:'smooth',block:'start'\}\)/);
+ assert.doesNotMatch(html,/window\.scrollTo\(\{top:view\.offsetTop-80,behavior:'smooth'\}\)/);
+});
