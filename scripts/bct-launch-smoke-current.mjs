@@ -10,6 +10,7 @@ const simpleReplacements = [
   ['bct-portal-shell-v27-app-icon-cache-reset', 'bct-portal-shell-v36-ios-icon-rebuild'],
   ['/bct-logo-master.png?v=official-bct-logo-v46-green-band-20260929a', '/bct-logo-master.png?v=official-bct-logo-v46-comma-20261008'],
   ['BCT V46 iPhone startup cache reset', 'BCT V46 iPhone/PWA isolation cleanup'],
+  ["refs.length!==5", "references.length!==5"],
   ["const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']", "const STATIC_ASSETS=['/bct-logo-master.png','/bct-apple-touch-icon.png','/bct-pwa-icon-192.png','/bct-pwa-icon-512.png','/bct-app-icon-v46.png','/bct-app-icon-v46-ios.png']"]
 ];
 for (const [stale,current] of simpleReplacements) {

@@ -7,6 +7,11 @@ import fs from 'node:fs';
 const sourceUrl = new URL('./v46-production-200-checks-round13.mjs', import.meta.url);
 let source = fs.readFileSync(sourceUrl, 'utf8');
 
+source = source.replace(
+  "serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}))",
+  "BCT V46 iPhone/PWA isolation cleanup — no service-worker registration on this test build."
+);
+
 const startMarker = '/* 2026-09-29 iPhone portal-button regression guards */';
 const resumeMarker = "check('authoritative router handles homeowner signup'";
 const start = source.indexOf(startMarker);
