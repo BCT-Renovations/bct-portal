@@ -190,7 +190,9 @@ function installContractorNetwork(){
   const old=$('bctContractorNetworkChooser');
   if(old)old.remove();
 
-  document.addEventListener('click',event=>{
+  if(!window.__bctContractorNetworkClickBound){
+    window.__bctContractorNetworkClickBound=true;
+    document.addEventListener('click',event=>{
     const closest=event.target.closest&&event.target.closest.bind(event.target);
     if(closest&&closest('#bctContractorSignupBtn')){
       setTimeout(()=>applyWorkerRole(activeRole.code,{scroll:false}),0);
@@ -198,7 +200,8 @@ function installContractorNetwork(){
     if(closest&&closest('#bctAgentOpen')){
       setTimeout(()=>updateAgentRole(activeRole),0);
     }
-  },true);
+    },true);
+  }
 }
 
 function readRoles(form){
@@ -244,10 +247,7 @@ function install(){
   installContractorNetwork();
   repairLanding();
   repairAuthLabels();
-  if(!window.__bctLabelRepairObserver){
-    window.__bctLabelRepairObserver=new MutationObserver(()=>repairAuthLabels());
-    window.__bctLabelRepairObserver.observe(document.body,{childList:true,subtree:true});
-  }
+  // Label repair runs at install and on user interaction; avoid a document-wide observer.
 }
 
 window.BCTRenterFlow={read:readRenter};
