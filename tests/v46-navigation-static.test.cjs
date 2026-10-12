@@ -38,3 +38,9 @@ test('preserve signed-out header color and existing logo layout until asset repl
  assert.match(html,/background:#e8f5ec/);
  assert.match(html,/class="bct-logo-crop"/);
 });
+
+test('Client About labels never fall through to raw translation keys',()=>{
+ assert.match(html,/if\(key==='homeowner\.about_button'\|\|key==='homeowner\.about_close'\)/);
+ assert.match(html,/translated=pair\[key==='homeowner\.about_button'\?0:1\]/);
+ for(const lang of ['en','es','fr','ht','pt','vi','zh','ar','ru']) assert.match(html,new RegExp('\\b'+lang+':\\['));
+});
