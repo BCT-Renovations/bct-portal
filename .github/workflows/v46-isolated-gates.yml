@@ -6,6 +6,9 @@ on:
     paths:
       - 'index.html'
       - 'bct-contractor-roles.js'
+      - 'bct-install.html'
+      - 'manifest.webmanifest'
+      - 'bct-app-icon-v46-ios.png'
       - 'tests/**'
       - '.github/workflows/v46-isolated-gates.yml'
   workflow_dispatch:
