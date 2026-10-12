@@ -27,3 +27,14 @@ test('renter approval appears for No selection in both implementations',()=>{
   assert.match(source,/waiting_for_landlord_signature/,name+' missing assignment hold');
  }
 });
+
+test('logo and slogan are distinct DOM elements for translation',()=>{
+ assert.match(html,/<img[^>]*class="brand-logo"[^>]*>/);
+ assert.match(html,/<div class="bct-dynamic-slogan" data-bct-slogan/);
+ assert.match(html,/function syncBrandSlogan\(language\)/);
+ for(const lang of ['en','es','fr','ht','pt','vi','zh','ar','ru']) assert.match(html,new RegExp('\\b'+lang+':'), 'missing '+lang+' translation');
+});
+test('preserve signed-out header color and existing logo layout until asset replacement',()=>{
+ assert.match(html,/background:#e8f5ec/);
+ assert.match(html,/class="bct-logo-crop"/);
+});
