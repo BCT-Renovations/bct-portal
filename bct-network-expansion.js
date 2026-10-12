@@ -135,15 +135,32 @@ function repairLanding(){
   if(contractor&&!contractor.textContent.trim())contractor.textContent='Contractor';
 }
 
+function repairAuthLabels(){
+  const english={
+    'contractor.email':'Email',
+    'contractor.password':'Password',
+    'contractor.signin_button':'Sign In',
+    'contractor.forgot_password':'Forgot Password?',
+    'contractor.resend_confirmation':'Resend Confirmation Email'
+  };
+  for(const [key,label] of Object.entries(english)){
+    document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el=>{
+      if(el.textContent.trim()===key)el.textContent=label;
+    });
+  }
+}
+
 function install(){
   installRenterFlow();
   installContractorNetwork();
   repairLanding();
+  repairAuthLabels();
 }
 
 window.BCTRenterFlow={read:readRenter};
 window.BCTContractorNetwork={readRoles};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 window.addEventListener('pageshow',install);
+document.addEventListener('click',()=>setTimeout(repairAuthLabels,0),true);
 document.addEventListener('change',event=>{if(event.target?.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))setTimeout(repairLanding,0)},true);
 })();
