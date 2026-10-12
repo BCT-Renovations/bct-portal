@@ -94,6 +94,7 @@ function installContractorNetwork(){
     '<div id="bctLicensedTradeNotice" class="notice hidden"><b>Licensed trade lane:</b> Start the contractor application and choose Electrical, Plumbing, HVAC, or Specialty Trade. BCT Admin verifies credentials before assignments.</div>'
   ].join('');
   signup.after(chooser);
+  chooser.classList.remove('hidden','bct-signedout-hidden');
   chooser.addEventListener('click',event=>{
     const action=event.target.closest('[data-bct-network-open]')?.dataset.bctNetworkOpen;
     if(!action)return;

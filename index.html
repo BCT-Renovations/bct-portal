@@ -3770,7 +3770,7 @@ renderAll();
      // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
      view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
      const cards=view?[...view.children]:[];
-     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout';x.classList.toggle('bct-signedout-hidden',!keep);});
+     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout'||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
      const login=document.getElementById('bctContractorSignupCard');
      if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
      view.style.display='block';
