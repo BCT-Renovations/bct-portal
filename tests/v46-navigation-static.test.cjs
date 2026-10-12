@@ -58,3 +58,7 @@ test('About remains hidden until explicitly opened and has newcomer entry',()=>{
  assert.ok(html.includes('bct-about-page-open'));
  assert.ok(html.includes('previousFocus?.focus?.()'));
 });
+
+test('customer tabs scroll to active visible panel, not hidden duplicate',()=>{
+ assert.match(html,/panel\.dataset\.customerPagePanel===page && panel\.classList\.contains\('active'\) && !panel\.classList\.contains\('hidden'\)/);
+});
