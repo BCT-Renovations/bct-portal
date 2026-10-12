@@ -4705,7 +4705,7 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
  if(signup){signup.textContent='Sign Up Now';signup.removeAttribute('data-i18n');}
  let back=document.getElementById('bctContractorFooterBackHome');
  if(!back){back=document.createElement('button');back.type='button';back.id='bctContractorFooterBackHome';back.textContent='Back to Home';footer.insertBefore(back,signup||footer.firstChild);}
- back.addEventListener('click',function(){const home=document.querySelector('#bctContractorBackHomeTop,#bctContractorBackHome,.bct-contractor-home-bottom');if(home)home.click();else if(typeof window.showView==='function')window.showView('home');});
+ back.addEventListener('click',function(){const home=document.querySelector('#bctContractorBackHomeTop,#bctContractorBackHome,.bct-contractor-home-bottom');if(home)home.click();else if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else document.querySelector('[data-view="home"]')?.click();});
 })();
 </script>
 <style id="bct-v46-logo-slogan-mobile-visibility">
