@@ -6,23 +6,34 @@ window.__bctNetworkExpansionLoaded=true;
 
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const roles=[
+const workerRoles=[
+  {code:'general_contractor',short:'Contractor',label:'Contractor / Renovations',signin:'Contractor Sign In',apply:'Start Contractor Application',agent:'contractor_coordinator',copy:'Renovations, larger scopes, and BCT-managed contractor work.'},
+  {code:'electrical',short:'Electrician',label:'Electrician',signin:'Electrician Sign In',apply:'Start Electrician Application',agent:'compliance_credentials',copy:'Electrical applicants need license, insurance, and credential review before assignment.'},
+  {code:'plumbing',short:'Plumber',label:'Plumber',signin:'Plumber Sign In',apply:'Start Plumber Application',agent:'compliance_credentials',copy:'Plumbing applicants need license, insurance, and credential review before assignment.'},
+  {code:'handyman_services',short:'Handyman',label:'Handyman',signin:'Handyman Sign In',apply:'Start Handyman Application',agent:'contractor_coordinator',copy:'Small jobs, punch-list repairs, move-out repairs, and handyman work.'}
+];
+const categoryRoles=[
   ['handyman_services','Handyman / Small Jobs','Punch-list repairs, move-out repairs, furniture assembly, drywall patches, minor repair work.'],
   ['general_contractor','General Contractor / Renovations','Full renovation work, multi-trade coordination, larger scopes, and BCT-managed construction projects.'],
-  ['electrical','Licensed Electrical','Electrical work that may require licensing, permit review, or BCT Admin approval before assignment.'],
-  ['plumbing','Licensed Plumbing','Plumbing work that may require licensing, permit review, or BCT Admin approval before assignment.'],
+  ['electrical','Electrician','Electrical work that may require licensing, permit review, or BCT Admin approval before assignment.'],
+  ['plumbing','Plumber','Plumbing work that may require licensing, permit review, or BCT Admin approval before assignment.'],
   ['hvac','Licensed HVAC','Heating, cooling, ventilation, and related licensed trade work.'],
   ['specialty_trade','Other Licensed / Specialty Trade','Roofing, siding, windows, doors, concrete, mitigation, or other trade-specific work.']
 ];
+let activeRole=workerRoles[0];
 
-function field(name){return document.querySelector(`[name="${name}"]`)}
-function lang(){return (localStorage.getItem('bctPreferredLanguage')||localStorage.getItem('bctLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}
+function field(name){return document.querySelector('[name="'+name+'"]')}
+function roleByCode(code){return workerRoles.find(role=>role.code===code)||workerRoles[0]}
+function publicLoginCard(){return document.querySelector('.bct-public-contractor-login')||$('bctContractorLoginCard')}
+function setText(el,text){if(el)el.textContent=text}
+function setValueIfEmpty(el,value){if(el&&!String(el.value||'').trim())el.value=value}
+function selectedCategoryInputs(){return Array.from(document.querySelectorAll('input[name="contractorNetworkRole"]'))}
 
 function installRenterFlow(){
   const owner=field('ownerStatus');
-  const propertyCard=owner?.closest('.card');
+  const propertyCard=owner&&owner.closest('.card');
   if(!owner||!propertyCard||$('bctRenterApprovalPanel'))return;
-  if(![...owner.options].some(opt=>opt.value==='Renter / tenant - landlord approval required')){
+  if(!Array.from(owner.options).some(opt=>opt.value==='Renter / tenant - landlord approval required')){
     owner.add(new Option('Renter / tenant - landlord approval required','Renter / tenant - landlord approval required'));
   }
   const panel=document.createElement('div');
@@ -49,17 +60,17 @@ function installRenterFlow(){
 
 function readRenter(form,fail){
   const owner=form.elements.ownerStatus;
-  const isRenter=owner?.value==='Renter / tenant - landlord approval required';
+  const isRenter=owner&&owner.value==='Renter / tenant - landlord approval required';
   if(!isRenter)return {is_renter:false};
   const required=['landlordName','landlordPhone','landlordEmail','renterPaymentResponsibility'];
   for(const name of required){
     const el=form.elements[name];
-    if(!String(el?.value||'').trim()){
-      fail(`${el?.previousElementSibling?.textContent||name} is required for renter requests.`,el);
+    if(!String((el&&el.value)||'').trim()){
+      fail(String((el&&el.previousElementSibling&&el.previousElementSibling.textContent)||name)+' is required for renter requests.',el);
       return {__blocked:true};
     }
   }
-  if(!form.elements.renterLandlordSignatureAck?.checked){
+  if(!form.elements.renterLandlordSignatureAck||!form.elements.renterLandlordSignatureAck.checked){
     fail('Confirm that landlord signature is required before BCT assigns the work.',form.elements.renterLandlordSignatureAck);
     return {__blocked:true};
   }
@@ -77,56 +88,111 @@ function readRenter(form,fail){
   };
 }
 
-function installContractorNetwork(){
+function ensureRoleRouter(){
+  const login=publicLoginCard();
   const signup=$('bctContractorSignupCard');
-  if(!signup||$('bctContractorNetworkChooser'))return;
-  const chooser=document.createElement('div');
-  chooser.id='bctContractorNetworkChooser';
-  chooser.className='card section bct-network-chooser';
-  chooser.innerHTML=[
-    '<h3>Contractor Network Choices</h3>',
-    '<p class="muted">One BCT contractor profile can request more than one work category. BCT reviews and approves each category separately.</p>',
-    '<div class="bct-network-choice-grid">',
-    '<button type="button" data-bct-network-open="contractor"><b>Contractor / Renovations</b><span>Apply for regular BCT contractor work.</span></button>',
-    '<button type="button" data-bct-network-open="handyman"><b>Handyman / Small Jobs</b><span>Small repairs, move-out repairs, punch-list work, and tenant-friendly jobs.</span></button>',
-    '<button type="button" data-bct-network-open="licensed"><b>Licensed Trades</b><span>Electrical, plumbing, HVAC, and other credentialed work.</span></button>',
+  if((!login&&!signup)||$('bctContractorRoleRouter'))return;
+  const router=document.createElement('section');
+  router.id='bctContractorRoleRouter';
+  router.className='card section bct-role-router';
+  router.innerHTML=[
+    '<h3>Choose Your Contractor Role</h3>',
+    '<p class="muted">Tap the square that matches how you are signing in or applying. The sign-in box, application button, Admin label, and Agent BCT support role follow this selection.</p>',
+    '<div class="bct-worker-role-grid">',
+    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'"><b>'+esc(role.short)+'</b><span>'+esc(role.copy)+'</span></button>').join(''),
     '</div>',
-    '<div id="bctLicensedTradeNotice" class="notice hidden"><b>Licensed trade lane:</b> Start the contractor application and choose Electrical, Plumbing, HVAC, or Specialty Trade. BCT Admin verifies credentials before assignments.</div>'
+    '<div id="bctActiveRoleNotice" class="notice"><b>Selected:</b> <span></span></div>'
   ].join('');
-  signup.after(chooser);
-  chooser.classList.remove('hidden','bct-signedout-hidden');
-  chooser.addEventListener('click',event=>{
-    const action=event.target.closest('[data-bct-network-open]')?.dataset.bctNetworkOpen;
-    if(!action)return;
-    if(action==='handyman'){
-      window.BCTHandymanPortal?.open?.();
-      return;
-    }
-    if(action==='licensed'){
-      $('bctLicensedTradeNotice')?.classList.remove('hidden');
-    }
-    $('bctContractorSignupBtn')?.click();
+  (login||signup).insertAdjacentElement('beforebegin',router);
+  router.addEventListener('click',event=>{
+    const button=event.target.closest&&event.target.closest('[data-bct-worker-role]');
+    if(!button)return;
+    applyWorkerRole(button.dataset.bctWorkerRole,{scroll:false});
   });
+  applyWorkerRole(activeRole.code,{scroll:false});
+}
 
+function ensureApplicationRoleChoices(){
   const form=$('applicationForm');
   if(!form||$('bctContractorRoleChoices'))return;
-  const tradeSelect=form.querySelector('select[name="trade"]')?.closest('div');
+  const tradeSelect=form.querySelector('select[name="trade"]')&&form.querySelector('select[name="trade"]').closest('div');
   const box=document.createElement('div');
   box.id='bctContractorRoleChoices';
   box.className='full bct-role-choice-panel';
-  box.innerHTML='<label>Work Categories You Want BCT to Review</label><p class="muted">Select all that apply. This is one contractor account with role-by-role BCT approval.</p><div class="bct-role-choice-grid">'+roles.map(([code,label,copy])=>'<label class="check-tile"><input type="checkbox" name="contractorNetworkRole" value="'+esc(code)+'"> <b>'+esc(label)+'</b><span>'+esc(copy)+'</span></label>').join('')+'</div><div class="notice">No extra duplicate account is needed. BCT can approve one category and hold another until credentials are verified.</div>';
-  (tradeSelect||form.firstElementChild)?.insertAdjacentElement('afterend',box);
-  const h2=form.closest('.card')?.querySelector('h2');
+  box.innerHTML='<label>Work Categories You Want BCT to Review</label><p class="muted">Select all that apply. This is one contractor account with role-by-role BCT approval.</p><div class="bct-role-choice-grid">'+categoryRoles.map(([code,label,copy])=>'<label class="check-tile"><input type="checkbox" name="contractorNetworkRole" value="'+esc(code)+'"> <b>'+esc(label)+'</b><span>'+esc(copy)+'</span></label>').join('')+'</div><div class="notice">No extra duplicate account is needed. BCT can approve one category and hold another until credentials are verified.</div>';
+  (tradeSelect||form.firstElementChild).insertAdjacentElement('afterend',box);
+  const h2=form.closest('.card')&&form.closest('.card').querySelector('h2');
   if(h2&&/Handyman Pre-Application/i.test(h2.textContent))h2.textContent='Stage 1 - Contractor Network Pre-Application';
-  const intro=h2?.nextElementSibling;
+  const intro=h2&&h2.nextElementSibling;
   if(intro&&intro.classList.contains('muted'))intro.textContent='This form helps BCT learn who the applicant is, what categories they want reviewed, and what credentials must be verified before assignment.';
+  applyWorkerRole(activeRole.code,{scroll:false});
+}
+
+function updateAgentRole(role){
+  window.BCTContractorNetwork.activeRole=role;
+  window.BCTContractorNetwork.activeAgentRole=role.agent;
+  try{sessionStorage.setItem('bctContractorActiveRole',role.code)}catch(_){}
+  const agentSelect=$('bctAgentPosition');
+  if(agentSelect){
+    const option=Array.from(agentSelect.options).find(opt=>opt.value===role.agent);
+    if(option){
+      agentSelect.value=role.agent;
+      agentSelect.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+  }
+  document.dispatchEvent(new CustomEvent('bct:contractor-role-change',{detail:{role:role.code,agentRole:role.agent,label:role.label}}));
+}
+
+function applyWorkerRole(code,opts={}){
+  const role=roleByCode(code);
+  activeRole=role;
+  document.body.dataset.bctContractorRole=role.code;
+  document.querySelectorAll('[data-bct-worker-role]').forEach(button=>{
+    const selected=button.dataset.bctWorkerRole===role.code;
+    button.classList.toggle('active',selected);
+    button.setAttribute('aria-pressed',String(selected));
+  });
+  const notice=$('bctActiveRoleNotice')&&$('bctActiveRoleNotice').querySelector('span');
+  setText(notice,role.label);
+  const login=publicLoginCard();
+  setText(login&&login.querySelector('h3'),role.signin);
+  const signup=$('bctContractorSignupCard');
+  setText(signup&&signup.querySelector('h3'),'New '+role.short+' - Application');
+  const intro=signup&&signup.querySelector('p');
+  if(intro)intro.textContent='New to the BCT Contractor Network? Choose '+role.short+' and start the right BCT pre-application path.';
+  const start=$('bctContractorSignupBtn');
+  setText(start,role.apply);
+  if(start)start.setAttribute('data-bct-selected-role',role.code);
+  setValueIfEmpty(field('trade'),role.label);
+  selectedCategoryInputs().forEach(input=>{input.checked=input.value===role.code});
+  updateAgentRole(role);
+  if(opts.scroll) (login||signup).scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function installContractorNetwork(){
+  ensureRoleRouter();
+  ensureApplicationRoleChoices();
+
+  const old=$('bctContractorNetworkChooser');
+  if(old)old.remove();
+
+  document.addEventListener('click',event=>{
+    const closest=event.target.closest&&event.target.closest.bind(event.target);
+    if(closest&&closest('#bctContractorSignupBtn')){
+      setTimeout(()=>applyWorkerRole(activeRole.code,{scroll:false}),0);
+    }
+    if(closest&&closest('#bctAgentOpen')){
+      setTimeout(()=>updateAgentRole(activeRole),0);
+    }
+  },true);
 }
 
 function readRoles(form){
-  const selected=[...form.querySelectorAll('input[name="contractorNetworkRole"]:checked')].map(input=>input.value);
+  const selected=Array.from(form.querySelectorAll('input[name="contractorNetworkRole"]:checked')).map(input=>input.value);
   const primary=String(new FormData(form).get('trade')||'');
+  if(!selected.length&&activeRole&&activeRole.code)selected.push(activeRole.code);
   if(!selected.length&&primary)selected.push(primary);
-  return [...new Set(selected)];
+  return Array.from(new Set(selected));
 }
 
 function repairLanding(){
@@ -145,7 +211,7 @@ function repairAuthLabels(){
     'contractor.resend_confirmation':'Resend Confirmation Email'
   };
   for(const [key,label] of Object.entries(english)){
-    document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el=>{
+    document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>{
       if(el.textContent.trim()===key)el.textContent=label;
     });
   }
@@ -159,9 +225,10 @@ function install(){
 }
 
 window.BCTRenterFlow={read:readRenter};
-window.BCTContractorNetwork={readRoles};
+window.BCTContractorNetwork={readRoles,activeRole,activeAgentRole:activeRole.agent,setActiveRole:code=>applyWorkerRole(code,{scroll:false})};
+try{activeRole=roleByCode(sessionStorage.getItem('bctContractorActiveRole')||activeRole.code)}catch(_){}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 window.addEventListener('pageshow',install);
 document.addEventListener('click',()=>setTimeout(repairAuthLabels,0),true);
-document.addEventListener('change',event=>{if(event.target?.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))setTimeout(repairLanding,0)},true);
+document.addEventListener('change',event=>{if(event.target&&event.target.matches&&event.target.matches('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))setTimeout(repairLanding,0)},true);
 })();
