@@ -4700,7 +4700,7 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
  const footer=document.getElementById('bctContractorBottomActions');
  if(!footer)return;
  const about=document.getElementById('bctContractorAbout');
- if(about)about.insertAdjacentElement('afterend',footer);
+ if(about)about.insertAdjacentElement('afterend',footer);footer.classList.remove('hidden','bct-signedout-hidden');
  const signup=document.getElementById('bctContractorSignupBottomBtn');
  if(signup){signup.textContent='Sign Up Now';signup.removeAttribute('data-i18n');}
  let back=document.getElementById('bctContractorFooterBackHome');
