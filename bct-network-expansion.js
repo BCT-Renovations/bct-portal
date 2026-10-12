@@ -222,7 +222,12 @@ function repairAuthLabels(){
     'contractor.password':'Password',
     'contractor.signin_button':'Sign In',
     'contractor.forgot_password':'Forgot Password?',
-    'contractor.resend_confirmation':'Resend Confirmation Email'
+    'contractor.resend_confirmation':'Resend Confirmation Email',
+    'homeowner.first_name':'First Name',
+    'homeowner.last_name':'Last Name',
+    'homeowner.mobile_phone':'Mobile Phone',
+    'homeowner.create_password':'Create Password',
+    'homeowner.confirm_password':'Confirm Password'
   };
   for(const [key,label] of Object.entries(english)){
     document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>{
