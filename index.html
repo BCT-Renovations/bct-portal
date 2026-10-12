@@ -4708,6 +4708,13 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
  back.addEventListener('click',function(){const home=document.querySelector('#bctContractorBackHomeTop,#bctContractorBackHome,.bct-contractor-home-bottom');if(home)home.click();else if(typeof window.showView==='function')window.showView('home');});
 })();
 </script>
+<style id="bct-v46-logo-slogan-mobile-visibility">
+/* Restore a normal-flow tagline directly below the clean logo on Safari. */
+.bct-dynamic-brand .bct-logo-crop{height:auto!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:column!important;align-items:center!important}
+.bct-dynamic-brand .bct-logo-crop::after{display:none!important}
+.bct-dynamic-brand .bct-logo-crop .brand-logo{position:relative!important;max-height:none!important}
+.bct-dynamic-brand .bct-logo-crop [data-bct-slogan]{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;bottom:auto!important;left:auto!important;right:auto!important;transform:none!important;height:auto!important;min-height:1.3em!important;z-index:5!important;text-align:center!important;max-width:100%!important;overflow:visible!important;white-space:normal!important}
+</style>
 <script id="bct-v46-about-isolated-navigation">
 (function(){
  const panel=document.getElementById('bctClientAboutPanel');
