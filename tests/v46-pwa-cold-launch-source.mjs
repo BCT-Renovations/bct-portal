@@ -14,6 +14,8 @@ assert.equal(manifest.id, '/', 'manifest must keep one stable install identity')
 assert.equal(manifest.icons.some(icon=>icon.src==='/bct-pwa-icon-192.png'&&icon.sizes==='192x192'), true, 'manifest must provide a standard 192px PNG icon');
 assert.equal(manifest.icons.some(icon=>icon.src==='/bct-pwa-icon-512.png'&&icon.sizes==='512x512'), true, 'manifest must provide a standard 512px PNG icon');
 assert.equal(fs.existsSync('apple-touch-icon.png'), true, 'iPhone installs must have a root Apple touch icon fallback');
+assert.equal(html.includes('<link rel="apple-touch-icon" href="/bct-app-icon-v46-ios.png'), true, 'live HTML must directly advertise the dedicated iPhone Home Screen icon');
+assert.equal(html.includes('<link rel="apple-touch-icon" sizes="180x180" href="/bct-app-icon-v46-ios.png'), true, 'live HTML must include a sized Apple touch icon for iOS install sheets');
 
 function authenticated({hasSession, entryIntent=null, portalEntered=false, homeSignup=false, contractorSignup=false, hash=''}) {
   const publicHome = !entryIntent && !portalEntered && !homeSignup && !contractorSignup && (!hash || hash === '#home');
