@@ -233,6 +233,9 @@ function repairAuthLabels(){
     document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>{
       if(el.textContent.trim()===key)el.textContent=label;
     });
+    document.querySelectorAll('label,button,h2,h3,span,p').forEach(el=>{
+      if(el.children.length===0&&el.textContent.trim()===key)el.textContent=label;
+    });
   }
 }
 
