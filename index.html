@@ -4715,6 +4715,25 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
 .bct-dynamic-brand .bct-logo-crop .brand-logo{position:relative!important;max-height:none!important}
 .bct-dynamic-brand .bct-logo-crop [data-bct-slogan]{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;bottom:auto!important;left:auto!important;right:auto!important;transform:none!important;height:auto!important;min-height:1.3em!important;z-index:5!important;text-align:center!important;max-width:100%!important;overflow:visible!important;white-space:normal!important}
 </style>
+<style id="bct-v46-new-contractor-application-isolation">
+/* A first-time application must not display authenticated status/jobs navigation. */
+body.bct-new-contractor-application:not(.bct-authenticated) #view-apply .portal-tabs,
+body.bct-new-contractor-application:not(.bct-authenticated) #view-apply .badge.info{display:none!important}
+body.bct-new-contractor-application:not(.bct-authenticated) #bctContractorApplyPortalTitle{display:block!important}
+</style>
+<script id="bct-v46-new-contractor-application-entry">
+(function(){
+ const start=document.getElementById('bctContractorSignupBtn');
+ const form=document.getElementById('applicationForm');
+ if(!start||!form)return;
+ document.addEventListener('click',function(event){
+  const target=event.target.closest?.('#bctContractorSignupBtn,#bctContractorSignupBottomBtn');
+  if(target){document.body.classList.add('bct-new-contractor-application');}
+  const exit=event.target.closest?.('[data-contractor-view="status"],[data-contractor-view="jobs"],[data-entry-login],#bctContractorFooterBackHome');
+  if(exit)document.body.classList.remove('bct-new-contractor-application');
+ },true);
+})();
+</script>
 <script id="bct-v46-about-isolated-navigation">
 (function(){
  const panel=document.getElementById('bctClientAboutPanel');
