@@ -4687,10 +4687,17 @@ document.addEventListener("click",function(e){const btn=e.target.closest?.("#bct
 #bctClientAboutPanel.bct-about-page-open #bctClientAboutClose{display:block!important;margin-top:24px!important}
 </style>
 <style id="bct-v46-contractor-role-legibility">
-/* Keep role labels distinct from descriptions at mobile widths. */
-#bctContractorRoleRouter .bct-worker-role-grid button b{display:block!important;font-size:1.22rem!important;font-weight:700!important;color:#cbd5e1!important;line-height:1.35!important;margin-bottom:7px!important;overflow-wrap:anywhere}
-#bctContractorRoleRouter .bct-worker-role-grid button span{display:block!important;font-size:1rem!important;line-height:1.45!important;font-weight:400!important}
+/* Keep the contractor role selector matching the compact reference: four boxes in one row, with title and copy separated. */
+#bctContractorRoleRouter .bct-worker-role-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+#bctContractorRoleRouter .bct-worker-role-grid button b{display:block!important;font-size:1.22rem!important;font-weight:700!important;color:#cbd5e1!important;line-height:1.28!important;margin-bottom:7px!important;overflow-wrap:anywhere}
+#bctContractorRoleRouter .bct-worker-role-grid button span{display:block!important;font-size:1rem!important;line-height:1.42!important;font-weight:400!important;color:#fff!important}
 #bctContractorRoleRouter .bct-worker-role-grid button{height:auto!important;min-height:78px!important;text-align:left!important;padding:14px 16px!important;white-space:normal!important}
+@media(max-width:600px){
+ #bctContractorRoleRouter .bct-worker-role-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+ #bctContractorRoleRouter .bct-worker-role-grid button{min-height:66px!important;padding:8px 6px!important;border-radius:8px!important}
+ #bctContractorRoleRouter .bct-worker-role-grid button b{font-size:.72rem!important;line-height:1.08!important;margin-bottom:3px!important}
+ #bctContractorRoleRouter .bct-worker-role-grid button span{font-size:.58rem!important;line-height:1.12!important}
+}
 </style>
 <style id="bct-v46-mobile-review-repairs">
 /* Approved contractor footer actions: compact side-by-side, with clear footer clearance. */
