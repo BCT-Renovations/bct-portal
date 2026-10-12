@@ -2664,8 +2664,12 @@ document.getElementById('bctContractorSignupBottomBtn')?.addEventListener('click
 function showCustomerPage(page){
   document.querySelectorAll('[data-customer-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.customerPage===page));
   document.querySelectorAll('[data-customer-page-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.customerPagePanel===page));
+  // Scroll to the selected content, not the top of the client portal.
+  const selectedPanel=[...document.querySelectorAll('[data-customer-page-panel]')].find(panel=>panel.dataset.customerPagePanel===page);
   const view=document.getElementById('view-customer');
-  if(view&&!view.classList.contains('hidden'))window.scrollTo({top:view.offsetTop-80,behavior:'smooth'});
+  if(view&&!view.classList.contains('hidden')&&selectedPanel){
+    requestAnimationFrame(()=>selectedPanel.scrollIntoView({behavior:'smooth',block:'start'}));
+  }
 }
 document.querySelectorAll('[data-customer-page]').forEach(btn=>btn.addEventListener('click',()=>showCustomerPage(btn.dataset.customerPage)));
 function showAdminPage(page='launch'){
