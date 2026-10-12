@@ -19,3 +19,14 @@ body.bct-entry-handyman.bct-agent-open #bctAgentRoot{display:block!important;vis
 
 /* Isolated preview: compact floating Agent BCT launcher on narrow screens. */
 @media(max-width:600px){#bctAgentRoot #bctAgentOpen{width:fit-content!important;max-width:112px!important;min-width:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;flex:none!important;}}
+
+/* V46 iPhone header: isolate controls from public-header resets and reserve the status-bar area. */
+body.bct-agent-open #bctAgentPanel>header{
+ position:static!important;top:auto!important;display:grid!important;
+ grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:12px!important;
+ padding:calc(env(safe-area-inset-top,0px) + 12px) calc(env(safe-area-inset-right,0px) + 14px) 12px calc(env(safe-area-inset-left,0px) + 14px)!important;
+}
+#bctAgentPanel>header>div{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 12px;min-width:0}
+#bctAgentTitle{display:block;min-width:0;overflow-wrap:anywhere;line-height:1.25}
+#bctAgentPanel>header #bctAgentSubtitle{grid-column:1/-1;margin:0;line-height:1.35}
+#bctAgentPanel>header #bctAgentHome,#bctAgentPanel>header #bctAgentClose{position:static;margin:0;align-self:start}
