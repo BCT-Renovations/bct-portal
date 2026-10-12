@@ -26,3 +26,14 @@ body.bct-agent-open #bctAgentPanel>header>*{position:static!important;transform:
 body.bct-agent-open #bctAgentPanel>header .bct-agent-home,body.bct-agent-open #bctAgentPanel>header #bctAgentClose{flex:0 0 auto!important}
 body.bct-agent-open #bctAgentPanel>header h1,body.bct-agent-open #bctAgentPanel>header h2{margin:0!important;line-height:1.2!important}
 @media(max-width:390px){body.bct-agent-open #bctAgentPanel>header{gap:6px!important;padding-left:8px!important;padding-right:8px!important}body.bct-agent-open #bctAgentPanel>header .bct-agent-home{padding:6px 8px!important}}
+
+/* Ace of Spades: protect new contractor applicants from restricted contractor areas. */
+#view-apply .portal-tabs button[data-contractor-view="status"],
+#view-apply .portal-tabs button[data-contractor-view="jobs"]{display:none!important}
+#view-apply .portal-tabs{grid-template-columns:1fr!important}
+#view-apply .portal-tabs button[data-contractor-view="apply"]{width:100%!important}
+body.bct-contractor-signup:not(.bct-authenticated) #view-status,
+body.bct-contractor-signup:not(.bct-authenticated) #view-jobs{display:none!important}
+body.bct-contractor-signup:not(.bct-authenticated) #bctAuthenticatedNav{display:none!important}
+body.bct-contractor-signup:not(.bct-authenticated) [data-contractor-view="status"],
+body.bct-contractor-signup:not(.bct-authenticated) [data-contractor-view="jobs"]{display:none!important}
