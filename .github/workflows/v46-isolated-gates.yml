@@ -1,0 +1,34 @@
+name: BCT V46 Isolated Gates
+on:
+  push:
+    branches:
+      - fix/v46-logo-translation-20261012
+    paths:
+      - 'index.html'
+      - 'bct-contractor-roles.js'
+      - 'tests/**'
+      - '.github/workflows/v46-isolated-gates.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout isolated V46 branch
+        uses: actions/checkout@v4
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check contractor module syntax
+        run: node --check bct-contractor-roles.js
+      - name: Check static test syntax
+        run: node --check tests/v46-navigation-static.test.cjs
+      - name: Run V46 navigation and role regression tests
+        run: node --test tests/v46-navigation-static.test.cjs
+      - name: Verify iOS icon and manifest assets
+        run: |
+          test -s manifest.webmanifest
+          test -s bct-app-icon-v46-ios.png
