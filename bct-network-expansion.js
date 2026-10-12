@@ -104,6 +104,7 @@ function ensureRoleRouter(){
     '<div id="bctActiveRoleNotice" class="notice"><b>Selected:</b> <span></span></div>'
   ].join('');
   (login||signup).insertAdjacentElement('beforebegin',router);
+  router.classList.remove('hidden','bct-signedout-hidden');
   router.addEventListener('click',event=>{
     const button=event.target.closest&&event.target.closest('[data-bct-worker-role]');
     if(!button)return;
