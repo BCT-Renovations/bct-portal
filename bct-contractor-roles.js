@@ -183,7 +183,7 @@ function applyWorkerRole(code,opts={}){
     if(matching&&!primaryTrade.dataset.bctTradeManuallyChanged)primaryTrade.value=matching.value;
   }else setValueIfEmpty(primaryTrade,role.label);
   const categories=selectedCategoryInputs();
-  if(categories.length&&!categories.some(input=>input.checked)){
+  if(categories.length&&!categories.some(input=>input.value===role.code&&input.checked)){
     const initial=categories.find(input=>input.value===role.code);
     if(initial)initial.checked=true;
   }
