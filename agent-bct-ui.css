@@ -37,3 +37,12 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-jobs{display:none!impor
 body.bct-contractor-signup:not(.bct-authenticated) #bctAuthenticatedNav{display:none!important}
 body.bct-contractor-signup:not(.bct-authenticated) [data-contractor-view="status"],
 body.bct-contractor-signup:not(.bct-authenticated) [data-contractor-view="jobs"]{display:none!important}
+
+/* Ace of Spades: move Agent BCT Home to the bottom-left on iPhone so it never overlaps the portal title. */
+@media(max-width:600px){
+  body.bct-agent-open #bctAgentPanel:not([hidden]){grid-template-rows:auto minmax(0,1fr) auto!important}
+  body.bct-agent-open #bctAgentPanel>header{justify-content:center!important;padding-left:56px!important;padding-right:56px!important;text-align:center!important}
+  body.bct-agent-open #bctAgentPanel>header .bct-agent-home{position:fixed!important;left:max(10px,env(safe-area-inset-left,0px))!important;bottom:max(10px,env(safe-area-inset-bottom,0px))!important;z-index:2147483647!important;min-height:40px!important;height:40px!important;max-height:40px!important;padding:0 10px!important;font-size:13px!important;line-height:1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#fff!important;color:#0f5f63!important;border:1px solid #d7e0e1!important;border-radius:10px!important;box-shadow:none!important;white-space:nowrap!important}
+  body.bct-agent-open #bctAgentPanel>header #bctAgentClose{position:fixed!important;top:calc(env(safe-area-inset-top,0px) + 10px)!important;right:max(10px,env(safe-area-inset-right,0px))!important;z-index:2147483647!important}
+  body.bct-agent-open #bctAgentForm>div{padding-left:82px!important;min-height:40px!important}
+}
