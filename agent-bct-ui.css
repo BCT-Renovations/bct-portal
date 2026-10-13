@@ -46,3 +46,8 @@ body.bct-contractor-signup:not(.bct-authenticated) [data-contractor-view="jobs"]
   body.bct-agent-open #bctAgentPanel>header #bctAgentClose{position:fixed!important;top:calc(env(safe-area-inset-top,0px) + 10px)!important;right:max(10px,env(safe-area-inset-right,0px))!important;z-index:2147483647!important}
   body.bct-agent-open #bctAgentForm>div{padding-left:82px!important;min-height:40px!important}
 }
+
+/* Ace of Spades: keep the bottom-left Agent BCT Home button teal with white lettering. */
+@media(max-width:600px){
+  body.bct-agent-open #bctAgentPanel>header .bct-agent-home{background:#0f5f63!important;color:#fff!important;border-color:#0f5f63!important;box-shadow:0 3px 10px rgba(15,95,99,.18)!important}
+}
