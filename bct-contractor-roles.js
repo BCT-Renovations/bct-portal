@@ -104,8 +104,8 @@ function ensureRoleRouter(){
   router.id='bctContractorRoleRouter';
   router.className='card section bct-role-router';
   router.innerHTML=[
-    '<h3>Choose Your Contractor Role</h3>',
-    '<p class="muted">Tap the square that matches how you are signing in or applying. The sign-in box, application button, Admin label, and Agent BCT support role follow this selection.</p>',
+    '<h3>Choose Your Profession</h3>',
+    '<p class="muted">Tap your profession to sign in or start the right application path.</p>',
     '<div class="bct-worker-role-grid">',
     workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'" data-bct-role-title="'+esc(role.short)+'" aria-label="'+esc(role.short)+'. '+esc(role.copy)+'"><span class="bct-role-card-copy">'+esc(role.copy)+'</span></button>').join(''),
     '</div>',
