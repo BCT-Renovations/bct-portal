@@ -17,7 +17,17 @@
     ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',morePhotos:'Больше Фото',less:'Показать Меньше',full:'Открыть Полную Галерею',coming:'Галерея Скоро Откроется',close:'Закрыть',prev:'Назад',next:'Далее',all:'Все',category:'Категория',slot:'Фото проекта BCT'}
   };
 
-  let PROJECTS=[]; // Loaded from the secure BCT gallery table; never create empty placeholders.
+  const FALLBACK_PROJECTS=[
+    {id:'fallback-bct-1',image:'/bct-logo-master.png',caption:'BCT Renovations project gallery',alt:'BCT Renovations project gallery fallback',category:'BCT',project_work_date:'',image_text:'BCT Renovations'},
+    {id:'fallback-bct-2',image:'/bct-home-logo.webp',caption:'BCT home improvement work',alt:'BCT Renovations home improvement fallback',category:'BCT',project_work_date:'',image_text:'Licensed • Bonded • Insured'},
+    {id:'fallback-bct-3',image:'/bct-logo-master.png',caption:'General contractor managed projects',alt:'BCT general contractor fallback',category:'BCT',project_work_date:'',image_text:'Your General Contractor'},
+    {id:'fallback-bct-4',image:'/bct-home-logo.webp',caption:'BCT contractor network',alt:'BCT contractor network fallback',category:'BCT',project_work_date:'',image_text:'One BCT Process'},
+    {id:'fallback-bct-5',image:'/bct-logo-master.png',caption:'Project planning and coordination',alt:'BCT project planning fallback',category:'BCT',project_work_date:'',image_text:'Project Planning'},
+    {id:'fallback-bct-6',image:'/bct-home-logo.webp',caption:'Homeowner project support',alt:'BCT homeowner project support fallback',category:'BCT',project_work_date:'',image_text:'Homeowner Support'},
+    {id:'fallback-bct-7',image:'/bct-logo-master.png',caption:'Verified contractor process',alt:'BCT verified contractor process fallback',category:'BCT',project_work_date:'',image_text:'Verified Process'},
+    {id:'fallback-bct-8',image:'/bct-home-logo.webp',caption:'Managed renovation workflow',alt:'BCT managed renovation workflow fallback',category:'BCT',project_work_date:'',image_text:'Managed Workflow'}
+  ];
+  let PROJECTS=[]; // Loaded from the secure BCT gallery table, with static fallback if Supabase is unavailable.
 
   let expanded=false;
   let loaded=false;
@@ -96,15 +106,21 @@
     if(full){const hasPhotos=PROJECTS.length>0;full.disabled=false;full.textContent=hasPhotos?c.full:c.coming;full.setAttribute('aria-disabled',String(!hasPhotos));}
   }
 
+  function useFallbackProjects(){
+    PROJECTS=FALLBACK_PROJECTS.slice();
+    render();
+  }
+
   async function loadProjects(){
-    if(!window.supabaseClient){loaded=true;PROJECTS=[];render();return}
+    if(!window.supabaseClient){loaded=true;useFallbackProjects();return}
     const {data,error}=await window.supabaseClient.from('bct_gallery_photos')
       .select('id,storage_path,thumbnail_path,caption,caption_translations,alt_text,alt_text_translations,image_text,image_text_translations,project_work_date,category,category_translations,home_order')
       .eq('is_published',true).eq('show_on_home',true).order('home_order',{ascending:true}).limit(30);
     loaded=true;
-    if(error){PROJECTS=[];render();return}
+    if(error){useFallbackProjects();return}
     const items=(data||[]).filter(x=>x.storage_path);
     PROJECTS=(await Promise.all(items.map(async x=>{const path=x.thumbnail_path||x.storage_path;const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(path,3600);return signed&&signed.signedUrl?{image:signed.signedUrl,caption:x.caption,caption_translations:x.caption_translations||{},alt:x.alt_text,alt_translations:x.alt_text_translations||{},project_work_date:x.project_work_date,category:x.category,category_translations:x.category_translations||{},id:x.id,image_text:x.image_text||'',image_text_translations:x.image_text_translations||{}}:null}))).filter(Boolean);
+    if(!PROJECTS.length)useFallbackProjects();
     render();
   }
 
