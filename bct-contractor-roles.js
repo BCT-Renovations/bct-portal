@@ -10,6 +10,10 @@ const workerRoles=[
   {code:'general_contractor',short:'Contractor',label:'Contractor / Renovations',signin:'Contractor Sign In',apply:'Start Contractor Application',agent:'contractor_coordinator',copy:'Renovations, larger scopes, and BCT-managed contractor work.'},
   {code:'electrical',short:'Electrician',label:'Electrician',signin:'Electrician Sign In',apply:'Start Electrician Application',agent:'compliance_credentials',copy:'Electrical applicants need license, insurance, and credential review before assignment.'},
   {code:'plumbing',short:'Plumber',label:'Plumber',signin:'Plumber Sign In',apply:'Start Plumber Application',agent:'compliance_credentials',copy:'Plumbing applicants need license, insurance, and credential review before assignment.'},
+  {code:'hvac',short:'HVAC',label:'HVAC',signin:'HVAC Sign In',apply:'Start HVAC Application',agent:'compliance_credentials',copy:'Heating, cooling, ventilation, and licensed HVAC work.'},
+  {code:'roofing',short:'Roofer',label:'Roofing',signin:'Roofer Sign In',apply:'Start Roofer Application',agent:'compliance_credentials',copy:'Roof repair, replacement, leak work, and licensed roofing review.'},
+  {code:'concrete_masonry',short:'Concrete',label:'Concrete & Masonry',signin:'Concrete & Masonry Sign In',apply:'Start Concrete & Masonry Application',agent:'contractor_coordinator',copy:'Concrete flatwork, masonry repair, drainage pads, walks, and related exterior work.'},
+  {code:'flooring',short:'Flooring',label:'Flooring',signin:'Flooring Sign In',apply:'Start Flooring Application',agent:'contractor_coordinator',copy:'Ceramic tile, hardwood, laminate, vinyl, carpet, subfloor, and flooring repair work.'},
   {code:'handyman_services',short:'Handyman',label:'Handyman',signin:'Handyman Sign In',apply:'Start Handyman Application',agent:'contractor_coordinator',copy:'Small jobs, punch-list repairs, move-out repairs, and handyman work.'}
 ];
 const categoryRoles=[
@@ -18,15 +22,19 @@ const categoryRoles=[
   ['electrical','Electrician','Electrical work that may require licensing, permit review, or BCT Admin approval before assignment.'],
   ['plumbing','Plumber','Plumbing work that may require licensing, permit review, or BCT Admin approval before assignment.'],
   ['hvac','Licensed HVAC','Heating, cooling, ventilation, and related licensed trade work.'],
-  ['specialty_trade','Other Licensed / Specialty Trade','Roofing, siding, windows, doors, concrete, mitigation, or other trade-specific work.']
+  ['roofing','Roofer','Roof repair, replacement, leak work, and related licensed trade work.'],
+  ['concrete_masonry','Concrete & Masonry','Concrete flatwork, masonry repair, pads, walks, drainage work, and related exterior scopes.'],
+  ['flooring','Flooring','Ceramic tile, hardwood, laminate, vinyl, carpet, subfloor, and flooring repair work.'],
+  ['specialty_trade','Other Licensed / Specialty Trade','Siding, windows, doors, mitigation, or other trade-specific work.']
 ];
-let activeRole=workerRoles[0];
+let activeRole=null;
 
 function field(name){return document.querySelector('[name="'+name+'"]')}
-function roleByCode(code){return workerRoles.find(role=>role.code===code)||workerRoles[0]}
+function roleByCode(code){return workerRoles.find(role=>role.code===code)||null}
 function publicLoginCard(){return document.querySelector('.bct-public-contractor-login')||$('bctContractorLoginCard')}
 function setText(el,text){if(el)el.textContent=text}
 function setValueIfEmpty(el,value){if(el&&!String(el.value||'').trim())el.value=value}
+function setValue(el,value){if(el)el.value=value}
 function selectedCategoryInputs(){return Array.from(document.querySelectorAll('input[name="contractorNetworkRole"]'))}
 
 function installRenterFlow(){
@@ -99,9 +107,9 @@ function ensureRoleRouter(){
     '<h3>Choose Your Contractor Role</h3>',
     '<p class="muted">Tap the square that matches how you are signing in or applying. The sign-in box, application button, Admin label, and Agent BCT support role follow this selection.</p>',
     '<div class="bct-worker-role-grid">',
-    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'"><b>'+esc(role.short)+'</b><span>'+esc(role.copy)+'</span></button>').join(''),
+    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'" data-bct-role-title="'+esc(role.short)+'" aria-label="'+esc(role.short)+'. '+esc(role.copy)+'"><span class="bct-role-card-copy">'+esc(role.copy)+'</span></button>').join(''),
     '</div>',
-    '<div id="bctActiveRoleNotice" class="notice"><b>Selected:</b> <span></span></div>'
+    '<div id="bctActiveRoleNotice" class="notice"><b>Selected:</b> <span>Choose a profession to continue.</span></div>'
   ].join('');
   (login||signup).insertAdjacentElement('beforebegin',router);
   router.classList.remove('hidden','bct-signedout-hidden');
@@ -110,7 +118,7 @@ function ensureRoleRouter(){
     if(!button)return;
     applyWorkerRole(button.dataset.bctWorkerRole,{scroll:false});
   });
-  applyWorkerRole(activeRole.code,{scroll:false});
+  clearWorkerRole();
 }
 
 function ensureApplicationRoleChoices(){
@@ -126,7 +134,7 @@ function ensureApplicationRoleChoices(){
   if(h2&&/Handyman Pre-Application/i.test(h2.textContent))h2.textContent='Stage 1 - Contractor Network Pre-Application';
   const intro=h2&&h2.nextElementSibling;
   if(intro&&intro.classList.contains('muted'))intro.textContent='This form helps BCT learn who the applicant is, what categories they want reviewed, and what credentials must be verified before assignment.';
-  applyWorkerRole(activeRole.code,{scroll:false});
+  if(activeRole)applyWorkerRole(activeRole.code,{scroll:false});
 }
 
 function updateAgentRole(role){
@@ -176,7 +184,7 @@ function applyWorkerRole(code,opts={}){
   const start=$('bctContractorSignupBtn');
   setText(start,role.apply);
   if(start)start.setAttribute('data-bct-selected-role',role.code);
-  setValueIfEmpty(field('trade'),role.label);
+  setValue(field('trade'),role.code);
   selectedCategoryInputs().forEach(input=>{input.checked=input.value===role.code});
   updateApplicationCopy(role);
   updateAgentRole(role);

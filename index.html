@@ -760,19 +760,19 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
 
     <div class="bct-signin-heading" aria-hidden="true"><span data-login-signin-heading data-i18n="entry.signin">Sign In</span> / <span data-i18n="entry.signup">Sign Up</span></div>
     <div class="bct-entry-actions" id="bctEntryActions">
-      <button type="button" data-entry-login="client" data-i18n="entry.client">Client / Homeowner</button>
+      <button type="button" data-entry-login="client" data-i18n="entry.client">Client</button>
       <button type="button" data-entry-login="contractor" data-i18n="entry.contractor">Contractor</button>
       <button type="button" data-entry-login="estimator" data-i18n="entry.estimator">BCT Estimator</button>
       <button type="button" data-entry-login="admin" data-i18n="entry.admin">Admin</button>
     </div>
-    <button type="button" id="bctHomeAboutBtn" class="bct-home-about-button" aria-controls="bctAboutPublic" aria-expanded="false">About BCT</button>
+    <button type="button" id="bctHomeAboutBtn" class="bct-home-about-button" aria-controls="bctAboutPublic" aria-expanded="false" data-i18n="about.button">About BCT</button>
     <section id="bctAboutPublic" class="bct-about-public" aria-labelledby="bctAboutTitle" hidden>
       <h2 id="bctAboutTitle" class="bct-about-title" data-i18n="about.title">About BCT Renovations</h2>
-      <h3 class="bct-about-lead">Where homeowners, contractors, and BCT meet in the middle.</h3>
-      <p>BCT Renovations is a general-contractor-managed project network. Homeowners and clients submit projects to BCT, and BCT helps organize the scope, review details, coordinate communication, and manage the project process.</p>
-      <p>Contractors, handymen, electricians, plumbers, and estimators can apply to join the BCT network. BCT reviews credentials, work history, insurance, and project fit before assigning opportunities.</p>
-      <p>BCT is not just a referral list. Homeowners are not picking from random public bids, and contractors are not competing in front of the customer. BCT stays in the middle as the general contractor, helping protect the client, guide the project, and build a stronger contractor network.</p>
-      <p class="bct-about-close">Your project. Your home. Our contractor network. One BCT process.</p>
+      <h3 class="bct-about-lead" data-i18n="about.middle_lead">Where clients, contractors, and BCT meet in the middle.</h3>
+      <p data-i18n="about.middle_p1">BCT Renovations is a general-contractor-managed project network. Clients submit projects to BCT, and BCT helps organize the scope, review details, coordinate communication, and manage the project process.</p>
+      <p data-i18n="about.middle_p2">Contractors, handymen, electricians, plumbers, HVAC pros, roofers, concrete and masonry crews, flooring installers, and estimators can apply to join the BCT network. BCT reviews credentials, work history, insurance, and project fit before assigning opportunities.</p>
+      <p data-i18n="about.middle_p3">BCT is not just a referral list. Clients are not picking from random public bids, and contractors are not competing in front of the customer. BCT stays in the middle as the general contractor, helping protect the client, guide the project, and build a stronger contractor network.</p>
+      <p class="bct-about-close" data-i18n="about.middle_close">Your project. Your home. Our contractor network. One BCT process.</p>
       <p class="bct-about-licensed" data-i18n="about.licensed">Licensed • Bonded • Insured</p>
     </section>
     <div class="bct-share-referral">
@@ -839,7 +839,6 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
     <div id="bctHomeAuthStatus" class="section"></div>
     <div class="mini-list">
       <div class="stage" data-i18n="homeowner.next_step_note">Next step: New clients should open Project Details and complete the private request.</div>
-      <div class="stage" data-i18n="homeowner.submitted_note">Submitted projects: Returning clients can sign in here and use each tab to review status, files, estimates, payments, progress, messages, and completion.</div>
     </div>
     <div id="bctHomeProjects" class="grid section"></div>
   </div>
@@ -1363,7 +1362,7 @@ const BCT_ENGLISH_FALLBACK={
   'site.language':'Language',
   'entry.signin':'Sign In',
   'entry.signup':'Sign Up',
-  'entry.client':'Client / Homeowner',
+  'entry.client':'Client',
   'entry.contractor':'Contractor',
   'entry.estimator':'BCT Estimator',
   'entry.admin':'Admin',
@@ -1434,7 +1433,6 @@ const BCT_ENGLISH_FALLBACK={
   'homeowner.returning_title':'Returning Client — Sign In',
   'homeowner.returning_description':'Sign in to see your real BCT project status and upload private project files.',
   'homeowner.next_step_note':'Next step: New clients should open Project Details and complete the private request.',
-  'homeowner.submitted_note':'Submitted projects: Returning clients can sign in here and use each tab to review status, files, estimates, payments, progress, messages, and completion.',
   'homeowner.estimate_title':'Estimate & Contract',
   'homeowner.estimate_description':'Customer-facing estimates and contracts appear here after BCT Admin reviews and approves them. AI-assisted estimates remain draft-only until BCT manually approves release.',
   'homeowner.estimate_notice':'Sign in to view approved estimates, contract status, required signatures, and BCT notes.',
@@ -1829,7 +1827,6 @@ const BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES={
     "homeowner.returning_title":"Propietario registrado — Iniciar sesión",
     "homeowner.returning_description":"Inicie sesión para ver el estado real de su proyecto BCT y subir archivos privados.",
     "homeowner.next_step_note":"Siguiente paso: Los nuevos propietarios deben abrir Detalles del proyecto y completar la solicitud privada.",
-    "homeowner.submitted_note":"Proyectos enviados: Los propietarios registrados pueden iniciar sesión aquí y usar cada pestaña para revisar estado, archivos, estimados, pagos, progreso, mensajes y finalización.",
     "homeowner.estimate_title":"Estimado y contrato",
     "homeowner.estimate_description":"Los estimados y contratos para clientes aparecen aquí después de que BCT Admin los revise y apruebe. Los estimados asistidos por IA siguen siendo borradores hasta que BCT aprueba su publicación manualmente.",
     "homeowner.estimate_notice":"Inicie sesión para ver estimados aprobados, estado del contrato, firmas requeridas y notas de BCT.",
@@ -1880,7 +1877,6 @@ const BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES={
     "homeowner.returning_title":"Propriétaire inscrit — Connexion",
     "homeowner.returning_description":"Connectez-vous pour voir le vrai statut de votre projet BCT et téléverser des fichiers privés.",
     "homeowner.next_step_note":"Prochaine étape : les nouveaux propriétaires doivent ouvrir Détails du projet et compléter la demande privée.",
-    "homeowner.submitted_note":"Projets soumis : les propriétaires inscrits peuvent se connecter ici et utiliser chaque onglet pour revoir le statut, les fichiers, les estimations, les paiements, la progression, les messages et l'achèvement.",
     "homeowner.estimate_title":"Estimation et contrat",
     "homeowner.estimate_description":"Les estimations et contrats destinés au client apparaissent ici après examen et approbation par BCT Admin. Les estimations assistées par IA restent des brouillons jusqu'à l'approbation manuelle de BCT.",
     "homeowner.estimate_notice":"Connectez-vous pour voir les estimations approuvées, le statut du contrat, les signatures requises et les notes BCT.",
@@ -1931,7 +1927,6 @@ const BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES={
     "homeowner.returning_title":"Pwopriyetè ki retounen — Konekte",
     "homeowner.returning_description":"Konekte pou wè estati reyèl pwojè BCT ou epi telechaje fichye prive.",
     "homeowner.next_step_note":"Pwochen etap: Nouvo pwopriyetè yo dwe ouvri Detay pwojè epi ranpli demann prive a.",
-    "homeowner.submitted_note":"Pwojè soumèt: Pwopriyetè ki retounen yo ka konekte isit la epi itilize chak onglet pou revize estati, fichye, estimasyon, peman, pwogrè, mesaj, ak fini.",
     "homeowner.estimate_title":"Estimasyon ak kontra",
     "homeowner.estimate_description":"Estimasyon ak kontra kliyan yo parèt isit la apre BCT Admin revize epi apwouve yo. Estimasyon ak asistans IA rete kòm bouyon jiskaske BCT apwouve piblikasyon manyèlman.",
     "homeowner.estimate_notice":"Konekte pou wè estimasyon apwouve, estati kontra, siyati obligatwa, ak nòt BCT.",
@@ -1982,7 +1977,6 @@ const BCT_HOMEOWNER_PAGE_TRANSLATION_PATCHES={
     "homeowner.returning_title":"Proprietário cadastrado — Entrar",
     "homeowner.returning_description":"Entre para ver o status real do seu projeto BCT e enviar arquivos privados.",
     "homeowner.next_step_note":"Próximo passo: novos proprietários devem abrir Detalhes do projeto e preencher a solicitação privada.",
-    "homeowner.submitted_note":"Projetos enviados: proprietários cadastrados podem entrar aqui e usar cada aba para revisar status, arquivos, estimativas, pagamentos, progresso, mensagens e conclusão.",
     "homeowner.estimate_title":"Estimativa e contrato",
     "homeowner.estimate_description":"Estimativas e contratos para clientes aparecem aqui depois que a Administração BCT revisa e aprova. Estimativas com IA permanecem como rascunho até aprovação manual da BCT.",
     "homeowner.estimate_notice":"Entre para ver estimativas aprovadas, status do contrato, assinaturas necessárias e notas da BCT.",
@@ -2511,7 +2505,7 @@ function syncBrandSlogan(language){
 // BCT V46 opening-screen translation keys are merged locally so the landing page never depends on a network translation call.
 const BCT_ENTRY_TRANSLATION_KEYS={signin:'entry.signin',signup:'entry.signup',client:'entry.client',contractor:'entry.contractor',estimator:'entry.estimator',admin:'entry.admin'};
 const BCT_LOGIN_LANGUAGE_UI={
-  en:{label:'Choose Your Language',signin:'Sign In',signup:'Sign Up',client:'Client / Homeowner',contractor:'Contractor',estimator:'BCT Estimator',admin:'Admin'},
+  en:{label:'Choose Your Language',signin:'Sign In',signup:'Sign Up',client:'Client',contractor:'Contractor',estimator:'BCT Estimator',admin:'Admin'},
   es:{label:'Elija su idioma',signin:'Iniciar sesión',signup:'Registrarse',client:'Cliente',contractor:'Contratista',estimator:'Estimador BCT',admin:'Administrador'},
   fr:{label:'Choisissez votre langue',signin:'Se connecter',signup:'S’inscrire',client:'Client',contractor:'Entrepreneur',estimator:'Estimateur BCT',admin:'Administrateur'},
   ht:{label:'Chwazi lang ou',signin:'Konekte',signup:'Enskri',client:'Kliyan',contractor:'Kontraktè',estimator:'Estimasyon BCT',admin:'Administratè'},
@@ -3288,6 +3282,7 @@ renderAll();
   async function loadPublic(){
     const fallbackServices=[
       {code:'gutters_drainage',label:'Gutters & Drainage'},
+      {code:'roofing',label:'Roofing'},
       {code:'siding',label:'Siding'},
       {code:'windows_doors',label:'Windows & Doors'},
       {code:'drywall',label:'Drywall'},
@@ -3296,8 +3291,11 @@ renderAll();
       {code:'kitchen_remodeling',label:'Kitchen Remodeling'},
       {code:'bathroom_remodeling',label:'Bathroom Remodeling'},
       {code:'decks_porch',label:'Decks & Porches'},
+      {code:'concrete_masonry',label:'Concrete & Masonry'},
+      {code:'general_contractor',label:'Contractor / Renovations'},
       {code:'electrical',label:'Electrical'},
       {code:'plumbing',label:'Plumbing'},
+      {code:'hvac',label:'HVAC'},
       {code:'carpentry',label:'Carpentry'},
       {code:'water_flood_damage',label:'Water / Flood Damage'},
       {code:'full_renovation',label:'Full Renovation'},
@@ -3908,6 +3906,61 @@ renderAll();
 })();
 </script>
 
+<script>
+/* BCT V46 home About story translation repair */
+(function(){
+ const story={
+  en:{'about.button':'About BCT','about.middle_lead':'Where clients, contractors, and BCT meet in the middle.','about.middle_p1':'BCT Renovations is a general-contractor-managed project network. Clients submit projects to BCT, and BCT helps organize the scope, review details, coordinate communication, and manage the project process.','about.middle_p2':'Contractors, handymen, electricians, plumbers, HVAC pros, roofers, concrete and masonry crews, flooring installers, and estimators can apply to join the BCT network. BCT reviews credentials, work history, insurance, and project fit before assigning opportunities.','about.middle_p3':'BCT is not just a referral list. Clients are not picking from random public bids, and contractors are not competing in front of the customer. BCT stays in the middle as the general contractor, helping protect the client, guide the project, and build a stronger contractor network.','about.middle_close':'Your project. Your home. Our contractor network. One BCT process.'},
+  es:{'about.button':'Acerca de BCT','about.middle_lead':'Donde clientes, contratistas y BCT se encuentran en el centro.','about.middle_p1':'BCT Renovations es una red de proyectos administrada por un contratista general. Los clientes envían proyectos a BCT, y BCT ayuda a organizar el alcance, revisar detalles, coordinar la comunicación y manejar el proceso del proyecto.','about.middle_p2':'Contratistas, personal de mantenimiento, electricistas, plomeros, técnicos HVAC, techadores, equipos de concreto y mampostería, instaladores de pisos y estimadores pueden solicitar unirse a la red BCT. BCT revisa credenciales, historial de trabajo, seguro y ajuste del proyecto antes de asignar oportunidades.','about.middle_p3':'BCT no es solo una lista de referencias. Los clientes no eligen entre ofertas públicas al azar, y los contratistas no compiten frente al cliente. BCT permanece en el centro como contratista general, ayudando a proteger al cliente, guiar el proyecto y construir una red de contratistas más fuerte.','about.middle_close':'Su proyecto. Su hogar. Nuestra red de contratistas. Un solo proceso BCT.'},
+  fr:{'about.button':'À propos de BCT','about.middle_lead':'Là où les clients, les entrepreneurs et BCT se rejoignent.','about.middle_p1':'BCT Renovations est un réseau de projets géré par un entrepreneur général. Les clients soumettent leurs projets à BCT, et BCT aide à organiser la portée, examiner les détails, coordonner la communication et gérer le processus du projet.','about.middle_p2':'Les entrepreneurs, hommes à tout faire, électriciens, plombiers, professionnels CVC, couvreurs, équipes de béton et maçonnerie, installateurs de planchers et estimateurs peuvent demander à rejoindre le réseau BCT. BCT examine les références, l’expérience, l’assurance et l’adéquation au projet avant d’attribuer des occasions.','about.middle_p3':'BCT n’est pas simplement une liste de références. Les clients ne choisissent pas parmi des offres publiques au hasard, et les entrepreneurs ne se concurrencent pas devant le client. BCT reste au centre comme entrepreneur général afin de protéger le client, guider le projet et bâtir un réseau plus solide.','about.middle_close':'Votre projet. Votre maison. Notre réseau d’entrepreneurs. Un seul processus BCT.'},
+  ht:{'about.button':'Konsènan BCT','about.middle_lead':'Kote kliyan, kontraktè, ak BCT rankontre nan mitan an.','about.middle_p1':'BCT Renovations se yon rezo pwojè yon kontraktè jeneral jere. Kliyan soumèt pwojè bay BCT, epi BCT ede òganize travay la, revize detay yo, kowòdone kominikasyon, epi jere pwosesis pwojè a.','about.middle_p2':'Kontraktè, moun reparasyon, elektrisyen, plonbye, pwofesyonèl HVAC, twati, ekip beton ak masonri, enstalatè planche, ak estimatè ka aplike pou rantre nan rezo BCT la. BCT revize kalifikasyon, eksperyans travay, asirans, ak konpatibilite pwojè a avan li bay opòtinite.','about.middle_p3':'BCT pa sèlman yon lis referans. Kliyan yo pa chwazi nan òf piblik o aza, epi kontraktè yo pa fè konpetisyon devan kliyan an. BCT rete nan mitan an kòm kontraktè jeneral la, pou ede pwoteje kliyan an, gide pwojè a, epi bati yon rezo kontraktè ki pi solid.','about.middle_close':'Pwojè ou. Kay ou. Rezo kontraktè nou. Yon sèl pwosesis BCT.'},
+  pt:{'about.button':'Sobre a BCT','about.middle_lead':'Onde clientes, empreiteiros e a BCT se encontram no meio.','about.middle_p1':'A BCT Renovations é uma rede de projetos gerenciada por empreiteiro geral. Clientes enviam projetos para a BCT, e a BCT ajuda a organizar o escopo, revisar detalhes, coordenar a comunicação e gerenciar o processo do projeto.','about.middle_p2':'Empreiteiros, profissionais de manutenção, eletricistas, encanadores, profissionais de HVAC, telhadistas, equipes de concreto e alvenaria, instaladores de pisos e estimadores podem se candidatar à rede BCT. A BCT analisa credenciais, histórico de trabalho, seguro e adequação ao projeto antes de atribuir oportunidades.','about.middle_p3':'A BCT não é apenas uma lista de indicações. Clientes não escolhem entre propostas públicas aleatórias, e empreiteiros não competem diante do cliente. A BCT permanece no meio como empreiteiro geral, ajudando a proteger o cliente, orientar o projeto e construir uma rede mais forte.','about.middle_close':'Seu projeto. Sua casa. Nossa rede de empreiteiros. Um único processo BCT.'},
+  vi:{'about.button':'Giới thiệu BCT','about.middle_lead':'Nơi khách hàng, nhà thầu và BCT gặp nhau ở giữa.','about.middle_p1':'BCT Renovations là mạng lưới dự án do tổng thầu quản lý. Khách hàng gửi dự án cho BCT, và BCT giúp tổ chức phạm vi, xem xét chi tiết, điều phối giao tiếp và quản lý quy trình dự án.','about.middle_p2':'Nhà thầu, thợ sửa chữa, thợ điện, thợ ống nước, chuyên viên HVAC, thợ mái, đội bê tông và xây, thợ sàn và người ước tính có thể đăng ký tham gia mạng lưới BCT. BCT xem xét giấy tờ, lịch sử công việc, bảo hiểm và mức phù hợp của dự án trước khi giao cơ hội.','about.middle_p3':'BCT không chỉ là danh sách giới thiệu. Khách hàng không chọn từ các giá thầu công khai ngẫu nhiên, và nhà thầu không cạnh tranh trước mặt khách hàng. BCT đứng ở giữa với vai trò tổng thầu, giúp bảo vệ khách hàng, hướng dẫn dự án và xây dựng mạng lưới nhà thầu mạnh hơn.','about.middle_close':'Dự án của bạn. Ngôi nhà của bạn. Mạng lưới nhà thầu của chúng tôi. Một quy trình BCT.'},
+  zh:{'about.button':'关于 BCT','about.middle_lead':'客户、承包商和 BCT 在这里汇合。','about.middle_p1':'BCT Renovations 是由总承包商管理的项目网络。客户向 BCT 提交项目，BCT 帮助整理范围、审核细节、协调沟通并管理项目流程。','about.middle_p2':'承包商、维修人员、电工、管道工、HVAC 专业人员、屋顶工、混凝土和砌筑团队、地板安装人员以及估价人员都可以申请加入 BCT 网络。BCT 会在分配机会前审核资质、工作经历、保险和项目匹配度。','about.middle_p3':'BCT 不只是推荐名单。客户不会从随机公开报价中选择，承包商也不会在客户面前竞争。BCT 作为总承包商保持在中间，帮助保护客户、指导项目并建立更强的承包商网络。','about.middle_close':'您的项目。您的家。我们的承包商网络。一个 BCT 流程。'},
+  ar:{'about.button':'حول BCT','about.middle_lead':'حيث يلتقي العملاء والمقاولون و BCT في المنتصف.','about.middle_p1':'BCT Renovations هي شبكة مشاريع يديرها مقاول عام. يرسل العملاء المشاريع إلى BCT، وتساعد BCT في تنظيم النطاق ومراجعة التفاصيل وتنسيق التواصل وإدارة عملية المشروع.','about.middle_p2':'يمكن للمقاولين، وفنيي الصيانة، والكهربائيين، والسباكين، ومحترفي HVAC، وعمال الأسقف، وفرق الخرسانة والبناء، ومركبي الأرضيات، والمقدرين التقديم للانضمام إلى شبكة BCT. تراجع BCT المؤهلات وتاريخ العمل والتأمين وملاءمة المشروع قبل إسناد الفرص.','about.middle_p3':'BCT ليست مجرد قائمة إحالات. العملاء لا يختارون من عروض عامة عشوائية، والمقاولون لا يتنافسون أمام العميل. تبقى BCT في المنتصف كمقاول عام، للمساعدة في حماية العميل وتوجيه المشروع وبناء شبكة مقاولين أقوى.','about.middle_close':'مشروعك. منزلك. شبكة مقاولينا. عملية BCT واحدة.'},
+  ru:{'about.button':'О BCT','about.middle_lead':'Место, где клиенты, подрядчики и BCT встречаются посередине.','about.middle_p1':'BCT Renovations — это сеть проектов под управлением генерального подрядчика. Клиенты отправляют проекты в BCT, а BCT помогает организовать объем работ, проверить детали, координировать общение и управлять процессом проекта.','about.middle_p2':'Подрядчики, мастера ремонта, электрики, сантехники, специалисты HVAC, кровельщики, бетонные и каменные бригады, укладчики напольных покрытий и сметчики могут подать заявку на вступление в сеть BCT. BCT проверяет квалификацию, опыт, страховку и соответствие проекту перед назначением возможностей.','about.middle_p3':'BCT — это не просто список рекомендаций. Клиенты не выбирают из случайных публичных предложений, а подрядчики не конкурируют перед клиентом. BCT остается посередине как генеральный подрядчик, помогая защищать клиента, вести проект и строить более сильную сеть подрядчиков.','about.middle_close':'Ваш проект. Ваш дом. Наша сеть подрядчиков. Один процесс BCT.'}
+ };
+ function apply(){
+  try{
+   Object.assign(BCT_ENGLISH_FALLBACK,story.en);
+   for(const language of Object.keys(story)){BCT_LOCAL_TRANSLATIONS[language]=BCT_LOCAL_TRANSLATIONS[language]||{};Object.assign(BCT_LOCAL_TRANSLATIONS[language],story[language]);}
+   const language=localStorage.getItem(BCT_LANGUAGE_KEY)||document.documentElement.lang||'en';
+   applyBctLanguage(String(language).toLowerCase().split('-')[0]);
+  }catch(_){}
+ }
+ document.addEventListener('change',e=>{if(e.target.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))setTimeout(apply,0)},true);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+})();
+</script>
+
+<script>
+/* BCT V46 About short-copy translation repair */
+(function(){
+ const shortAbout={
+  es:{'about.short_lead':'BCT Renovations es su contratista general, no solo un servicio de referencias.','about.short_body':'Coordinamos su proyecto, trabajamos con contratistas verificados, supervisamos el progreso y permanecemos involucrados de principio a fin.','about.short_close':'Su proyecto. Su hogar. Nuestro compromiso.','homeowner.about_close':'Cerrar Acerca de'},
+  fr:{'about.short_lead':'BCT Renovations est votre entrepreneur général, pas simplement un service de mise en relation.','about.short_body':'Nous coordonnons votre projet, travaillons avec des entrepreneurs vérifiés, suivons l’avancement et restons impliqués du début à la fin.','about.short_close':'Votre projet. Votre maison. Notre engagement.','homeowner.about_close':'Fermer À propos'},
+  ht:{'about.short_lead':'BCT Renovations se kontraktè jeneral ou, pa sèlman yon sèvis referans.','about.short_body':'Nou kowòdone pwojè ou, travay ak kontraktè verifye, suiv pwogrè a, epi rete ladan depi kòmansman jouk fen.','about.short_close':'Pwojè ou. Kay ou. Angajman nou.','homeowner.about_close':'Fèmen enfòmasyon an'},
+  pt:{'about.short_lead':'A BCT Renovations é seu empreiteiro geral, não apenas um serviço de indicação.','about.short_body':'Coordenamos seu projeto, trabalhamos com empreiteiros verificados, acompanhamos o progresso e permanecemos envolvidos do início ao fim.','about.short_close':'Seu projeto. Sua casa. Nosso compromisso.','homeowner.about_close':'Fechar Sobre'},
+  vi:{'about.short_lead':'BCT Renovations là tổng thầu của bạn, không chỉ là dịch vụ giới thiệu nhà thầu.','about.short_body':'Chúng tôi điều phối dự án, làm việc với nhà thầu đã xác minh, theo dõi tiến độ và đồng hành từ đầu đến cuối.','about.short_close':'Dự án của bạn. Ngôi nhà của bạn. Cam kết của chúng tôi.','homeowner.about_close':'Đóng phần giới thiệu'},
+  zh:{'about.short_lead':'BCT Renovations 是您的总承包商，而不只是承包商推荐服务。','about.short_body':'我们协调您的项目，与经过验证的承包商合作，监督进度，并从开始到结束持续参与。','about.short_close':'您的项目。您的家。我们的承诺。','homeowner.about_close':'关闭关于'},
+  ar:{'about.short_lead':'BCT Renovations هي المقاول العام الخاص بك، وليست مجرد خدمة إحالة إلى مقاول.','about.short_body':'ننسق مشروعك، ونعمل مع مقاولين موثقين، ونراقب التقدم، ونبقى مشاركين من البداية إلى النهاية.','about.short_close':'مشروعك. منزلك. التزامنا.','homeowner.about_close':'إغلاق حول'},
+  ru:{'about.short_lead':'BCT Renovations — ваш генеральный подрядчик, а не просто сервис рекомендаций подрядчиков.','about.short_body':'Мы координируем ваш проект, работаем с проверенными подрядчиками, отслеживаем прогресс и остаемся вовлеченными от начала до конца.','about.short_close':'Ваш проект. Ваш дом. Наше обязательство.','homeowner.about_close':'Закрыть раздел О нас'}
+ };
+ function apply(){
+  try{
+   for(const language of Object.keys(shortAbout)){
+    BCT_LOCAL_TRANSLATIONS[language]=BCT_LOCAL_TRANSLATIONS[language]||{};
+    Object.assign(BCT_LOCAL_TRANSLATIONS[language],shortAbout[language]);
+   }
+   const language=localStorage.getItem(BCT_LANGUAGE_KEY)||document.documentElement.lang||'en';
+   applyBctLanguage(String(language).toLowerCase().split('-')[0]);
+  }catch(_){}
+ }
+ document.addEventListener('change',e=>{if(e.target.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))setTimeout(apply,0)},true);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply();
+})();
+</script>
+
 <!-- BCT V46 deployment sync marker 2026-09-28 -->
 
 <style>
@@ -4437,7 +4490,13 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
  const COPY={
   en:{ch:"Why Choose BCT Renovations?",cb:"BCT Renovations is your general contractor, not just a name-and-number referral. We coordinate your project, work with verified contractors, monitor progress, protect your project information, and stay involved through completion.",cc:"Your project. Your home. Our commitment.",th:"Why Join the BCT Contractor Network?",tb:"BCT gives qualified contractors opportunities to work on BCT-managed projects with organized project information, coordinated customer communication, and a clear path from application and approval to authorized job opportunities.",tc:"Build your relationship with BCT. Focus on quality work. Grow through qualified opportunities."},
   es:{ch:"¿Por qué elegir BCT Renovations?",cb:"BCT Renovations es su contratista general, no solo un servicio de referencias. Coordinamos su proyecto, trabajamos con contratistas verificados, supervisamos el progreso, protegemos la información del proyecto y permanecemos involucrados hasta finalizarlo.",cc:"Su proyecto. Su hogar. Nuestro compromiso.",th:"¿Por qué unirse a la Red de Contratistas de BCT?",tb:"BCT ofrece a contratistas calificados oportunidades en proyectos administrados por BCT, con información organizada, comunicación coordinada con el cliente y un proceso claro desde la solicitud y aprobación hasta trabajos autorizados.",tc:"Construya su relación con BCT. Enfóquese en un trabajo de calidad. Crezca con oportunidades calificadas."},
-  fr:{ch:"Pourquoi choisir BCT Renovations ?",cb:"BCT Renovations est votre entrepreneur général, pas simplement un service de mise en relation. Nous coordonnons votre projet, travaillons avec des entrepreneurs vérifiés, suivons l’avancement, protégeons vos informations et restons impliqués jusqu’à l’achèvement.",cc:"Votre projet. Votre maison. Notre engagement.",th:"Pourquoi rejoindre le réseau d’entrepreneurs BCT ?",tb:"BCT offre aux entrepreneurs qualifiés des occasions de travailler sur des projets gérés par BCT, avec des informations organisées, une communication client coordonnée et un parcours clair de la candidature à l’approbation puis aux travaux autorisés.",tc:"Développez votre relation avec BCT. Concentrez-vous sur la qualité. Progressez grâce à des occasions qualifiées."}
+  fr:{ch:"Pourquoi choisir BCT Renovations ?",cb:"BCT Renovations est votre entrepreneur général, pas simplement un service de mise en relation. Nous coordonnons votre projet, travaillons avec des entrepreneurs vérifiés, suivons l’avancement, protégeons vos informations et restons impliqués jusqu’à l’achèvement.",cc:"Votre projet. Votre maison. Notre engagement.",th:"Pourquoi rejoindre le réseau d’entrepreneurs BCT ?",tb:"BCT offre aux entrepreneurs qualifiés des occasions de travailler sur des projets gérés par BCT, avec des informations organisées, une communication client coordonnée et un parcours clair de la candidature à l’approbation puis aux travaux autorisés.",tc:"Développez votre relation avec BCT. Concentrez-vous sur la qualité. Progressez grâce à des occasions qualifiées."},
+  ht:{ch:"Poukisa chwazi BCT Renovations?",cb:"BCT Renovations se kontraktè jeneral ou, pa sèlman yon sèvis ki bay non ak nimewo. Nou kowòdone pwojè ou, travay ak kontraktè verifye, suiv pwogrè a, pwoteje enfòmasyon pwojè ou, epi rete ladan jouk li fini.",cc:"Pwojè ou. Kay ou. Angajman nou.",th:"Poukisa rantre nan Rezo Kontraktè BCT a?",tb:"BCT bay kontraktè kalifye opòtinite pou travay sou pwojè BCT jere, ak enfòmasyon òganize, kominikasyon kliyan ki kowòdone, ak yon chemen klè soti nan aplikasyon rive nan apwobasyon ak travay otorize.",tc:"Bati relasyon ou ak BCT. Konsantre sou bon travay. Grandi ak opòtinite kalifye."},
+  pt:{ch:"Por que escolher a BCT Renovations?",cb:"A BCT Renovations é seu empreiteiro geral, não apenas uma indicação com nome e telefone. Coordenamos seu projeto, trabalhamos com empreiteiros verificados, monitoramos o progresso, protegemos as informações do projeto e permanecemos envolvidos até a conclusão.",cc:"Seu projeto. Sua casa. Nosso compromisso.",th:"Por que entrar para a Rede de Empreiteiros BCT?",tb:"A BCT oferece a empreiteiros qualificados oportunidades em projetos gerenciados pela BCT, com informações organizadas, comunicação coordenada com o cliente e um caminho claro da inscrição e aprovação até trabalhos autorizados.",tc:"Construa seu relacionamento com a BCT. Foque em trabalho de qualidade. Cresça por meio de oportunidades qualificadas."},
+  vi:{ch:"Vì sao chọn BCT Renovations?",cb:"BCT Renovations là tổng thầu của bạn, không chỉ là nơi giới thiệu tên và số điện thoại. Chúng tôi điều phối dự án, làm việc với nhà thầu đã xác minh, theo dõi tiến độ, bảo vệ thông tin dự án và đồng hành đến khi hoàn thành.",cc:"Dự án của bạn. Ngôi nhà của bạn. Cam kết của chúng tôi.",th:"Vì sao tham gia Mạng lưới Nhà thầu BCT?",tb:"BCT mang đến cho nhà thầu đủ điều kiện cơ hội làm việc trên các dự án do BCT quản lý, với thông tin được tổ chức rõ ràng, giao tiếp khách hàng được điều phối và lộ trình từ đăng ký, phê duyệt đến công việc được cho phép.",tc:"Xây dựng quan hệ với BCT. Tập trung vào chất lượng. Phát triển qua cơ hội phù hợp."},
+  zh:{ch:"为什么选择 BCT Renovations？",cb:"BCT Renovations 是您的总承包商，不只是一个姓名和电话号码的推荐服务。我们协调您的项目，与经过验证的承包商合作，监督进度，保护项目信息，并持续参与直到完工。",cc:"您的项目。您的家。我们的承诺。",th:"为什么加入 BCT 承包商网络？",tb:"BCT 为合格承包商提供参与 BCT 管理项目的机会，包括有组织的项目信息、协调后的客户沟通，以及从申请、审批到授权工作的清晰流程。",tc:"与 BCT 建立关系。专注高质量施工。通过合格机会成长。"},
+  ar:{ch:"لماذا تختار BCT Renovations؟",cb:"BCT Renovations هي المقاول العام الخاص بك، وليست مجرد إحالة باسم ورقم هاتف. ننسق مشروعك، ونعمل مع مقاولين موثقين، ونراقب التقدم، ونحمي معلومات مشروعك، ونبقى مشاركين حتى الاكتمال.",cc:"مشروعك. منزلك. التزامنا.",th:"لماذا تنضم إلى شبكة مقاولي BCT؟",tb:"تمنح BCT المقاولين المؤهلين فرصًا للعمل على مشاريع تديرها BCT، مع معلومات منظمة، وتواصل منسق مع العميل، ومسار واضح من التقديم والموافقة إلى الأعمال المصرح بها.",tc:"ابنِ علاقتك مع BCT. ركز على جودة العمل. انمُ من خلال فرص مؤهلة."},
+  ru:{ch:"Почему выбрать BCT Renovations?",cb:"BCT Renovations — ваш генеральный подрядчик, а не просто направление с именем и номером. Мы координируем ваш проект, работаем с проверенными подрядчиками, отслеживаем прогресс, защищаем информацию о проекте и остаемся вовлеченными до завершения.",cc:"Ваш проект. Ваш дом. Наше обязательство.",th:"Почему стоит присоединиться к сети подрядчиков BCT?",tb:"BCT дает квалифицированным подрядчикам возможности работать над проектами под управлением BCT, с организованной информацией, согласованной коммуникацией с клиентом и понятным путем от заявки и одобрения до авторизованных работ.",tc:"Стройте отношения с BCT. Сосредоточьтесь на качестве работы. Растите через подходящие возможности."}
  };
  function lang(){return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}
  function ensure(){
@@ -4448,7 +4507,7 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
   render();
  }
  function render(){const t=COPY[lang()]||COPY.en, c=document.getElementById('bctNewClientWhyBCT'),k=document.getElementById('bctContractorApplicantWhyBCT');if(c)c.innerHTML='<h2>'+t.ch+'</h2><p>'+t.cb+'</p><p><strong>'+t.cc+'</strong></p>';if(k)k.innerHTML='<h2>'+t.th+'</h2><p>'+t.tb+'</p><p><strong>'+t.tc+'</strong></p>'}
- document.addEventListener('change',e=>{if(e.target.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))requestAnimationFrame(render)},true);
+ document.addEventListener('change',e=>{if(e.target.matches?.('#bctLoginLanguage,#bctLanguage,[data-language-selector]')){requestAnimationFrame(render);setTimeout(render,0);}},true);
  document.addEventListener('click',e=>{if(e.target.closest?.('#bctHomeSignupBtn,#bctContractorSignupBtn'))requestAnimationFrame(ensure)},true);
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
 })();
@@ -4486,6 +4545,10 @@ const workerRoles=[
   {code:'general_contractor',short:'Contractor',label:'Contractor / Renovations',signin:'Contractor Sign In',apply:'Start Contractor Application',agent:'contractor_coordinator',copy:'Renovations, larger scopes, and BCT-managed contractor work.'},
   {code:'electrical',short:'Electrician',label:'Electrician',signin:'Electrician Sign In',apply:'Start Electrician Application',agent:'compliance_credentials',copy:'Electrical applicants need license, insurance, and credential review before assignment.'},
   {code:'plumbing',short:'Plumber',label:'Plumber',signin:'Plumber Sign In',apply:'Start Plumber Application',agent:'compliance_credentials',copy:'Plumbing applicants need license, insurance, and credential review before assignment.'},
+  {code:'hvac',short:'HVAC',label:'HVAC',signin:'HVAC Sign In',apply:'Start HVAC Application',agent:'compliance_credentials',copy:'Heating, cooling, ventilation, and licensed HVAC work.'},
+  {code:'roofing',short:'Roofer',label:'Roofing',signin:'Roofer Sign In',apply:'Start Roofer Application',agent:'compliance_credentials',copy:'Roof repair, replacement, leak work, and licensed roofing review.'},
+  {code:'concrete_masonry',short:'Concrete',label:'Concrete & Masonry',signin:'Concrete & Masonry Sign In',apply:'Start Concrete & Masonry Application',agent:'contractor_coordinator',copy:'Concrete flatwork, masonry repair, drainage pads, walks, and related exterior work.'},
+  {code:'flooring',short:'Flooring',label:'Flooring',signin:'Flooring Sign In',apply:'Start Flooring Application',agent:'contractor_coordinator',copy:'Ceramic tile, hardwood, laminate, vinyl, carpet, subfloor, and flooring repair work.'},
   {code:'handyman_services',short:'Handyman',label:'Handyman',signin:'Handyman Sign In',apply:'Start Handyman Application',agent:'contractor_coordinator',copy:'Small jobs, punch-list repairs, move-out repairs, and handyman work.'}
 ];
 const categoryRoles=[
@@ -4494,7 +4557,10 @@ const categoryRoles=[
   ['electrical','Electrician','Electrical work that may require licensing, permit review, or BCT Admin approval before assignment.'],
   ['plumbing','Plumber','Plumbing work that may require licensing, permit review, or BCT Admin approval before assignment.'],
   ['hvac','Licensed HVAC','Heating, cooling, ventilation, and related licensed trade work.'],
-  ['specialty_trade','Other Licensed / Specialty Trade','Roofing, siding, windows, doors, concrete, mitigation, or other trade-specific work.']
+  ['roofing','Roofer','Roof repair, replacement, leak work, and related licensed trade work.'],
+  ['concrete_masonry','Concrete & Masonry','Concrete flatwork, masonry repair, pads, walks, drainage work, and related exterior scopes.'],
+  ['flooring','Flooring','Ceramic tile, hardwood, laminate, vinyl, carpet, subfloor, and flooring repair work.'],
+  ['specialty_trade','Other Licensed / Specialty Trade','Siding, windows, doors, mitigation, or other trade-specific work.']
 ];
 let activeRole=null;
 
@@ -4503,6 +4569,7 @@ function roleByCode(code){return workerRoles.find(role=>role.code===code)||null}
 function publicLoginCard(){return document.querySelector('.bct-public-contractor-login')||$('bctContractorLoginCard')}
 function setText(el,text){if(el)el.textContent=text}
 function setValueIfEmpty(el,value){if(el&&!String(el.value||'').trim())el.value=value}
+function setValue(el,value){if(el)el.value=value}
 function selectedCategoryInputs(){return Array.from(document.querySelectorAll('input[name="contractorNetworkRole"]'))}
 
 function installRenterFlow(){
@@ -4653,7 +4720,7 @@ function applyWorkerRole(code,opts={}){
   const start=$('bctContractorSignupBtn');
   setText(start,role.apply);
   if(start)start.setAttribute('data-bct-selected-role',role.code);
-  setValueIfEmpty(field('trade'),role.label);
+  setValue(field('trade'),role.code);
   selectedCategoryInputs().forEach(input=>{input.checked=input.value===role.code});
   updateApplicationCopy(role);
   updateAgentRole(role);
