@@ -51,3 +51,17 @@ body.bct-contractor-signup:not(.bct-authenticated) [data-contractor-view="jobs"]
 @media(max-width:600px){
   body.bct-agent-open #bctAgentPanel>header .bct-agent-home{background:#0f5f63!important;color:#fff!important;border-color:#0f5f63!important;box-shadow:0 3px 10px rgba(15,95,99,.18)!important}
 }
+
+/* Ace of Spades visible contractor profession router: patch the real contractor screen, not an unused helper file. */
+#bctContractorRoleRouter{max-width:760px!important;margin:10px auto!important;padding:12px!important;border-radius:14px!important;background:#fff!important;border:1px solid #d7e0e1!important;box-shadow:0 6px 16px rgba(23,36,39,.05)!important}
+#bctContractorRoleRouter h3{font-size:0!important;line-height:0!important;margin:0 0 10px!important;text-align:center!important;color:#374151!important}
+#bctContractorRoleRouter h3::before{content:"Choose your profession"!important;display:block!important;font-size:clamp(20px,6vw,28px)!important;line-height:1.15!important;font-weight:900!important;color:#374151!important;text-align:center!important}
+#bctContractorRoleRouter>p,#bctContractorRoleRouter .muted{display:none!important}
+#bctContractorRoleRouter .bct-worker-role-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin:0!important}
+#bctContractorRoleRouter .bct-worker-role-grid button{min-height:54px!important;height:54px!important;padding:8px 6px!important;border-radius:10px!important;background:#f8fafc!important;color:#4b5563!important;border:1.5px solid #cbd5e1!important;box-shadow:none!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;overflow:hidden!important}
+#bctContractorRoleRouter .bct-worker-role-grid button b{display:inline-block!important;margin:0!important;color:#4b5563!important;font-size:clamp(18px,5.2vw,22px)!important;line-height:1!important;font-weight:900!important;white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;max-width:100%!important}
+#bctContractorRoleRouter .bct-worker-role-grid button span{display:none!important}
+#bctContractorRoleRouter .bct-worker-role-grid button.active,#bctContractorRoleRouter .bct-worker-role-grid button[aria-pressed="true"]{background:#0f5f63!important;border-color:#0f5f63!important;color:#fff!important}
+#bctContractorRoleRouter .bct-worker-role-grid button.active b,#bctContractorRoleRouter .bct-worker-role-grid button[aria-pressed="true"] b{color:#fff!important}
+@media(min-width:700px){#bctContractorRoleRouter .bct-worker-role-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}#bctContractorRoleRouter .bct-worker-role-grid button b{font-size:20px!important}}
+@media(max-width:380px){#bctContractorRoleRouter .bct-worker-role-grid button b{font-size:17px!important;letter-spacing:-.02em!important}}
