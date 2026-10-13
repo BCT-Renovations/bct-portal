@@ -32,7 +32,7 @@ const currentRoleBlock = `assert(html.includes('data-entry-login="client"')&&htm
 
 const signedOutHome=(html.match(/<section id="view-home"[\\s\\S]*?<section id="view-customer"/)||[''])[0];
 assert(signedOutHome.includes('data-entry-login="client"')&&signedOutHome.includes('data-entry-login="contractor"')&&signedOutHome.includes('data-entry-login="estimator"')&&signedOutHome.includes('data-entry-login="admin"'), 'Signed-out entry has all four approved role buttons.');
-assert(signedOutHome.includes('>Client / Homeowner</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>BCT Estimator</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the four approved V46 role actions.');
+assert(signedOutHome.includes('>Client</button>')&&signedOutHome.includes('>Contractor</button>')&&signedOutHome.includes('>BCT Estimator</button>')&&signedOutHome.includes('>Admin</button>'), 'Signed-out entry must label the four approved V46 role actions.');
 assert((signedOutHome.match(/data-entry-login="/g)||[]).length === 4, 'Signed-out V46 must expose only the four approved role buttons in the signed-out entry.');
 `;
 source = source.slice(0,start) + currentRoleBlock + source.slice(end);

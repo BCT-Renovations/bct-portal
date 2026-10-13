@@ -1,4 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "/bct-app-icon-v46-ios.png"
+    },
+    {
+      "source": "/apple-touch-icon-precomposed.png",
+      "destination": "/bct-app-icon-v46-ios.png"
+    }
+  ],
   "headers": [
     {
       "source": "/",
@@ -37,6 +47,58 @@
         {
           "key": "Cache-Control",
           "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/bct-app-icon-v46-ios.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
+        }
+      ]
+    },
+    {
+      "source": "/bct-app-icon-v46.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
+        }
+      ]
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
+        }
+      ]
+    },
+    {
+      "source": "/apple-touch-icon-precomposed.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
         }
       ]
     }

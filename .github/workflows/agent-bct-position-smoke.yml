@@ -1,0 +1,28 @@
+name: Agent BCT Position Smoke
+
+on:
+  push:
+    branches: [agent-bct]
+    paths:
+      - "api/agent-bct/**"
+      - "scripts/agent-bct-positions-smoke.mjs"
+      - ".github/workflows/agent-bct-position-smoke.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "api/agent-bct/**"
+      - "scripts/agent-bct-positions-smoke.mjs"
+      - ".github/workflows/agent-bct-position-smoke.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  position-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/agent-bct-positions-smoke.mjs
