@@ -4845,6 +4845,87 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
  new MutationObserver(cleanup).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+<style id="bctBackFixCss">
+/* BCT V46 Right On live back-button cleanup */
+.bct-mint-back-button{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-height:52px!important;
+  margin:10px 0!important;
+  background:#cfeedd!important;
+  color:#111!important;
+  border:2px solid #82b99b!important;
+  border-radius:10px!important;
+  font-size:17px!important;
+  font-weight:900!important;
+  text-align:center!important;
+  box-shadow:0 4px 12px rgba(10,69,73,.10)!important;
+}
+#bctContractorResendBtn{display:none!important}
+body.bct-show-contractor-resend #bctContractorResendBtn{display:inline-flex!important}
+</style>
+<script id="bctBackFixJs">
+/* BCT V46 Right On live back-button cleanup */
+(function(){
+ function goHome(){
+  document.body.classList.remove('bct-portal-entered','bct-entry-contractor','bct-contractor-signup','bct-entry-client','bct-home-signup','bct-entry-admin','bct-entry-estimator');
+  if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();
+  else if(typeof setVisibleView==='function')setVisibleView('home');
+  document.getElementById('view-home')?.classList.remove('hidden','bct-signedout-hidden');
+  try{history.pushState({bctEntry:'home'},'',location.pathname+location.search+'#home')}catch(_){}
+  requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
+ }
+ function goContractor(){
+  document.body.classList.add('bct-portal-entered','bct-entry-contractor');
+  document.body.classList.remove('bct-contractor-signup');
+  if(typeof setVisibleView==='function')setVisibleView('status');
+  document.getElementById('view-status')?.classList.remove('hidden','bct-signedout-hidden');
+  document.getElementById('view-apply')?.classList.add('hidden');
+  try{history.pushState({bctEntry:'contractor'},'',location.pathname+location.search+'#status')}catch(_){}
+  requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
+ }
+ function makeButton(id,text,handler){
+  let btn=document.getElementById(id);
+  if(!btn){btn=document.createElement('button');btn.type='button';btn.id=id;}
+  btn.className='bct-mint-back-button';
+  btn.textContent=text;
+  btn.onclick=handler;
+  return btn;
+ }
+ function install(){
+  const apply=document.getElementById('view-apply');
+  if(apply){
+   const top=makeButton('bctApplyBackTop','Back to Contractor Portal',goContractor);
+   const bottom=makeButton('bctApplyBackBottom','Back to Contractor Portal',goContractor);
+   const title=document.getElementById('bctContractorApplyPortalTitle');
+   if(title&&top.parentElement!==apply)title.insertAdjacentElement('afterend',top);
+   const form=document.getElementById('applicationForm');
+   if(form&&bottom.parentElement!==apply)form.closest('.card')?.insertAdjacentElement('afterend',bottom);
+  }
+  const status=document.getElementById('view-status');
+  if(status){
+   const top=makeButton('bctContractorHomeTop','Back to Home',goHome);
+   const bottom=makeButton('bctContractorHomeBottom','Back to Home',goHome);
+   const title=document.getElementById('bctContractorPortalTitle');
+   if(title&&top.parentElement!==status)title.insertAdjacentElement('afterend',top);
+   const actions=document.getElementById('bctContractorBottomActions');
+   if(actions&&bottom.parentElement!==actions)actions.appendChild(bottom);
+  }
+  syncResend();
+ }
+ function syncResend(){
+  const text=document.getElementById('bctContractorAuthStatus')?.textContent||'';
+  document.body.classList.toggle('bct-show-contractor-resend',/email.*not.*confirmed|not.*confirmed|confirm/i.test(text));
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
+ window.addEventListener('pageshow',install);
+ document.addEventListener('click',()=>setTimeout(install,0),true);
+ document.addEventListener('input',()=>setTimeout(syncResend,0),true);
+ new MutationObserver(()=>{install();syncResend();}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+})();
+</script>
 <link rel="stylesheet" href="/bct-handyman-portal.css?v=20261009-2" />
 <script src="/bct-handyman-portal.js?v=20261011-1" defer></script>
 <script src="/bct-handyman-admin.js?v=20261011-1" defer></script>
