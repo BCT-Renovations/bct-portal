@@ -603,8 +603,7 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 </style>
 <style>
 /* V46 LANDING CLEANUP LOCK */
-/* Opening screen is portal selection only. About BCT belongs inside Client Portal. */
-body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{display:none!important}
+/* Opening screen keeps the main About BCT section. Portals stay focused on sign-in and application flow. */
 body.bct-portal-entered #bctAboutPublic{display:none!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) #view-home{padding-bottom:18px!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{margin-bottom:0!important}
@@ -3780,7 +3779,7 @@ renderAll();
      // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
      view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
      const cards=view?[...view.children]:[];
-     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout'||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
+     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
      const login=document.getElementById('bctContractorSignupCard');
      if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
      view.style.display='block';
@@ -3794,8 +3793,8 @@ renderAll();
    view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
    const signup=document.getElementById('bctHomeownerSignupCard');
    const card=document.getElementById('bctHomeownerLoginCard');
-   // Signed-out Homeowner portal is intentionally limited to the two separate account choices plus public About.
-   [...(view?.children||[])].forEach(x=>{const keep=x.id==='bctClientPortalTitle'||x===signup||x===card||x.id==='bctAboutPublic';x.classList.toggle('bct-signedout-hidden',!keep);});
+   // Signed-out Client portal is intentionally limited to the two separate account choices; the full About stays on the home page.
+   [...(view?.children||[])].forEach(x=>{const keep=x.id==='bctClientPortalTitle'||x===signup||x===card;x.classList.toggle('bct-signedout-hidden',!keep);});
    if(signup){signup.classList.remove('hidden','bct-signedout-hidden');signup.classList.add('active');signup.style.display='block';}
    if(card){card.classList.remove('hidden','bct-signedout-hidden');card.classList.add('active');card.style.display='block';}
    view.style.display='block';
@@ -4011,7 +4010,9 @@ window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-h
 
 <style>
 /* BCT V46 PORTAL-SPECIFIC ABOUT LOCK 2026-09-28 */
-#view-home #bctAboutPublic{display:none!important}
+#bctClientPublicAbout,#bctContractorAbout{display:none!important}
+#view-home #bctAboutPublic[hidden]{display:none!important}
+#view-home #bctAboutPublic:not([hidden]){display:block!important}
 .bct-portal-about{margin-top:14px;padding:18px;border:1px solid #c8dfcf;border-radius:16px;background:#eef7f1;box-shadow:0 6px 18px rgba(23,36,39,.05)}
 .bct-portal-about h2{margin-top:0}
 .bct-portal-about .bct-about-lead{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#0a4549}
@@ -4084,11 +4085,11 @@ body.bct-portal-entered #view-home{display:none!important}
 body.bct-portal-entered main.wrap{padding-top:0!important;margin-top:0!important}
 body.bct-portal-entered .view:not(.hidden){margin-top:0!important}
 body.bct-portal-entered #bctMain{padding-top:0!important}
-body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContractorPortalTitle):not(#bctContractorRoleRouter):not(#bctContractorSignupCard):not(.bct-public-contractor-login):not(#bctContractorAbout):not(#bctContractorNetworkChooser):not(#bctContractorBottomActions){display:none!important}
+body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContractorPortalTitle):not(#bctContractorRoleRouter):not(#bctContractorSignupCard):not(.bct-public-contractor-login):not(#bctContractorNetworkChooser):not(#bctContractorBottomActions){display:none!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorSignupCard,
 body.bct-entry-contractor:not(.bct-authenticated) .bct-public-contractor-login{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
-body.bct-entry-client:not(.bct-authenticated):not(.bct-home-signup) #view-customer> :not(#bctClientPortalTitle):not(#bctClientPublicAbout):not(#bctClientBackHomeTop):not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
+body.bct-entry-client:not(.bct-authenticated):not(.bct-home-signup) #view-customer> :not(#bctClientPortalTitle):not(#bctClientBackHomeTop):not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard){display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
 body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{display:block!important;visibility:visible!important;opacity:1!important}
