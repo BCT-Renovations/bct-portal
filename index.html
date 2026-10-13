@@ -4835,12 +4835,14 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
 <script id="bctPortalAboutCleanupJs">
 /* BCT V46 portal About cleanup: remove duplicate portal About panels without touching the homepage About. */
 (function(){
+ const portalAboutIds=['bctClientPublicAbout','bctClientAboutBtn','bctClientAboutPanel','bctContractorAbout','bctNewClientWhyBCT','bctContractorApplicantWhyBCT'];
  function cleanup(){
-  ['bctClientPublicAbout','bctClientAboutBtn','bctClientAboutPanel','bctContractorAbout','bctNewClientWhyBCT','bctContractorApplicantWhyBCT'].forEach(id=>document.getElementById(id)?.remove());
+  portalAboutIds.forEach(id=>document.getElementById(id)?.remove());
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cleanup);else cleanup();
  window.addEventListener('pageshow',cleanup);
  document.addEventListener('click',()=>setTimeout(cleanup,0),true);
+ new MutationObserver(cleanup).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 <link rel="stylesheet" href="/bct-handyman-portal.css?v=20261009-2" />
