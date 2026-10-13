@@ -105,9 +105,9 @@ function ensureRoleRouter(){
   router.className='card section bct-role-router';
   router.innerHTML=[
     '<h3>Choose Your Profession</h3>',
-    '<p class="muted">Tap your profession to sign in or start the right application path.</p>',
+    '<p class="muted">Tap your profession to continue.</p>',
     '<div class="bct-worker-role-grid">',
-    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'" data-bct-role-title="'+esc(role.short)+'" aria-label="'+esc(role.short)+'. '+esc(role.copy)+'"><span class="bct-role-card-copy">'+esc(role.copy)+'</span></button>').join(''),
+    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'" data-bct-role-title="'+esc(role.short)+'" aria-label="'+esc(role.short)+'"></button>').join(''),
     '</div>',
     '<div id="bctActiveRoleNotice" class="notice"><b>Selected:</b> <span>Choose a profession to continue.</span></div>'
   ].join('');
@@ -166,6 +166,7 @@ function updateApplicationCopy(role){
 
 function applyWorkerRole(code,opts={}){
   const role=roleByCode(code);
+  if(!role)return clearWorkerRole();
   activeRole=role;
   document.body.dataset.bctContractorRole=role.code;
   document.querySelectorAll('[data-bct-worker-role]').forEach(button=>{
@@ -201,10 +202,10 @@ function installContractorNetwork(){
   document.addEventListener('click',event=>{
     const closest=event.target.closest&&event.target.closest.bind(event.target);
     if(closest&&closest('#bctContractorSignupBtn')){
-      setTimeout(()=>applyWorkerRole(activeRole.code,{scroll:false}),0);
+      setTimeout(()=>{if(activeRole)applyWorkerRole(activeRole.code,{scroll:false});},0);
     }
     if(closest&&closest('#bctAgentOpen')){
-      setTimeout(()=>updateAgentRole(activeRole),0);
+      setTimeout(()=>{if(activeRole)updateAgentRole(activeRole);},0);
     }
   },true);
 }
@@ -259,8 +260,7 @@ function install(){
 }
 
 window.BCTRenterFlow={read:readRenter};
-window.BCTContractorNetwork={readRoles,activeRole,activeAgentRole:activeRole.agent,setActiveRole:code=>applyWorkerRole(code,{scroll:false})};
-try{activeRole=roleByCode(sessionStorage.getItem('bctContractorActiveRole')||activeRole.code)}catch(_){}
+window.BCTContractorNetwork={readRoles,activeRole:null,activeAgentRole:null,setActiveRole:code=>applyWorkerRole(code,{scroll:false})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 window.addEventListener('pageshow',install);
 document.addEventListener('click',()=>setTimeout(repairAuthLabels,0),true);

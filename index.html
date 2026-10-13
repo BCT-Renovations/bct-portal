@@ -603,7 +603,8 @@ body.bct-home-signup:not(.bct-authenticated) #bctHomeProjects{display:none!impor
 </style>
 <style>
 /* V46 LANDING CLEANUP LOCK */
-/* Opening screen keeps the main About BCT section. Portals stay focused on sign-in and application flow. */
+/* Opening screen is portal selection only. About BCT belongs inside Client Portal. */
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{display:none!important}
 body.bct-portal-entered #bctAboutPublic{display:none!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) #view-home{padding-bottom:18px!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-share-referral{margin-bottom:0!important}
@@ -632,7 +633,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppBtn{display:fl
 body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppHelp{max-width:100%!important;margin:13px 4px 4px!important}
 .bct-public-license-bar{display:none}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-license-bar{display:block!important;width:100%!important;max-width:100%!important;margin:14px 0 0!important;padding:17px 10px!important;background:#0f5f63!important;color:#fff!important;text-align:center!important;font-weight:900!important;letter-spacing:.08em!important;border-radius:10px!important}
-
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctAboutPublic{display:none!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-logo-crop .brand-logo{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;height:auto!important;object-fit:contain!important}
 @media(max-width:480px){
  body:not(.bct-authenticated):not(.bct-portal-entered) header .bct-login-language{align-self:flex-start!important;margin-left:12px!important;margin-right:12px!important;width:calc(100% - 24px)!important;max-width:360px!important}
@@ -3779,7 +3780,7 @@ renderAll();
      // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
      view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
      const cards=view?[...view.children]:[];
-     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
+     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout'||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
      const login=document.getElementById('bctContractorSignupCard');
      if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
      view.style.display='block';
@@ -3793,8 +3794,8 @@ renderAll();
    view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
    const signup=document.getElementById('bctHomeownerSignupCard');
    const card=document.getElementById('bctHomeownerLoginCard');
-   // Signed-out Client portal is intentionally limited to the two separate account choices; the full About stays on the home page.
-   [...(view?.children||[])].forEach(x=>{const keep=x.id==='bctClientPortalTitle'||x===signup||x===card;x.classList.toggle('bct-signedout-hidden',!keep);});
+   // Signed-out Homeowner portal is intentionally limited to the two separate account choices plus public About.
+   [...(view?.children||[])].forEach(x=>{const keep=x.id==='bctClientPortalTitle'||x===signup||x===card||x.id==='bctAboutPublic';x.classList.toggle('bct-signedout-hidden',!keep);});
    if(signup){signup.classList.remove('hidden','bct-signedout-hidden');signup.classList.add('active');signup.style.display='block';}
    if(card){card.classList.remove('hidden','bct-signedout-hidden');card.classList.add('active');card.style.display='block';}
    view.style.display='block';
@@ -4010,9 +4011,7 @@ window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-h
 
 <style>
 /* BCT V46 PORTAL-SPECIFIC ABOUT LOCK 2026-09-28 */
-#bctClientPublicAbout,#bctContractorAbout{display:none!important}
-#view-home #bctAboutPublic[hidden]{display:none!important}
-#view-home #bctAboutPublic:not([hidden]){display:block!important}
+#view-home #bctAboutPublic{display:none!important}
 .bct-portal-about{margin-top:14px;padding:18px;border:1px solid #c8dfcf;border-radius:16px;background:#eef7f1;box-shadow:0 6px 18px rgba(23,36,39,.05)}
 .bct-portal-about h2{margin-top:0}
 .bct-portal-about .bct-about-lead{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#0a4549}
@@ -4085,11 +4084,11 @@ body.bct-portal-entered #view-home{display:none!important}
 body.bct-portal-entered main.wrap{padding-top:0!important;margin-top:0!important}
 body.bct-portal-entered .view:not(.hidden){margin-top:0!important}
 body.bct-portal-entered #bctMain{padding-top:0!important}
-body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContractorPortalTitle):not(#bctContractorRoleRouter):not(#bctContractorSignupCard):not(.bct-public-contractor-login):not(#bctContractorNetworkChooser):not(#bctContractorBottomActions){display:none!important}
+body.bct-entry-contractor:not(.bct-authenticated) #view-status> :not(#bctContractorPortalTitle):not(#bctContractorRoleRouter):not(#bctContractorSignupCard):not(.bct-public-contractor-login):not(#bctContractorAbout):not(#bctContractorNetworkChooser):not(#bctContractorBottomActions){display:none!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorSignupCard,
 body.bct-entry-contractor:not(.bct-authenticated) .bct-public-contractor-login{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;max-width:760px!important;margin:10px auto!important}
 body.bct-entry-contractor:not(.bct-authenticated) #bctContractorLogoutBtn{display:none!important}
-body.bct-entry-client:not(.bct-authenticated):not(.bct-home-signup) #view-customer> :not(#bctClientPortalTitle):not(#bctClientBackHomeTop):not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard){display:none!important}
+body.bct-entry-client:not(.bct-authenticated):not(.bct-home-signup) #view-customer> :not(#bctClientPortalTitle):not(#bctClientPublicAbout):not(#bctClientBackHomeTop):not(#bctHomeownerSignupCard):not(#bctHomeownerLoginCard):not(#bctAboutPublic){display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeLogoutBtn{display:none!important}
 body.bct-entry-client:not(.bct-authenticated) #bctHomeownerSignupCard,
 body.bct-entry-client:not(.bct-authenticated) #bctHomeownerLoginCard{display:block!important;visibility:visible!important;opacity:1!important}
@@ -4520,17 +4519,18 @@ body.bct-home-signup #bctClientPublicAbout{display:none!important}
 .bct-checkbox-line{display:flex;gap:8px;align-items:flex-start;font-weight:700}
 .bct-checkbox-line input{width:auto;margin-top:3px}
 .bct-worker-role-grid,.bct-role-choice-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.bct-worker-role-grid button{width:100%;min-height:132px;text-align:left;background:#cfeedd;color:#172427;border:2px solid #82b99b;border-radius:10px;box-shadow:0 4px 12px rgba(10,69,73,.12);white-space:normal;overflow-wrap:break-word;padding:14px;appearance:none;-webkit-appearance:none}
-.bct-worker-role-grid button::before{content:attr(data-bct-role-title);display:block;font-size:1.38rem;line-height:1.12;font-weight:900;color:#172427;margin:0 0 8px;letter-spacing:.01em}
+.bct-worker-role-grid button{width:100%;aspect-ratio:1/1;min-height:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#cfeedd;color:#596b6f;border:2px solid #82b99b;border-radius:10px;box-shadow:0 4px 12px rgba(10,69,73,.12);white-space:normal;overflow-wrap:break-word;padding:10px;appearance:none;-webkit-appearance:none}
+.bct-worker-role-grid button::before{content:attr(data-bct-role-title);display:block;font-size:clamp(1.35rem,5.8vw,2rem);line-height:1.05;font-weight:900;color:#596b6f;margin:0;letter-spacing:.01em}
 .bct-worker-role-grid button b{display:none!important}
-.bct-worker-role-grid button .bct-role-card-copy,.bct-role-choice-grid span{display:block;font-size:.95rem;line-height:1.32;font-weight:750;color:#172427}
+.bct-worker-role-grid button .bct-role-card-copy{display:none!important}
+.bct-role-choice-grid span{display:block;font-size:.95rem;line-height:1.32;font-weight:750;color:#172427}
 .bct-worker-role-grid button.active{background:#0f5f63;color:#fff;border-color:#0a4549;outline:3px solid #f0c66a;outline-offset:2px}
 .bct-worker-role-grid button.active::before,.bct-worker-role-grid button.active .bct-role-card-copy{color:#fff}
 .bct-role-choice-grid .check-tile{display:block}
 .bct-role-choice-grid input{width:auto;margin-right:7px}
 #bctActiveRoleNotice{margin-top:12px}
-@media(max-width:820px){.bct-worker-role-grid,.bct-role-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bct-worker-role-grid button{min-height:96px}}
-@media(max-width:560px){.bct-worker-role-grid,.bct-role-choice-grid{grid-template-columns:1fr}.bct-worker-role-grid button{min-height:auto}}
+@media(max-width:820px){.bct-worker-role-grid,.bct-role-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.bct-worker-role-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.bct-role-choice-grid{grid-template-columns:1fr}}
 
 </style>
 <script id="bctContractorRolesJs">
@@ -4640,10 +4640,10 @@ function ensureRoleRouter(){
   router.id='bctContractorRoleRouter';
   router.className='card section bct-role-router';
   router.innerHTML=[
-    '<h3>Choose Your Contractor Role</h3>',
-    '<p class="muted">Tap the square that matches how you are signing in or applying. The sign-in box, application button, Admin label, and Agent BCT support role follow this selection.</p>',
+    '<h3>Choose Your Profession</h3>',
+    '<p class="muted">Tap your profession to continue.</p>',
     '<div class="bct-worker-role-grid">',
-    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'" data-bct-role-title="'+esc(role.short)+'" aria-label="'+esc(role.short)+'. '+esc(role.copy)+'"><span class="bct-role-card-copy">'+esc(role.copy)+'</span></button>').join(''),
+    workerRoles.map(role=>'<button type="button" data-bct-worker-role="'+esc(role.code)+'" data-bct-role-title="'+esc(role.short)+'" aria-label="'+esc(role.short)+'"></button>').join(''),
     '</div>',
     '<div id="bctActiveRoleNotice" class="notice"><b>Selected:</b> <span>Choose a profession to continue.</span></div>'
   ].join('');
@@ -4822,6 +4822,26 @@ document.addEventListener('click',()=>setTimeout(repairAuthLabels,0),true);
 document.addEventListener('change',event=>{if(event.target&&event.target.matches&&event.target.matches('#bctLoginLanguage,#bctLanguage,[data-language-selector]'))setTimeout(repairLanding,0)},true);
 })();
 
+</script>
+<style id="bctPortalAboutCleanupCss">
+/* BCT V46 portal About cleanup: homepage keeps About; portal screens stay focused. */
+#bctClientPublicAbout,
+#bctClientAboutBtn,
+#bctClientAboutPanel,
+#bctContractorAbout,
+#bctNewClientWhyBCT,
+#bctContractorApplicantWhyBCT{display:none!important}
+</style>
+<script id="bctPortalAboutCleanupJs">
+/* BCT V46 portal About cleanup: remove duplicate portal About panels without touching the homepage About. */
+(function(){
+ function cleanup(){
+  ['bctClientPublicAbout','bctClientAboutBtn','bctClientAboutPanel','bctContractorAbout','bctNewClientWhyBCT','bctContractorApplicantWhyBCT'].forEach(id=>document.getElementById(id)?.remove());
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cleanup);else cleanup();
+ window.addEventListener('pageshow',cleanup);
+ document.addEventListener('click',()=>setTimeout(cleanup,0),true);
+})();
 </script>
 <link rel="stylesheet" href="/bct-handyman-portal.css?v=20261009-2" />
 <script src="/bct-handyman-portal.js?v=20261011-1" defer></script>
