@@ -4875,5 +4875,62 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
 <script>/* October 11 matching contractor signup CTA */
 document.addEventListener("click",function(e){const btn=e.target.closest?.("#bctContractorSignupBottomBtn");if(!btn)return;e.preventDefault();document.getElementById("bctContractorSignupBtn")?.click();});
 </script>
+
+<style id="bct-theo-separated-pages">
+body.bct-theo-professions #view-status #bctContractorLoginCard,
+body.bct-theo-professions #view-status #bctContractorSignupCard,
+body.bct-theo-professions #view-status #bctContractorBottomActions{display:none!important}
+body.bct-theo-signin #bctContractorRoleRouter{display:none!important}
+body.bct-theo-signin #view-status #bctContractorLoginCard,
+body.bct-theo-signin #view-status #bctContractorSignupCard{display:block!important}
+body.bct-theo-signin #view-status #bctContractorBottomActions{display:none!important}
+#bctTheoAboutPage{display:none;max-width:800px;margin:0 auto;padding:16px 16px 40px;min-height:65vh}
+body.bct-theo-about #bctTheoAboutPage{display:block!important}
+body.bct-theo-about #view-home{display:none!important}
+#bctTheoAboutPage #bctAboutPublic{display:block!important;position:static!important;margin:0!important;visibility:visible!important}
+#bctTheoAboutPage #bctTheoCloseAbout{display:block;width:100%;margin:22px auto 0;min-height:52px;background:#a8e6cf!important;color:#0a4549!important;font-weight:900}
+#bctTheoProfessionBack{background:#a8e6cf!important;color:#0a4549!important;margin:0 0 12px;min-height:46px}
+body.bct-theo-signin #view-status .bct-portal-back{background:#a8e6cf!important;color:#0a4549!important}
+</style>
+<script id="bct-theo-separated-pages-script">
+(function(){
+ const body=document.body;
+ let aboutHome=null;
+ function setup(){
+  const home=document.getElementById('view-home'),about=document.getElementById('bctAboutPublic');
+  if(home&&about&&!document.getElementById('bctTheoAboutPage')){
+   aboutHome={parent:about.parentNode,next:about.nextSibling};
+   const page=document.createElement('section');page.id='bctTheoAboutPage';page.setAttribute('aria-label','About BCT Renovations');
+   const close=document.createElement('button');close.id='bctTheoCloseAbout';close.type='button';close.textContent='Close About';
+   page.append(about,close);home.insertAdjacentElement('afterend',page);
+   close.addEventListener('click',function(){body.classList.remove('bct-theo-about');document.getElementById('bctHomeAboutBtn')?.setAttribute('aria-expanded','false');window.scrollTo(0,0);});
+  }
+  if(!document.getElementById('bctTheoProfessionBack')){
+   const login=document.getElementById('bctContractorLoginCard');
+   if(login){const back=document.createElement('button');back.id='bctTheoProfessionBack';back.type='button';back.textContent='← Back';login.parentNode.insertBefore(back,login);back.addEventListener('click',showProfessions);}
+  }
+ }
+ function showProfessions(){body.classList.remove('bct-theo-signin');body.classList.add('bct-theo-professions');window.scrollTo(0,0);}
+ function showSignin(){body.classList.remove('bct-theo-professions');body.classList.add('bct-theo-signin');window.scrollTo(0,0);}
+ // Capture before older document handlers so About opens as its own page.
+ window.addEventListener('click',function(event){
+  const about=event.target.closest?.('#bctHomeAboutBtn');
+  if(about){event.preventDefault();event.stopImmediatePropagation();setup();body.classList.add('bct-theo-about');document.getElementById('bctAboutPublic')?.removeAttribute('hidden');about.setAttribute('aria-expanded','true');window.scrollTo(0,0);return;}
+  if(event.target.closest?.('#bctContractorBackHomeBtn')&&body.classList.contains('bct-theo-signin')){
+   event.preventDefault();event.stopImmediatePropagation();showProfessions();return;
+  }
+  const role=event.target.closest?.('[data-bct-worker-role]');
+  if(role&&document.getElementById('view-status')?.contains(role)){
+   // Allow the existing role selection handler to fill profession-specific fields.
+   setTimeout(showSignin,0);
+  }
+ },true);
+ const observer=new MutationObserver(function(){
+  if(document.getElementById('view-status')?.classList.contains('hidden')){body.classList.remove('bct-theo-professions','bct-theo-signin');}
+  else if(!body.classList.contains('bct-theo-professions')&&!body.classList.contains('bct-theo-signin')){body.classList.add('bct-theo-professions');}
+ });
+ document.addEventListener('DOMContentLoaded',function(){setup();const view=document.getElementById('view-status');if(view)observer.observe(view,{attributes:true,attributeFilter:['class']});if(view&&!view.classList.contains('hidden'))showProfessions();});
+})();
+</script>
 </body>
 </html>
