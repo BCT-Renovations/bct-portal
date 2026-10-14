@@ -962,6 +962,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeAboutBtn{display:b
 </section>
 
 <section id="view-apply" class="view section hidden">
+  <button type="button" id="bctContractorApplicationBackBtn" class="secondary bct-portal-back" style="background:#a8e6cf;color:#0a4549;border:2px solid #0a4549;border-radius:10px;font-weight:800;min-height:48px;padding:10px 18px" aria-label="Back to contractor profession">← Back</button>
   <div id="bctContractorApplyPortalTitle" class="bct-portal-title">NEW CONTRACTOR APPLICATION</div>
   <div class="card section">
     <span class="badge info" data-i18n="contractor.portal_badge">BCT Contractor Portal</span>
@@ -5032,6 +5033,21 @@ button.bct-new-client-back,button.bct-agent-home,
  document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(sync));
  document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(sync));
  sync();
+})();
+</script>
+<script>
+(function(){
+  const back=document.getElementById('bctContractorApplicationBackBtn');
+  if(!back)return;
+  back.addEventListener('click',function(){
+    document.body.classList.remove('bct-contractor-signup');
+    const status=document.getElementById('bctContractorBackHomeBtn');
+    const view=document.getElementById('view-status');
+    if(typeof window.showView==='function')window.showView('status');
+    else {document.getElementById('view-apply')?.classList.add('hidden');view?.classList.remove('hidden');}
+    const role=document.getElementById('bctContractorRoleRouter')||status;
+    role?.scrollIntoView({block:'start'});
+  });
 })();
 </script>
 </body>
