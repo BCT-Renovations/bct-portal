@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const root=new URL('../',import.meta.url);
+const read=name=>fs.readFileSync(new URL(name,root),'utf8');
+const portal=read('bct-insurance-portal.js');
+const admin=read('bct-insurance-admin.js');
+const loader=read('bct-admin-sections.js');
+const home=read('index.html');
+assert.match(portal,/if\(\$\('view-insurance'\)\)return/,'Insurance view must be created once');
+assert.match(admin,/if\(document\.getElementById\('bctInsuranceAdminPanel'\)\)return/,'Admin insurance panel must be created once');
+assert.doesNotMatch(portal,/await sb\.auth\.signOut\(\)/,'Insurance authorization must not sign out existing BCT user');
+assert.doesNotMatch(portal,/\.from\(['"]bct_projects['"]\)\.insert/,'No direct browser project creation');
+assert.doesNotMatch(admin,/\.from\(['"]bct_projects['"]\)\.insert/,'No direct browser project creation');
+assert.doesNotMatch(loader,/bct-insurance-(portal|admin)\.js/,'Keep insurance dormant until integration gates pass');
+assert.doesNotMatch(home,/src=['"][^'"]*bct-insurance-(portal|admin)\.js/,'Do not inject dormant insurance into live entrypoint');
+assert.match(portal,/bct_insurance_submit_claim/);
+assert.match(admin,/bct_admin_prepare_insurance_project_handoff/);
+console.log('TAKAI insurance static isolation and session-safety checks passed');
