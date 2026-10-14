@@ -12,6 +12,7 @@ const workerRoles=[
   {code:'plumbing',short:'Plumber',label:'Plumber',signin:'Plumber Sign In',apply:'Start Plumber Application',agent:'compliance_credentials',copy:'Plumbing applicants need license, insurance, and credential review before assignment.'},
   {code:'hvac',short:'HVAC',label:'HVAC',signin:'HVAC Sign In',apply:'Start HVAC Application',agent:'compliance_credentials',copy:'Heating, cooling, ventilation, and licensed HVAC work.'},
   {code:'roofing',short:'Roofing',label:'Roofing',signin:'Roofing Sign In',apply:'Start Roofing Application',agent:'compliance_credentials',copy:'Roof repair, replacement, leak work, and licensed roofing review.'},
+  {code:'drywall',short:'Drywaller',label:'Drywaller',signin:'Drywaller Sign In',apply:'Start Drywaller Application',agent:'contractor_coordinator',copy:'Drywall repair, hanging, finishing, patches, taping, and related wall work.'},
   {code:'concrete_masonry',short:'Concrete',label:'Concrete & Masonry',signin:'Concrete & Masonry Sign In',apply:'Start Concrete & Masonry Application',agent:'contractor_coordinator',copy:'Concrete flatwork, masonry repair, drainage pads, walks, and related exterior work.'},
   {code:'flooring',short:'Flooring',label:'Flooring',signin:'Flooring Sign In',apply:'Start Flooring Application',agent:'contractor_coordinator',copy:'Ceramic tile, hardwood, laminate, vinyl, carpet, subfloor, and flooring repair work.'},
   {code:'handyman_services',short:'Handyman',label:'Handyman',signin:'Handyman Sign In',apply:'Start Handyman Application',agent:'contractor_coordinator',copy:'Small jobs, punch-list repairs, move-out repairs, and handyman work.'}
@@ -23,6 +24,7 @@ const categoryRoles=[
   ['plumbing','Plumber','Plumbing work that may require licensing, permit review, or BCT Admin approval before assignment.'],
   ['hvac','Licensed HVAC','Heating, cooling, ventilation, and related licensed trade work.'],
   ['roofing','Roofer','Roof repair, replacement, leak work, and related licensed trade work.'],
+  ['drywall','Drywaller','Drywall repair, hanging, finishing, patches, taping, and related wall work.'],
   ['concrete_masonry','Concrete & Masonry','Concrete flatwork, masonry repair, pads, walks, drainage work, and related exterior scopes.'],
   ['flooring','Flooring','Ceramic tile, hardwood, laminate, vinyl, carpet, subfloor, and flooring repair work.'],
   ['specialty_trade','Other Licensed / Specialty Trade','Siding, windows, doors, mitigation, or other trade-specific work.']
