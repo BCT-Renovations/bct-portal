@@ -19,3 +19,15 @@ body.bct-entry-handyman.bct-agent-open #bctAgentRoot{display:block!important;vis
 
 /* Isolated preview: compact floating Agent BCT launcher on narrow screens. */
 @media(max-width:600px){#bctAgentRoot #bctAgentOpen{width:fit-content!important;max-width:112px!important;min-width:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;flex:none!important;}}
+
+/* Right On isolated rebuild: iPhone safe-area and compact chat composer. */
+@media(max-width:600px){
+body.bct-agent-open #bctAgentPanel{height:100dvh!important;max-height:100dvh!important;grid-template-rows:auto minmax(0,1fr) auto!important}
+body.bct-agent-open #bctAgentPanel>header{box-sizing:border-box!important;min-height:calc(64px + env(safe-area-inset-top, 0px))!important;padding:calc(env(safe-area-inset-top, 0px) + 12px) 12px 12px!important;gap:10px!important;align-items:center!important;flex-wrap:nowrap!important}
+body.bct-agent-open #bctAgentPanel>header>*{min-width:0}
+body.bct-agent-open #bctAgentPanel>header small{font-size:12px!important;line-height:1.2!important}
+body.bct-agent-open #bctAgentForm{padding:8px 10px calc(8px + env(safe-area-inset-bottom, 0px))!important}
+body.bct-agent-open #bctAgentInput{box-sizing:border-box!important;width:100%!important;min-height:48px!important;height:52px;max-height:96px!important;padding:10px 12px!important;font-size:16px!important}
+body.bct-agent-open #bctAgentForm>div{margin-top:6px!important;min-height:40px!important}
+body.bct-agent-open #bctAgentMessages{min-height:0!important}
+}
