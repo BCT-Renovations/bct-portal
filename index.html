@@ -693,7 +693,8 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeGallery{display:bl
 #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
 @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
-<link rel="stylesheet" href="/agent-bct-ui.css?v=20261009-3" />
+<link rel="stylesheet" href="/bct-contractor-roles.css?v=20261014-right-on-1" />
+<link rel="stylesheet" href="/agent-bct-ui.css?v=20261014-right-on-2" />
 
 <style>/* Oct 11 isolated contractor layout */
 #view-status .bct-contractor-home-bottom{background:#0f5f63;color:#fff;border:0;border-radius:8px;padding:10px 14px;width:auto;min-width:110px;font-weight:800}
@@ -4863,7 +4864,8 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
 
 <script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261009-1" defer></script>
-<script src="/agent-bct-ui.js?v=20261009-3" defer></script>
+<script src="/bct-contractor-roles.js?v=20261014-right-on-1" defer></script>
+<script src="/agent-bct-ui.js?v=20261014-right-on-2" defer></script>
 <script>/* October 11 matching contractor signup CTA */
 document.addEventListener("click",function(e){const btn=e.target.closest?.("#bctContractorSignupBottomBtn");if(!btn)return;e.preventDefault();document.getElementById("bctContractorSignupBtn")?.click();});
 </script>
