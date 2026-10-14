@@ -101,7 +101,11 @@ function readRenter(form,fail){
 function ensureRoleRouter(){
   const login=publicLoginCard();
   const signup=$('bctContractorSignupCard');
-  if((!login&&!signup)||$('bctContractorRoleRouter'))return;
+  if(!login&&!signup)return;
+  if($('bctContractorRoleRouter')){
+    document.querySelectorAll('[data-bct-worker-role]').forEach(button=>{const role=roleByCode(button.dataset.bctWorkerRole);if(role){button.dataset.bctRoleTitle=role.short;button.setAttribute('aria-label',role.short);}});
+    return;
+  }
   const router=document.createElement('section');
   router.id='bctContractorRoleRouter';
   router.className='card section bct-role-router';
@@ -199,7 +203,7 @@ function installContractorNetwork(){
   ensureApplicationRoleChoices();
 
   const old=$('bctContractorNetworkChooser');
-  if(old)old.remove();
+  if(old&&$('bctContractorRoleRouter'))old.remove();
 
   document.addEventListener('click',event=>{
     const closest=event.target.closest&&event.target.closest.bind(event.target);
