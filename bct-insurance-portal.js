@@ -40,7 +40,7 @@ async function signIn(){
  if(!email||!password)return status('Enter your email and password.','error');
  const {error}=await sb.auth.signInWithPassword({email,password});if(error)return status(error.message,'error');
  const {data:member,error:memberError}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',(await sb.auth.getUser()).data.user?.id).eq('status','active').limit(1).maybeSingle();
- if(memberError||!member){await sb.auth.signOut();return status('This account is not authorized for the BCT Insurance Portal.','error')}
+ if(memberError||!member){return status('This account is not authorized for the BCT Insurance Portal. Your existing BCT session has been preserved.','error')}
  window.BCT_INSURANCE_MEMBER=member;status('Insurance partner signed in.','success');show('claims');await loadClaims();
 }
 async function submitClaim(e){
