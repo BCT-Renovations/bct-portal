@@ -33,15 +33,28 @@ function ensure(){
  $('bctInsuranceRefresh')?.addEventListener('click',loadClaims); $('bctInsuranceSendMessage')?.addEventListener('click',()=>sendClaimAction('message')); $('bctInsuranceRespondInfo')?.addEventListener('click',()=>sendClaimAction('information'));
  $('bctInsuranceBackHome')?.addEventListener('click',()=>{if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else setView('home')});
 }
-function show(page){document.querySelectorAll('[data-ins-page]').forEach(b=>b.classList.toggle('active',b.dataset.insPage===page));document.querySelectorAll('[data-ins-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.insPanel!==page))}
+function show(page){$('bctInsuranceClaimAction')?.classList.add('hidden');activeClaim=null;activeClaimStatus=null;document.querySelectorAll('[data-ins-page]').forEach(b=>b.classList.toggle('active',b.dataset.insPage===page));document.querySelectorAll('[data-ins-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.insPanel!==page))}
 async function signIn(){
  const sb=window.supabaseClient;if(!sb)return status('Secure sign in is not available.','error');
  const email=$('bctInsuranceEmail')?.value.trim(),password=$('bctInsurancePassword')?.value||'';
  if(!email||!password)return status('Enter your email and password.','error');
- const {error}=await sb.auth.signInWithPassword({email,password});if(error)return status(error.message,'error');
- const {data:member,error:memberError}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',(await sb.auth.getUser()).data.user?.id).eq('status','active').limit(1).maybeSingle();
+ // Never replace an already authenticated BCT user's shared session with another account.
+ const {data:existing,error:existingError}=await sb.auth.getUser();
+ if(existingError&&existingError.status!==401)return status('Unable to verify your existing BCT session. Please try again.','error');
+ let user=existing?.user||null;
+ if(user&&String(user.email||'').toLowerCase()!==email.toLowerCase()){
+  window.BCT_INSURANCE_MEMBER=null;
+  return status('A different BCT account is already signed in. Use that account or sign out through the normal BCT account controls before changing accounts.','error');
+ }
+ if(!user){
+  const {data:login,error}=await sb.auth.signInWithPassword({email,password});
+  if(error)return status(error.message,'error');
+  user=login?.user||null;
+ }
+ if(!user){window.BCT_INSURANCE_MEMBER=null;return status('Insurance account could not be verified.','error')}
+ const {data:member,error:memberError}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',user.id).eq('status','active').limit(1).maybeSingle();
  if(memberError||!member){window.BCT_INSURANCE_MEMBER=null;return status('This account is not authorized for the BCT Insurance Portal. Access denied.','error')}
- window.BCT_INSURANCE_MEMBER={...member,user_id:(await sb.auth.getUser()).data.user?.id};status('Insurance partner signed in.','success');show('claims');await loadClaims();
+ window.BCT_INSURANCE_MEMBER={...member,user_id:user.id};status('Insurance partner signed in.','success');show('claims');await loadClaims();
 }
 async function submitClaim(e){
  e.preventDefault();const sb=window.supabaseClient;if(!sb)return status('Secure claim submission is not available.','error');
@@ -53,6 +66,10 @@ async function submitClaim(e){
 }
 async function loadClaims(){
  const sb=window.supabaseClient;if(!sb)return;const box=$('bctInsuranceClaims');if(!box)return;
+ const {data:session}=await sb.auth.getUser();if(!session?.user){window.BCT_INSURANCE_MEMBER=null;box.textContent='Sign in to view authorized claims.';return}
+ const {data:membership,error:membershipError}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',session.user.id).eq('status','active').limit(1).maybeSingle();
+ if(membershipError||!membership){window.BCT_INSURANCE_MEMBER=null;box.textContent='Your insurance membership is not active.';return}
+ window.BCT_INSURANCE_MEMBER={...membership,user_id:session.user.id};
  const {data,error}=await sb.from('bct_partner_claims').select('id,claim_number,policyholder_name,property_address,loss_type,date_of_loss,status,created_at').order('created_at',{ascending:false}).limit(100);
  if(error){box.innerHTML='<div class="error">'+esc(error.message)+'</div>';return}
  box.innerHTML=(data||[]).length?(data||[]).map(c=>`<article class="card"><strong>Claim ${esc(c.claim_number)}</strong><p>${esc(c.policyholder_name)} · ${esc(c.loss_type)}</p><p class="muted">${esc(c.property_address?.street||'')}, ${esc(c.property_address?.city||'')}, ${esc(c.property_address?.state||'')}</p><p>Status: <strong>${esc(c.status)}</strong></p><button type="button" data-ins-open="${esc(c.id)}" data-ins-status="${esc(c.status)}" data-ins-number="${esc(c.claim_number)}">Open Claim Communication</button></article>`).join(''):'<div class="notice">No authorized claims found.</div>'; box.querySelectorAll('[data-ins-open]').forEach(b=>b.addEventListener('click',()=>openClaimAction(b.dataset.insOpen,b.dataset.insStatus,b.dataset.insNumber)));
@@ -60,6 +77,6 @@ async function loadClaims(){
 let activeClaim=null,activeClaimStatus=null;
 async function openClaimAction(id,claimStatus,number){activeClaim=id;activeClaimStatus=claimStatus;$('bctInsuranceClaimAction')?.classList.remove('hidden');const l=$('bctInsuranceClaimActionLabel');if(l)l.textContent='Claim '+number+' · '+claimStatus;const r=$('bctInsuranceRespondInfo');if(r)r.disabled=claimStatus!=='needs_information';await loadClaimHistory(id);}
 async function loadClaimHistory(id){const sb=window.supabaseClient,box=$('bctInsuranceClaimHistory');if(!sb||!box)return;box.textContent='Loading authorized claim history…';const {data,error}=await sb.rpc('bct_insurance_claim_history',{p_claim_id:id});if(error){box.textContent=error.message;return;}box.innerHTML=(data||[]).length?(data||[]).map(e=>'<div class="claim-event"><strong>'+esc(e.event_type.replaceAll('_',' '))+'</strong><p>'+esc(e.body||'')+'</p></div>').join(''):'<span class="muted">No insurance-visible claim activity yet.</span>';}
-async function sendClaimAction(kind){const sb=window.supabaseClient;if(!sb||!activeClaim)return status('Select an authorized claim first.','error');const body=$('bctInsuranceClaimMessage')?.value.trim();if(!body)return status('Enter the information you want to send.','error');let error;if(kind==='information'){({error}=await sb.rpc('bct_insurance_respond_to_information_request',{p_claim_id:activeClaim,p_response:{response:body}}));}else{({error}=await sb.rpc('bct_insurance_add_claim_message',{p_claim_id:activeClaim,p_body:body}));}if(error)return status(error.message,'error');$('bctInsuranceClaimMessage').value='';status(kind==='information'?'Additional information returned to BCT Review.':'Claim message sent.','success');await loadClaims();if(activeClaim)await loadClaimHistory(activeClaim);}
+async function sendClaimAction(kind){const sb=window.supabaseClient;if(!sb||!activeClaim)return status('Select an authorized claim first.','error');const {data:session}=await sb.auth.getUser();if(!session?.user||session.user.id!==window.BCT_INSURANCE_MEMBER?.user_id){activeClaim=null;window.BCT_INSURANCE_MEMBER=null;return status('Your insurance session changed. Sign in again.','error')}const body=$('bctInsuranceClaimMessage')?.value.trim();if(!body)return status('Enter the information you want to send.','error');let error;if(kind==='information'){({error}=await sb.rpc('bct_insurance_respond_to_information_request',{p_claim_id:activeClaim,p_response:{response:body}}));}else{({error}=await sb.rpc('bct_insurance_add_claim_message',{p_claim_id:activeClaim,p_body:body}));}if(error)return status(error.message,'error');$('bctInsuranceClaimMessage').value='';status(kind==='information'?'Additional information returned to BCT Review.':'Claim message sent.','success');await loadClaims();if(activeClaim)await loadClaimHistory(activeClaim);}
 window.BCT_INSURANCE_PORTAL_VERSION=VERSION;window.bctOpenInsurancePortal=()=>{ensure();setView('insurance')};window.bctInsurancePortalReady=true;
 })();
