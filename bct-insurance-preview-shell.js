@@ -1,8 +1,8 @@
 /* Isolated insurance visual-only preview. Never loads production insurance APIs or signs users in. */
 (function(){
 'use strict';
-const id='bctInsurancePreviewEntry';
-function open(){
+const id='bctInsurancePreviewEntry';let activeTab='signin';const tabs=[];
+function open(){tabs.length=0;activeTab='signin';
  const main=document.getElementById('bctMain');if(!main)return;
  let panel=document.getElementById('view-insurance-preview');
  if(!panel){
@@ -10,14 +10,14 @@ function open(){
   panel.innerHTML='<div class="card section"><div class="bct-portal-title">BCT INSURANCE PORTAL</div><h2>Insurance / Claims Partner</h2><p>Insurance companies, claims adjusters, and claims representatives can submit assignments to BCT for review.</p><div class="notice" role="status"><strong>Preview only:</strong> Insurance sign-in, claim submission, claim history, and Admin review are not enabled. No insurance data is being collected or changed.</div><div class="portal-tabs"><button type="button" data-ins-preview-tab="signin">Sign In</button><button type="button" data-ins-preview-tab="claim">Submit Claim</button><button type="button" data-ins-preview-tab="history">My Claims</button></div><div id="bctInsurancePreviewTab" class="card section"></div><button type="button" id="bctInsurancePreviewBack" class="secondary bct-portal-back" style="background:#a8e6cf;color:#0a4549;min-height:48px">← Back</button></div>';
   main.appendChild(panel);
   panel.querySelectorAll('[data-ins-preview-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.insPreviewTab)));
-  document.getElementById('bctInsurancePreviewBack').addEventListener('click',()=>{if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else if(typeof window.setVisibleView==='function')window.setVisibleView('home');else{panel.classList.add('hidden');document.getElementById('view-home')?.classList.remove('hidden')}});
+  document.getElementById('bctInsurancePreviewBack').addEventListener('click',()=>{if(tabs.length){tab(tabs.pop(),false);return}if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else if(typeof window.setVisibleView==='function')window.setVisibleView('home');else{panel.classList.add('hidden');document.getElementById('view-home')?.classList.remove('hidden')}});
  }
  document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-estimator','bct-entry-admin');
  if(typeof window.setVisibleView==='function')window.setVisibleView('insurance-preview');
  else {document.querySelectorAll('main .view').forEach(v=>v.classList.add('hidden'));panel.classList.remove('hidden')}
  tab('signin');
 }
-function tab(kind){
+function tab(kind,remember=true){if(remember&&kind!==activeTab)tabs.push(activeTab);activeTab=kind;
  const p=document.getElementById('bctInsurancePreviewTab');if(!p)return;
  const content={signin:'<h3>Insurance Company / Claims Adjuster Sign In</h3><p>Approved carrier representatives will sign in here when the secure database is ready.</p>',claim:'<h3>Submit a Claim Assignment</h3><p>Claim number, policyholder, property address, type and date of loss, scope, photos, and documents will be submitted for BCT review.</p><p>No construction project is created automatically.</p>',history:'<h3>My Authorized Claims</h3><p>Approved members will see only claims they are authorized to access, along with messages and status updates.</p>'};
  p.innerHTML=content[kind]||content.signin;

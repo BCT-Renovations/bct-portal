@@ -36,6 +36,19 @@ const submit=(o,num)=>`select bct_insurance_submit_claim('${o}','${num}','Dummy 
 const claim=(await as(3,submit(org,'CL-1'))).rows[0].id;
 await denied(3,submit(org,' cl-1 '),'23505');
 await denied(4,submit(org,'CL-2'),'42501');await denied(5,submit(org,'CL-2'),'42501');await denied(6,submit(org,'CL-2'),'42501');
+// Table grants must not allow callers to bypass membership or RPC guards.
+for(const sql of [
+ `insert into bct_insurance_organizations(legal_name) values('Unauthorized')`,
+ `update bct_insurance_organizations set status='active'`,
+ `delete from bct_insurance_organizations`,
+ `insert into bct_insurance_members(organization_id,user_id) values('${org}','${uid(9)}')`,
+ `update bct_insurance_members set member_role='organization_admin'`,
+ `delete from bct_insurance_members`,
+ `insert into bct_partner_claim_events(claim_id,event_type,body) values('${claim}','message','Unauthorized')`,
+ `delete from bct_partner_claim_events`
+])await denied(3,sql,'42501');
+await denied(3,submit(org,'CL-INVALID').replace('123 Test St',''));
+await denied(3,`select bct_admin_set_insurance_member_status('${org}','${uid(3)}','organization_admin','active')`,'42501');
 await equal(3,'select count(*)::int as n from bct_partner_claims','n',1);
 await equal(6,'select count(*)::int as n from bct_partner_claims','n',0);
 await equal(8,'select count(*)::int as n from bct_partner_claims','n',0);

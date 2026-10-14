@@ -26,20 +26,12 @@ assert(/<html\s+lang="en"/i.test(html), 'index.html must keep the primary HTML s
 assert(/<title>[^<]*BCT Renovations/i.test(html), 'index.html must keep the BCT Renovations title.');
 assert(html.trim().endsWith('</html>'), 'index.html must end with a closing </html> tag.');
 
-assert(serviceWorker.includes('bct-command-center-hotfix'), 'service worker must keep the V46 command center/typeahead shell fresh.');
-assert(serviceWorker.includes('bct-clean-signin-hotfix'), 'service worker must force the clean signed-out entry screen.');
-assert(serviceWorker.includes('bct-admin-login-hotfix'), 'service worker must keep the admin login hotfix.');
-assert(serviceWorker.includes('bct-official-logo-hotfix'), 'service worker must force the selected official logo rollout.');
-assert(serviceWorker.includes('bct-green-logo-band-hotfix'), 'service worker must force the full-width green logo band rollout.');
-assert(serviceWorker.includes('bct-portal-entry-hotfix'), 'service worker must preserve repaired Client and Contractor portal entry rendering.');
-assert(serviceWorker.includes('bct-signup-home-nav-hotfix'), 'service worker must preserve the seven-step signup Back to Home control.');
-assert(serviceWorker.includes('bct-runtime-guardrails'), 'service worker must preserve V46 runtime guardrails.');
-assert(serviceWorker.includes('bct-admin-mobile-controls-hotfix'), 'service worker must preserve signed-in Admin touch protection.');
-const cacheMatch = serviceWorker.match(/const CACHE_NAME='bct-portal-shell-v(\d+)-[^']+'/);
-assert(cacheMatch && Number(cacheMatch[1]) >= 30, 'service worker must use the current V46 iPhone/PWA cache generation.');
-assert(serviceWorker.includes('/bct-admin-mobile-fix.js?v=20260930-4'), 'current Admin mobile and Spanish stability script must be injected.');
-assert(html.includes('/bct-admin-control-board.js?v=20260930-2'), 'Admin Control Board must be wired into the live Admin document.');
-assert(html.indexOf('/bct-admin-control-board.js?v=20260930-2') < html.indexOf('/bct-admin-mobile-fix.js?v=20260930-4'), 'Admin Control Board must load before the mobile Admin compatibility layer.');
+// TAKAI's approved iPhone fix unregisters its worker instead of caching startup HTML.
+assert(serviceWorker.includes('await self.registration.unregister()'), 'worker must unregister for the approved iPhone icon fix.');
+assert(serviceWorker.includes('key.startsWith(BCT_CACHE_PREFIX)'), 'worker must remove only BCT caches.');
+assert(!serviceWorker.includes('respondWith('), 'worker must not intercept network requests.');
+assert(/src=["'][^"']*bct-admin-sections\.js/.test(html), 'Admin Control Board must be wired into the live Admin document.');
+assert(html.indexOf('/bct-admin-sections.js') < html.indexOf('/bct-admin-mobile-fix.js?v=20260930-4'), 'Admin Control Board must load before the mobile Admin compatibility layer.');
 const adminControlBoard = fs.readFileSync(new URL('../bct-admin-control-board.js', import.meta.url), 'utf8');
 const adminSections = fs.readFileSync(new URL('../bct-admin-sections.js', import.meta.url), 'utf8');
 assert(!adminControlBoard.includes('scrollIntoView('), 'Admin Control Board must not auto-scroll with scrollIntoView.');
@@ -48,13 +40,6 @@ assert(!adminControlBoard.includes("addEventListener('pageshow'"), 'Admin Contro
 assert(!adminControlBoard.includes("addEventListener('hashchange'"), 'Admin Control Board must not reposition on hashchange.');
 assert(!adminControlBoard.includes('position:sticky'), 'Admin Control Board navigation must not use sticky positioning.');
 assert(adminSections.includes('script[src*="/bct-admin-control-board.js"]'), 'Admin section loader must prevent duplicate Control Board script loading.');
-assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']"), 'service worker static cache must stay limited to the official logo and app icon.');
-assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'service worker must not cache the root HTML startup path.');
-assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'service worker must not cache index.html.');
-assert(serviceWorker.includes("if(!STATIC_ASSETS.includes(url.pathname)||url.search)return;"), 'service worker must refuse to cache non-asset routes and query-string responses.');
-assert(serviceWorker.includes("cache:'no-store'"), 'service worker must fetch startup HTML with no-store.');
-assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'service worker must not cache the retired standalone homeowner controller.');
-
 assert(html.includes('data-entry-login="client"'), 'Client/Homeowner public entry control must remain in the primary HTML.');
 assert(html.includes('data-entry-login="contractor"'), 'Contractor public entry control must remain in the primary HTML.');
 assert(html.includes('data-entry-login="admin"'), 'Admin public entry control must remain in the primary HTML.');
@@ -73,10 +58,6 @@ assert(html.includes("p_sanitized_scope:String(f.get('scope')||'')"), 'Published
 assert(html.includes("esc(j.sanitized_scope||'')"), 'Contractor job cards must render only the sanitized scope.');
 assert(!/available_jobs[\s\S]{0,1800}resident_(?:name|phone)/i.test(html), 'Contractor available-job rendering must not expose resident name or phone.');
 assert(html.includes('p_admin_override_second_job:override'), 'Second active contractor assignment must remain behind an explicit BCT Admin override.');
-
-assert(serviceWorker.includes("const OPTIONAL_FEATURES=['weather_external_provider_enabled','electronic_signatures_enabled','ai_estimating_external_engine_enabled']"), 'optional integration safe-mode list must remain defined.');
-assert(serviceWorker.includes("bctFeatureEnabled('weather_external_provider_enabled',false)"), 'live weather provider must default off.');
-assert(serviceWorker.includes("bctFeatureEnabled('ai_estimating_enabled',true)"), 'AI estimating core flag must remain available.');
 
 try {
   new Function(serviceWorker);
