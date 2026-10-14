@@ -5017,5 +5017,22 @@ button.bct-new-client-back,button.bct-agent-home,
  },true);
 })();
 </script>
+
+<style id="bct-theo-client-back-final-20261014">
+#bctClientBackHomeTop,#bctNewClientBackBtn{background:#a8e6cf!important;color:#0a4549!important;border:2px solid #0a4549!important;min-height:44px;font-weight:900!important}
+</style>
+<script id="bct-theo-client-back-final-20261014">
+(function(){
+ const top=document.getElementById('bctClientBackHomeTop');
+ if(!top)return;
+ const labels={en:['← Back','← Back to Home'],es:['← Atrás','← Volver al inicio'],fr:['← Retour','← Retour à l’accueil'],ht:['← Retounen','← Retounen lakay'],pt:['← Voltar','← Voltar ao início'],vi:['← Quay lại','← Về trang chủ'],zh:['← 返回','← 返回主页'],ar:['رجوع ←','العودة إلى الصفحة الرئيسية ←'],ru:['← Назад','← На главную']};
+ function sync(){const lang=(localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0];const signup=document.body.classList.contains('bct-home-signup');top.textContent=(labels[lang]||labels.en)[signup?0:1];top.setAttribute('aria-label',signup?'Back to Client Portal':'Back to Home');}
+ top.addEventListener('click',function(e){if(!document.body.classList.contains('bct-home-signup'))return;e.preventDefault();e.stopImmediatePropagation();document.body.classList.remove('bct-home-signup');document.querySelectorAll('#view-customer [data-customer-page-panel]').forEach(p=>p.classList.remove('active'));document.getElementById('bctHomeownerSignupCard')?.classList.add('active');document.getElementById('bctHomeownerLoginCard')?.classList.add('active');window.bctOpenEntry?.('client');requestAnimationFrame(()=>{sync();window.scrollTo(0,0)});},true);
+ new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+ document.getElementById('bctLanguage')?.addEventListener('change',()=>requestAnimationFrame(sync));
+ document.getElementById('bctLoginLanguage')?.addEventListener('change',()=>requestAnimationFrame(sync));
+ sync();
+})();
+</script>
 </body>
 </html>
