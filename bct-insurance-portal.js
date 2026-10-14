@@ -31,7 +31,7 @@ function ensure(){
  $('bctInsuranceSignIn')?.addEventListener('click',signIn);
  $('bctInsuranceClaimForm')?.addEventListener('submit',submitClaim);
  $('bctInsuranceRefresh')?.addEventListener('click',loadClaims); $('bctInsuranceSendMessage')?.addEventListener('click',()=>sendClaimAction('message')); $('bctInsuranceRespondInfo')?.addEventListener('click',()=>sendClaimAction('information'));
- $('bctInsuranceBackHome')?.addEventListener('click',()=>window.bctReturnToPublicLanding?.()||setView('home'));
+ $('bctInsuranceBackHome')?.addEventListener('click',()=>{if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else setView('home')});
 }
 function show(page){document.querySelectorAll('[data-ins-page]').forEach(b=>b.classList.toggle('active',b.dataset.insPage===page));document.querySelectorAll('[data-ins-panel]').forEach(p=>p.classList.toggle('hidden',p.dataset.insPanel!==page))}
 async function signIn(){
@@ -40,13 +40,13 @@ async function signIn(){
  if(!email||!password)return status('Enter your email and password.','error');
  const {error}=await sb.auth.signInWithPassword({email,password});if(error)return status(error.message,'error');
  const {data:member,error:memberError}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',(await sb.auth.getUser()).data.user?.id).eq('status','active').limit(1).maybeSingle();
- if(memberError||!member){return status('This account is not authorized for the BCT Insurance Portal. Your existing BCT session has been preserved.','error')}
- window.BCT_INSURANCE_MEMBER=member;status('Insurance partner signed in.','success');show('claims');await loadClaims();
+ if(memberError||!member){window.BCT_INSURANCE_MEMBER=null;return status('This account is not authorized for the BCT Insurance Portal. Access denied.','error')}
+ window.BCT_INSURANCE_MEMBER={...member,user_id:(await sb.auth.getUser()).data.user?.id};status('Insurance partner signed in.','success');show('claims');await loadClaims();
 }
 async function submitClaim(e){
  e.preventDefault();const sb=window.supabaseClient;if(!sb)return status('Secure claim submission is not available.','error');
  const {data:{user}}=await sb.auth.getUser();if(!user)return status('Sign in before submitting a claim.','error');
- let member=window.BCT_INSURANCE_MEMBER;if(!member){const {data:m,error:me}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',user.id).eq('status','active').limit(1).maybeSingle();if(me||!m)return status('Your approved insurance organization could not be verified. Sign in again.','error');member=m;window.BCT_INSURANCE_MEMBER=m}const f=new FormData(e.currentTarget),organization_id=member.organization_id;
+ const {data:member,error:memberError}=await sb.from('bct_insurance_members').select('organization_id,member_role,status').eq('user_id',user.id).eq('status','active').limit(1).maybeSingle();if(memberError||!member){window.BCT_INSURANCE_MEMBER=null;return status('Your approved insurance organization could not be verified. Sign in again.','error')}window.BCT_INSURANCE_MEMBER={...member,user_id:user.id};const f=new FormData(e.currentTarget),organization_id=member.organization_id;
  const property_address={street:String(f.get('property_address')||'').trim(),city:String(f.get('property_city')||'').trim(),state:String(f.get('property_state')||'').trim(),zip:String(f.get('property_zip')||'').trim()};
  const {error}=await sb.rpc('bct_insurance_submit_claim',{p_organization_id:organization_id,p_claim_number:String(f.get('claim_number')||'').trim(),p_policyholder_name:String(f.get('policyholder_name')||'').trim(),p_property_address:property_address,p_loss_type:String(f.get('loss_type')||'').trim(),p_date_of_loss:f.get('loss_date')||null,p_carrier_scope:{notes:String(f.get('scope_notes')||'').trim()},p_carrier_estimate:{},p_documents:[],p_photos:[]});if(error)return status(error.message,'error');
  e.currentTarget.reset();status('Claim submitted to BCT Review. No construction job has been authorized yet.','success');show('claims');await loadClaims();
