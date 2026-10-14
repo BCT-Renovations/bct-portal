@@ -31,3 +31,6 @@ body.bct-agent-open #bctAgentInput{box-sizing:border-box!important;width:100%!im
 body.bct-agent-open #bctAgentForm>div{margin-top:6px!important;min-height:40px!important}
 body.bct-agent-open #bctAgentMessages{min-height:0!important}
 }
+
+/* Isolated follow-up: separate Agent Home from heading and align the header. */
+@media(max-width:600px){body.bct-agent-open #bctAgentPanel>header{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;column-gap:12px!important;padding-top:calc(env(safe-area-inset-top,0px) + 16px)!important;padding-bottom:14px!important}body.bct-agent-open #bctAgentPanel>header .bct-agent-home{position:relative!important;grid-column:1!important;align-self:center!important;white-space:nowrap!important}body.bct-agent-open #bctAgentPanel>header #bctAgentClose{grid-column:3!important;align-self:center!important}body.bct-agent-open #bctAgentPanel>header h1,body.bct-agent-open #bctAgentPanel>header h2{font-size:clamp(18px,5vw,24px)!important;line-height:1.2!important}}
