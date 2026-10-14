@@ -57,7 +57,7 @@ grant execute on function public.bct_insurance_submit_supplement(uuid,jsonb) to 
 create or replace function public.bct_admin_set_insurance_authorization(p_claim_id uuid,p_authorization jsonb)
 returns void language plpgsql security definer set search_path=public as $$
 begin
- if not public.is_bct_admin() then raise exception 'BCT admin required' using errcode='42501'; end if;
+ if auth.uid() is null or not coalesce(public.is_bct_admin(),false) then raise exception 'BCT admin required' using errcode='42501'; end if;
  update public.bct_partner_claims set authorization_data=coalesce(p_authorization,'{}'::jsonb),status='authorized',updated_at=now()
  where id=p_claim_id and status in('accepted','estimate_in_progress','carrier_review','supplement');
  if not found then raise exception 'Claim is not eligible for authorization'; end if;

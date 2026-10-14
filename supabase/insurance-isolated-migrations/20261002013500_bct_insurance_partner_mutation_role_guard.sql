@@ -63,3 +63,35 @@ begin
 end $$;
 revoke all on function public.bct_insurance_submit_supplement(uuid,jsonb) from public,anon;
 grant execute on function public.bct_insurance_submit_supplement(uuid,jsonb) to authenticated;
+
+-- Suspension revokes partner reads as well as writes. Admin retains oversight.
+create or replace function public.bct_insurance_member_of(p_org uuid)
+returns boolean language sql stable security definer set search_path=public as $$
+ select auth.uid() is not null and exists(
+  select 1 from public.bct_insurance_members m
+  join public.bct_insurance_organizations o on o.id=m.organization_id
+  where m.organization_id=p_org and m.user_id=auth.uid() and m.status='active' and o.status='active'
+ );
+$$;
+create or replace function public.bct_insurance_org_admin_of(p_org uuid)
+returns boolean language sql stable security definer set search_path=public as $$
+ select public.bct_insurance_member_of(p_org) and exists(
+  select 1 from public.bct_insurance_members m where m.organization_id=p_org
+  and m.user_id=auth.uid() and m.member_role='organization_admin' and m.status='active'
+ );
+$$;
+
+-- Reviewed decisions and information requests must leave an insurance-visible audit trail.
+create or replace function public.bct_admin_review_insurance_claim_with_note(p_claim_id uuid,p_decision text,p_note text)
+returns void language plpgsql security definer set search_path=public as $$
+begin
+ if auth.uid() is null or not public.is_bct_admin() then raise exception 'BCT admin required' using errcode='42501'; end if;
+ if p_decision in ('needs_information','declined') and nullif(btrim(coalesce(p_note,'')),'') is null then
+  raise exception 'A reason or information request is required';
+ end if;
+ perform public.bct_admin_review_insurance_claim(p_claim_id,p_decision);
+ insert into public.bct_partner_claim_events(claim_id,actor_user_id,event_type,visibility,body,payload)
+ values(p_claim_id,auth.uid(),'status_note','insurance_and_bct',coalesce(nullif(btrim(p_note),''),'BCT accepted the claim for review and estimating'),jsonb_build_object('decision',p_decision));
+end $$;
+revoke all on function public.bct_admin_review_insurance_claim_with_note(uuid,text,text) from public,anon;
+grant execute on function public.bct_admin_review_insurance_claim_with_note(uuid,text,text) to authenticated;

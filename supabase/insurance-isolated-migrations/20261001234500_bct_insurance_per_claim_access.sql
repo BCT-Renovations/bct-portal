@@ -25,6 +25,7 @@ revoke all on function public.bct_insurance_can_read_claim(uuid) from public,ano
 grant execute on function public.bct_insurance_can_read_claim(uuid) to authenticated;
 
 drop policy if exists "insurance_claim_member_read" on public.bct_partner_claims;
+drop policy if exists "insurance_claim_authorized_read" on public.bct_partner_claims;
 create policy "insurance_claim_authorized_read" on public.bct_partner_claims
 for select to authenticated using (
  public.is_bct_admin()

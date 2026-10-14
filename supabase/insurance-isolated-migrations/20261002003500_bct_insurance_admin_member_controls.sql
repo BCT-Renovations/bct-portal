@@ -1,4 +1,6 @@
 -- BCT Insurance Portal Admin visibility + controlled organization membership management.
+drop policy if exists "insurance_member_same_org_read" on public.bct_insurance_members;
+drop policy if exists "insurance_org_member_read" on public.bct_insurance_organizations;
 drop policy if exists bct_insurance_organizations_read on public.bct_insurance_organizations;
 create policy bct_insurance_organizations_read on public.bct_insurance_organizations
 for select to authenticated using (
@@ -17,7 +19,7 @@ create or replace function public.bct_admin_set_insurance_member_status(
  p_organization_id uuid,p_user_id uuid,p_member_role text,p_status text
 ) returns void language plpgsql security definer set search_path=public as $$
 begin
- if not public.is_bct_admin() then raise exception 'BCT admin required' using errcode='42501'; end if;
+ if auth.uid() is null or not coalesce(public.is_bct_admin(),false) then raise exception 'BCT admin required' using errcode='42501'; end if;
  if not exists(select 1 from public.bct_insurance_organizations where id=p_organization_id) then raise exception 'Insurance organization not found'; end if;
  if p_member_role not in('organization_admin','adjuster','claims_representative','read_only') then raise exception 'Unsupported insurance member role'; end if;
  if p_status not in('active','suspended','inactive') then raise exception 'Unsupported insurance member status'; end if;

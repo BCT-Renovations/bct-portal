@@ -50,6 +50,10 @@ create table if not exists public.bct_partner_claims (
   unique (organization_id,claim_number)
 );
 
+-- Carrier claim identifiers are case-insensitive and trimmed for duplicate protection.
+create unique index if not exists bct_partner_claims_number_normalized_unique
+on public.bct_partner_claims(organization_id,lower(btrim(claim_number)));
+
 create index if not exists bct_partner_claims_org_idx on public.bct_partner_claims(organization_id);
 create index if not exists bct_partner_claims_adjuster_idx on public.bct_partner_claims(assigned_adjuster_user_id);
 create index if not exists bct_partner_claims_project_idx on public.bct_partner_claims(project_id) where project_id is not null;
@@ -126,7 +130,7 @@ grant execute on function public.bct_insurance_submit_claim(uuid,text,text,jsonb
 create or replace function public.bct_admin_review_insurance_claim(p_claim_id uuid,p_decision text)
 returns void language plpgsql security definer set search_path=public as $$
 begin
-  if not public.is_bct_admin() then raise exception 'BCT admin required' using errcode='42501'; end if;
+  if auth.uid() is null or not coalesce(public.is_bct_admin(),false) then raise exception 'BCT admin required' using errcode='42501'; end if;
   if p_decision not in ('accepted','declined','needs_information') then raise exception 'Unsupported insurance review decision'; end if;
   update public.bct_partner_claims
      set status=p_decision,

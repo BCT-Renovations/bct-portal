@@ -3,7 +3,7 @@ create or replace function public.bct_admin_link_insurance_claim_to_project(p_cl
 returns void language plpgsql security definer set search_path=public as $$
 declare c public.bct_partner_claims;
 begin
- if not public.is_bct_admin() then raise exception 'BCT admin required' using errcode='42501'; end if;
+ if auth.uid() is null or not coalesce(public.is_bct_admin(),false) then raise exception 'BCT admin required' using errcode='42501'; end if;
  if p_project_id is null then raise exception 'BCT project is required'; end if;
  select * into c from public.bct_partner_claims where id=p_claim_id for update;
  if c.id is null then raise exception 'Insurance claim not found'; end if;
@@ -20,7 +20,7 @@ create or replace function public.bct_admin_unlink_insurance_claim_project(p_cla
 returns void language plpgsql security definer set search_path=public as $$
 declare c public.bct_partner_claims;
 begin
- if not public.is_bct_admin() then raise exception 'BCT admin required' using errcode='42501'; end if;
+ if auth.uid() is null or not coalesce(public.is_bct_admin(),false) then raise exception 'BCT admin required' using errcode='42501'; end if;
  if nullif(btrim(coalesce(p_reason,'')),'') is null then raise exception 'Unlink reason is required'; end if;
  select * into c from public.bct_partner_claims where id=p_claim_id for update;
  if c.id is null then raise exception 'Insurance claim not found'; end if;

@@ -23,10 +23,10 @@ assert.doesNotMatch(portal,/\.from\(['"]bct_insurance_claims['"]\)/,'Do not read
 assert.doesNotMatch(admin,/\.from\(['"]bct_insurance_claims['"]\)/,'Do not read legacy insurance claims table');
 const preview=read('bct-insurance-preview-shell.js');
 assert.match(home,/id="bctInsurancePreviewEntry"/,'Public insurance preview entry must be visible');
-assert.match(home,/bct-insurance-preview-shell\\.js/,'Public insurance preview script must load');
+assert.match(home,/bct-insurance-preview-shell\.js/,'Public insurance preview script must load');
 assert.match(preview,/id='view-insurance-preview'/,'Preview has a dedicated view');
 assert.match(preview,/Preview only:/,'Preview must clearly disclose it is not operational');
-assert.doesNotMatch(preview,/supabaseClient|\\.rpc\\(|signInWithPassword|fetch\\(/,'Visual-only preview must not connect to insurance data');
+assert.doesNotMatch(preview,/supabaseClient|\.rpc\(|signInWithPassword|fetch\(/,'Visual-only preview must not connect to insurance data');
 assert.doesNotMatch(preview,/bct_insurance_claims|bct_partner_claims/,'Visual-only preview must not read claims');
 assert.match(preview,/bctInsurancePreviewBack/,'Preview must have Back navigation');
 assert.match(admin,/bct_admin_prepare_insurance_project_handoff/);

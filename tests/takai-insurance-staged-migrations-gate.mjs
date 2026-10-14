@@ -18,7 +18,7 @@ assert.match(combined,/create table if not exists public\.bct_partner_claim_even
 assert.match(combined,/create table if not exists public\.bct_insurance_organizations\b/i);
 assert.match(combined,/create table if not exists public\.bct_insurance_members\b/i);
 assert.match(combined,/create unique index if not exists bct_partner_claims_project_unique/i);
-assert.match(combined,/if not public\.is_bct_admin\(\)/i);
+assert.match(combined,/if auth\.uid\(\) is null or not coalesce\(public\.is_bct_admin\(\),false\)/i);
 assert.match(combined,/bct_insurance_member_of/i);
 assert.match(combined,/m\.member_role in \('organization_admin','adjuster','claims_representative'\)/,'Read-only insurance members must not submit claims');
 assert.match(combined,/revoke insert,update,delete on public\.bct_partner_claims from authenticated/i,'Direct browser claims mutation must be denied');
@@ -29,7 +29,9 @@ assert.match(finalGuard,/o\.status='active'/,'Suspended insurance organizations 
 for(const fn of ['bct_insurance_add_claim_message','bct_insurance_respond_to_information_request','bct_insurance_submit_supplement']){
  const i=finalGuard.indexOf('create or replace function public.'+fn);
  assert.ok(i>=0,fn+' must be overridden in final security migration');
- const body=finalGuard.slice(i,finalGuard.indexOf('end $;',i)+7);
+ const end=finalGuard.indexOf('end $$;',i);
+ assert.ok(end>i,fn+' must have a complete SQL body');
+ const body=finalGuard.slice(i,end+7);
  assert.match(body,/bct_insurance_can_write_claim/,'Partner mutation must verify write access: '+fn);
 }
 assert.match(finalGuard,/status=case when status='construction' then status else 'supplement' end/,'Supplement must not reverse active construction');
