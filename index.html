@@ -4445,6 +4445,7 @@ body.bct-entry-estimator:not(.bct-authenticated) main#bctMain > section.view:not
     if(about){
       e.preventDefault(); e.stopImmediatePropagation();
       const panel=document.getElementById('bctAboutPublic');
+      if(typeof window.bctTheoOpenAbout==='function'){window.bctTheoOpenAbout();return;}
       const open=!panel?.classList.contains('bct-about-open');
       panel?.classList.toggle('bct-about-open',open);
       if(panel)panel.hidden=!open;
@@ -4884,14 +4885,17 @@ body.bct-theo-signin #bctContractorRoleRouter{display:none!important}
 body.bct-theo-signin #view-status #bctContractorLoginCard,
 body.bct-theo-signin #view-status #bctContractorSignupCard{display:block!important}
 body.bct-theo-signin #view-status #bctContractorBottomActions{display:none!important}
+body:not(.bct-theo-about) #bctTheoAboutPage{display:none!important}
+body.bct-portal-entered #bctTheoAboutPage{display:none!important}
 #bctTheoAboutPage{display:none;max-width:800px;margin:0 auto;padding:16px 16px 40px;min-height:65vh}
-body.bct-theo-about #bctTheoAboutPage{display:block!important}
+body.bct-theo-about:not(.bct-portal-entered) #bctTheoAboutPage{display:block!important}
 body.bct-theo-about .view:not(#bctTheoAboutPage){display:none!important}
 body.bct-theo-about #bctTheoAboutPage{display:block!important}
 body.bct-theo-about #view-home{display:none!important}
 #bctTheoAboutPage #bctAboutPublic{display:block!important;position:static!important;margin:0!important;visibility:visible!important}
 #bctTheoAboutPage #bctTheoCloseAbout{display:block;width:100%;margin:22px auto 0;min-height:52px;background:#a8e6cf!important;color:#0a4549!important;font-weight:900}
 #bctTheoProfessionBack{background:#a8e6cf!important;color:#0a4549!important;margin:0 0 12px;min-height:46px}
+#view-status #bctContractorBackHomeBtn,#bctTheoProfessionBack{background:#a8e6cf!important;color:#0a4549!important;border:2px solid #0a4549!important}
 body.bct-theo-signin #view-status .bct-portal-back{background:#a8e6cf!important;color:#0a4549!important}
 </style>
 <script id="bct-theo-separated-pages-script">
@@ -4914,14 +4918,16 @@ body.bct-theo-signin #view-status .bct-portal-back{background:#a8e6cf!important;
  }
  function showProfessions(){body.classList.remove('bct-theo-signin');body.classList.add('bct-theo-professions');window.scrollTo(0,0);}
  function showSignin(){body.classList.remove('bct-theo-professions');body.classList.add('bct-theo-signin');window.scrollTo(0,0);}
+ window.bctTheoOpenAbout=function(){setup();body.classList.remove('bct-portal-entered','bct-entry-contractor','bct-entry-client','bct-entry-estimator','bct-entry-admin');body.classList.add('bct-theo-about');const panel=document.getElementById('bctAboutPublic');panel?.classList.remove('bct-about-open');panel?.removeAttribute('hidden');document.getElementById('bctHomeAboutBtn')?.setAttribute('aria-expanded','true');window.scrollTo(0,0);};
  // Capture before older document handlers so About opens as its own page.
  window.addEventListener('click',function(event){
   const about=event.target.closest?.('#bctHomeAboutBtn');
-  if(about){event.preventDefault();event.stopImmediatePropagation();setup();body.classList.add('bct-theo-about');document.getElementById('bctAboutPublic')?.removeAttribute('hidden');about.setAttribute('aria-expanded','true');window.scrollTo(0,0);return;}
+  if(about){event.preventDefault();event.stopImmediatePropagation();window.bctTheoOpenAbout();return;}
   if(event.target.closest?.('#bctContractorBackHomeBtn')&&body.classList.contains('bct-theo-signin')){
    event.preventDefault();event.stopImmediatePropagation();showProfessions();return;
   }
   if(event.target.closest?.('[data-entry-login], [data-entry-portal]')){body.classList.remove('bct-theo-about');document.getElementById('bctHomeAboutBtn')?.setAttribute('aria-expanded','false');}
+  if(event.target.closest?.('[data-entry-login],.bct-native-portal-link,[data-bct-entry],#bctTheoCloseAbout')){body.classList.remove('bct-theo-about');document.getElementById('bctAboutPublic')?.classList.remove('bct-about-open');}
   const role=event.target.closest?.('[data-bct-worker-role]');
   if(role&&document.getElementById('view-status')?.contains(role)){
    // Allow the existing role selection handler to fill profession-specific fields.
