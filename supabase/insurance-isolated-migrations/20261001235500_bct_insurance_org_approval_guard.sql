@@ -28,6 +28,7 @@ declare v_id uuid;
 begin
  if not public.bct_insurance_member_of(p_organization_id) then raise exception 'Insurance organization access denied' using errcode='42501'; end if;
  if not public.bct_insurance_org_active(p_organization_id) then raise exception 'Insurance organization is not active' using errcode='42501'; end if;
+ if not exists (select 1 from public.bct_insurance_members m where m.organization_id=p_organization_id and m.user_id=auth.uid() and m.status='active' and m.member_role in ('organization_admin','adjuster','claims_representative')) then raise exception 'This insurance role cannot submit claims' using errcode='42501'; end if;
  if nullif(btrim(coalesce(p_claim_number,'')),'') is null then raise exception 'Claim number is required'; end if;
  if nullif(btrim(coalesce(p_policyholder_name,'')),'') is null then raise exception 'Policyholder name is required'; end if;
  if nullif(btrim(coalesce(p_loss_type,'')),'') is null then raise exception 'Loss type is required'; end if;
