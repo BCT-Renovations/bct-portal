@@ -4886,6 +4886,8 @@ body.bct-theo-signin #view-status #bctContractorSignupCard{display:block!importa
 body.bct-theo-signin #view-status #bctContractorBottomActions{display:none!important}
 #bctTheoAboutPage{display:none;max-width:800px;margin:0 auto;padding:16px 16px 40px;min-height:65vh}
 body.bct-theo-about #bctTheoAboutPage{display:block!important}
+body.bct-theo-about .view:not(#bctTheoAboutPage){display:none!important}
+body.bct-theo-about #bctTheoAboutPage{display:block!important}
 body.bct-theo-about #view-home{display:none!important}
 #bctTheoAboutPage #bctAboutPublic{display:block!important;position:static!important;margin:0!important;visibility:visible!important}
 #bctTheoAboutPage #bctTheoCloseAbout{display:block;width:100%;margin:22px auto 0;min-height:52px;background:#a8e6cf!important;color:#0a4549!important;font-weight:900}
@@ -4903,7 +4905,7 @@ body.bct-theo-signin #view-status .bct-portal-back{background:#a8e6cf!important;
    const page=document.createElement('section');page.id='bctTheoAboutPage';page.setAttribute('aria-label','About BCT Renovations');
    const close=document.createElement('button');close.id='bctTheoCloseAbout';close.type='button';close.textContent='Close About';
    page.append(about,close);home.insertAdjacentElement('afterend',page);
-   close.addEventListener('click',function(){body.classList.remove('bct-theo-about');document.getElementById('bctHomeAboutBtn')?.setAttribute('aria-expanded','false');window.scrollTo(0,0);});
+   close.addEventListener('click',function(){body.classList.remove('bct-theo-about');document.getElementById('bctHomeAboutBtn')?.setAttribute('aria-expanded','false');document.querySelectorAll('.view').forEach(v=>v.classList.toggle('hidden',v.id!=='view-home'));window.scrollTo(0,0);});
   }
   if(!document.getElementById('bctTheoProfessionBack')){
    const login=document.getElementById('bctContractorLoginCard');
@@ -4919,6 +4921,7 @@ body.bct-theo-signin #view-status .bct-portal-back{background:#a8e6cf!important;
   if(event.target.closest?.('#bctContractorBackHomeBtn')&&body.classList.contains('bct-theo-signin')){
    event.preventDefault();event.stopImmediatePropagation();showProfessions();return;
   }
+  if(event.target.closest?.('[data-entry-login], [data-entry-portal]')){body.classList.remove('bct-theo-about');document.getElementById('bctHomeAboutBtn')?.setAttribute('aria-expanded','false');}
   const role=event.target.closest?.('[data-bct-worker-role]');
   if(role&&document.getElementById('view-status')?.contains(role)){
    // Allow the existing role selection handler to fill profession-specific fields.
