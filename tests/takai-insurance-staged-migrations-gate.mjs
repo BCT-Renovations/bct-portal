@@ -20,4 +20,6 @@ assert.match(combined,/create table if not exists public\.bct_insurance_members\
 assert.match(combined,/create unique index if not exists bct_partner_claims_project_unique/i);
 assert.match(combined,/if not public\.is_bct_admin\(\)/i);
 assert.match(combined,/bct_insurance_member_of/i);
+assert.match(combined,/m\.member_role in \('organization_admin','adjuster','claims_representative'\)/,'Read-only insurance members must not submit claims');
+assert.match(combined,/revoke insert,update,delete on public\.bct_partner_claims from authenticated/i,'Direct browser claims mutation must be denied');
 console.log('TAKAI insurance staged SQL static namespace and boundary checks passed:',files.length,'migrations');
