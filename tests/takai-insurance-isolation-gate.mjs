@@ -17,5 +17,9 @@ assert.doesNotMatch(admin,/\.from\(['"]bct_projects['"]\)\.insert/,'No direct br
 assert.doesNotMatch(loader,/bct-insurance-(portal|admin)\.js/,'Keep insurance dormant until integration gates pass');
 assert.doesNotMatch(home,/src=['"][^'"]*bct-insurance-(portal|admin)\.js/,'Do not inject dormant insurance into live entrypoint');
 assert.match(portal,/bct_insurance_submit_claim/);
+assert.match(portal,/\.from\(['"]bct_partner_claims['"]\)/,'Insurance portal must read partner claims only');
+assert.match(admin,/\.from\(['"]bct_partner_claims['"]\)/,'Insurance admin must read partner claims only');
+assert.doesNotMatch(portal,/\.from\(['"]bct_insurance_claims['"]\)/,'Do not read legacy insurance claims table');
+assert.doesNotMatch(admin,/\.from\(['"]bct_insurance_claims['"]\)/,'Do not read legacy insurance claims table');
 assert.match(admin,/bct_admin_prepare_insurance_project_handoff/);
 console.log('TAKAI insurance static isolation and session-safety checks passed');
