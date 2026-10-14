@@ -841,7 +841,7 @@ body:not(.bct-authenticated):not(.bct-portal-entered) #bctHomeAboutBtn{display:b
     <h3 data-i18n="homeowner.returning_title">Returning Client — Sign In</h3>
     <p class="muted" data-i18n="homeowner.returning_description">Sign in to see your real BCT project status and upload private project files.</p>
     <div class="grid grid-2"><div><label data-i18n="homeowner.email">Email</label><input id="bctHomeEmail" type="email" autocomplete="email"></div><div><label data-i18n="homeowner.password">Password</label><input id="bctHomePassword" type="password" autocomplete="current-password"></div></div>
-    <div class="admin-project-actions"><button type="button" id="bctHomeLoginBtn" data-i18n="homeowner.signin_button">Sign In</button><button type="button" class="secondary" id="bctHomeForgotBtn" data-i18n="homeowner.forgot_password">Forgot Password?</button><button type="button" class="secondary" id="bctHomeBackHomeBtn" data-i18n="homeowner.back_home">Back to Home</button><button type="button" class="secondary" id="bctHomeLogoutBtn" data-i18n="homeowner.signout_button">Sign Out</button><button type="button" class="secondary" id="bctHomeResendBtn" data-i18n="homeowner.resend_confirmation">Resend Confirmation Email</button></div>
+    <div class="admin-project-actions"><button type="button" id="bctHomeLoginBtn" data-i18n="homeowner.signin_button">Sign In</button><button type="button" class="secondary" id="bctHomeForgotBtn" data-i18n="homeowner.forgot_password">Forgot Password?</button><button type="button" class="secondary" id="bctHomeBackHomeBtn" data-i18n="homeowner.back_home">Back to Home</button><button type="button" class="secondary" id="bctHomeLogoutBtn" data-i18n="homeowner.signout_button">Sign Out</button><button type="button" class="secondary" id="bctHomeResendBtn" hidden data-i18n="homeowner.resend_confirmation">Resend Confirmation Email</button></div>
     <div id="bctHomeAuthStatus" class="section"></div>
     <div class="mini-list">
       <div class="stage" data-i18n="homeowner.next_step_note">Next step: New clients should open Project Details and complete the private request.</div>
@@ -4887,6 +4887,7 @@ body.bct-theo-signin #view-status #bctContractorSignupCard{display:block!importa
 body.bct-theo-signin #view-status #bctContractorBottomActions{display:none!important}
 body:not(.bct-theo-about) #bctTheoAboutPage{display:none!important}
 body.bct-portal-entered #bctTheoAboutPage{display:none!important}
+#bctHomeResendBtn[hidden],#bctContractorResendBtn[hidden]{display:none!important}
 #bctTheoAboutPage{display:none;max-width:800px;margin:0 auto;padding:16px 16px 40px;min-height:65vh}
 body.bct-theo-about:not(.bct-portal-entered) #bctTheoAboutPage{display:block!important}
 body.bct-theo-about .view:not(#bctTheoAboutPage){display:none!important}
