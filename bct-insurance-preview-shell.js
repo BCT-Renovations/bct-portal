@@ -9,12 +9,15 @@ function open(){tabs.length=0;activeTab='signin';
   panel=document.createElement('section');panel.id='view-insurance-preview';panel.className='view section hidden';
   panel.innerHTML='<div class="card section"><div class="bct-portal-title">BCT INSURANCE PORTAL</div><h2>Insurance / Claims Partner</h2><p>Insurance companies, claims adjusters, and claims representatives can submit assignments to BCT for review.</p><div class="notice" role="status"><strong>Preview only:</strong> Insurance sign-in, claim submission, claim history, and Admin review are not enabled. No insurance data is being collected or changed.</div><div class="portal-tabs"><button type="button" data-ins-preview-tab="signin">Sign In</button><button type="button" data-ins-preview-tab="claim">Submit Claim</button><button type="button" data-ins-preview-tab="history">My Claims</button></div><div id="bctInsurancePreviewTab" class="card section"></div><button type="button" id="bctInsurancePreviewBack" class="secondary bct-portal-back" style="background:#a8e6cf;color:#0a4549;min-height:48px">← Back</button></div>';
   main.appendChild(panel);
+  const sync=()=>{const visible=!panel.classList.contains('hidden');if(visible)panel.style.setProperty('display','block','important');else panel.style.removeProperty('display');document.body.classList.toggle('bct-insurance-preview-open',visible)};
+  new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['class']});
   panel.querySelectorAll('[data-ins-preview-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.insPreviewTab)));
-  document.getElementById('bctInsurancePreviewBack').addEventListener('click',()=>{if(tabs.length){tab(tabs.pop(),false);return}if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else if(typeof window.setVisibleView==='function')window.setVisibleView('home');else{panel.classList.add('hidden');document.getElementById('view-home')?.classList.remove('hidden')}});
+  document.getElementById('bctInsurancePreviewBack').addEventListener('click',()=>{if(tabs.length){tab(tabs.pop(),false);return}panel.style.removeProperty('display');document.body.classList.remove('bct-insurance-preview-open');if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else if(typeof window.setVisibleView==='function')window.setVisibleView('home');else{panel.classList.add('hidden');document.getElementById('view-home')?.classList.remove('hidden')}});
  }
  document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-estimator','bct-entry-admin');
  if(typeof window.setVisibleView==='function')window.setVisibleView('insurance-preview');
  else {document.querySelectorAll('main .view').forEach(v=>v.classList.add('hidden'));panel.classList.remove('hidden')}
+ panel.style.setProperty('display','block','important');document.body.classList.add('bct-insurance-preview-open');
  tab('signin');
 }
 function tab(kind,remember=true){if(remember&&kind!==activeTab)tabs.push(activeTab);activeTab=kind;
@@ -27,7 +30,7 @@ function init(){
  const btn=document.getElementById(id);if(!btn||btn.dataset.insPreviewBound)return;
  btn.dataset.insPreviewBound='1';btn.addEventListener('click',open);
  const style=document.createElement('style');style.id='bct-insurance-preview-visibility';
- style.textContent='body:not(.bct-authenticated) main#bctMain > section#view-insurance-preview.view:not(.hidden){display:block!important} body:not(.bct-authenticated) main#bctMain > section#view-insurance-preview.view.hidden{display:none!important}';
+ style.textContent='html.bct-session-resolved body.bct-signed-out.bct-insurance-preview-open main#bctMain > section#view-home{display:none!important} body:not(.bct-authenticated) main#bctMain > section#view-insurance-preview.view:not(.hidden){display:block!important} body:not(.bct-authenticated) main#bctMain > section#view-insurance-preview.view.hidden{display:none!important}';
  document.head.appendChild(style);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
