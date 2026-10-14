@@ -34,3 +34,11 @@ body.bct-agent-open #bctAgentMessages{min-height:0!important}
 
 /* Isolated follow-up: separate Agent Home from heading and align the header. */
 @media(max-width:600px){body.bct-agent-open #bctAgentPanel>header{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;column-gap:12px!important;padding-top:calc(env(safe-area-inset-top,0px) + 16px)!important;padding-bottom:14px!important}body.bct-agent-open #bctAgentPanel>header .bct-agent-home{position:relative!important;grid-column:1!important;align-self:center!important;white-space:nowrap!important}body.bct-agent-open #bctAgentPanel>header #bctAgentClose{grid-column:3!important;align-self:center!important}body.bct-agent-open #bctAgentPanel>header h1,body.bct-agent-open #bctAgentPanel>header h2{font-size:clamp(18px,5vw,24px)!important;line-height:1.2!important}}
+
+/* Structural header correction: Home, title, Close are independent grid children. */
+body.bct-agent-open #bctAgentPanel>header{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;gap:12px!important;align-items:center!important}
+body.bct-agent-open #bctAgentPanel>header .bct-agent-heading{min-width:0!important;text-align:center!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important}
+body.bct-agent-open #bctAgentPanel>header #bctAgentTitle{display:block!important;line-height:1.2!important;overflow-wrap:anywhere!important}
+body.bct-agent-open #bctAgentPanel>header #bctAgentHome{position:static!important;grid-column:1!important;align-self:center!important;margin:0!important}
+body.bct-agent-open #bctAgentPanel>header #bctAgentClose{position:static!important;grid-column:3!important;align-self:center!important;margin:0!important}
+@media(max-width:600px){body.bct-agent-open #bctAgentPanel>header{padding:calc(env(safe-area-inset-top,0px) + 18px) 12px 14px!important;min-height:calc(70px + env(safe-area-inset-top,0px))!important}}
