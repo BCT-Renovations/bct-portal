@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="BCT Renovations" />
 <link rel="manifest" href="/manifest.webmanifest" />
 <link rel="apple-touch-icon" href="/bct-app-icon-v46-ios.png" />
+<link rel="preload" as="image" href="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261014" fetchpriority="high" />
 <!-- V28: comprehensive French UI sweep -->
 <!-- BCT V32: full translation sweep for vi/zh/ar/ru -->
 <title>BCT Renovations Project Network — V46 Launch Cutover</title>
@@ -736,7 +737,7 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
       </select>
     </div>
     <div class="brand">
-      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261010" alt="BCT Renovations logo"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
+      <div class="bct-dynamic-brand"><div class="bct-logo-crop"><img decoding="async" loading="eager" fetchpriority="high" width="1774" height="887" class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261014" alt="BCT Renovations logo" onerror="this.onerror=null;this.src='/bct-home-logo.webp?v=official-bct-logo-v46-fallback-20261014';"><div class="bct-dynamic-slogan" data-bct-slogan role="status" aria-live="polite">“We Are Your General Contractor”</div></div></div>
       <div>
         <h1>BCT Renovations, LLC</h1>
         
@@ -1370,6 +1371,12 @@ const BCT_ENGLISH_FALLBACK={
   'gallery.lead':'A look at recent BCT Renovations projects.',
   'gallery.more':'View More Projects',
   'gallery.full':'Open Full Gallery',
+  'about.button':'About BCT',
+  'about.middle_lead':'Where clients, contractors, and BCT meet in the middle.',
+  'about.middle_p1':'BCT Renovations is a general-contractor-managed project network. Clients submit projects to BCT, and BCT helps organize the scope, review details, coordinate communication, and manage the project process.',
+  'about.middle_p2':'Contractors, handymen, electricians, plumbers, HVAC pros, roofers, concrete and masonry crews, flooring installers, and estimators can apply to join the BCT network. BCT reviews credentials, work history, insurance, and project fit before assigning opportunities.',
+  'about.middle_p3':'BCT is not just a referral list. Clients are not picking from random public bids, and contractors are not competing in front of the customer. BCT stays in the middle as the general contractor, helping protect the client, guide the project, and build a stronger contractor network.',
+  'about.middle_close':'Your project. Your home. Our contractor network. One BCT process.',
   'about.licensed':'Licensed • Bonded • Insured',
   'home.license_badge':'Licensed • Bonded • Insured',
   'about.title':'About BCT Renovations',
@@ -4839,7 +4846,13 @@ function repairAuthLabels(){
     'homeowner.last_name':'Last Name',
     'homeowner.mobile_phone':'Mobile Phone',
     'homeowner.create_password':'Create Password',
-    'homeowner.confirm_password':'Confirm Password'
+    'homeowner.confirm_password':'Confirm Password',
+    'about.button':'About BCT',
+    'about.middle_lead':'Where clients, contractors, and BCT meet in the middle.',
+    'about.middle_p1':'BCT Renovations is a general-contractor-managed project network. Clients submit projects to BCT, and BCT helps organize the scope, review details, coordinate communication, and manage the project process.',
+    'about.middle_p2':'Contractors, handymen, electricians, plumbers, HVAC pros, roofers, concrete and masonry crews, flooring installers, and estimators can apply to join the BCT network. BCT reviews credentials, work history, insurance, and project fit before assigning opportunities.',
+    'about.middle_p3':'BCT is not just a referral list. Clients are not picking from random public bids, and contractors are not competing in front of the customer. BCT stays in the middle as the general contractor, helping protect the client, guide the project, and build a stronger contractor network.',
+    'about.middle_close':'Your project. Your home. Our contractor network. One BCT process.'
   };
   for(const [key,label] of Object.entries(english)){
     document.querySelectorAll('[data-i18n="'+key+'"]').forEach(el=>{
