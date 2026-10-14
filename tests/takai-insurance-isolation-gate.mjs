@@ -30,4 +30,9 @@ assert.doesNotMatch(preview,/supabaseClient|\\.rpc\\(|signInWithPassword|fetch\\
 assert.doesNotMatch(preview,/bct_insurance_claims|bct_partner_claims/,'Visual-only preview must not read claims');
 assert.match(preview,/bctInsurancePreviewBack/,'Preview must have Back navigation');
 assert.match(admin,/bct_admin_prepare_insurance_project_handoff/);
+assert.match(portal,/A different BCT account is already signed in/,'Insurance sign-in must not replace a different active BCT account');
+assert.match(portal,/if\(!user\)\{/,'Insurance sign-in should only authenticate when no account is active');
+assert.match(portal,/Your insurance membership is not active/,'Claims must recheck current membership');
+assert.match(portal,/Your insurance session changed/,'Claim mutation must guard against session changes');
+assert.match(portal,/bctInsuranceClaimAction'\)\?\.classList\.add\('hidden'\)/,'Switching insurance tabs must close stale claim details');
 console.log('TAKAI insurance static isolation and session-safety checks passed');
