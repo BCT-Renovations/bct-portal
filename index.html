@@ -4942,5 +4942,38 @@ body.bct-theo-signin #view-status .bct-portal-back{background:#a8e6cf!important;
  document.addEventListener('DOMContentLoaded',function(){setup();const view=document.getElementById('view-status');if(view)observer.observe(view,{attributes:true,attributeFilter:['class']});if(view&&!view.classList.contains('hidden'))showProfessions();});
 })();
 </script>
+
+<style id="bct-theo-about-visibility-final">
+body.bct-theo-about #bctTheoAboutPage{display:block!important;visibility:visible!important;position:relative!important;z-index:2!important}
+body.bct-theo-about #bctTheoAboutPage #bctAboutPublic{display:block!important;visibility:visible!important;opacity:1!important}
+body.bct-theo-about #view-home,body.bct-theo-about main#bctMain>section.view{display:none!important}
+body.bct-theo-about #bctTheoAboutPage{margin:0 auto!important}
+</style>
+<script id="bct-theo-about-navigation-final">
+(function(){
+function openAbout(){
+ const page=document.getElementById('bctTheoAboutPage');
+ if(!page)return;
+ document.body.classList.remove('bct-portal-entered','bct-entry-client','bct-entry-contractor','bct-entry-estimator','bct-entry-admin');
+ document.body.classList.add('bct-theo-about');
+ const about=document.getElementById('bctAboutPublic');
+ if(about){about.hidden=false;about.removeAttribute('hidden');about.classList.add('bct-about-open');}
+ page.hidden=false;
+ window.scrollTo(0,0);
+}
+document.addEventListener('click',function(e){
+ const btn=e.target.closest?.('#bctHomeAboutBtn');
+ if(!btn)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ openAbout();
+},true);
+document.addEventListener('click',function(e){
+ if(!e.target.closest?.('#bctTheoCloseAbout'))return;
+ document.body.classList.remove('bct-theo-about');
+ document.getElementById('bctAboutPublic')?.classList.remove('bct-about-open');
+ window.scrollTo(0,0);
+},true);
+})();
+</script>
 </body>
 </html>
