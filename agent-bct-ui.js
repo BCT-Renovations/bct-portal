@@ -112,7 +112,7 @@ function renderMessages(){
 function applyCopy(){
  const x=t(),panel=document.getElementById("bctAgentPanel");if(panel)panel.dir=RTL.has(language())?"rtl":"ltr";
  syncRoleOptions();
- [["bctAgentHome","home"],["bctAgentOpen","open"],["bctAgentTitle","title"],["bctAgentSubtitle","sub"],["bctAgentSend","send"]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.textContent=x[k]});
+ [["bctAgentHome","home"],["bctAgentOpen","open"],["bctAgentTitle","title"],["bctAgentSubtitle","sub"],["bctAgentSend","send"]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.textContent=id==="bctAgentHome"?"← Back":x[k]});
  const c=document.getElementById("bctAgentClose");if(c)c.setAttribute("aria-label",x.close);
  const input=document.getElementById("bctAgentInput");if(input)input.placeholder=x.placeholder;
  const label=document.querySelector('label[for="bctAgentInput"]');if(label)label.textContent=x.message;
@@ -120,19 +120,10 @@ function applyCopy(){
  renderMessages();
 }
 function goHome(){
- const panel=document.getElementById("bctAgentPanel");
- if(panel)panel.hidden=true;
- document.body.classList.remove("bct-agent-open","bct-entry-handyman");
- if(!document.body.classList.contains("bct-authenticated"))document.body.classList.remove("bct-portal-entered");
- window.scrollTo({top:0,left:0,behavior:"auto"});
- const home=document.getElementById("view-home");
- home?.style.removeProperty("display");
- const handyman=document.getElementById("bctHandymanPortalMount");handyman?.classList.add("hidden");handyman?.style.removeProperty("display");
- if(typeof setVisibleView==="function")setVisibleView("home");
- document.querySelectorAll("[id^=\"view-\"]").forEach(v=>{if(v!==home&&v.id!=="view-home")v.classList.add("hidden");});
- home?.classList.remove("hidden","bct-signedout-hidden");
- history.replaceState(null,"",location.pathname+location.search);
+ // Back returns to the page underneath Agent BCT; it must not reset portal navigation.
+ close();
 }
+
 function open(){
  const panel=document.getElementById("bctAgentPanel");if(!panel)return;
  lastFocus=document.activeElement;scrollY=window.scrollY;panel.hidden=false;document.body.classList.add("bct-agent-open");syncRoleOptions();applyCopy();refreshConversationScope().then(applyCopy).catch(()=>{});setTimeout(()=>document.getElementById("bctAgentInput")?.focus({preventScroll:true}),0);
@@ -169,6 +160,7 @@ function mount(){
  const positionOptions=POSITIONS.map(([value,label])=>'<option value="'+escapeHtml(value)+'">'+escapeHtml(label)+'</option>').join("");
  const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><button id="bctAgentHome" type="button" class="bct-agent-home">⌂ Home</button><div class="bct-agent-heading"><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div class="bct-agent-position"><label for="bctAgentPosition">Role</label><select id="bctAgentPosition">'+positionOptions+'</select></div><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
  document.body.appendChild(root);
+ const theoBackStyle=document.createElement("style");theoBackStyle.id="bctTheoAgentBackStyle";theoBackStyle.textContent="#bctAgentHome{background:#a8e6cf!important;color:#0a4549!important;border:2px solid #0a4549!important;font-weight:900!important}";document.head.appendChild(theoBackStyle);
  const launcher=document.getElementById("bctAgentOpen");
  // Keep the existing tap-to-open action; dragging only changes launcher position.
  let drag=null,suppressClick=false;
