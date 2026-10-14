@@ -56,7 +56,8 @@
       .bct-gallery-frame{position:relative}.bct-gallery-frame img{width:100%;height:100%;display:block;object-fit:cover}.bct-gallery-image-text{position:absolute;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(0,0,0,.72);color:#fff;font-weight:900;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.8);line-height:1.25}
       .bct-gallery-card figcaption{padding:9px 10px;font-size:13px;font-weight:700;color:#173c3e;text-align:center}
       .bct-gallery-extra[hidden]{display:none!important}
-      #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}\n      body.bct-gallery-modal-open{overflow:hidden!important}#bctGalleryModal[hidden]{display:none!important}#bctGalleryModal{position:fixed;inset:0;z-index:100000;background:#000;color:#fff;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));display:grid;grid-template-rows:auto 1fr auto;overscroll-behavior:contain;touch-action:none}.bct-gallery-modal-head,.bct-gallery-modal-foot{display:flex;gap:8px;align-items:center;justify-content:space-between}.bct-gallery-modal-head button,.bct-gallery-modal-foot button,.bct-gallery-modal-head select{min-height:44px;border-radius:9px;padding:8px 12px}.bct-gallery-stage{display:grid;place-items:center;min-height:0}.bct-gallery-stage img{max-width:100%;max-height:68vh;object-fit:contain}.bct-gallery-modal-caption{text-align:center;margin-top:6px}
+      #bctGalleryToggle,#bctGalleryFull{display:block;width:100%;min-height:50px;margin:12px 0 0;background:#0f5f63;color:#fff;border-radius:10px;font-size:16px;font-weight:900}
+      body.bct-gallery-modal-open{overflow:hidden!important}#bctGalleryModal[hidden]{display:none!important}#bctGalleryModal{position:fixed;inset:0;z-index:100000;background:#000;color:#fff;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));display:grid;grid-template-rows:auto 1fr auto;overscroll-behavior:contain;touch-action:none}.bct-gallery-modal-head,.bct-gallery-modal-foot{display:flex;gap:8px;align-items:center;justify-content:space-between}.bct-gallery-modal-head button,.bct-gallery-modal-foot button,.bct-gallery-modal-head select{min-height:44px;border-radius:9px;padding:8px 12px}.bct-gallery-stage{display:grid;place-items:center;min-height:0}.bct-gallery-stage img{max-width:100%;max-height:68vh;object-fit:contain}.bct-gallery-modal-caption{text-align:center;margin-top:6px}
       #bctGalleryToggle:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
       @media(min-width:620px){#bctHomeGalleryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
     `;
@@ -101,7 +102,9 @@
     toggle.hidden=PROJECTS.length<=4;
     toggle.textContent=expanded?c.less:c.more;
     toggle.setAttribute('aria-expanded',String(expanded));
-    // Keep the gallery section and its entry buttons visible even when the public photo query is empty or temporarily unavailable.\n    // This preserves the existing gallery system and prevents the Full Gallery entry point from disappearing.\n    section.hidden=false;
+    // Keep the gallery section and its entry buttons visible even when the public photo query is empty or temporarily unavailable.
+    // This preserves the existing gallery system and prevents the Full Gallery entry point from disappearing.
+    section.hidden=false;
     const full=$('bctGalleryFull');
     if(full){const hasPhotos=PROJECTS.length>0;full.disabled=false;full.textContent=hasPhotos?c.full:c.coming;full.setAttribute('aria-disabled',String(!hasPhotos));}
   }
