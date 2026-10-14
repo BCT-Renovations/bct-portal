@@ -4975,5 +4975,47 @@ document.addEventListener('click',function(e){
 },true);
 })();
 </script>
+
+<style id="bct-theo-unified-back-controls">
+/* Narrow, shared back-button presentation; no unrelated action buttons. */
+button[id*="Back"],button[id*="backHome"],button[id*="back-home"],button.bct-portal-back,
+button.bct-new-client-back,button.bct-agent-home,
+[data-bct-back],.bct-estimator-back,
+#bctTheoProfessionBack,#bctTheoCloseAbout{
+ background:#a8e6cf!important;color:#0a4549!important;border:2px solid #0a4549!important;
+ font-weight:900!important;min-height:44px;
+}
+</style>
+<script id="bct-theo-estimator-return-repair">
+(function(){
+ function repairHome(){
+  const body=document.body;
+  body.classList.remove('bct-theo-about','bct-theo-signin','bct-theo-professions','bct-entry-estimator','bct-portal-entered');
+  const about=document.getElementById('bctAboutPublic');
+  if(about){about.classList.remove('bct-about-open');about.hidden=true;}
+  const home=document.getElementById('view-home');
+  if(home){home.hidden=false;home.classList.remove('hidden','bct-signedout-hidden');home.style.removeProperty('display');home.removeAttribute('aria-hidden');}
+  const entries=document.getElementById('bctEntryActions');
+  if(entries){entries.hidden=false;entries.classList.remove('hidden');entries.style.removeProperty('display');}
+  const aboutButton=document.getElementById('bctHomeAboutBtn');
+  if(aboutButton){aboutButton.hidden=false;aboutButton.style.removeProperty('display');}
+  document.querySelectorAll('main#bctMain > section.view').forEach(view=>{if(view!==home)view.classList.add('hidden');});
+  window.scrollTo(0,0);
+ }
+ document.addEventListener('click',function(e){
+  const button=e.target.closest?.('button,a');
+  if(!button)return;
+  const text=(button.textContent||'').trim().toLowerCase();
+  const isBack=/^(?:←\s*)?back(?: to home)?$/.test(text);
+  const estimator=button.closest?.('#view-estimator,#bctEstimatorPortalMount,[id*="estimator"],[class*="estimator"]');
+  if(!isBack||!estimator)return;
+  // Keep estimator's own back routing, then repair the public landing if it is selected.
+  setTimeout(function(){
+   const home=document.getElementById('view-home');
+   if(home&&!home.classList.contains('hidden')&&!document.body.classList.contains('bct-authenticated'))repairHome();
+  },0);
+ },true);
+})();
+</script>
 </body>
 </html>
