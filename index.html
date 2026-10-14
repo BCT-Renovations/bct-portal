@@ -4524,10 +4524,13 @@ body.bct-entry-estimator:not(.bct-authenticated) main#bctMain > section.view:not
       customer:{view:'customer',entry:'client'},
       status:{view:'status',entry:'contractor'},
       apply:{view:'apply',entry:'contractor',signup:'bct-contractor-signup'},
+      estimator:{view:'estimator',entry:'estimator'},
+      admin:{view:'admin-login',entry:'admin'},
       'admin-login':{view:'admin-login',entry:'admin'}
     };
     const route=routeMap[hash];
     if(!route)return;
+    if(route.view==='estimator')window.BCT_ESTIMATOR_PORTAL?.ensure?.();
     document.body.classList.add('bct-portal-entered','bct-entry-'+route.entry);
     document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator','bct-home-signup','bct-contractor-signup');
     document.body.classList.add('bct-entry-'+route.entry);
