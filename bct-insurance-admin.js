@@ -35,5 +35,5 @@ async function review(id,decision){
  if(error)return note(error.message,'error');note('Insurance claim review updated.','success');await load();
 }
 window.BCT_INSURANCE_ADMIN_VERSION=VERSION;window.bctLoadInsuranceAdmin=load;
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure,{once:true});else ensure();
+window.bctEnsureInsuranceAdminPanel=ensure;
 })();
