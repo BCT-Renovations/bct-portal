@@ -12,8 +12,10 @@ function open(){
   panel.querySelectorAll('[data-ins-preview-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.insPreviewTab)));
   document.getElementById('bctInsurancePreviewBack').addEventListener('click',()=>{if(typeof window.bctReturnToPublicLanding==='function')window.bctReturnToPublicLanding();else if(typeof window.setVisibleView==='function')window.setVisibleView('home');else{panel.classList.add('hidden');document.getElementById('view-home')?.classList.remove('hidden')}});
  }
- document.querySelectorAll('main .view').forEach(v=>v.classList.add('hidden'));
- panel.classList.remove('hidden');tab('signin');
+ document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-estimator','bct-entry-admin');
+ if(typeof window.setVisibleView==='function')window.setVisibleView('insurance-preview');
+ else {document.querySelectorAll('main .view').forEach(v=>v.classList.add('hidden'));panel.classList.remove('hidden')}
+ tab('signin');
 }
 function tab(kind){
  const p=document.getElementById('bctInsurancePreviewTab');if(!p)return;
