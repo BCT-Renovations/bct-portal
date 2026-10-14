@@ -25,7 +25,7 @@ function init(){
  const btn=document.getElementById(id);if(!btn||btn.dataset.insPreviewBound)return;
  btn.dataset.insPreviewBound='1';btn.addEventListener('click',open);
  const style=document.createElement('style');style.id='bct-insurance-preview-visibility';
- style.textContent='body:not(.bct-authenticated) main > #view-insurance-preview:not(.hidden){display:block!important}';
+ style.textContent='body:not(.bct-authenticated) main#bctMain > section#view-insurance-preview.view:not(.hidden){display:block!important} body:not(.bct-authenticated) main#bctMain > section#view-insurance-preview.view.hidden{display:none!important}';
  document.head.appendChild(style);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
