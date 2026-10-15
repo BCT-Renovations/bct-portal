@@ -39,6 +39,8 @@ const checks=[
  ['Late-set accessibility attributes trigger translation',languagePass.includes("attributeFilter:['aria-label','title','placeholder','value']")],
  ['Attribute observer handles added labels',languagePass.includes('addedControls || changedLabels')],
  ['Dynamic input value attribute updates observed',languagePass.includes("record.attributeName==='value'")],
+ ['Existing option text mutations trigger translation',languagePass.includes("record.type==='characterData'") && languagePass.includes("closest?.('main select option')")],
+ ['Dropdown option source updates on changed wording',staticPass.includes('BCT_ORIGINAL_TEXT.set(option,option.textContent)')],
 ];
 for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+' '+name);}
 assert.ok(checks.every(([,ok])=>ok),'Translation source regression failed');
