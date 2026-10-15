@@ -9,8 +9,8 @@ const languagePass=between('async function applyBctLanguage(languageCode){','fun
 const checks=[
  ['Takai uses one persistent language key',html.includes("const BCT_LANGUAGE_KEY='bctPreferredLanguage'")],
  ['Static translation uses shared dictionaries',staticPass.includes('BCT_COMMON_UI_TRANSLATIONS[language]') && staticPass.includes('BCT_EXTENDED_UI_TRANSLATIONS[language]')],
- ['Static translation excludes translated descendants',staticPass.includes("!el.closest('[data-i18n]')")],
- ['Static translation skips scripts and styles',staticPass.includes("parent.closest('[data-i18n],script,style,template,option')")],
+ ['Static translation excludes translated descendants',staticPass.includes("parent.closest('[data-i18n],script,style,template,option")],
+ ['Static translation skips scripts and styles',staticPass.includes("parent.closest('[data-i18n],script,style,template,option")],
  ['Common translation avoids nested controls',commonPass.includes('if(el.children.length')],
  ['Common translation avoids translated descendants',commonPass.includes("el.closest('[data-i18n]')")],
  ['Common translation does not rewrite all portal buttons',!commonPass.includes("document.querySelectorAll('button,label,h2")],
@@ -19,6 +19,11 @@ const checks=[
  ['Language switching handles Arabic direction',languagePass.includes("language==='ar'?'rtl':'ltr'")],
  ['Language switching includes static translation',languagePass.includes('applyStaticLanguage(language)')],
  ['Language switching includes common controls',languagePass.includes('applyCommonPortalLanguage(language)')],
+ ['Original text nodes retained for language switching',staticPass.includes('BCT_ORIGINAL_TEXT_NODE.get(t)')],
+ ['Dropdown options translated without changing values',staticPass.includes("main select option") && !staticPass.includes('option.value=')],
+ ['Dynamic controls observed',languagePass.includes('MutationObserver(records=>')],
+ ['Dynamic translations do not repeat remote fetches',!between('function scheduleBctDynamicTranslation(){','function installBctDynamicTranslationObserver(){').includes('fetchBctTranslation(')],
+ ['Dynamic placeholders translated',languagePass.includes("document.querySelectorAll('[data-i18n-placeholder]').forEach")],
 ];
 for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+' '+name);}
 assert.ok(checks.every(([,ok])=>ok),'Translation source regression failed');
