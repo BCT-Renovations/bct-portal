@@ -115,6 +115,10 @@ async function verifyContractor(){
   {
     const {context,page,errors}=await newPage();
     await enter(page,'contractor','status','#bctContractorLoginCard');
+    // Takai/THEO first presents profession choices, then shows contractor sign-in/sign-up.
+    await expectVisible(page,'#bctContractorRoleRouter','contractor profession choices');
+    await physicalTap(page,'[data-bct-worker-role="contractor"]','contractor profession choice');
+    await page.waitForTimeout(350);
     await expectVisible(page,'#bctContractorSignupCard','contractor signup card');
     await physicalTap(page,'#bctContractorSignupBtn','contractor Sign Up');
     await page.waitForTimeout(700);
