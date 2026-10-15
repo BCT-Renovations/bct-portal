@@ -31,7 +31,8 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps webkit
+      # Latest confirmed READY isolated deployment; never test the protected Live domain.
       - name: Exercise isolated preview on iPhone WebKit
         env:
-          BCT_URL: https://bct-v46-isolated-preview-fl4dso5bj-typerry1972-1855.vercel.app
+          BCT_URL: https://bct-v46-isolated-preview-if510rf57-typerry1972-1855.vercel.app
         run: node tests/v46-iphone-portal-connection.mjs
