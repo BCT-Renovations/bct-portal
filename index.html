@@ -2411,8 +2411,8 @@ function applyCommonPortalLanguage(language){
    if(el.children.length || el.closest('[data-i18n]') || el.matches('[data-login-language-label],[data-login-signin-heading],[data-entry-login],[data-bct-slogan]')) return;
    if(!BCT_ORIGINAL_UI_TEXT.has(el)) BCT_ORIGINAL_UI_TEXT.set(el,el.textContent.trim());
    const original=BCT_ORIGINAL_UI_TEXT.get(el);
-   if(language==='en') el.textContent=original;
-   else if(dict[original]) el.textContent=dict[original];
+   const translated=language==='en' ? original : (dict[original]||original);
+   if(el.textContent!==translated) el.textContent=translated;
  });
 }
 
