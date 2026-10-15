@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import handler,{parsePhotoOutput,validatePhotoResult} from '../../api/agent-bct-photo-recommendation.js';
+import handler,{parsePhotoOutput,validatePhotoResult,request} from '../../api/agent-bct-photo-recommendation.js';
 const photoId='11111111-1111-4111-8111-111111111111',userId='22222222-2222-4222-8222-222222222222';let sequence=0;
 const result={suggested_category:'Kitchen',category_confidence:80,photo_quality_score:75,marketing_value:'medium',before_after_value:'low',workmanship_visibility:'medium',marketing_recommendation:'review',reason:'BCT should review the available evidence.'};
 function response(body,status=200){return new Response(JSON.stringify(body),{status});}
@@ -27,3 +27,10 @@ test('upstream rate limit has retry guidance',async()=>{const {res}=await run({p
 test('per-admin instance rate limit caps calls before AI',async()=>{const id='33333333-3333-4333-8333-333333333333';for(let i=0;i<5;i++)assert.equal((await run({userId:id})).res.statusCode,200);const {res,calls}=await run({userId:id});assert.equal(res.statusCode,429);assert.ok(!calls.some(c=>c.url.includes('openai.com')))});
 test('direct output_text and REST output array are supported',()=>{assert.deepEqual(parsePhotoOutput({output_text:JSON.stringify(result)}),result);assert.throws(()=>parsePhotoOutput({status:'incomplete',output_text:'{}'}));});
 for(const bad of [{...result,category_confidence:101},{...result,photo_quality_score:'90'},{...result,reason:''},{...result,suggested_category:'unknown'},{...result,marketing_value:'publish_now'}])test('malformed provider result rejected '+JSON.stringify(bad),()=>assert.throws(()=>validatePhotoResult(bad)));
+
+test('oversized upstream response is rejected before parsing',async()=>{const {res}=await run({output:{output_text:'x'.repeat(70000)}});assert.equal(res.statusCode,502);assert.match(res.body.error,/oversized/);});
+test('timeout covers response body consumption',async()=>{
+ const previous=global.fetch;
+ global.fetch=async(_url,options)=>new Response(new ReadableStream({start(stream){options.signal.addEventListener('abort',()=>stream.error(new DOMException('Aborted','AbortError')),{once:true});}}));
+ try{await assert.rejects(request('https://fixture.invalid',{},20),error=>error.name==='AbortError');}finally{global.fetch=previous;}
+});

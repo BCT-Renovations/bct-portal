@@ -41,14 +41,14 @@ const requiredMarkers = [
   ['contractor access lock message', 'Contractor access locked'],
   ['admin screening controls', 'bctAdminScreeningAction'],
   ['admin protected dashboard', 'BCT Admin Dashboard'],
-  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-green-band-20260929a"'],
+  ['official BCT logo in app shell', 'class="brand-logo" src="/bct-logo-master.png?v=official-bct-logo-v46-comma-20261010"'],
   ['full-width signed-out green logo band', 'body:not(.bct-authenticated) header .wrap{width:100%!important;max-width:none!important;margin:0!important;padding:16px 0 18px!important;background:#e1f9e6!important}'],
   ['larger signed-out logo sizing', 'width:clamp(330px,92vw,680px)!important;height:auto!important'],
   ['bolder general contractor slogan', 'body:not(.bct-authenticated) .bct-dynamic-slogan{font-weight:900!important'],
   ['capitalized about close line', 'Your Home, Your Project, Your Contractor.'],
   ['final visible iphone override', 'BCT V46 CANONICAL PUBLIC + SHARED LANDING DESIGN'],
-  ['iphone startup cache reset script', 'BCT V46 iPhone startup cache reset'],
-  ['native iPhone portal boot', 'bct-native-portal-boot-20260929'],
+  ['iphone obsolete worker/cache cleanup', 'BCT V46 iPhone/PWA isolation cleanup'],
+  ['authoritative iPhone portal router', 'V46 AUTHORITATIVE PUBLIC LANDING TAP ROUTER 2026-09-29'],
   ['locked BCT teal brand token', '--bct-teal:#0f5f63'],
   ['locked BCT light app background', '--bg:#f5f7f7'],
   ['locked BCT secondary blue token', '--bct-blue:#2563a6'],
@@ -159,13 +159,13 @@ assert(!/service_role|SUPABASE_SERVICE_ROLE|sb_secret_/i.test(html), 'Public HTM
 assert(/sb_publishable_/.test(html), 'Frontend should use a Supabase publishable key.');
 assert(!html.includes('logo-placeholder'), 'Temporary text placeholder branding must not remain in the V46 shell.');
 assert(!html.includes('bct-icon.svg'), 'Generic SVG logo must not be referenced by the V46 shell.');
-assert(serviceWorker.includes("'/bct-logo-master.png'"), 'Service worker must cache the master BCT logo.');
-assert(serviceWorker.includes("bct-portal-shell-v27-app-icon-cache-reset"), 'Service worker cache version must stay on the current V46 iPhone/PWA cache generation.');
-assert(serviceWorker.includes("const STATIC_ASSETS=['/bct-logo-master.png','/bct-app-icon-v46.png']"), 'Service worker static cache must stay limited to safe branded non-HTML assets.');
-assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/['"]/s.test(serviceWorker), 'Service worker must not cache the root HTML startup path.');
-assert(!/APP_SHELL\s*=\s*\[[^\]]*['"]\/index\.html['"]/s.test(serviceWorker), 'Service worker must not cache index.html.');
-assert(serviceWorker.includes("cache:'no-store'"), 'Service worker must fetch startup HTML with no-store.');
-assert(!serviceWorker.includes("'/bct-homeowner-pages.js'"), 'Service worker must not cache the retired standalone homeowner controller.');
+assert(serviceWorker.includes('await self.registration.unregister()'), 'Worker must unregister for the approved iPhone fix.');
+assert(serviceWorker.includes('key.startsWith(BCT_CACHE_PREFIX)'), 'Worker cleanup must stay within the BCT cache namespace.');
+assert(!serviceWorker.includes('respondWith('), 'Worker must not intercept requests.');
+assert(!serviceWorker.includes('patchPublicHomeAuthShell'), 'Retired worker source rewriting must remain absent.');
+assert(html.includes("reg.unregister().catch(function(){return false;})"), 'Document must remove obsolete worker registrations.');
+assert(!/serviceWorker\.register\(/.test(html), 'Document must not register a startup-intercepting worker.');
+
 assert(!html.includes('id="m-apps"'), 'Public Home must not expose admin-style application metrics.');
 assert(!homeSection.includes('Admin Authentication Upgrade'), 'Public Home must not expose admin-only launch/authentication messaging.');
 assert(!/Enter your subcontractor bid amount/i.test(html), 'Contractor bidding must not use the old prompt-based bid entry.');
@@ -218,19 +218,16 @@ assert(html.includes('bctDialogPending=false') && html.includes('previous?.focus
 
 assert(html.includes('.bct-dynamic-slogan') && html.includes('background:transparent'), 'Translated slogan must remain visually integrated without its own box.');
 assert(html.includes('BCT V46 MASTER SIGN-IN LOCK') && html.includes('header nav,') && html.includes('display:none!important'), 'Signed-out V46 must preserve the approved clean sign-in layout without the authenticated navigation grid.');
-assert(html.includes('.bct-logo-crop::after') && html.includes('height:25%') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
+assert(html.includes('.bct-logo-crop::after') && html.includes('height:22%!important;background:#e8f5ec!important') && html.includes('background:#e8f5ec'), 'Master-reference slogan cover must fully hide the baked slogan without creating a separate strip.');
 
 
 assert(html.includes("body:not(.bct-authenticated) header nav{display:none!important}"), 'Signed-out V46 must hide all portal navigation.');
 assert(html.includes("body:not(.bct-authenticated) header small.muted{display:none!important}"), 'Signed-out V46 must hide Launch Cutover label.');
 assert(html.includes("body:not(.bct-authenticated) #view-home .home-panel>h2"), 'Signed-out V46 must hide project marketing heading.');
-assert(html.includes('href="/?portal=client" data-entry-native="client"')&&html.includes('href="/?portal=contractor" data-entry-native="contractor"')&&html.includes('href="/?portal=admin" data-entry-native="admin"'), 'Signed-out V46 must expose exactly the three native role entry actions.');
-
-
 const signedOutHome=(html.match(/<section id="view-home"[\s\S]*?<section id="view-customer"/)||[''])[0];
-assert(signedOutHome.includes('data-entry-native="client"')&&signedOutHome.includes('data-entry-native="contractor"')&&signedOutHome.includes('data-entry-native="admin"'), 'Signed-out entry has all three native role links.');
-assert(signedOutHome.includes('>Client / Homeowner</a>')&&signedOutHome.includes('>Contractor</a>')&&signedOutHome.includes('>Admin</a>'), 'Signed-out entry must label the three current V46 native role actions.');
-assert((signedOutHome.match(/data-entry-native="/g)||[]).length === 3, 'Signed-out V46 must expose only the three native role links in the signed-out entry.');
+for(const role of ['client','contractor','estimator','admin'])assert(signedOutHome.includes('data-entry-login="'+role+'"'), 'Missing current role entry '+role);
+assert((signedOutHome.match(/data-entry-login="/g)||[]).length===4, 'Signed-out home must have four approved role entries.');
+assert(!signedOutHome.includes('data-entry-native='), 'Retired native role links must not return.');
 assert(!signedOutHome.includes('home-action-card'), 'Signed-out entry must not contain extra workflow cards.');
 assert(!signedOutHome.includes('home-quick-grid'), 'Old signed-out quick dashboard must not exist in entry DOM.');
 assert(!signedOutHome.includes('bctFinancingCard'), 'Financing card must not exist on signed-out entry DOM.');

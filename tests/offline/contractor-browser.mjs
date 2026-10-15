@@ -1,0 +1,16 @@
+// Exercise the active inline role controller from the actual current app, not the dormant duplicate module.
+import fs from 'node:fs';import assert from 'node:assert/strict';import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');const html=fs.readFileSync('index.html','utf8');
+const source=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(s=>s.includes('const workerRoles=['));assert(source,'active inline role controller exists');
+const services=Function('return '+html.match(/const fallbackServices=(\[[\s\S]*?\n    \]);/)[1])();
+const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});let checks=0;const check=(a,b,label)=>{assert.deepEqual(a,b,label);checks++;};
+try{
+ const page=await browser.newPage({viewport:{width:390,height:844}});page.setDefaultTimeout(7000);await page.route('**/*',route=>route.abort());
+ await page.setContent('<section id="view-status"><div id="bctContractorLoginCard"><h3>Existing Contractor</h3></div><div id="bctContractorSignupCard"><h3>New Contractor</h3><p>New to BCT</p><button id="bctContractorSignupBtn">Apply</button></div></section><section id="view-apply"><div class="card"><h2>Stage 1 — Handyman Pre-Application</h2><p class="muted">This form helps BCT learn who the applicant is.</p><form id="applicationForm"><div><label>Primary Trade</label><select name="trade" required>'+services.map(s=>'<option value="'+s.code+'">'+s.label+'</option>').join('')+'</select></div></form></div></section>');
+ await page.addStyleTag({content:fs.readFileSync('bct-contractor-roles.css','utf8')});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addScriptTag({content:source});
+ const roles=[['general_contractor','Contractor'],['electrical','Electrician'],['plumbing','Plumber'],['hvac','HVAC'],['roofing','Roofer'],['drywall','Drywaller'],['concrete_masonry','Concrete / Masonry'],['flooring','Flooring'],['handyman_services','Handyman']];
+ for(const [code,label] of roles){await page.click(`[data-bct-worker-role="${code}"]`);check(await page.inputValue('[name=trade]'),code,'canonical primary trade '+label);check(await page.locator('#view-apply h2').textContent(),'Stage 1 - '+label+' Pre-Application','heading follows selection '+label);check(await page.locator(`[data-bct-worker-role="${code}"]`).getAttribute('aria-pressed'),'true','selection announced '+label);check(await page.evaluate(()=>BCTContractorNetwork.readRoles(document.getElementById('applicationForm'))),[code],'one account category mapping '+label);}
+ await page.selectOption('[name=trade]','drywall');check(await page.inputValue('[name=trade]'),'drywall','primary trade dropdown remains editable');
+ check(await page.locator('#bctContractorRoleRouter').evaluate(el=>el.scrollWidth<=el.clientWidth),true,'profession cards fit phone width');check(errors,[],'active controller has no runtime errors');
+ console.log(`Contractor offline role regression: ${checks} assertions passed; account persistence/provider approval not exercised`);
+}finally{await browser.close();}

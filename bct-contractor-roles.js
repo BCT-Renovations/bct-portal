@@ -160,7 +160,7 @@ function updateAgentRole(role){
 
 function updateApplicationCopy(role){
   document.querySelectorAll('#view-apply h2').forEach(heading=>{
-    if(/Handyman Pre-Application|Contractor Network Pre-Application|Contractor Application/i.test(heading.textContent)){
+    if(/^Stage 1\s*[-—]|Handyman Pre-Application|Contractor Network Pre-Application|Contractor Application/i.test(heading.textContent)){
       heading.textContent='Stage 1 - '+role.short+' Pre-Application';
     }
   });

@@ -1,5 +1,11 @@
 # BCT Renovations Launch Status
 
+> Current status — October 15, 2026: Live is `6c90eb9a50b2eb1e0199683e07dc5ca1fb4667f1` in Vercel project `bct-portal`, on `release/takai-approved-only-from-live-20261014`. Development continues only on `feature/takai-insurance-integration-isolated-20261014` in `bct-v46-isolated-preview`. See [current reconciliation and evidence](docs/v46-live-reconciliation-20261015.md). No Live release or production database work is authorized by this record. Insurance is Unfinished/dormant.
+
+## Historical record below
+
+The original dated details below are retained as history, not current branch, URL, deployment, service-health or release instructions.
+
 Last verified: 2026-09-26
 
 ## Current production source of record

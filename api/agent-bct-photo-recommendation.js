@@ -6,10 +6,23 @@ const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 function fail(status,message){throw Object.assign(new Error(message),{status});}
 function header(req,name){const value=req.headers?.[name]??req.headers?.get?.(name);return typeof value==='string'?value:'';}
 function send(res,status,body){return res.status(status).json(body);}
-async function request(url,options,timeout=7000){
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
- try{return await fetch(url,{...options,signal:controller.signal,redirect:'error'});}finally{clearTimeout(timer);}
+export async function request(url,options,timeout=7000){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout),limit=65536;
+ try{
+  const response=await fetch(url,{...options,signal:controller.signal,redirect:'error'});
+  if(!response.ok){controller.abort();return {ok:false,status:response.status};}
+  if(Number(response.headers?.get('content-length')||0)>limit)fail(502,'Photo analysis returned an oversized response.');
+  const reader=response.body?.getReader();let raw;
+  if(reader){
+   let size=0;const chunks=[];
+   try{for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>limit){controller.abort();fail(502,'Photo analysis returned an oversized response.');}chunks.push(Buffer.from(value));}raw=Buffer.concat(chunks).toString('utf8');}finally{reader.releaseLock();}
+  }else raw=await response.text();
+  if(Buffer.byteLength(raw)>limit)fail(502,'Photo analysis returned an oversized response.');
+  let data;try{data=JSON.parse(raw);}catch{fail(502,'Photo analysis returned an invalid response.');}
+  return {ok:true,status:response.status,json:async()=>data};
+ }finally{controller.abort();clearTimeout(timer);}
 }
+
 function rateLimit(user){
  const now=Date.now();for(const [key,value] of requests)if(now-value.start>=WINDOW_MS)requests.delete(key);
  const key=createHash('sha256').update(user).digest('hex'),bucket=requests.get(key);

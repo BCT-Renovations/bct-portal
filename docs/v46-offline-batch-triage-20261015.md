@@ -1,5 +1,7 @@
 # Offline batch and test triage — October 15, 2026
 
+> Superseded batch snapshot: all 19 formerly failing scripts now pass locally. Current Live is 6c90eb9a; its approved homepage and translated branding fallback are preserved. See [current reconciliation](v46-live-reconciliation-20261015.md). The initial results below remain historical evidence.
+
 Saved prior checkpoints: bbb8717a (photo security), a4c35b11 (estimator safety). Existing isolated branch only.
 
 ## New verified changes
