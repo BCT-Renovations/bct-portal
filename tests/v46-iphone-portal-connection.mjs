@@ -15,6 +15,11 @@ async function openLanding(page){
 async function physicalTap(page,selector,label){
   const el=page.locator(selector);
   await el.waitFor({state:'visible',timeout:10000});
+  // Real iPhone users scroll controls into the viewport before tapping.
+  // Without this, elementFromPoint can be null for off-screen buttons,
+  // and touchscreen.tap silently targets an empty location.
+  await el.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(150);
   const box=await el.boundingBox();
   if(!box) throw new Error(label+': no bounding box');
   const x=box.x+box.width/2, y=box.y+box.height/2;
