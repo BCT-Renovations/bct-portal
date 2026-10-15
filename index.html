@@ -657,10 +657,22 @@ body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment{dis
 .bct-public-commitment span{display:block;margin-top:5px;font-size:14px;line-height:1.35;color:#466064}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-license-bar{margin-top:10px!important}
 </style>
+<style id="bct-takai-commitment-two-line-mobile">
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctCommitmentTitle .bct-commitment-line-one{display:block!important;white-space:nowrap!important;font:inherit!important;font-size:clamp(15px,4.6vw,23px)!important;line-height:1.4!important;color:inherit!important;margin:0!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctCommitmentTitle .bct-commitment-line-two{display:block!important;white-space:nowrap!important;font:inherit!important;font-size:clamp(25px,7.3vw,34px)!important;font-weight:700!important;line-height:1.35!important;color:inherit!important;margin:0!important}
+</style>
+
 <style id="bct-commitment-signature-polish-20260929">
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment{margin-top:18px!important;padding:18px 14px!important;background:#f8fbf9!important;border:1px solid #bfd8c7!important;box-shadow:0 5px 14px rgba(15,95,99,.07)!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-family:Georgia,"Times New Roman",serif!important;font-style:italic!important;font-weight:700!important;font-size:21px!important;line-height:1.35!important;letter-spacing:.01em!important;color:#0f5f63!important}
 body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment span{margin-top:8px!important;font-family:Arial,Helvetica,sans-serif!important;font-style:normal!important;font-size:14px!important}
+</style>
+<style id="bct-takai-homepage-emphasis-20261014">
+/* Isolated visual-only refinements; preserve existing fonts, colors, copy and behavior. */
+#bctShareAppHelp{font-size:19px!important;font-weight:900!important;line-height:1.45!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppHelp{font-size:19px!important;line-height:1.45!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-size:25px!important;font-weight:800!important;line-height:1.35!important}
+@media(max-width:380px){body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-size:23px!important}}
 </style>
 <style id="bct-home-button-touch-lock-20260929">
 /* Keep the approved landing appearance while guaranteeing the real controls own the touch surface. */
@@ -1359,6 +1371,7 @@ const BCT_ENGLISH_FALLBACK={
   'about.short_lead':'BCT Renovations is your general contractor — not just a contractor referral service.',
   'about.short_body':'We coordinate your project, work with verified contractors, monitor progress, and stay involved from start to finish.',
   'about.short_close':'Your project. Your home. Our commitment.',
+  'homeowner.about_close':'Close About',
 
   'nav.home':'Home',
   'nav.homeowner_portal':'Client Portal',
@@ -4453,7 +4466,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
 <script id="bct-commitment-render-failsafe-20260929">
 (function(){
  const COPY={
-  en:["Your Project, Your Home, Our Commitment.","BCT Renovations stays with you from the beginning of your project through completion."],
+  en:["Your Project, Your Home,\nOur Commitment","BCT Renovations stays with you from the beginning of your project through completion."],
   es:["Su proyecto, su hogar, nuestro compromiso.","BCT Renovations está con usted desde el comienzo de su proyecto hasta su finalización."],
   fr:["Votre projet, votre maison, notre engagement.","BCT Renovations reste à vos côtés du début de votre projet jusqu’à son achèvement."],
   ht:["Pwojè ou, kay ou, angajman nou.","BCT Renovations rete avèk ou depi nan kòmansman pwojè ou a jouk li fini."],
@@ -4463,7 +4476,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
   ar:["مشروعك، منزلك، التزامنا.","تبقى BCT Renovations معك من بداية مشروعك حتى اكتماله."],
   ru:["Ваш проект, ваш дом, наше обязательство.","BCT Renovations сопровождает вас от начала проекта до его завершения."]
  };
- function lang(){return (localStorage.getItem("bct_language")||localStorage.getItem("bctLanguage")||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
+ function lang(){return (localStorage.getItem("bctPreferredLanguage")||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
  function render(){
   const share=document.querySelector("#view-home .bct-share-referral");
   if(!share)return;
@@ -4471,7 +4484,13 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
   if(!box){box=document.createElement("div");box.className="bct-public-commitment";share.insertAdjacentElement("afterend",box)}
   const t=COPY[lang()]||COPY.en;
   box.innerHTML='<strong id="bctCommitmentTitle"></strong><span id="bctCommitmentText"></span>';
-  box.querySelector("strong").textContent=t[0];box.querySelector("span").textContent=t[1];
+  box.querySelector("strong").style.whiteSpace="normal";
+  if(lang()==="en"){
+    const title=box.querySelector("strong");
+    title.style.display="block";
+    title.innerHTML='<span class="bct-commitment-line-one">Your Project, Your Home,</span><span class="bct-commitment-line-two">Our Commitment</span>';
+  }else{box.querySelector("strong").textContent=t[0]}
+  box.querySelector("#bctCommitmentText").textContent=t[1];
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render);else render();
  document.addEventListener("change",e=>{if(e.target&&["bctLoginLanguage","bctLanguage"].includes(e.target.id))setTimeout(render,0)});
@@ -5054,7 +5073,7 @@ body.bct-theo-signin #view-status .bct-portal-back{background:#a8e6cf!important;
   if(home&&about&&!document.getElementById('bctTheoAboutPage')){
    aboutHome={parent:about.parentNode,next:about.nextSibling};
    const page=document.createElement('section');page.id='bctTheoAboutPage';page.setAttribute('aria-label','About BCT Renovations');
-   const close=document.createElement('button');close.id='bctTheoCloseAbout';close.type='button';close.textContent='Close About';
+   const close=document.createElement('button');close.id='bctTheoCloseAbout';close.type='button';close.setAttribute('data-i18n','homeowner.about_close');close.textContent=typeof bctLocalKeyText==='function'?bctLocalKeyText('homeowner.about_close',localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en'):'Close About';
    page.append(about,close);home.insertAdjacentElement('afterend',page);
    close.addEventListener('click',function(){body.classList.remove('bct-theo-about');document.getElementById('bctHomeAboutBtn')?.setAttribute('aria-expanded','false');document.querySelectorAll('.view').forEach(v=>v.classList.toggle('hidden',v.id!=='view-home'));window.scrollTo(0,0);});
   }
