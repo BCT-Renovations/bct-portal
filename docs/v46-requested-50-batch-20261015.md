@@ -70,3 +70,9 @@ This is a 50-item work queue, not a claim that 50 tasks are complete. One additi
 Final full maintained suite passed 60/60 commands after all changes, including 15 new Handyman operations browser assertions. The photo-security suite separately passed all 25 tests. Browser requests are mocked; no hosted Supabase calls, paid provider requests, production deployments or migrations.
 
 Do not subtract queued tasks, individual assertions, passing commands, or partially repaired workflows from the checklist.
+
+## Continued video repair checkpoint
+
+Recovered exact branch head 28ea9c6. Hardened live-verification browser behavior: validate both submitted and stored HTTPS links using URL parsing; reject embedded credentials; retain the form before awaiting saves; guard duplicate submissions; preserve a new job's draft when an old save resolves; avoid replacing a pending form during language refresh. The existing repeated addEventListener with the same callback was already browser-deduplicated; no extra closure is claimed for removing it.
+
+Added blocked-network browser regressions for unsafe stored/input links, duplicate submissions, successful asynchronous reset and job-switch draft preservation. Full maintained suite: **61/61 offline commands pass** with Chromium /tmp/bct-chromium. No hosted Supabase, production, provider or Safari acceptance performed. Count remains **24 locally closed / 218 open**. Requested 50-item queue remains unfinished; these repairs are evidence toward task 200, not its full closure.
