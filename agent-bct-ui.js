@@ -36,6 +36,7 @@ const ROLE_GROUPS={
  admin:POSITIONS.map(([value])=>value)
 };
 let transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0,conversationKey="",activePortal="";
+const BACK_LABELS={en:"← Back",es:"← Atrás",fr:"← Retour",ht:"← Retounen",pt:"← Voltar",vi:"← Quay lại",zh:"← 返回",ar:"رجوع ←",ru:"← Назад"};
 function language(){return String(localStorage.getItem("bctPreferredLanguage")||document.getElementById("bctLoginLanguage")?.value||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
 function t(){return COPY[language()]||COPY.en}
 function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -112,7 +113,7 @@ function renderMessages(){
 function applyCopy(){
  const x=t(),panel=document.getElementById("bctAgentPanel");if(panel)panel.dir=RTL.has(language())?"rtl":"ltr";
  syncRoleOptions();
- [["bctAgentHome","home"],["bctAgentOpen","open"],["bctAgentTitle","title"],["bctAgentSubtitle","sub"],["bctAgentSend","send"]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.textContent=id==="bctAgentHome"?"← Back":x[k]});
+ [["bctAgentHome","home"],["bctAgentOpen","open"],["bctAgentTitle","title"],["bctAgentSubtitle","sub"],["bctAgentSend","send"]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.textContent=id==="bctAgentHome"?(BACK_LABELS[language()]||BACK_LABELS.en):x[k]});
  const c=document.getElementById("bctAgentClose");if(c)c.setAttribute("aria-label",x.close);
  const input=document.getElementById("bctAgentInput");if(input)input.placeholder=x.placeholder;
  const label=document.querySelector('label[for="bctAgentInput"]');if(label)label.textContent=x.message;
@@ -158,7 +159,7 @@ async function send(){
 function mount(){
  if(document.getElementById("bctAgentOpen"))return;
  const positionOptions=POSITIONS.map(([value,label])=>'<option value="'+escapeHtml(value)+'">'+escapeHtml(label)+'</option>').join("");
- const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><button id="bctAgentHome" type="button" class="bct-agent-home">⌂ Home</button><div class="bct-agent-heading"><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div class="bct-agent-position"><label for="bctAgentPosition">Role</label><select id="bctAgentPosition">'+positionOptions+'</select></div><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
+ const root=document.createElement("div");root.id="bctAgentRoot";root.innerHTML='<button id="bctAgentOpen" type="button" aria-haspopup="dialog">Agent BCT</button><section id="bctAgentPanel" role="dialog" aria-modal="true" aria-labelledby="bctAgentTitle" hidden><header><button id="bctAgentHome" type="button" class="bct-agent-home">← Back</button><div class="bct-agent-heading"><strong id="bctAgentTitle">Agent BCT</strong><small id="bctAgentSubtitle"></small></div><button id="bctAgentClose" type="button" aria-label="Close Agent BCT">×</button></header><div class="bct-agent-position"><label for="bctAgentPosition">Role</label><select id="bctAgentPosition">'+positionOptions+'</select></div><div id="bctAgentMessages" role="log" aria-live="polite"></div><form id="bctAgentForm"><label class="bct-agent-sr" for="bctAgentInput">Message</label><textarea id="bctAgentInput" maxlength="6000" rows="2"></textarea><div><span id="bctAgentStatus" role="status" aria-live="polite"></span><button id="bctAgentSend" type="submit">Send</button></div></form></section>';
  document.body.appendChild(root);
  const theoBackStyle=document.createElement("style");theoBackStyle.id="bctTheoAgentBackStyle";theoBackStyle.textContent="#bctAgentHome{background:#a8e6cf!important;color:#0a4549!important;border:2px solid #0a4549!important;font-weight:900!important}";document.head.appendChild(theoBackStyle);
  const launcher=document.getElementById("bctAgentOpen");

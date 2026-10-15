@@ -2487,6 +2487,7 @@ const BCT_ORIGINAL_UI_TEXT=new WeakMap();
 function applyCommonPortalLanguage(language){
  const dict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
  document.querySelectorAll('header button,header label,header h2,header h3,header span,footer button,footer span').forEach(el=>{
+   if(el.id==='bctAgentHome') return; // Agent BCT owns this button's localized Back label.
    if(el.children.length || el.closest('[data-i18n]') || el.matches('[data-login-language-label],[data-login-signin-heading],[data-entry-login],[data-bct-slogan]')) return;
    if(!BCT_ORIGINAL_UI_TEXT.has(el)) BCT_ORIGINAL_UI_TEXT.set(el,el.textContent.trim());
    const original=BCT_ORIGINAL_UI_TEXT.get(el);
@@ -5037,7 +5038,7 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
 
 <script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261015-takai-captions-1" defer></script>
 <script src="/bct-contractor-roles.js?v=20261014-right-on-1" defer></script>
-<script src="/agent-bct-ui.js?v=20261014-right-on-2" defer></script>
+<script src="/agent-bct-ui.js?v=20261015-back-translation-1" defer></script>
 <script>/* October 11 matching contractor signup CTA */
 document.addEventListener("click",function(e){const btn=e.target.closest?.("#bctContractorSignupBottomBtn");if(!btn)return;e.preventDefault();document.getElementById("bctContractorSignupBtn")?.click();});
 </script>
