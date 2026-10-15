@@ -6,8 +6,12 @@ const between=(a,b)=>{const start=html.indexOf(a);assert.ok(start>=0,'missing '+
 const staticPass=between('function applyStaticLanguage(language){','const BCT_FILE_UI=');
 const commonPass=between('function applyCommonPortalLanguage(language){','let BCT_LANGUAGE_REQUEST_ID=0;');
 const languagePass=between('async function applyBctLanguage(languageCode){','function bctText(key){');
+const homeowner=fs.readFileSync(new URL('../bct-homeowner-pages.js',import.meta.url),'utf8');
 const checks=[
  ['Takai uses one persistent language key',html.includes("const BCT_LANGUAGE_KEY='bctPreferredLanguage'")],
+ ['Homeowner dashboard Spanish navigation covered',homeowner.includes("'Project Overview':'Resumen del proyecto'") && homeowner.includes("'Review & Submit':'Revisar y enviar'")],
+ ['Homeowner dashboard restores original English',homeowner.includes('hpOriginalText.get(node)') && homeowner.includes("lang==='es'")],
+ ['Homeowner navigation retranslation after tab change',homeowner.includes('translateHomeownerShell();if(scroll)')],
  ['Static translation uses shared dictionaries',staticPass.includes('BCT_COMMON_UI_TRANSLATIONS[language]') && staticPass.includes('BCT_EXTENDED_UI_TRANSLATIONS[language]')],
  ['Static translation excludes translated descendants',staticPass.includes("parent.closest('[data-i18n],script,style,template,option")],
  ['Static translation skips scripts and styles',staticPass.includes("parent.closest('[data-i18n],script,style,template,option")],
