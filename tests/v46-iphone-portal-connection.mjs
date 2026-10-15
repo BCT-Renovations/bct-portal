@@ -160,6 +160,9 @@ async function verifyAdmin(){
   {
     const {context,page,errors}=await newPage();
     await enter(page,'admin','admin-login','#adminLoginBtn');
+    const adminGate=await page.evaluate(()=>{const e=document.querySelector('#adminPassword'),v=document.querySelector('#view-admin-login');return {body:document.body.className,view:v?.className,viewDisplay:v?getComputedStyle(v).display:null,gateDisplay:e?getComputedStyle(e).display:null,visible:!!e?.getClientRects().length,hash:location.hash}});
+    console.log('RESULT admin gate visibility',JSON.stringify(adminGate));
+    if(!adminGate.visible){failures.push('admin gate hidden: '+JSON.stringify(adminGate));await context.close();}else{
     await page.locator('#adminPassword').fill('Example123!');
     await physicalTap(page,'#adminShowPassword','admin Show Password');
     await page.waitForTimeout(200);
@@ -175,6 +178,7 @@ async function verifyAdmin(){
     await expectVisible(page,'#view-password-request','admin Forgot Password');
     if(errors.length) failures.push('admin page errors: '+errors.join(' | '));
     await context.close();
+    }
   }
   {
     const {context,page}=await newPage();
