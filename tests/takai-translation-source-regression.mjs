@@ -21,6 +21,7 @@ const checks=[
  ['Language switching includes common controls',languagePass.includes('applyCommonPortalLanguage(language)')],
  ['Original text nodes retained for language switching',staticPass.includes('BCT_ORIGINAL_TEXT_NODE.get(t)')],
  ['Dropdown options translated without changing values',staticPass.includes("main select option") && !staticPass.includes('option.value=')],
+ ['Input action button labels translated',staticPass.includes('main input[type="submit"]') && staticPass.includes('BCT_ORIGINAL_INPUT_BUTTON_TEXT.get(el)')],
  ['Dynamic controls observed',languagePass.includes('MutationObserver(records=>')],
  ['Dynamic dropdown options observed',languagePass.includes('button,select,label,input,textarea,option')],
  ['Dynamic translations do not repeat remote fetches',!between('function scheduleBctDynamicTranslation(){','function installBctDynamicTranslationObserver(){').includes('fetchBctTranslation(')],
