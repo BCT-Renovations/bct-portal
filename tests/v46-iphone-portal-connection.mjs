@@ -183,8 +183,13 @@ async function verifyAdmin(){
   {
     const {context,page}=await newPage();
     await enter(page,'admin','admin-login','#adminBackBtn');
-    await physicalTap(page,'#adminBackBtn','admin Back Home');
-    await expectHome(page,'admin Back Home');
+    if(await page.locator('#adminBackBtn').isVisible().catch(()=>false)){
+      await physicalTap(page,'#adminBackBtn','admin Back Home');
+      await expectHome(page,'admin Back Home');
+    }else{
+      failures.push('admin Back Home: admin gate is hidden; Supabase-restricted flow not verified');
+      console.log('RESULT admin Back Home',JSON.stringify({verified:false,reason:'admin gate hidden'}));
+    }
     await context.close();
   }
 }
