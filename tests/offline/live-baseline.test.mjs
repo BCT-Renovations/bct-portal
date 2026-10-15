@@ -4,6 +4,7 @@ import {test} from 'node:test';import assert from 'node:assert/strict';import fs
 test('all current Live homepage content survives the documented isolated additions',()=>{
  let html=fs.readFileSync('index.html','utf8');
  for(const line of ['      <button type="button" id="bctInsurancePreviewEntry" aria-label="Insurance and Claims Partner portal preview">Insurance / Claims Partner</button>\n','<script src="/bct-insurance-preview-shell.js?v=20261014-1" defer></script>\n']){assert.equal(html.split(line).length-1,1);html=html.replace(line,'');}
+ for(const state of ['loading','ready','error']){const call="$('view-admin')?.setAttribute('data-bct-admin-data-state','"+state+"')";assert.equal(html.split(call).length-1,1);if(state==='loading')html=html.replace('    '+call+';\n','');else if(state==='ready')html=html.replace(';'+call,'');else html=html.replace(call+';','');}
  const repaired='if(/^Stage 1\\s*[-—]|Handyman Pre-Application|Contractor Network Pre-Application|Contractor Application/i.test(heading.textContent))',previous='if(/Handyman Pre-Application|Contractor Network Pre-Application|Contractor Application/i.test(heading.textContent))';
  assert.equal(html.split(repaired).length-1,1);html=html.replace(repaired,previous);
  const bytes=Buffer.from(html),sha=createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');

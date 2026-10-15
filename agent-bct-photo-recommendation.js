@@ -8,6 +8,19 @@ window.AGENT_BCT_PHOTO_RECOMMENDATION_VERSION=VERSION;
 const CATEGORIES=['Kitchen','Bathroom','Gutters','Siding','Roofing','Decks','Doors / Windows','Concrete','Interior','Exterior','Before','After','Other'];
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SIMULATION_COPY={
+ en:['Simulated — metadata only','Simulated fixture score','Simulated metadata-only fixture. No image pixels were inspected. These scores do not establish image quality, workmanship, consent or marketing suitability.'],
+ es:['Simulado — solo metadatos','Puntuación simulada','Ejemplo simulado basado solo en metadatos. No se examinaron los píxeles. Las puntuaciones no demuestran calidad, mano de obra, consentimiento ni idoneidad comercial.'],
+ fr:['Simulation — métadonnées uniquement','Score simulé','Exemple simulé fondé uniquement sur les métadonnées. Aucun pixel n’a été examiné. Ces scores ne prouvent ni la qualité, ni le travail réalisé, ni le consentement, ni l’intérêt commercial.'],
+ ht:['Similasyon — metadone sèlman','Nòt similasyon','Sa se yon egzanp similasyon ki itilize metadone sèlman. Nou pa egzamine piksèl imaj la. Nòt yo pa pwouve kalite, travay, konsantman oswa itilizasyon pou maketing.'],
+ pt:['Simulado — apenas metadados','Pontuação simulada','Exemplo simulado com base apenas em metadados. Nenhum pixel foi examinado. As pontuações não comprovam qualidade, execução, consentimento ou adequação ao marketing.'],
+ vi:['Mô phỏng — chỉ dùng siêu dữ liệu','Điểm mô phỏng','Ví dụ mô phỏng chỉ dựa trên siêu dữ liệu. Không kiểm tra điểm ảnh. Điểm số không chứng minh chất lượng, tay nghề, sự đồng ý hoặc tính phù hợp cho tiếp thị.'],
+ zh:['模拟 — 仅使用元数据','模拟分数','这是仅基于元数据的模拟示例，未检查图像像素。分数不代表图像质量、施工水平、同意授权或营销适用性。'],
+ ar:['محاكاة — بيانات وصفية فقط','درجة محاكاة','مثال محاكاة يعتمد على البيانات الوصفية فقط. لم تُفحص بكسلات الصورة. لا تثبت الدرجات جودة الصورة أو العمل أو الموافقة أو الملاءمة للتسويق.'],
+ ru:['Симуляция — только метаданные','Условная оценка','Условный пример только на основе метаданных. Пиксели изображения не анализировались. Оценки не подтверждают качество, исполнение, согласие или пригодность для рекламы.']
+};
+function simulationCopy(){let language='en';try{language=(localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0];}catch(_){}return SIMULATION_COPY[language]||SIMULATION_COPY.en;}
+function applySimulationCopy(){const text=simulationCopy();const note=$('agentBctSimulationNote');if(note)note.textContent=text[2];document.querySelectorAll('.abpr-card[data-analysis-mode="test"]').forEach(card=>{card.querySelector('.abpr-ai').textContent=text[0];card.querySelector('[data-photo-score-label]').textContent=text[1];card.querySelector('.abpr-reason').textContent=text[2];});}
 function style(){
  if($('agentBctPhotoRecStyle'))return;
  const s=document.createElement('style');s.id='agentBctPhotoRecStyle';s.textContent=`
@@ -42,7 +55,7 @@ function testRecommendation(photo){
  const hasCaption=Boolean(photo.caption&&photo.caption.trim());
  const q=hasCaption?82:68;
  const likelyMarketing=Boolean(photo.is_published)||hasCaption;
- return {suggested_category:cat,category_confidence:photo.category&&photo.category!=='Other'?91:62,photo_quality_score:q,marketing_value:likelyMarketing?'medium':'low',before_after_value:photo.category==='Before'||photo.category==='After'?'high':'medium',workmanship_visibility:hasCaption?'high':'medium',marketing_recommendation:likelyMarketing?'possible':'review',reason:likelyMarketing?'The photo appears potentially useful for BCT marketing review based on its project metadata and presentation.':'The photo may be useful, but Agent BCT recommends Admin review before considering marketing use.',model_name:'Agent BCT Test Analyzer',model_version:'test-1',analysis_mode:'test'};}
+ return {suggested_category:cat,category_confidence:photo.category&&photo.category!=='Other'?91:62,photo_quality_score:q,marketing_value:likelyMarketing?'medium':'low',before_after_value:photo.category==='Before'||photo.category==='After'?'high':'medium',workmanship_visibility:hasCaption?'high':'medium',marketing_recommendation:likelyMarketing?'possible':'review',reason:SIMULATION_COPY.en[2],model_name:'Agent BCT Metadata Simulator',model_version:'test-1',analysis_mode:'test'};}
 async function analyzePhoto(photo,mode){
  if(mode==='test')return testRecommendation(photo);
  const imageUrl=await signed(photo.thumbnail_path||photo.storage_path); if(!imageUrl)throw new Error('Could not create a private photo preview.');
@@ -63,13 +76,13 @@ async function decide(id,decision,category,note){
 }
 function categoryOptions(selected){return CATEGORIES.map(c=>'<option '+(c===selected?'selected':'')+'>'+esc(c)+'</option>').join('')}
 function card(item){
- const r=item.rec,el=document.createElement('article');el.className='abpr-card';
+ const r=item.rec,el=document.createElement('article');el.className='abpr-card';el.dataset.analysisMode=r.analysis_mode==='ai'?'ai':'test';
  const img=document.createElement('img');img.src=item.image;img.alt=item.photo.alt_text||'BCT project photo';
  const body=document.createElement('div');body.className='abpr-body';
- body.innerHTML='<div class="abpr-agent">Agent BCT Recommendation <span class="abpr-ai">'+esc(r.analysis_mode==='ai'?'AI analysis':'Test analysis')+'</span></div>'+
+ body.innerHTML='<div class="abpr-agent">Agent BCT Recommendation <span class="abpr-ai">'+esc(r.analysis_mode==='ai'?'AI analysis':simulationCopy()[0])+'</span></div>'+
  '<div class="abpr-row"><span class="abpr-label">Suggested category</span><span class="abpr-value">'+esc(r.suggested_category)+'</span></div>'+
  '<div class="abpr-row"><span class="abpr-label">Category confidence</span><span class="abpr-value">'+score(r.category_confidence)+'%</span></div>'+
- '<div class="abpr-row"><span class="abpr-label">Photo quality/usefulness</span><span class="abpr-value">'+score(r.photo_quality_score)+'/100</span></div>'+
+ '<div class="abpr-row"><span class="abpr-label" data-photo-score-label>Photo quality/usefulness</span><span class="abpr-value">'+score(r.photo_quality_score)+'/100</span></div>'+
  '<div class="abpr-row"><span class="abpr-label">Marketing value</span><span class="abpr-value">'+esc(r.marketing_value)+'</span></div>'+
  '<div class="abpr-row"><span class="abpr-label">Before/after value</span><span class="abpr-value">'+esc(r.before_after_value)+'</span></div>'+
  '<div class="abpr-row"><span class="abpr-label">Workmanship visibility</span><span class="abpr-value">'+esc(r.workmanship_visibility)+'</span></div>'+
@@ -94,7 +107,7 @@ async function load(){
  const map=new Map((photos||[]).map(p=>[p.id,p]));
  const items=[];
  for(const r of rows){const p=map.get(r.photo_id);if(!p)continue;const image=await signed(p.thumbnail_path||p.storage_path);if(image)items.push({rec:r,photo:p,image});}
- grid.replaceChildren(...items.map(card));
+ grid.replaceChildren(...items.map(card));applySimulationCopy();
 }
 async function runTest(){
  const status=$('agentBctPhotoRecStatus');if(status)status.textContent='Running test recommendations…';
@@ -114,6 +127,7 @@ function ensure(){
  const root=$('view-admin');if(!root||$('agentBctPhotoRecommendations'))return;
  style();const section=document.createElement('section');section.id='agentBctPhotoRecommendations';
  section.innerHTML='<h2>Agent BCT Photo Recommendations</h2><p class="abpr-note">Private recommendation-only review. Agent BCT can suggest; only BCT Admin decides. Marketing permission remains separate.</p><input id="agentBctPhotoPicker" type="file" accept="image/jpeg,image/png,image/webp" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"><div class="abpr-actions"><button id="agentBctPhotoUpload" class="abpr-secondary abpr-upload" type="button">Upload Photos</button><button id="agentBctPhotoTest" class="abpr-secondary" type="button">Run Test Recommendations</button><button id="agentBctPhotoAi" class="abpr-secondary" type="button">Run Private AI Analysis</button><button id="agentBctPhotoRefresh" class="abpr-secondary" type="button">Refresh</button></div><p id="agentBctPhotoRecStatus" aria-live="polite"></p><div id="agentBctPhotoRecGrid" class="abpr-grid"></div>';
+ const note=document.createElement('p');note.id='agentBctSimulationNote';note.className='abpr-note';note.textContent=simulationCopy()[2];section.querySelector('h2').insertAdjacentElement('afterend',note);
  const photoPanel=$('bctPhotoAdmin');if(photoPanel)photoPanel.appendChild(section);else root.appendChild(section);
  $('agentBctPhotoUpload').onclick=openExistingPhotoUploader;
  $('agentBctPhotoPicker').addEventListener('change',e=>{
@@ -129,6 +143,7 @@ async function analyzeRequestedPhoto(photoId){
  if(error||!photo){if(status)status.textContent='🔴 Selected photo could not be loaded.';return}
  try{await saveRecommendation(photo.id,await analyzePhoto(photo,'test'));if(status)status.textContent='🟢 Test recommendation saved for selected photo.';await load();document.getElementById('agentBctPhotoRecommendations')?.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){if(status)status.textContent='🔴 '+(e.message||'Recommendation failed.')}}
 window.addEventListener('bct-agent-photo-upload-started',e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🟡 Uploading '+Number(e.detail?.count||1)+' photo(s)…'});window.addEventListener('bct-agent-photo-upload-error',e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🔴 Photo upload failed: '+(e.detail?.message||'Unknown upload error.')});window.addEventListener('bct-agent-photo-upload-complete',async e=>{const s=$('agentBctPhotoRecStatus');if(s)s.textContent='🟢 '+Number(e.detail?.count||1)+' photo(s) uploaded to Photo Control. Refreshing the gallery…';await load();if(s)s.textContent='🟢 '+Number(e.detail?.count||1)+' photo(s) uploaded. The photo is now in Photo Control as hidden until Admin publishes it.'});
+document.addEventListener('change',event=>{if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))applySimulationCopy();},true);
 window.addEventListener('bct-agent-photo-request',e=>{if(e.detail?.photoId)analyzeRequestedPhoto(e.detail.photoId)});
 let rootObserver=null;function watchForAdminRoot(){if(rootObserver||!document.body)return;rootObserver=new MutationObserver(()=>{if(!$('view-admin'))return;ensure();/* Do not stop watching merely because the Agent panel exists. Photo Control can initialize later. */if($('agentBctPhotoRecommendations')&&$('bctPhotoUpload')){try{rootObserver.disconnect()}catch(_){}rootObserver=null;}});rootObserver.observe(document.body,{childList:true,subtree:true});ensure()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchForAdminRoot);else watchForAdminRoot();window.addEventListener('pageshow',watchForAdminRoot);window.addEventListener('bct-photo-control-ready',()=>{ensure();watchForAdminRoot();});
 })();

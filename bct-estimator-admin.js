@@ -11,10 +11,10 @@
     p.innerHTML=`
       <div class="toolbar"><div><h3>Estimator Management</h3><p class="muted">BCT-only management for estimator applications, assignments, assessment review, payment eligibility, travel approvals, and history.</p></div></div>
       <div class="grid grid-4 section">
-        <div class="card"><div class="metric" data-estimator-metric="applications">0</div><small>New Applications</small></div>
-        <div class="card"><div class="metric" data-estimator-metric="assignments">0</div><small>Current Assignments</small></div>
-        <div class="card"><div class="metric" data-estimator-metric="review">0</div><small>BCT Review</small></div>
-        <div class="card"><div class="metric" data-estimator-metric="payment">0</div><small>Payment Eligible</small></div>
+        <div class="card"><div class="metric" data-estimator-metric="applications" data-load-state="unknown" aria-label="Records not loaded">—</div><small>New Applications</small></div>
+        <div class="card"><div class="metric" data-estimator-metric="assignments" data-load-state="unknown" aria-label="Records not loaded">—</div><small>Current Assignments</small></div>
+        <div class="card"><div class="metric" data-estimator-metric="review" data-load-state="unknown" aria-label="Records not loaded">—</div><small>BCT Review</small></div>
+        <div class="card"><div class="metric" data-estimator-metric="payment" data-load-state="unknown" aria-label="Records not loaded">—</div><small>Payment Eligible</small></div>
       </div>
       <div class="grid grid-2">
         <div class="stage"><h4>Applications & Verification</h4><p>Contact information • experience • qualified trades • service areas/jurisdictions • references • credentials/documents • background screening • BCT approval.</p></div>

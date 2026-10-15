@@ -161,9 +161,10 @@
 
   function categoryForPanel(panel){
     const forced=panel?.dataset?.bctUrgentCategory;
-    if(forced==='jobs'||forced==='contractors'||forced==='clients'||forced==='handymen')return forced;
+    if(forced==='handymen')return 'contractors';
+    if(forced==='jobs'||forced==='contractors'||forced==='clients')return forced;
     const hay=(panelPage(panel)+' '+(panel?.id||'')+' '+panelTitle(panel)).toLowerCase();
-    if(/handyman/.test(hay))return 'handymen';
+    if(/handyman/.test(hay))return 'contractors';
     if(/estimator|assessment/.test(hay))return 'jobs';
     if(/contractor|applicant|safety|training|crew|credential|insurance|bond|license|workers.? comp|compliance/.test(hay))return 'contractors';
     if(/client|customer|homeowner|resident|property account/.test(hay))return 'clients';
@@ -179,7 +180,7 @@
   }
 
   function collectUrgent(){
-    const results={jobs:[],contractors:[],handymen:[],clients:[]};
+    const results={jobs:[],contractors:[],clients:[]};
     const seen=new Set();
     panels().forEach(panel=>{
       if(!boardEligible(panel)&&panel.id!=='jobManagementPanel')return;
@@ -201,18 +202,31 @@
     const el=document.createElement(tag);if(className)el.className=className;el.textContent=safeText(text);parent.appendChild(el);return el;
   }
 
+  const DATA_COPY={
+    en:['Loading records…','Records unavailable','Records not loaded','Known items; data incomplete'],
+    es:['Cargando registros…','Registros no disponibles','Registros no cargados','Elementos conocidos; datos incompletos'],
+    fr:['Chargement des données…','Données indisponibles','Données non chargées','Éléments connus ; données incomplètes'],
+    ht:['Ap chaje done yo…','Done yo pa disponib','Done yo poko chaje','Bagay nou konnen; done yo pa konplè'],
+    pt:['Carregando registros…','Registros indisponíveis','Registros não carregados','Itens conhecidos; dados incompletos'],
+    vi:['Đang tải dữ liệu…','Dữ liệu không khả dụng','Dữ liệu chưa được tải','Các mục đã biết; dữ liệu chưa đầy đủ'],
+    zh:['正在加载记录…','记录不可用','记录尚未加载','已知事项；数据不完整'],
+    ar:['جارٍ تحميل السجلات…','السجلات غير متاحة','لم تُحمَّل السجلات','عناصر معروفة؛ البيانات غير مكتملة'],
+    ru:['Загрузка записей…','Записи недоступны','Записи не загружены','Известные пункты; данные неполные']
+  };
+  function dataState(){const state=root()?.dataset.bctAdminDataState;return ['loading','ready','error'].includes(state)?state:'unknown';}
+  function dataLabel(state){const labels=DATA_COPY[language()]||DATA_COPY.en;return labels[state==='loading'?0:state==='error'?1:2];}
   function renderUrgentCards(board){
-    const t=copy(),data=collectUrgent();
-    const defs=[['jobs',t.jobs,t.noJobs],['contractors',t.contractors,t.noContractors],['handymen',t.handymen||'HANDYMEN',t.noHandymen||'No Urgent Handyman Items'],['clients',t.clients,t.noClients]];
+    const t=copy(),data=collectUrgent(),state=dataState();
+    const defs=[['jobs',t.jobs,t.noJobs],['contractors',t.contractors,t.noContractors],['clients',t.clients,t.noClients]];
     const grid=board.querySelector('.bct-admin-urgent-grid');if(!grid)return;
-    const renderKey=defs.map(([key,label,empty])=>{const items=data[key];return `${key}:${label}:${items.length}:${urgentLevel(items)}:${items.length?`${items.length} ${t.urgent}`:empty}`}).join('|');
+    const renderKey=defs.map(([key,label,empty])=>{const items=data[key];return `${state}:${key}:${label}:${items.length}:${urgentLevel(items)}:${items.length?`${items.length} ${t.urgent}`:empty}`}).join('|');
     if(grid.dataset.renderKey===renderKey)return;
     grid.dataset.renderKey=renderKey;
     grid.replaceChildren(...defs.map(([key,label,empty])=>{
-      const items=data[key];const button=document.createElement('button');button.type='button';button.className='bct-admin-urgent-card';button.dataset.bctUrgentCategory=key;button.dataset.level=urgentLevel(items);
+      const items=data[key];const button=document.createElement('button');button.type='button';button.className='bct-admin-urgent-card';button.dataset.bctUrgentCategory=key;button.dataset.level=state==='ready'?urgentLevel(items):state==='error'?'critical':'warning';button.dataset.loadState=state;button.setAttribute('aria-busy',String(state==='loading'));
       addTextEl(button,'strong',label);
-      addTextEl(button,'span',String(items.length),'bct-admin-alert-count');
-      addTextEl(button,'small',items.length?`${items.length} ${t.urgent}`:empty);
+      addTextEl(button,'span',state==='ready'?String(items.length):items.length?'≥ '+items.length:'—','bct-admin-alert-count');
+      addTextEl(button,'small',state==='ready'?(items.length?`${items.length} ${t.urgent}`:empty):dataLabel(state));
       return button;
     }));
   }
@@ -258,12 +272,13 @@
   }
 
   function showUrgent(category){
+    if(category==='handymen')category='contractors';
     const data=collectUrgent()[category]||[],t=copy();
     let view=$(URGENT_ID);if(!view){view=document.createElement('section');view.id=URGENT_ID;ensureBoard()?.insertAdjacentElement('afterend',view)}
     const labels={jobs:t.jobs,contractors:t.contractors,handymen:t.handymen||'HANDYMEN',clients:t.clients};
     view.innerHTML='<div class="bct-admin-board-head"><div><h2></h2><p></p></div><div><button type="button" class="bct-admin-board-back" data-bct-board-homeboard></button> <button type="button" class="bct-admin-board-home" data-bct-board-publichome></button></div></div><div class="bct-admin-urgent-list"></div>';
     view.querySelector('h2').textContent=`${t.urgent}: ${labels[category]||category}`;
-    view.querySelector('p').textContent=data.length?`${data.length} ${t.urgent}`:t.none;
+    view.querySelector('p').textContent=dataState()==='ready'?(data.length?`${data.length} ${t.urgent}`:t.none):dataLabel(dataState());
     view.querySelector('[data-bct-board-homeboard]').textContent=t.board;
     view.querySelector('[data-bct-board-publichome]').textContent=t.home;
     const list=view.querySelector('.bct-admin-urgent-list');
@@ -338,7 +353,7 @@
         return true;
       });
       if(meaningful)schedule();
-    });observer.observe(r,{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-hidden','data-status','data-state','data-severity']})}
+    });observer.observe(r,{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-hidden','data-status','data-state','data-severity','data-bct-admin-data-state']})}
     schedule();
   }
 

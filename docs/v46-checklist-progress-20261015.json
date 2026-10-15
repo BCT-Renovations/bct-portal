@@ -1,0 +1,1950 @@
+{
+  "date": "2026-10-15",
+  "source_filename": "BCT_V46_Remaining_Work_Numbered.txt",
+  "source_sha256": "355aaa13b08698fd4408a9a4fba61097bcb6ae4ec188cc215dfd8e5eed5ed1f5",
+  "live_sha": "6c90eb9a50b2eb1e0199683e07dc5ca1fb4667f1",
+  "verified_isolated_checkpoint": "bdf943db8da135ee06d6d5251878d4d4616f2d4b",
+  "scope": "Local closure only; all hosted and physical-device/provider acceptance remains open. A partial item is never subtracted from remaining.",
+  "total": 242,
+  "local_closed": 23,
+  "remaining": 219,
+  "partial": 40,
+  "items": [
+    {
+      "id": 1,
+      "section": "A. Baseline, parked work, and release records",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Record the exact approved TAKAI baseline, deployed Live commit, isolated preview commit, and Unfinished insurance commit separately; GitHub main is not proof of what Live serves.",
+      "status": "local_closed"
+    },
+    {
+      "id": 2,
+      "section": "A. Baseline, parked work, and release records",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Map parked branches to the current build and identify already-integrated changes before porting anything; preserve TAKAI, THEO, and prior safe points.",
+      "status": "partial"
+    },
+    {
+      "id": 3,
+      "section": "A. Baseline, parked work, and release records",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Review the field-controls branch against TAKAI and bring over only approved missing changes; do not merge its divergent full app wholesale.",
+      "status": "pending"
+    },
+    {
+      "id": 4,
+      "section": "A. Baseline, parked work, and release records",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Review contractor-identity/trade-lead, Admin MFA, contract-signing, and contractor-closeout additions on their parked branch for narrow integration.",
+      "status": "pending"
+    },
+    {
+      "id": 5,
+      "section": "A. Baseline, parked work, and release records",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Reconcile Ace of Spades acceptance requirements with current navigation, role selection, session, and homeowner code; retire only requirements superseded by later owner decisions.",
+      "status": "pending"
+    },
+    {
+      "id": 6,
+      "section": "A. Baseline, parked work, and release records",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Update old launch/development documents that name obsolete URLs, branches, deployment IDs, or completed blockers; retain historical evidence as history.",
+      "status": "local_closed"
+    },
+    {
+      "id": 7,
+      "section": "A. Baseline, parked work, and release records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Confirm the current corrected isolated preview is READY and serves the intended commit before giving a Safari preview link; Vercel may block this independently of Supabase.",
+      "status": "local_closed"
+    },
+    {
+      "id": 8,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Stop estimator application submission from reporting success when the Supabase client or insert function is absent; require an actual successful response.",
+      "status": "local_closed"
+    },
+    {
+      "id": 9,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Implement handling for application credential files: the current form collects selections but the submit payload ignores them.",
+      "status": "partial"
+    },
+    {
+      "id": 10,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Implement assessment photo/video file handling: the current submit path ignores selected media and sets photos/documentation complete to true.",
+      "status": "partial"
+    },
+    {
+      "id": 11,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Derive assessment completeness from saved evidence, rather than hardcoded site-visit/photos/documentation flags.",
+      "status": "partial"
+    },
+    {
+      "id": 12,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Load the signed-in estimator's actual assignments; the current Assignments panel has no assignment fetch/render implementation.",
+      "status": "local_closed"
+    },
+    {
+      "id": 13,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Select an authorized assignment rather than relying only on a free-text project/assignment field.",
+      "status": "local_closed"
+    },
+    {
+      "id": 14,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Connect estimator account/profile/history and payment-eligibility details; the current Account panel is policy text.",
+      "status": "partial"
+    },
+    {
+      "id": 15,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Complete estimator account creation, Forgot Password, recovery, and returning-session behavior using the existing shared authentication design.",
+      "status": "partial"
+    },
+    {
+      "id": 16,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Add in-flight and successful-submit duplicate guards to estimator applications and assessments, with safe retry behavior.",
+      "status": "partial"
+    },
+    {
+      "id": 17,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Keep failed application drafts and clear/reset forms only after a confirmed save.",
+      "status": "local_closed"
+    },
+    {
+      "id": 18,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Replace the descriptive Admin estimator panel and zero-only counters with real application, assignment, review, travel, payment, and history controls.",
+      "status": "partial"
+    },
+    {
+      "id": 19,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Apply/reconcile the estimator schema in a separate test database and prove that applications, profiles, and assignments persist.",
+      "status": "pending"
+    },
+    {
+      "id": 20,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Prove free remote estimation comes first, paid assessment is requested only when needed, and unpaid assignments cannot proceed to a visit/submission.",
+      "status": "pending"
+    },
+    {
+      "id": 21,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Prove only the assigned approved estimator can read and submit that assessment; deny unrelated estimators and other roles.",
+      "status": "pending"
+    },
+    {
+      "id": 22,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Prove assessment media is private, survives refresh, and remains linked to the correct project and assignment.",
+      "status": "pending"
+    },
+    {
+      "id": 23,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify complete site visit, photos, measurements, conditions, scope, notes, material review, and safety/access checklist before submission.",
+      "status": "pending"
+    },
+    {
+      "id": 24,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify BCT review/acceptance before contractor bidding and estimator payment eligibility; estimator cannot approve their own work.",
+      "status": "pending"
+    },
+    {
+      "id": 25,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify upfront homeowner assessment fee, full project credit when proceeding, per-assignment pay, and separately preapproved unusual travel.",
+      "status": "pending"
+    },
+    {
+      "id": 26,
+      "section": "B. Estimator: confirmed code gaps and connected workflow",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify the estimator cannot discover/bid on or become the performing contractor for the same assessed project.",
+      "status": "pending"
+    },
+    {
+      "id": 27,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check application fields and validation for work history/photos, tools, transportation, service areas, experience, availability, crew size default 1, and exactly five professional references.",
+      "status": "pending"
+    },
+    {
+      "id": 28,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Bring over missing identity controls: mandatory profile photo, private government ID front/back, BCT verification, and distinct document categories.",
+      "status": "pending"
+    },
+    {
+      "id": 29,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Bring over approved homeowner-facing trade leads: one released lead per trade and one primary contact, approved photo, and active assignment.",
+      "status": "pending"
+    },
+    {
+      "id": 30,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check the approved trades catalog and application mapping, including Drywaller, Concrete / Masonry, Roofer, Electrician, Plumber, and Handyman; preserve canonical service IDs.",
+      "status": "local_closed"
+    },
+    {
+      "id": 31,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check current contractor Primary Trade selection and application validation against the previously reported stuck dropdown and save error.",
+      "status": "partial"
+    },
+    {
+      "id": 32,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check contractor-side credential statuses CURRENT, EXPIRING SOON, EXPIRED, PENDING, and ACTION REQUIRED without falsely implying BCT approval.",
+      "status": "pending"
+    },
+    {
+      "id": 33,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Complete any missing contractor-facing credential upload/renewal validation and understandable rejection/correction instructions against existing document controls.",
+      "status": "pending"
+    },
+    {
+      "id": 34,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm the authorized background-screening provider, contractor-paid fee, payment/report visibility to BCT, and consent workflow; do not collect SSN in ordinary application forms.",
+      "status": "pending"
+    },
+    {
+      "id": 35,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify returning/new contractor account creation and linked application save, including the reported database error saving a new user.",
+      "status": "pending"
+    },
+    {
+      "id": 36,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify pre-application screening, score/attempt rules, retest lockout, and BCT approval cannot be bypassed server-side.",
+      "status": "pending"
+    },
+    {
+      "id": 37,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify background-check consent, payment, report access, review, and approval gates with the selected provider.",
+      "status": "pending"
+    },
+    {
+      "id": 38,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify insurance/COI, bond, license/registration, workers compensation/exemption, W-9, government ID, profile photos, credentials, and work photos retain separate private categories.",
+      "status": "pending"
+    },
+    {
+      "id": 39,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify license/jurisdiction/trade and coverage requirements match the work being offered, rather than only a generic current flag.",
+      "status": "pending"
+    },
+    {
+      "id": 40,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify 30/14/7/0-day expiration windows, reminders, health colors, urgent CONTRACTORS routing, and contractor renewal status.",
+      "status": "pending"
+    },
+    {
+      "id": 41,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify expired required credentials pause bidding and unverified replacements do not silently restore eligibility.",
+      "status": "pending"
+    },
+    {
+      "id": 42,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify private ID and tax documents never enter homeowner/project/public gallery payloads, signed URLs, or Agent BCT answers.",
+      "status": "pending"
+    },
+    {
+      "id": 43,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify homeowner lead visibility is revoked after photo approval withdrawal, assignment removal, or contractor deactivation.",
+      "status": "pending"
+    },
+    {
+      "id": 44,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify private bids, BCT-only selection/pricing, one active job, and explicitly approved exceptions in the backend.",
+      "status": "pending"
+    },
+    {
+      "id": 45,
+      "section": "C. Contractor applications, identity, credentials, and eligibility",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify suspended/rejected contractors cannot obtain new bids or assignments while retaining only appropriate existing-work/document access.",
+      "status": "pending"
+    },
+    {
+      "id": 46,
+      "section": "D. Handyman portal and operations",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Verify separate returning Handyman sign-in, new application, status, and assignment paths are actually connected; avoid duplicate contractor applications.",
+      "status": "pending"
+    },
+    {
+      "id": 47,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Review the expanded Handyman questionnaire, two-reference fields, tools, transport, crew, job limits, work eligibility, service radius, and consent against the specific Handyman requirements.",
+      "status": "pending"
+    },
+    {
+      "id": 48,
+      "section": "D. Handyman portal and operations",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Repair the assignment form's scheduling/notes path: date is disabled/read but unused, and notes are not sent in its assignment RPC payload.",
+      "status": "pending"
+    },
+    {
+      "id": 49,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify shared Handyman operations views open visibly and close on navigation; mounting a hidden section alone is not a working dashboard.",
+      "status": "pending"
+    },
+    {
+      "id": 50,
+      "section": "D. Handyman portal and operations",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Replace application-code/email-only access with the approved authenticated privacy boundary where required; review what existing RPCs expose before changing it.",
+      "status": "pending"
+    },
+    {
+      "id": 51,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Confirm successful application resubmission is server-deduplicated and status/error messaging is safe and translated.",
+      "status": "pending"
+    },
+    {
+      "id": 52,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Reconcile/apply preserved Handyman migrations in the test database and prove the required application, credential, and assignment RPCs exist.",
+      "status": "pending"
+    },
+    {
+      "id": 53,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify application status lookup does not disclose another applicant's private information.",
+      "status": "pending"
+    },
+    {
+      "id": 54,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify background clearance, BCT approval, required credentials, and tax/payment prerequisites before assignments or payout.",
+      "status": "pending"
+    },
+    {
+      "id": 55,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify Handyman credential uploads/review/expiration/reminders and assignment history persist with proper role restrictions.",
+      "status": "pending"
+    },
+    {
+      "id": 56,
+      "section": "D. Handyman portal and operations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify only the approved assigned Handyman sees job-specific information and authorized access instructions.",
+      "status": "pending"
+    },
+    {
+      "id": 57,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check returning-client direct-to-dashboard navigation, multiple-project selection, and working Overview/Estimate & Contract/Files/Financing/Messages/Schedule/Walkthrough actions.",
+      "status": "pending"
+    },
+    {
+      "id": 58,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check owner/renter intake and landlord contact/permission capture; unapproved tenant work must not proceed.",
+      "status": "pending"
+    },
+    {
+      "id": 59,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check project description, measurements, property type, photos/videos, budget, timeline, address, service selection, and required-field/error validation.",
+      "status": "pending"
+    },
+    {
+      "id": 60,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Compose What Happens Next, Today at My Home, My Decisions, Money & Project Summary, Report a Problem, and optional Daily Feedback from existing project records.",
+      "status": "pending"
+    },
+    {
+      "id": 61,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Provide the homeowner Home Record using existing completion, warranty, product, permit, inspection, and project files.",
+      "status": "pending"
+    },
+    {
+      "id": 62,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify client signup/verification, project creation, project number, duplicate-submit lock, and saved project ownership across refresh.",
+      "status": "pending"
+    },
+    {
+      "id": 63,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify landlord approval actually holds the project server-side until the authorized approval is recorded.",
+      "status": "pending"
+    },
+    {
+      "id": 64,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify homeowner data, messages, files, decisions, contracts, schedules, and estimates are scoped to their own selected project.",
+      "status": "pending"
+    },
+    {
+      "id": 65,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify project status and verification badges reflect BCT-reviewed records rather than local presentation state.",
+      "status": "pending"
+    },
+    {
+      "id": 66,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify homeowner decision responses, problem reports, daily feedback, and project updates persist and reach BCT's existing attention workflow.",
+      "status": "pending"
+    },
+    {
+      "id": 67,
+      "section": "E. Homeowner/client intake and project management",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify homeowners cannot see contractor bids, internal estimate costs/markup, private staffing, resident notes, or internal blocker details.",
+      "status": "pending"
+    },
+    {
+      "id": 68,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check the initial board contains exactly the three urgent categories JOBS, CONTRACTORS, and CLIENTS/HOMEOWNERS, each with its own counts and correct destination.",
+      "status": "local_closed"
+    },
+    {
+      "id": 69,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check Manage Job links, section navigation, scrolling, mobile tap targets, and return paths against prior reported failures.",
+      "status": "partial"
+    },
+    {
+      "id": 70,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Distinguish loading/error/unavailable counts from actual zero; missing backend data must not look like all-clear readiness.",
+      "status": "partial"
+    },
+    {
+      "id": 71,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Connect parked approved field, identity, estimator, and Handyman operations to existing board sections without a fourth urgent front or a competing dashboard.",
+      "status": "pending"
+    },
+    {
+      "id": 72,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify backend Admin authorization for every approval, rejection, credential review, assignment, price, payment, hold, and closeout action.",
+      "status": "pending"
+    },
+    {
+      "id": 73,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify contractor/client/estimator review queues populate from real records and actions update the right item once.",
+      "status": "pending"
+    },
+    {
+      "id": 74,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify Job Health states On Track, Needs Attention, Delayed, Critical and each count are backed by real project conditions.",
+      "status": "pending"
+    },
+    {
+      "id": 75,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify expired credentials, incidents, overdue safety, late decisions, payment/material delays, and estimator issues enter the correct urgent category.",
+      "status": "pending"
+    },
+    {
+      "id": 76,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify activity entries are durably stored with actor/time/entity/action; local browser audit alone is insufficient.",
+      "status": "pending"
+    },
+    {
+      "id": 77,
+      "section": "F. Admin Control Board, approvals, and records",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify operational-readiness results reflect actual capabilities and external gates instead of only table/function existence.",
+      "status": "pending"
+    },
+    {
+      "id": 78,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Add authentication and BCT Admin authorization to the photo-analysis API before any paid AI call; the inspected endpoint currently has neither check.",
+      "status": "local_closed"
+    },
+    {
+      "id": 79,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Add bounded request validation, allowed image-source checks, response-schema validation, timeout, cost/rate controls, and sanitized upstream failures to photo analysis.",
+      "status": "local_closed"
+    },
+    {
+      "id": 80,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test photo-response parsing against actual provider response shapes; the endpoint currently assumes data.output_text is directly present.",
+      "status": "partial"
+    },
+    {
+      "id": 81,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Keep metadata-based Test Recommendations explicitly identified as simulated; do not describe their scores as image analysis.",
+      "status": "local_closed"
+    },
+    {
+      "id": 82,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Map all fourteen existing Agent roles to implemented tools and workflows; a catalog/role selector is not a completed operational role.",
+      "status": "local_closed"
+    },
+    {
+      "id": 83,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Project Manager role responses, permitted project context, progress explanation, and escalation limits with local fixtures.",
+      "status": "partial"
+    },
+    {
+      "id": 84,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Estimator role intake, scope/measurement guidance, draft-only estimates, and assessment handoff with fixtures.",
+      "status": "partial"
+    },
+    {
+      "id": 85,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Contractor Coordinator role onboarding, documents, eligibility, private bidding, and assignment guidance with fixtures.",
+      "status": "partial"
+    },
+    {
+      "id": 86,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Assignment & Scheduling Coordinator role availability, dependencies, delays, and BCT-controlled assignment boundaries.",
+      "status": "partial"
+    },
+    {
+      "id": 87,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Customer Support role service/policy answers, recovery guidance, and escalation without unauthorized account actions.",
+      "status": "partial"
+    },
+    {
+      "id": 88,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Finance & Escrow Coordinator role explanations; no autonomous prices, money movement, or escrow release.",
+      "status": "partial"
+    },
+    {
+      "id": 89,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Insurance & Claims Coordinator role within the existing parked claims boundary; no parallel adjuster system.",
+      "status": "partial"
+    },
+    {
+      "id": 90,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Property Management & Commercial Coordinator role privacy and property-scoped guidance.",
+      "status": "partial"
+    },
+    {
+      "id": 91,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Documents & Change Order Coordinator role draft/document guidance and required BCT approvals.",
+      "status": "partial"
+    },
+    {
+      "id": 92,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Quality & Completion Coordinator role inspection, punch-list, sign-off, and warranty guidance.",
+      "status": "partial"
+    },
+    {
+      "id": 93,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Compliance & Credentials Coordinator role renewal/training guidance without self-verification or hold removal.",
+      "status": "partial"
+    },
+    {
+      "id": 94,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test the single Admin Escalation & Human Review role for complaints, disputes, safety, exceptions, and final decisions.",
+      "status": "partial"
+    },
+    {
+      "id": 95,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Analytics & Reporting role safe summaries and authorized reporting-tool coverage.",
+      "status": "partial"
+    },
+    {
+      "id": 96,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test Photo Recommendation role reusing the existing gallery, with no automatic publishing or consent inference.",
+      "status": "partial"
+    },
+    {
+      "id": 97,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test local Agent unavailable/error/retry/draft preservation behavior and ensure role choice never elevates permissions.",
+      "status": "local_closed"
+    },
+    {
+      "id": 98,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm AI provider/model, keys, enabled-generation flags, spend limits, and operational monitoring; current configured runtime state has not been read.",
+      "status": "pending"
+    },
+    {
+      "id": 99,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify real Agent authentication, selected-role access, project-scoped read tools, expired-session handling, and cross-user denial.",
+      "status": "pending"
+    },
+    {
+      "id": 100,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify durable Agent escalation receipts and Admin handoff records; do not claim a person was notified without delivery evidence.",
+      "status": "pending"
+    },
+    {
+      "id": 101,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify real provider-backed answers and safe tool results for each permitted role after configuration, with recorded integration evidence.",
+      "status": "pending"
+    },
+    {
+      "id": 102,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify AI estimating saves project-linked draft scope, quantities, labor/material costs, markup, totals, revisions, and recalculation.",
+      "status": "pending"
+    },
+    {
+      "id": 103,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify only BCT can review/edit/approve/release estimates; homeowner and contractor responses exclude internal cost, margin, and private AI metadata.",
+      "status": "pending"
+    },
+    {
+      "id": 104,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify photo recommendations remain Admin-private, persist Use/Reject/Later and category correction, and never change publication fields automatically.",
+      "status": "pending"
+    },
+    {
+      "id": 105,
+      "section": "G. Agent BCT, AI estimating, and photo recommendations",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify the recommendation upload action uses existing Photo Control/private storage and refreshes the correct gallery records.",
+      "status": "pending"
+    },
+    {
+      "id": 106,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Finish the property-manager/commercial multi-property, building, and unit views against existing organization/property records.",
+      "status": "pending"
+    },
+    {
+      "id": 107,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Bring over the parked portfolio-priority composition with safe critical/urgent/pending-decision aggregates; do not create duplicate projects.",
+      "status": "pending"
+    },
+    {
+      "id": 108,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Check HOA intake for HOA status, approval requirement, association contacts, fees, conditions, supporting documents, and approval identity/title/date.",
+      "status": "pending"
+    },
+    {
+      "id": 109,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Complete HOA authorization, reauthorization, revocation alert, and locked/dimmed view-only behavior against the existing consent model.",
+      "status": "pending"
+    },
+    {
+      "id": 110,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify exact active property-account -> managed-property -> project/unit authorization, including same-manager cross-property leakage tests.",
+      "status": "pending"
+    },
+    {
+      "id": 111,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify resident names, personal contact details, private notes, access codes/instructions remain BCT-private except specifically authorized job access.",
+      "status": "pending"
+    },
+    {
+      "id": 112,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify commercial occupied/vacant, complex/building/unit, contact, and access information is saved and used in assignment planning.",
+      "status": "pending"
+    },
+    {
+      "id": 113,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify HOA approval/conditions/fees and permission revocation persist, create BCT alerts, and block unauthorized actions.",
+      "status": "pending"
+    },
+    {
+      "id": 114,
+      "section": "H. Property managers, commercial, HOA, and permissions",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify property-manager priority outputs omit internal action-inbox rows, private resident details, and access notes.",
+      "status": "pending"
+    },
+    {
+      "id": 115,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port missing incident lifecycle detail: immediate response, injuries/dog bites/property damage, witnesses, evidence, BCT alert time, corrective work, follow-up, and closure.",
+      "status": "pending"
+    },
+    {
+      "id": 116,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port stop-work affected scope, evidence, corrective requirements, and BCT-only release; reuse existing holds and safety controls.",
+      "status": "pending"
+    },
+    {
+      "id": 117,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port site key/card/code/lockbox custody: purpose, authorized issue, return, revocation, and history; keep sensitive values private.",
+      "status": "pending"
+    },
+    {
+      "id": 118,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port Who's Coming attendance and approved substitutions, check-in/out, expected arrival, lateness, no-show escalation, and recovery.",
+      "status": "pending"
+    },
+    {
+      "id": 119,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port pre-work condition baselines and evidence requirements through the existing checklist/photo system.",
+      "status": "pending"
+    },
+    {
+      "id": 120,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port hidden-condition detection and affected-work holds, with BCT disposition and scope/money changes through existing change orders.",
+      "status": "pending"
+    },
+    {
+      "id": 121,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port Need BCT Decision and Contractor Cannot Perform reporting, readback, and BCT resolution in the existing case/attention system.",
+      "status": "pending"
+    },
+    {
+      "id": 122,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port utility authorization, planned/actual shutoff and restoration, responsible party, and safe-restoration evidence.",
+      "status": "pending"
+    },
+    {
+      "id": 123,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port occupied-home, contents protection, dust/noise/odor, preconstruction orientation, temporary protection, cleanup, and end-of-day security checklists.",
+      "status": "pending"
+    },
+    {
+      "id": 124,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port daily field reports with authorized crew, photos, work completed, issues, and next steps.",
+      "status": "pending"
+    },
+    {
+      "id": 125,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port weather/open-building protection evidence and adjacent/neighbor property issue/damage follow-up.",
+      "status": "pending"
+    },
+    {
+      "id": 126,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port contractor abandonment/replacement recovery while preserving BCT assignment authority and work-history evidence.",
+      "status": "pending"
+    },
+    {
+      "id": 127,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify recurring core/trade safety assignments, grace/due dates, quizzes, completion evidence, reminders, and overdue new-work restrictions.",
+      "status": "pending"
+    },
+    {
+      "id": 128,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify contractor safety completion cannot remove a separate BCT hold and does not wrongly block required training/existing-job access.",
+      "status": "pending"
+    },
+    {
+      "id": 129,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify incident/stop-work/private access events are authenticated, project-scoped, durably audited, and routed to BCT urgently.",
+      "status": "pending"
+    },
+    {
+      "id": 130,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify crew check-in/out belongs to an active worker assignment; unauthorized/unapproved substitutes cannot check in or appear to homeowners.",
+      "status": "pending"
+    },
+    {
+      "id": 131,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify homeowner presence views show only approved/released identity and safe attendance; revoke stale identity and access after assignment changes.",
+      "status": "pending"
+    },
+    {
+      "id": 132,
+      "section": "I. Field safety, site access, and crew presence",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify hidden-condition, permit/inspection, safety, and utility blockers prevent affected work from advancing until authorized clearance.",
+      "status": "pending"
+    },
+    {
+      "id": 133,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port customer-supplied material verification: brand/model/size/quantity, receipt/photos, location, delivery state, damaged/wrong/insufficient/incompatible outcomes.",
+      "status": "pending"
+    },
+    {
+      "id": 134,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port material delivery/custody: received quantities/tickets, secure location, shortages/damage, transfer, returns, and documented handoff.",
+      "status": "pending"
+    },
+    {
+      "id": 135,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port delivery scheduling, receiving responsibility, failed deliveries, and recovery against the job schedule.",
+      "status": "pending"
+    },
+    {
+      "id": 136,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port special/nonreturnable order approvals for measurements, selections, price, and responsible party before purchase.",
+      "status": "pending"
+    },
+    {
+      "id": 137,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port material-shortage lookahead against upcoming phases/work packages and route warnings into existing Job Health.",
+      "status": "pending"
+    },
+    {
+      "id": 138,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port trade/work-package handoff offer, acknowledgment, readiness, and predecessor/successor phase dependencies.",
+      "status": "pending"
+    },
+    {
+      "id": 139,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port rental/equipment company, responsible party, condition, due/return/extension resolution, and late-fee urgency.",
+      "status": "pending"
+    },
+    {
+      "id": 140,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port dumpster/haul/disposal responsibility, permits, documentation, and closeout records.",
+      "status": "pending"
+    },
+    {
+      "id": 141,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify material changes/returns/costs, delivery custody, handoffs, and schedule impact persist under the authorized project/work package.",
+      "status": "pending"
+    },
+    {
+      "id": 142,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify equipment deadlines escalate warning -> urgent -> critical/overdue, including resolved-item cleanup and durable history.",
+      "status": "pending"
+    },
+    {
+      "id": 143,
+      "section": "J. Materials, deliveries, equipment, and execution",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify schedule phases and permit/inspection hold points cannot be skipped through direct API actions.",
+      "status": "pending"
+    },
+    {
+      "id": 144,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Review parked contract-signing and contractor-closeout modules against current contracts; integrate only missing compatible functions.",
+      "status": "pending"
+    },
+    {
+      "id": 145,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Test draft estimate/contract totals, labor/material arithmetic, markup, rounding, and discount rules: 15% senior, 15% veteran, combined cap 20%.",
+      "status": "pending"
+    },
+    {
+      "id": 146,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Port missing lien-waiver, progress-billing, allowance, permit/warranty responsibility, committed-cost, unbudgeted-cost, and financial-closeout controls.",
+      "status": "pending"
+    },
+    {
+      "id": 147,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm actual payment provider, fees, deposit/invoice/refund handling, settlement expectations, and contractor payout process before claiming live processing.",
+      "status": "pending"
+    },
+    {
+      "id": 148,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm the correct Acorn prequalification link and approved financing language/terms; distinguish outbound link from an API integration.",
+      "status": "pending"
+    },
+    {
+      "id": 149,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm actual third-party escrow provider, agreement, fees, funding/release conditions, and legal wording; internal escrow tracking is not held funds.",
+      "status": "pending"
+    },
+    {
+      "id": 150,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm e-sign provider and approved contract/signature wording, or explicitly retain the manual sign-off workflow.",
+      "status": "pending"
+    },
+    {
+      "id": 151,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify unique project/job/application/service-call/contract identifiers and no duplicate numbering across concurrent requests.",
+      "status": "pending"
+    },
+    {
+      "id": 152,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify contract version, authorized signature, immutable signature evidence, and approved change-order version history.",
+      "status": "pending"
+    },
+    {
+      "id": 153,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify change orders capture hidden-condition/scope/price impacts and required approvals before affected work proceeds.",
+      "status": "pending"
+    },
+    {
+      "id": 154,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify deposit/invoice/payment/financing/escrow statuses reconcile to actual provider records rather than optimistic UI success.",
+      "status": "pending"
+    },
+    {
+      "id": 155,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify money movement and escrow release require authorized BCT/customer sign-off and enforce required hold/dispute/closeout conditions.",
+      "status": "pending"
+    },
+    {
+      "id": 156,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify progress billing, allowances, committed/unbudgeted costs, lien waivers, and final financial balances are correct and private.",
+      "status": "pending"
+    },
+    {
+      "id": 157,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify punch-list correction and independent authorized clearance before completion; submission alone must not close an item.",
+      "status": "pending"
+    },
+    {
+      "id": 158,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify final inspection, completion certificate, customer sign-off, outstanding approvals, and required files before closing a job.",
+      "status": "pending"
+    },
+    {
+      "id": 159,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify warranties record responsible party, dates, manufacturer model/serial/documents, exclusions, and supported callback history.",
+      "status": "pending"
+    },
+    {
+      "id": 160,
+      "section": "K. Contracts, money, financing, escrow, and closeout",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify disputes, complaints, ratings, service calls, and warranty callbacks remain linked to the project and reach the proper BCT queue.",
+      "status": "pending"
+    },
+    {
+      "id": 161,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile CRM/lead intake, referrals/source attribution, follow-up, lost-job reasons, and lifetime customer/project history.",
+      "status": "pending"
+    },
+    {
+      "id": 162,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile permit applications, responsibilities, jurisdictional requirements, utility locates, inspections, and code-correction workflows.",
+      "status": "pending"
+    },
+    {
+      "id": 163,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile RFIs, submittals, drawing/document versions, selections, and takeoff/rate-library controls.",
+      "status": "pending"
+    },
+    {
+      "id": 164,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile vendors/suppliers/manufacturers/products, purchase requests/orders, freight, substitutions, special orders, and material returns.",
+      "status": "pending"
+    },
+    {
+      "id": 165,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile warehouse/location inventory, tools/assets, reservations/assignments, fleet, fuel, maintenance, and return condition.",
+      "status": "pending"
+    },
+    {
+      "id": 166,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile service agreements, renewals, warranty obligations, maintenance/callback scheduling, and customer service history.",
+      "status": "pending"
+    },
+    {
+      "id": 167,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile worker availability, after-hours coverage, skills, labor forecasts, crew capacity, mobilization, and calendar/delegation controls.",
+      "status": "pending"
+    },
+    {
+      "id": 168,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile timesheets, applicable overtime rules, approved travel/per diem, expenses/receipts, and job-cost attribution.",
+      "status": "pending"
+    },
+    {
+      "id": 169,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Preserve worker classifications: employee, independent contractor, subcontractor company/crew, vendor; use contractor payment/W-9 handling for 1099s rather than employee payroll/HR flows.",
+      "status": "pending"
+    },
+    {
+      "id": 170,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate the approved internal-only BCT Direct lane and verify it is never advertised through homeowner/outside-contractor labels, buttons, payloads, staffing, execution classification, or margins.",
+      "status": "pending"
+    },
+    {
+      "id": 171,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Locate and reconcile management reporting/KPIs, data-quality/orphan checks, retention/export, integrations, and privacy-safe public sharing.",
+      "status": "pending"
+    },
+    {
+      "id": 172,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Test backend ownership and persistence of these reconciled operational modules in their real cross-module workflows before treating foundations as completed features.",
+      "status": "pending"
+    },
+    {
+      "id": 173,
+      "section": "L. Earlier approved operational modules requiring reconciliation",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Test server-side BCT Direct authorization, internal assignment/cost/margin privacy, worker classification, and audit history; hidden buttons alone are insufficient.",
+      "status": "pending"
+    },
+    {
+      "id": 174,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check signup/reset password validation and matching confirmation: minimum seven characters, number, special character, with helpful accessible errors.",
+      "status": "pending"
+    },
+    {
+      "id": 175,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check one shared session through each permitted portal area; signed-in navigation should not repeatedly request login.",
+      "status": "partial"
+    },
+    {
+      "id": 176,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check session-change clearing of private views/drafts and safe errors when the backend is unavailable.",
+      "status": "partial"
+    },
+    {
+      "id": 177,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Review public API inputs, escaped user content, redirects, private URL handling, and absence of service-role/secret keys in client code.",
+      "status": "partial"
+    },
+    {
+      "id": 178,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Review parked Admin MFA enrollment/recovery/enforcement code and migration against the current authorization implementation before integration.",
+      "status": "pending"
+    },
+    {
+      "id": 179,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Reconcile full schema history and bootstrap dependencies: the repository's incremental migrations are not proof of a reproducible empty-database baseline.",
+      "status": "pending"
+    },
+    {
+      "id": 180,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Resolve duplicate migration version prefixes and incompatible historical migration names/order before replay; do not rewrite applied production history casually.",
+      "status": "pending"
+    },
+    {
+      "id": 181,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify real signup, confirmation, Forgot Password, expired-link recovery, password reset, sign-out, session expiry, and last-five-password rejection.",
+      "status": "pending"
+    },
+    {
+      "id": 182,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify Admin, homeowner, contractor, Handyman, estimator, property manager, and insurance roles cannot self-elevate or read another user's records.",
+      "status": "pending"
+    },
+    {
+      "id": 183,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify RLS/grants/storage ownership, direct API writes, privileged function authorization, and private views under actual hosted Auth/REST.",
+      "status": "pending"
+    },
+    {
+      "id": 184,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify upload count/type/size constraints on client AND server, including project video limits and rejection of invalid/malicious files.",
+      "status": "pending"
+    },
+    {
+      "id": 185,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify file upload/link registration consistency, interrupted uploads, orphan cleanup, file deletion, signed-link expiry, and denied unauthorized downloads.",
+      "status": "pending"
+    },
+    {
+      "id": 186,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify all referenced client RPCs/tables/buckets/functions exist in the separate test schema with matching arguments and grants.",
+      "status": "pending"
+    },
+    {
+      "id": 187,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Run hosted security/performance advisors and review privileged-function warnings, RLS, foreign-key indexes, and actual query behavior.",
+      "status": "pending"
+    },
+    {
+      "id": 188,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Document and test recoverable backup/export/restore; confirm current backup retention and make any paid backup/PITR decision separately.",
+      "status": "pending"
+    },
+    {
+      "id": 189,
+      "section": "M. Authentication, privacy, uploads, and database safety",
+      "type": "DECISION",
+      "requires_hosted_supabase": true,
+      "task": "Resolve leaked-password protection availability/configuration without assuming approval to upgrade; document launch decision and verify the actual setting.",
+      "status": "pending"
+    },
+    {
+      "id": 190,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm email sender/domain configuration and authorized real mailbox/provider test; queued email is not proof of delivery.",
+      "status": "pending"
+    },
+    {
+      "id": 191,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm whether SMS/voice/recording integration is in approved launch scope, provider authorization, and consent; preserve disabled-by-default boundaries until verified.",
+      "status": "pending"
+    },
+    {
+      "id": 192,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Keep manual job weather active as designed; choose/configure an automatic provider only if approved, without claiming manual records are live forecasts.",
+      "status": "pending"
+    },
+    {
+      "id": 193,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check assigned-job Google Maps directions uses the actual destination, hides without an address, opens only on tap, and does not auto-navigate.",
+      "status": "pending"
+    },
+    {
+      "id": 194,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Review live walkthrough/video verification scheduling, secure join-link validation, checkpoint/result UI, and failure messaging against the existing module.",
+      "status": "pending"
+    },
+    {
+      "id": 195,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Review automation controls to ensure they flag/schedule/remind but never autonomously approve estimates, choose contractors, release funds, or close jobs.",
+      "status": "pending"
+    },
+    {
+      "id": 196,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify confirmation/reset messages, application/approval/rejection notices, credential reminders, contracts/change orders, schedule updates, and completion notifications actually deliver.",
+      "status": "pending"
+    },
+    {
+      "id": 197,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify delivery failures, retries, stuck queue detection, duplicate prevention, provider message IDs, and the right private recipient.",
+      "status": "pending"
+    },
+    {
+      "id": 198,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify BCT-controlled customer/contractor communication activation, assigned-contractor-only On My Way notices, consent, and protected resident contacts.",
+      "status": "pending"
+    },
+    {
+      "id": 199,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify scheduled automation runners, audit events, reminder windows, failed-run alerts, and idempotency against real records.",
+      "status": "pending"
+    },
+    {
+      "id": 200,
+      "section": "N. Communications, automation, weather, directions, and live verification",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify live quality/walkthrough ownership, authorized attendees, retained evidence, review outcomes, inspection/warranty ties, and private video-link visibility.",
+      "status": "pending"
+    },
+    {
+      "id": 201,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Audit all nine supported languages across every portal, dynamic status/error, roles/services, forms, dashboards, Admin, and Agent BCT; remove raw keys and unintended English fallback.",
+      "status": "partial"
+    },
+    {
+      "id": 202,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Finish unsupported dynamic gallery category/caption/alt/image-text translations; current built-in category maps cover only part of the nine-language set.",
+      "status": "partial"
+    },
+    {
+      "id": 203,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify persistent language choice, Arabic RTL, readable multilingual fonts, numbers/dates, and language changes without draft loss.",
+      "status": "pending"
+    },
+    {
+      "id": 204,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify translated contracts, notices, and generated documents preserve the same approved business meaning and required approvals.",
+      "status": "pending"
+    },
+    {
+      "id": 205,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check approved logo/slogan/footer/contact details/About and Licensed, Bonded, and Insured presentation; preserve later TAKAI decisions and prevent duplicate slogans.",
+      "status": "pending"
+    },
+    {
+      "id": 206,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check all Back controls against the latest mint/dark-teal standard and correct previous-page behavior, including New Client Back and Client Back to Home.",
+      "status": "partial"
+    },
+    {
+      "id": 207,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check browser history, refresh, direct entry URLs, return from About/gallery/Agent, and returning sessions without blank screens, portal overlap, or lost drafts.",
+      "status": "partial"
+    },
+    {
+      "id": 208,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check contractor profession selection, existing-sign-in-first/application separation, appropriate About text, and approved role-heading appearance.",
+      "status": "partial"
+    },
+    {
+      "id": 209,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check Agent BCT header, X/Back/Home, keyboard, scroll, nonblocking launcher, and latest approved position on phone widths.",
+      "status": "partial"
+    },
+    {
+      "id": 210,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check homeowner/contractor/Handyman/estimator/Admin forms at phone widths for clipped labels, overlap, horizontal scrolling, file pickers, and touch actions.",
+      "status": "partial"
+    },
+    {
+      "id": 211,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Check keyboard/focus labels, contrast, screen-reader state, loading/error/empty messages, and reduced-motion behavior for changed flows.",
+      "status": "partial"
+    },
+    {
+      "id": 212,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify the iPhone Home Screen icon remains installed after adding, relaunches the intended app, and retains the approved BCT branding; source checks cannot prove physical-device behavior.",
+      "status": "pending"
+    },
+    {
+      "id": 213,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify manifest/icon routes, standalone startup, cold launch, current non-intercepting service-worker behavior, and old-cache cleanup without undoing TAKAI's icon fix.",
+      "status": "partial"
+    },
+    {
+      "id": 214,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify public gallery remains visible through navigation and handles backend restriction honestly; fallback branding images must not be presented as real completed projects.",
+      "status": "partial"
+    },
+    {
+      "id": 215,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Investigate and reduce unnecessary storage downloads with thumbnails, stable URLs, loading/pagination, and cache behavior; this does not erase the current overage.",
+      "status": "local_closed"
+    },
+    {
+      "id": 216,
+      "section": "O. Translation, mobile/PWA, gallery, and navigation acceptance",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify public gallery published-only visibility, private original access, publish/hide/remove lifecycle, translation persistence, and signed-URL behavior against real storage.",
+      "status": "pending"
+    },
+    {
+      "id": 217,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Keep original TAKAI safe point distinct from Unfinished; preserve insurance commit 10df584a and do not activate operational modules during this inventory.",
+      "status": "local_closed"
+    },
+    {
+      "id": 218,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Finish claim attachment selection/type/size/error handling and private-document UI using existing upload architecture; attachments are outside verified insurance flows.",
+      "status": "pending"
+    },
+    {
+      "id": 219,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "BUILD",
+      "requires_hosted_supabase": false,
+      "task": "Complete translation of insurance partner/Admin intake, organization selection, claim detail/history/messages/supplements, errors, and preview copy.",
+      "status": "pending"
+    },
+    {
+      "id": 220,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify the corrected insurance preview visibility build on an actual current isolated phone-width preview; a saved fix is not deployed proof.",
+      "status": "pending"
+    },
+    {
+      "id": 221,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Run all 14 staged insurance migrations against the complete canonical schema in separate hosted Supabase, including replay and compatibility checks.",
+      "status": "pending"
+    },
+    {
+      "id": 222,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Test real Auth and organization approval/membership for carrier admin, adjuster, claims representative, read-only, suspended/inactive, unrelated carrier, and anonymous roles.",
+      "status": "pending"
+    },
+    {
+      "id": 223,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify per-claim read/write ownership, assigned adjusters, private BCT notes, direct API denials, and no member self-elevation.",
+      "status": "pending"
+    },
+    {
+      "id": 224,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify claim intake, information requests/responses, communication, supplements, history, and read-only restrictions persist correctly.",
+      "status": "pending"
+    },
+    {
+      "id": 225,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify one claim per company/claim-number rule, duplicate submissions, one canonical project per claim, existing contract numbering, and authorized handoff.",
+      "status": "pending"
+    },
+    {
+      "id": 226,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify Admin organization/member review, claim acceptance/authorization/construction lifecycle, audit history, and suspended-company access boundaries.",
+      "status": "pending"
+    },
+    {
+      "id": 227,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify attachment upload/download authorization, private storage, signed links, and claim attachment registration.",
+      "status": "pending"
+    },
+    {
+      "id": 228,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Verify account/company switches cannot render stale claims/history/drafts, including delayed network responses and duplicate actions.",
+      "status": "pending"
+    },
+    {
+      "id": 229,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Run hosted advisors, cross-role browser tests, actual Safari/iPhone flows, and full existing TAKAI regression before proposing activation.",
+      "status": "pending"
+    },
+    {
+      "id": 230,
+      "section": "P. Insurance and claims — parked as Unfinished",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Confirm any direct insurer/carrier API connectivity separately; the claims partner portal is not proof of an authorized carrier integration.",
+      "status": "pending"
+    },
+    {
+      "id": 231,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Triage the 19 currently failing local test-script runs: separate stale exact-string/logo/service-worker expectations from genuine regressions before changing app code.",
+      "status": "local_closed"
+    },
+    {
+      "id": 232,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "FIX",
+      "requires_hosted_supabase": false,
+      "task": "Resolve Agent mobile signed-out expectation and photo/gallery test-assertion mismatches against the latest approved behavior with meaningful tests.",
+      "status": "local_closed"
+    },
+    {
+      "id": 233,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "RECONCILE",
+      "requires_hosted_supabase": false,
+      "task": "Align active CI workflows with the current app/test baseline; ensure parked integration suites are actually executed, not merely committed.",
+      "status": "local_closed"
+    },
+    {
+      "id": 234,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Make required local tests reproducible with pinned dependencies and clear commands; browser/PGlite dependencies were not installed for this audit.",
+      "status": "local_closed"
+    },
+    {
+      "id": 235,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Re-run mocked browser and disposable-database tests in the current environment; prior 75-check records are historical evidence, not a new execution here.",
+      "status": "local_closed"
+    },
+    {
+      "id": 236,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Verify a current isolated preview's assets match its source commit and test real mobile navigation before presenting it as review-ready.",
+      "status": "partial"
+    },
+    {
+      "id": 237,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Resolve the independent Vercel deployment limit through allowed capacity/reset/account decisions; do not assume it cleared or purchase anything.",
+      "status": "local_closed"
+    },
+    {
+      "id": 238,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Resolve current Supabase service restriction and confirm both production and test-project service health; prior reassurance that Live was unaffected is not verified.",
+      "status": "pending"
+    },
+    {
+      "id": 239,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Run the complete homeowner -> BCT review -> contractor bid/assignment -> project -> estimate/contract -> execution -> change/approval -> completion/escrow/warranty test lifecycle.",
+      "status": "pending"
+    },
+    {
+      "id": 240,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "VERIFY",
+      "requires_hosted_supabase": true,
+      "task": "Run separate estimator, Handyman, property-manager/HOA, field-control, insurance, and Agent cross-role integration acceptance, with rollback-safe test records.",
+      "status": "pending"
+    },
+    {
+      "id": 241,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "DECISION",
+      "requires_hosted_supabase": false,
+      "task": "Complete owner business/legal/provider wording decisions for contracts, worker classification, privacy/consent, background screening, financing, escrow, warranty, disputes, and public launch scope.",
+      "status": "pending"
+    },
+    {
+      "id": 242,
+      "section": "Q. Test repair, connected acceptance, and launch gates",
+      "type": "VERIFY",
+      "requires_hosted_supabase": false,
+      "task": "Produce a release evidence record with what passed, failed, remains blocked, exact commits/URLs, and recovery plan; request explicit Live approval only after required gates pass.",
+      "status": "local_closed"
+    }
+  ]
+}
