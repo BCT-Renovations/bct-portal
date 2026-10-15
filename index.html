@@ -2365,7 +2365,8 @@ function applyStaticLanguage(language){
    if(el.hasAttribute('data-i18n-placeholder')) return;
    if(!BCT_ORIGINAL_PLACEHOLDER.has(el)) BCT_ORIGINAL_PLACEHOLDER.set(el,el.getAttribute('placeholder'));
    const original=BCT_ORIGINAL_PLACEHOLDER.get(el);
-   el.setAttribute('placeholder',language==='en' ? original : ((language==='es' && BCT_STATIC_PLACEHOLDER_ES[original]) ? BCT_STATIC_PLACEHOLDER_ES[original] : (BCT_STATIC_PLACEHOLDERS[language]?.[original]||commonDict[original]||original)));
+   const translated=language==='en' ? original : ((language==='es' && BCT_STATIC_PLACEHOLDER_ES[original]) ? BCT_STATIC_PLACEHOLDER_ES[original] : (BCT_STATIC_PLACEHOLDERS[language]?.[original]||commonDict[original]||original));
+   if(el.getAttribute('placeholder')!==translated) el.setAttribute('placeholder',translated);
  });
 }
 
