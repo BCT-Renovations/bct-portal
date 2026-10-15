@@ -28,6 +28,9 @@ const checks=[
  ['Unchanged placeholder attributes are not rewritten',staticPass.includes("if(el.getAttribute('placeholder')!==translated)")],
  ['Unchanged portal text nodes are not rewritten',staticPass.includes('if(t.nodeValue!==nextValue)')],
  ['Dynamic translation requires a mounted document body',languagePass.includes('if(!document.body) return;')],
+ ['Dynamic text preserves remote translations',languagePass.includes('(current===fallback || current===key) && current!==local')],
+ ['Dynamic placeholder preserves remote translations',languagePass.includes('(current===fallback || current===key) && current!==local) node.setAttribute(\'placeholder\',local)')],
+ ['Dynamic translation skips nested keyed controls',languagePass.includes('!node.children.length')],
 ];
 for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+' '+name);}
 assert.ok(checks.every(([,ok])=>ok),'Translation source regression failed');
