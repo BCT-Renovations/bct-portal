@@ -2329,13 +2329,15 @@ const BCT_STATIC_PLACEHOLDER_ES={
   "BCT Admin password":"Contraseña de administrador de BCT"
 };
 function applyStaticLanguage(language){
+ const commonDict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
+ const translateRaw=raw=>(language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw;
  // Translate ordinary leaf elements.
  document.querySelectorAll("main *").forEach(el=>{
-   if(el.children.length===0 && !el.hasAttribute('data-i18n')){
+   if(el.children.length===0 && !el.closest('[data-i18n]') && !el.matches('script,style,template,option') && !el.closest('script,style,template')){
      if(!BCT_ORIGINAL_TEXT.has(el)) BCT_ORIGINAL_TEXT.set(el,el.textContent);
      const original=BCT_ORIGINAL_TEXT.get(el);
      const raw=(original||'').trim();
-     el.textContent=(language==='es' && BCT_STATIC_ES[raw]) ? BCT_STATIC_ES[raw] : (BCT_STATIC_FORMS[language]?.[raw]||original);
+     el.textContent=raw ? original.replace(raw,translateRaw(raw)) : original;
    }
  });
  // Translate text nodes inside labels/containers that also contain inputs or other elements.
@@ -2345,12 +2347,12 @@ function applyStaticLanguage(language){
  while((node=walker.nextNode())) textNodes.push(node);
  textNodes.forEach(t=>{
    const parent=t.parentElement;
-   if(!parent || parent.closest('[data-i18n]') || ['SCRIPT','STYLE','OPTION'].includes(parent.tagName)) return;
+   if(!parent || parent.closest('[data-i18n],script,style,template,option')) return;
    if(!BCT_ORIGINAL_TEXT_NODE.has(t)) BCT_ORIGINAL_TEXT_NODE.set(t,t.nodeValue);
    const original=BCT_ORIGINAL_TEXT_NODE.get(t);
    const raw=(original||'').trim();
    if(!raw) return;
-   const translated=(language==='es' && BCT_STATIC_ES[raw]) ? BCT_STATIC_ES[raw] : (BCT_STATIC_FORMS[language]?.[raw]||raw);
+   const translated=translateRaw(raw);
    const leading=(original.match(/^\s*/)||[''])[0], trailing=(original.match(/\s*$/)||[''])[0];
    t.nodeValue=leading+translated+trailing;
  });
@@ -2402,7 +2404,7 @@ const BCT_EXTENDED_UI_TRANSLATIONS={
 const BCT_ORIGINAL_UI_TEXT=new WeakMap();
 function applyCommonPortalLanguage(language){
  const dict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
- document.querySelectorAll('button,label,h2,h3,h4,p,span,legend,th,td').forEach(el=>{
+ document.querySelectorAll('header button,header label,header h2,header h3,header span,footer button,footer span').forEach(el=>{
    if(el.children.length || el.closest('[data-i18n]') || el.matches('[data-login-language-label],[data-login-signin-heading],[data-entry-login],[data-bct-slogan]')) return;
    if(!BCT_ORIGINAL_UI_TEXT.has(el)) BCT_ORIGINAL_UI_TEXT.set(el,el.textContent.trim());
    const original=BCT_ORIGINAL_UI_TEXT.get(el);
