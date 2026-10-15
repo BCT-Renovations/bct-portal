@@ -16,3 +16,8 @@ jobs:
         run: node --test tests/agent-bct/languages.test.js
       - name: Verify gallery translation integration
         run: node tests/v46-gallery-image-text-translation.mjs
+      - name: Validate browser regression test syntax
+        run: |
+          node --check tests/v46-iphone-portal-connection.mjs
+          node --check tests/v46-iphone-homeowner-wizard.mjs
+          node --check tests/v46-iphone-admin-controls.mjs
