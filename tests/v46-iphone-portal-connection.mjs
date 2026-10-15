@@ -117,7 +117,7 @@ async function verifyContractor(){
     await enter(page,'contractor','status','#bctContractorLoginCard');
     // Takai/THEO first presents profession choices, then shows contractor sign-in/sign-up.
     await expectVisible(page,'#bctContractorRoleRouter','contractor profession choices');
-    await physicalTap(page,'[data-bct-worker-role="contractor"]','contractor profession choice');
+    await physicalTap(page,'[data-bct-worker-role="general_contractor"]','contractor profession choice');
     await page.waitForTimeout(350);
     await expectVisible(page,'#bctContractorSignupCard','contractor signup card');
     await physicalTap(page,'#bctContractorSignupBtn','contractor Sign Up');
@@ -134,7 +134,8 @@ async function verifyContractor(){
   }
   {
     const {context,page,errors}=await newPage();
-    await enter(page,'contractor','status','#bctContractorLoginBtn');
+    await enter(page,'contractor','status','#bctContractorRoleRouter');
+    await physicalTap(page,'[data-bct-worker-role="general_contractor"]','contractor profession choice');
     await physicalTap(page,'#bctContractorLoginBtn','contractor Sign In');
     await page.waitForTimeout(400);
     const status=(await page.locator('#bctContractorAuthStatus').textContent().catch(()=>''))?.trim();
@@ -148,7 +149,7 @@ async function verifyContractor(){
   }
   {
     const {context,page}=await newPage();
-    await enter(page,'contractor','status','#bctContractorBackHomeBtn');
+    await enter(page,'contractor','status','#bctContractorRoleRouter');
     await physicalTap(page,'#bctContractorBackHomeBtn','contractor Back Home');
     await expectHome(page,'contractor Back Home');
     await context.close();
