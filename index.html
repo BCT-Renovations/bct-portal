@@ -2484,6 +2484,7 @@ function scheduleBctDynamicTranslation(){
   bctDynamicTranslationQueued=true;
   queueMicrotask(()=>{
     bctDynamicTranslationQueued=false;
+    if(!document.body) return;
     const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
     // New portal screens need an immediate local pass, not a network-wide
     // retranslation of every existing key on each navigation.
