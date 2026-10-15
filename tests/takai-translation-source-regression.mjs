@@ -40,6 +40,8 @@ const checks=[
  ['Attribute observer handles added labels',languagePass.includes('addedControls || changedLabels')],
  ['Dynamic input value attribute updates observed',languagePass.includes("record.attributeName==='value'")],
  ['Existing option text mutations trigger translation',languagePass.includes("record.type==='characterData'") && languagePass.includes("closest?.('main select option')")],
+ ['Option mutation observer ignores already translated text',languagePass.includes('record.target.textContent!==translateBctKnownOptionText(record.target.parentElement)')],
+ ['Option observer preserves English source when switching languages',languagePass.includes('return original.replace(raw,translated)')],
  ['Dropdown option source updates on changed wording',staticPass.includes('BCT_ORIGINAL_TEXT.set(option,option.textContent)')],
 ];
 for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+' '+name);}
