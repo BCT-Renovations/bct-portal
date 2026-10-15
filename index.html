@@ -4315,7 +4315,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
 <script id="bct-commitment-render-failsafe-20260929">
 (function(){
  const COPY={
-  en:["Your Project, Your Home, Our Commitment.","BCT Renovations stays with you from the beginning of your project through completion."],
+  en:["Your Project, Your Home\nOur Commitment","BCT Renovations stays with you from the beginning of your project through completion."],
   es:["Su proyecto, su hogar, nuestro compromiso.","BCT Renovations está con usted desde el comienzo de su proyecto hasta su finalización."],
   fr:["Votre projet, votre maison, notre engagement.","BCT Renovations reste à vos côtés du début de votre projet jusqu’à son achèvement."],
   ht:["Pwojè ou, kay ou, angajman nou.","BCT Renovations rete avèk ou depi nan kòmansman pwojè ou a jouk li fini."],
@@ -4333,7 +4333,7 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
   if(!box){box=document.createElement("div");box.className="bct-public-commitment";share.insertAdjacentElement("afterend",box)}
   const t=COPY[lang()]||COPY.en;
   box.innerHTML='<strong id="bctCommitmentTitle"></strong><span id="bctCommitmentText"></span>';
-  box.querySelector("strong").textContent=t[0];box.querySelector("span").textContent=t[1];
+  box.querySelector("strong").style.whiteSpace="pre-line";box.querySelector("strong").textContent=t[0];box.querySelector("span").textContent=t[1];
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render);else render();
  document.addEventListener("change",e=>{if(e.target&&["bctLoginLanguage","bctLanguage"].includes(e.target.id))setTimeout(render,0)});
