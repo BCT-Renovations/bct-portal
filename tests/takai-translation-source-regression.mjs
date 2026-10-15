@@ -36,8 +36,9 @@ const checks=[
  ['Accessible labels and tooltips translated',staticPass.includes("for(const attribute of ['aria-label','title'])")],
  ['Accessible labels retain English source',staticPass.includes('BCT_ORIGINAL_ACCESSIBLE_TEXT.get(el)')],
  ['Accessible labels update their source when portal changes them',staticPass.includes('if(current!==original && current!==previous)')],
- ['Late-set accessibility attributes trigger translation',languagePass.includes("attributeFilter:['aria-label','title','placeholder']")],
+ ['Late-set accessibility attributes trigger translation',languagePass.includes("attributeFilter:['aria-label','title','placeholder','value']")],
  ['Attribute observer handles added labels',languagePass.includes('addedControls || changedLabels')],
+ ['Dynamic input value attribute updates observed',languagePass.includes("record.attributeName==='value'")],
 ];
 for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+' '+name);}
 assert.ok(checks.every(([,ok])=>ok),'Translation source regression failed');
