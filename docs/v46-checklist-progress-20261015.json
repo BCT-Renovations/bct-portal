@@ -3,12 +3,12 @@
   "source_filename": "BCT_V46_Remaining_Work_Numbered.txt",
   "source_sha256": "355aaa13b08698fd4408a9a4fba61097bcb6ae4ec188cc215dfd8e5eed5ed1f5",
   "live_sha": "6c90eb9a50b2eb1e0199683e07dc5ca1fb4667f1",
-  "verified_isolated_checkpoint": "6b0ba0d170301eddbf1085acb6f8f34bd6ead1de",
+  "verified_isolated_checkpoint": "43daf9c9322b67fe6eb30eb5ff525e16d0c62a8e",
   "scope": "Local closure only; all hosted and physical-device/provider acceptance remains open. A partial item is never subtracted from remaining.",
   "total": 242,
-  "local_closed": 25,
-  "remaining": 217,
-  "partial": 40,
+  "local_closed": 41,
+  "remaining": 201,
+  "partial": 28,
   "items": [
     {
       "id": 1,
@@ -24,7 +24,8 @@
       "type": "RECONCILE",
       "requires_hosted_supabase": false,
       "task": "Map parked branches to the current build and identify already-integrated changes before porting anything; preserve TAKAI, THEO, and prior safe points.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "Pinned tree/hash map of six parked branches and all discovered refs; docs/v46-parked-branch-inventory-20261015.json and review."
     },
     {
       "id": 3,
@@ -32,7 +33,8 @@
       "type": "RECONCILE",
       "requires_hosted_supabase": false,
       "task": "Review the field-controls branch against TAKAI and bring over only approved missing changes; do not merge its divergent full app wholesale.",
-      "status": "pending"
+      "status": "partial",
+      "evidence": "Missing extensions and divergence mapped; incompatible full schema/app not imported. Narrow porting remains."
     },
     {
       "id": 4,
@@ -40,7 +42,8 @@
       "type": "RECONCILE",
       "requires_hosted_supabase": false,
       "task": "Review contractor-identity/trade-lead, Admin MFA, contract-signing, and contractor-closeout additions on their parked branch for narrow integration.",
-      "status": "pending"
+      "status": "local_closed",
+      "evidence": "Reviewed three UI and three SQL additions; narrow integration risks and invalid delimiters/version conflicts documented, no activation."
     },
     {
       "id": 5,
@@ -48,7 +51,8 @@
       "type": "RECONCILE",
       "requires_hosted_supabase": false,
       "task": "Reconcile Ace of Spades acceptance requirements with current navigation, role selection, session, and homeowner code; retire only requirements superseded by later owner decisions.",
-      "status": "pending"
+      "status": "local_closed",
+      "evidence": "Historical Ace gates reconciled with current Live/TAKAI decisions; acceptance remains separately open."
     },
     {
       "id": 6,
@@ -682,7 +686,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Estimator role intake, scope/measurement guidance, draft-only estimates, and assessment handoff with fixtures.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 85,
@@ -690,7 +695,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Contractor Coordinator role onboarding, documents, eligibility, private bidding, and assignment guidance with fixtures.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 86,
@@ -698,7 +704,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Assignment & Scheduling Coordinator role availability, dependencies, delays, and BCT-controlled assignment boundaries.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 87,
@@ -706,7 +713,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Customer Support role service/policy answers, recovery guidance, and escalation without unauthorized account actions.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 88,
@@ -714,7 +722,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Finance & Escrow Coordinator role explanations; no autonomous prices, money movement, or escrow release.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 89,
@@ -722,7 +731,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Insurance & Claims Coordinator role within the existing parked claims boundary; no parallel adjuster system.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 90,
@@ -730,7 +740,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Property Management & Commercial Coordinator role privacy and property-scoped guidance.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 91,
@@ -738,7 +749,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Documents & Change Order Coordinator role draft/document guidance and required BCT approvals.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 92,
@@ -746,7 +758,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Quality & Completion Coordinator role inspection, punch-list, sign-off, and warranty guidance.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 93,
@@ -754,7 +767,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Compliance & Credentials Coordinator role renewal/training guidance without self-verification or hold removal.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 94,
@@ -762,7 +776,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test the single Admin Escalation & Human Review role for complaints, disputes, safety, exceptions, and final decisions.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 95,
@@ -778,7 +793,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test Photo Recommendation role reusing the existing gallery, with no automatic publishing or consent inference.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "tests/agent-bct/role-workflows.test.js: actual protected-preview guidance and per-role workflow/privacy/authority/malicious-context fixtures; no hosted tools or provider acceptance."
     },
     {
       "id": 97,
@@ -1402,7 +1418,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Check signup/reset password validation and matching confirmation: minimum seven characters, number, special character, with helpful accessible errors.",
-      "status": "pending"
+      "status": "local_closed",
+      "evidence": "33 actual shared signup/reset browser assertions, accessible errors/confirmation validity, mocked provider/history order and failure preservation."
     },
     {
       "id": 175,

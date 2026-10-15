@@ -70,4 +70,4 @@ Default model schema pool: `service_list`, `notifications`.
 
 ## Acceptance limits
 
-Fourteen UI routing fixtures and existing policy/security tests are local evidence. Checklist 83–96 still require the role-specific business guidance/context/authority scenarios stated in the register; they are not automatically closed by this mapping. Hosted tool ownership, real Auth/RLS, live data, provider behavior, escalation delivery and user acceptance remain pending.
+Fourteen UI routing fixtures are separate from role-workflows.test.js business scenarios. The protected preview now uses role-specific process guidance, with fixtures for workflow boundaries, malicious-context handling and no invented live status/actions. Local process-guidance tasks 84–94 and 96 are verified; 83 (authorized project context) and 95 (authorized reporting coverage) stay partial because chat live tools remain off and reporting aggregates are absent. This does not certify operational roles or model/provider behavior. Hosted tool ownership, real Auth/RLS, live data, provider behavior, escalation delivery and user acceptance remain pending.

@@ -1,0 +1,584 @@
+{
+  "branches": [
+    {
+      "name": "agent/bct-claims-expansion",
+      "sha": "b48873555b0d2e4a6e2b6a120300a6659f84cb84"
+    },
+    {
+      "name": "agent-bct",
+      "sha": "760059997b8c649bde02650742ed37918529e9e1"
+    },
+    {
+      "name": "agent-bct-12-roles-complete-v46-20261007",
+      "sha": "6a530900009fb0598fb55e5ef7f36883e970c1a1"
+    },
+    {
+      "name": "agent-bct-12-roles-safe-v46-20261007",
+      "sha": "b9a89743f365170b53520395e667497484963890"
+    },
+    {
+      "name": "agent-bct-14-role-integration-v46",
+      "sha": "74f74296077cbdf1d52dce666a71beef7d99e549"
+    },
+    {
+      "name": "agent-bct-great-fix-v46-20261007",
+      "sha": "cdcf43e1dcb3a6e8f3025837b1dce17d6c64c2c4"
+    },
+    {
+      "name": "agent-bct-photo-integration-20261005",
+      "sha": "13392bc565bf66d837f46f64e311b352063f31ba"
+    },
+    {
+      "name": "agent-bct-photo-recommendations",
+      "sha": "6e67ca58aee12c97d1a80d3ee643a47dcbc9b452"
+    },
+    {
+      "name": "backup/before-icon-rollback-20261011",
+      "sha": "0d70dca07ea90ab8a8f052350f473bf3f20b56db"
+    },
+    {
+      "name": "bct-photo-build",
+      "sha": "c24dcb396ff2251bdc5d06cad4ad735a07afa18f"
+    },
+    {
+      "name": "bct-production-hardening-2026-10-01",
+      "sha": "2df60b30b22e66cb77586b148fb8c38d8b8a8275"
+    },
+    {
+      "name": "big-dog-3",
+      "sha": "b5ba54796dffa33ce4daa1d783719df75a5731a7"
+    },
+    {
+      "name": "checkpoint/v46-gallery-translation-verified-20261005",
+      "sha": "f3bb3569ad28c2ba6d4516ca479b1dc0f589aba7"
+    },
+    {
+      "name": "feature/ace-of-spades-v46-isolated-from-live-20261012",
+      "sha": "f68433f26bb110f160c0e7d8a45b4fa63fe04cc4"
+    },
+    {
+      "name": "feature/contractor-google-maps-v46-clean",
+      "sha": "5e4025ae3f93bca9d8147f9d07ca44038371c56f"
+    },
+    {
+      "name": "feature/contractor-identity-trade-leads",
+      "sha": "7f9c4aa75833522ef8932bc5ef975c3bba937b04"
+    },
+    {
+      "name": "feature/contractor-portal-layout-20261011",
+      "sha": "5ef845dd14cdf963f7abfc94eb51a977b7e8b447"
+    },
+    {
+      "name": "feature/insurance-claims-partner-foundation",
+      "sha": "40f51e1199fc2d099730b47f0d1c0c67bb7d8a6b"
+    },
+    {
+      "name": "feature/takai-homepage-emphasis-20261014",
+      "sha": "b38349f75598add5783df2f4eba4f3a365354606"
+    },
+    {
+      "name": "feature/takai-insurance-integration-isolated-20261014",
+      "sha": "28ea9c639c5c1af6097f72c02184483136fbb5db"
+    },
+    {
+      "name": "feature/theo-contractor-about-pages-20261014",
+      "sha": "0a7afd44fe06937b381b250b178389147fad826c"
+    },
+    {
+      "name": "feature/v46-field-controls-integration",
+      "sha": "f8ebf17d506f834aa61f5b33b7985f8e957183b9"
+    },
+    {
+      "name": "feature/v46-handyman-combined-latest",
+      "sha": "645e61258d452e63c218587b1c2c921cb21b4198"
+    },
+    {
+      "name": "feature/v46-handyman-insurance-combined",
+      "sha": "aaf6a2bcbbc3840ad72d23e4817df66ce35ad998"
+    },
+    {
+      "name": "feature/v46-handyman-signin-fix",
+      "sha": "c75ace08a012496c5a6a0b5a1cf0fbc84cf109a6"
+    },
+    {
+      "name": "feature/v46-insurance-verification-isolated",
+      "sha": "5d0552056e9cddde25cca94fa4750d6405c17e73"
+    },
+    {
+      "name": "feature/v46-right-on-rebuild-20261014",
+      "sha": "c701d33fc2270208e4466dc55a557e5e4c9f439c"
+    },
+    {
+      "name": "fix/gallery-image-text-translation",
+      "sha": "e2aba7254eafb54274bf7856d005f251086bfb7a"
+    },
+    {
+      "name": "fix/gallery-photo-translations-20261005",
+      "sha": "daae706dd9f70a22190d4a71a56a6c13514fd072"
+    },
+    {
+      "name": "fix/gallery-scroll-agent-button-20261010",
+      "sha": "6ec2a81892129c3e905279f5c384bf45ddf8b7e1"
+    },
+    {
+      "name": "fix/live-logo-comma-cache-bust-20261010",
+      "sha": "cd67eb7286085b59a9df7df55014c080fa88ca2f"
+    },
+    {
+      "name": "fix/photo-lifecycle-20261005",
+      "sha": "bff53b406b04aa94feed6ccdf172b603c1da0503"
+    },
+    {
+      "name": "fix/public-gallery-cache-bust-20261005",
+      "sha": "64fdb0c883d792ebe8466b6e42b8f332c39d9a69"
+    },
+    {
+      "name": "fix/takai-gallery-contractor-roofer-20261014",
+      "sha": "9f54b9b50d03374a95d3a932ef428aea7ad7c153"
+    },
+    {
+      "name": "fix/v46-agent-home-button",
+      "sha": "937ffff3b6967e37e501265ec999c964ece2dd43"
+    },
+    {
+      "name": "fix/v46-contractor-primary-trade-loader-20261007",
+      "sha": "d19666d96ed884bf1df5c2155908eb8adb982027"
+    },
+    {
+      "name": "fix/v46-handyman-portal",
+      "sha": "2b60cbda715d1783ce54d376f1f6b4100d0495a9"
+    },
+    {
+      "name": "fix/v46-home-translation-gallery-20261005",
+      "sha": "f4c216c272bd89cc5389e39d6dba81f825458cc6"
+    },
+    {
+      "name": "fix/v46-ios-home-layout-20261012",
+      "sha": "7e91bf8e597548314221dee8e22985ea18f116e4"
+    },
+    {
+      "name": "fix/v46-ios-home-screen-install-final",
+      "sha": "f2a0652cda0794e0dbd931491d9e604486e9d54e"
+    },
+    {
+      "name": "fix/v46-ios-icon-integrity",
+      "sha": "a3cde81d42333f4e8f83d5f160490a23f6283da8"
+    },
+    {
+      "name": "fix/v46-ios-install-clean-final",
+      "sha": "ce748d0e426787717ea1deab308975a9551501fb"
+    },
+    {
+      "name": "fix/v46-ios-install-nojs-visual",
+      "sha": "ce748d0e426787717ea1deab308975a9551501fb"
+    },
+    {
+      "name": "fix/v46-job-management-click-capture-20261007",
+      "sha": "dec1643fa45e05b2c7ca167cfc03e63bfbc9a72e"
+    },
+    {
+      "name": "fix/v46-job-management-clicks-20261007",
+      "sha": "491c9d85da35aa59fc6f874a7b7086007d749b6b"
+    },
+    {
+      "name": "fix/v46-logo-translation-20261012",
+      "sha": "3abe5040f6ccd013b18ade53f4b54910a8a47368"
+    },
+    {
+      "name": "fix/v46-navigation-regression-20261012",
+      "sha": "9731b208095fa013386c98e838a3f7650055e747"
+    },
+    {
+      "name": "fix-agent-bct-photo-upload-selection",
+      "sha": "ee28260c058769d473604e15a0317f10be00143b"
+    },
+    {
+      "name": "integrate/agent-bct-12-roles-v46-20261007",
+      "sha": "8c606500b71584be9249252b85622d2a25739912"
+    },
+    {
+      "name": "iphone-icon-cache-bust-v46-2",
+      "sha": "06d693902b545575ebdce74b7f63cee356ac15db"
+    },
+    {
+      "name": "iphone-icon-cache-bust-v46-live",
+      "sha": "06d693902b545575ebdce74b7f63cee356ac15db"
+    },
+    {
+      "name": "iphone-icon-cache-bust-v46-main",
+      "sha": "06d693902b545575ebdce74b7f63cee356ac15db"
+    },
+    {
+      "name": "iphone-icon-cache-bust-v46-main-final",
+      "sha": "06d693902b545575ebdce74b7f63cee356ac15db"
+    },
+    {
+      "name": "iphone-icon-cache-bust-v46",
+      "sha": "06d693902b545575ebdce74b7f63cee356ac15db"
+    },
+    {
+      "name": "main",
+      "sha": "f101786b0dfee147627f32931272efbdd92d8a1a"
+    },
+    {
+      "name": "release/takai-approved-home-gallery-20261014",
+      "sha": "525693786852a3dea8609810186e898750b9e9fc"
+    },
+    {
+      "name": "release/takai-approved-only-from-live-20261014",
+      "sha": "6c90eb9a50b2eb1e0199683e07dc5ca1fb4667f1"
+    },
+    {
+      "name": "rollback/bct-portal-live-before-right-on-20261013-1508",
+      "sha": "5d52db48b3f55bd08ed0da18affc4a9784f3b719"
+    },
+    {
+      "name": "rollback/live-before-back-fix-20261013-1522",
+      "sha": "ea8fd8d2e65a3b31dde86e1c29d2faf0a60e01e7"
+    },
+    {
+      "name": "rollback/live-before-right-on-20261013-1508",
+      "sha": "bab6914fa4c2719e79346f48a15d4279b067f503"
+    },
+    {
+      "name": "safe/v46-live-114pm-20261012",
+      "sha": "16618e844232a830ab7ce3bb3bccdb7242b11476"
+    },
+    {
+      "name": "safe-point/THEO-20261014",
+      "sha": "c701d33fc2270208e4466dc55a557e5e4c9f439c"
+    },
+    {
+      "name": "safe-point/right-on",
+      "sha": "ea8fd8d2e65a3b31dde86e1c29d2faf0a60e01e7"
+    },
+    {
+      "name": "safe-point/takai-20261014",
+      "sha": "0a7afd44fe06937b381b250b178389147fad826c"
+    },
+    {
+      "name": "safe-point/theo-20261014",
+      "sha": "c701d33fc2270208e4466dc55a557e5e4c9f439c"
+    },
+    {
+      "name": "savepoint/pre-bct-photo-build-2026-10-01",
+      "sha": "4b5415565d8f78d92f37d2bf99ce1d98d36e9022"
+    },
+    {
+      "name": "v46-admin-control-board-from-big-dog-3",
+      "sha": "303651f5bf1298ff875f439c3c8fa70fdd5947f9"
+    },
+    {
+      "name": "v46-admin-gallery-from-big-dog-2",
+      "sha": "14f61bb413d22f6b629e201d6742353517ea98f9"
+    },
+    {
+      "name": "v46-admin-mobile-scroll-teal-home-fix",
+      "sha": "14f61bb413d22f6b629e201d6742353517ea98f9"
+    },
+    {
+      "name": "v46-admin-scroll-teal-fix",
+      "sha": "123d11e28359abe67c4c48aa6e96078747e3f080"
+    },
+    {
+      "name": "v46-big-dog-2-checkpoint",
+      "sha": "14f61bb413d22f6b629e201d6742353517ea98f9"
+    },
+    {
+      "name": "v46-critical-navigation-portals",
+      "sha": "46d09c125981b248f70c32e9747d5f1d24ddc3c9"
+    },
+    {
+      "name": "v46-gallery-button-fix",
+      "sha": "c13a520b107326a5f50c9678e3746c27bee90476"
+    },
+    {
+      "name": "v46-gallery-from-big-dog",
+      "sha": "611919d1f4e80661418e1f56a835552c2dd432c6"
+    },
+    {
+      "name": "v46-portal-fix-test",
+      "sha": "d4ed881c0cc13ffbe13926b7364e676a9a0f6f67"
+    },
+    {
+      "name": "v46-safe-next-from-gallery",
+      "sha": "6a509a9047ee41f8b508ca470990ec5580f6ee06"
+    },
+    {
+      "name": "v46-the-big-dog-checkpoint",
+      "sha": "4716bbbcd7cf0c9621ea4c65c486371735ca1e63"
+    }
+  ],
+  "records": [
+    {
+      "branch": "feature/v46-field-controls-integration",
+      "sha": "f8ebf17d506f834aa61f5b33b7985f8e957183b9",
+      "compare": {
+        "status": "diverged",
+        "ahead_by": 238,
+        "behind_by": 273,
+        "merge_base_commit": {
+          "sha": "f442749655e12238bf86ae364f33c614c2fb2148",
+          "url": "https://api.github.com/repos/BCT-Renovations/bct-portal/commits/f442749655e12238bf86ae364f33c614c2fb2148",
+          "html_url": "https://github.com/BCT-Renovations/bct-portal/commit/f442749655e12238bf86ae364f33c614c2fb2148"
+        }
+      },
+      "local_comparison": {
+        "identical": 124,
+        "different": 47,
+        "absent": 114
+      },
+      "missing_implementation": [
+        "supabase/migrations/20261001230000_bct_insurance_portal_foundation.sql",
+        "supabase/migrations/20261001233000_bct_insurance_claim_workflow.sql",
+        "supabase/migrations/20261001234500_bct_insurance_per_claim_access.sql",
+        "supabase/migrations/20261001235500_bct_insurance_org_approval_guard.sql",
+        "supabase/migrations/20261002000500_bct_insurance_information_response.sql",
+        "supabase/migrations/20261002001500_bct_insurance_mutation_access_guard.sql",
+        "supabase/migrations/20261002002500_bct_insurance_internal_notes.sql",
+        "supabase/migrations/20261002003500_bct_insurance_admin_member_controls.sql",
+        "supabase/migrations/20261002004500_bct_insurance_project_handoff_boundary.sql",
+        "supabase/migrations/20261002005500_bct_insurance_linked_project_lifecycle.sql",
+        "supabase/migrations/20261002010500_bct_insurance_link_integrity.sql",
+        "supabase/migrations/20261002011500_bct_insurance_claim_history.sql",
+        "supabase/migrations/20261002012500_bct_insurance_admin_org_creation.sql",
+        "supabase/migrations/20261002013500_bct_insurance_project_link_unique.sql",
+        "supabase/migrations/20261002050000_contractor_identity_trade_leads.sql",
+        "supabase/migrations/20261002080000_v46_field_controls_extension_batch1.sql",
+        "supabase/migrations/20261002083000_v46_field_controls_extension_batch2.sql",
+        "supabase/migrations/20261002090000_v46_field_controls_extension_batch3.sql",
+        "supabase/migrations/20261002093000_v46_portal_enforcement_batch4.sql",
+        "supabase/migrations/20261002100000_v46_portal_composition_batch5.sql",
+        "supabase/migrations/20261002103000_v46_property_manager_priority_extension.sql",
+        "supabase/migrations/20261002110000_v46_whos_coming_crew_integration.sql",
+        "supabase/migrations/20261002113000_v46_homeowner_portal_actions.sql",
+        "supabase/migrations/20261002120000_v46_contractor_decision_escalation.sql",
+        "supabase/migrations/20261002121000_v46_contractor_decision_readback.sql",
+        "supabase/migrations/20261002121500_v46_admin_contractor_decision_resolution.sql",
+        "supabase/migrations/20261002123000_v46_financial_protection_controls.sql",
+        "supabase/migrations/20261002124000_v46_financial_protection_completion.sql",
+        "supabase/migrations/20261002125000_v46_financial_closeout_enforcement.sql",
+        "supabase/migrations/20261002130000_v46_trade_handoff_controls.sql",
+        "supabase/migrations/20261002131000_v46_trade_handoff_completion.sql",
+        "supabase/migrations/20261002132000_v46_crew_arrival_escalation.sql",
+        "supabase/migrations/20261002133000_v46_crew_arrival_recovery.sql",
+        "supabase/migrations/20261002134000_v46_damage_responsibility_review.sql",
+        "supabase/migrations/20261002135000_v46_damage_responsibility_completion.sql",
+        "supabase/migrations/20261002140000_v46_field_control_lifecycle_hardening.sql",
+        "supabase/migrations/20261002141000_v46_execution_blocker_hardening.sql",
+        "supabase/migrations/20261002142000_v46_operational_closeout_hardening.sql",
+        "supabase/migrations/20261002143000_v46_field_protection_checklists.sql",
+        "supabase/migrations/20261002144000_v46_delivery_scheduling_hardening.sql",
+        "supabase/migrations/20261002145000_v46_contractor_abandonment_replacement.sql",
+        "supabase/migrations/20261002146000_v46_weather_open_building_protection.sql",
+        "supabase/migrations/20261002147000_v46_neighbor_property_issue_lifecycle.sql",
+        "supabase/migrations/20261002148000_v46_daily_field_report_completion.sql",
+        "supabase/migrations/20261002149000_v46_site_key_custody_lifecycle.sql",
+        "supabase/migrations/20261002150000_v46_customer_material_verification.sql",
+        "supabase/migrations/20261002151000_v46_delivery_custody_completion.sql",
+        "supabase/migrations/20261002152000_v46_incident_stopwork_lifecycle.sql",
+        "supabase/migrations/20261002153000_v46_utility_shutoff_restoration.sql"
+      ],
+      "changed_implementation": [
+        "bct-admin-control-board.js",
+        "bct-admin-mobile-fix.js",
+        "bct-admin-sections.js",
+        "bct-estimator-admin.js",
+        "bct-estimator-portal.js",
+        "bct-home-gallery.js",
+        "bct-homeowner-pages.js",
+        "bct-insurance-admin.js",
+        "bct-insurance-portal.js",
+        "bct-live-project-verification.js",
+        "bct-photo-admin.js",
+        "index.html",
+        "service-worker.js",
+        "supabase/migrations/20260930232500_estimator_system.sql",
+        "supabase/migrations/20261001001500_estimator_contractor_conflict_guard.sql"
+      ]
+    },
+    {
+      "branch": "feature/contractor-identity-trade-leads",
+      "sha": "7f9c4aa75833522ef8932bc5ef975c3bba937b04",
+      "compare": {
+        "status": "diverged",
+        "ahead_by": 139,
+        "behind_by": 273,
+        "merge_base_commit": {
+          "sha": "f442749655e12238bf86ae364f33c614c2fb2148",
+          "url": "https://api.github.com/repos/BCT-Renovations/bct-portal/commits/f442749655e12238bf86ae364f33c614c2fb2148",
+          "html_url": "https://github.com/BCT-Renovations/bct-portal/commit/f442749655e12238bf86ae364f33c614c2fb2148"
+        }
+      },
+      "local_comparison": {
+        "identical": 121,
+        "different": 47,
+        "absent": 8
+      },
+      "missing_implementation": [
+        "bct-admin-mfa.js",
+        "bct-contract-signing.js",
+        "bct-contractor-closeout.js",
+        "supabase/migrations/20261002050000_contractor_identity_trade_leads.sql",
+        "supabase/migrations/20261002100000_restrict_contract_signature_trigger_execute.sql",
+        "supabase/migrations/20261002103000_enforce_admin_mfa_in_is_bct_admin.sql"
+      ],
+      "changed_implementation": [
+        "bct-admin-control-board.js",
+        "bct-admin-mobile-fix.js",
+        "bct-admin-sections.js",
+        "bct-estimator-admin.js",
+        "bct-estimator-portal.js",
+        "bct-home-gallery.js",
+        "bct-live-project-verification.js",
+        "bct-photo-admin.js",
+        "index.html",
+        "service-worker.js"
+      ]
+    },
+    {
+      "branch": "feature/ace-of-spades-v46-isolated-from-live-20261012",
+      "sha": "f68433f26bb110f160c0e7d8a45b4fa63fe04cc4",
+      "compare": {
+        "status": "diverged",
+        "ahead_by": 62,
+        "behind_by": 32,
+        "merge_base_commit": {
+          "sha": "e9fea7955d315097210ae0202158d4364bc3c41c",
+          "url": "https://api.github.com/repos/BCT-Renovations/bct-portal/commits/e9fea7955d315097210ae0202158d4364bc3c41c",
+          "html_url": "https://github.com/BCT-Renovations/bct-portal/commit/e9fea7955d315097210ae0202158d4364bc3c41c"
+        }
+      },
+      "local_comparison": {
+        "identical": 197,
+        "different": 41,
+        "absent": 6
+      },
+      "missing_implementation": [],
+      "changed_implementation": [
+        "agent-bct-photo-recommendation.js",
+        "agent-bct-ui.css",
+        "agent-bct-ui.js",
+        "api/agent-bct-photo-recommendation.js",
+        "bct-admin-control-board.js",
+        "bct-contractor-roles.css",
+        "bct-contractor-roles.js",
+        "bct-estimator-admin.js",
+        "bct-estimator-portal.js",
+        "bct-handyman-admin.js",
+        "bct-handyman-operations.js",
+        "bct-home-gallery.js",
+        "bct-homeowner-pages.js",
+        "bct-live-project-verification.js",
+        "index.html"
+      ]
+    },
+    {
+      "branch": "feature/contractor-google-maps-v46-clean",
+      "sha": "5e4025ae3f93bca9d8147f9d07ca44038371c56f",
+      "compare": {
+        "status": "diverged",
+        "ahead_by": 6,
+        "behind_by": 198,
+        "merge_base_commit": {
+          "sha": "f3bb3569ad28c2ba6d4516ca479b1dc0f589aba7",
+          "url": "https://api.github.com/repos/BCT-Renovations/bct-portal/commits/f3bb3569ad28c2ba6d4516ca479b1dc0f589aba7",
+          "html_url": "https://github.com/BCT-Renovations/bct-portal/commit/f3bb3569ad28c2ba6d4516ca479b1dc0f589aba7"
+        }
+      },
+      "local_comparison": {
+        "identical": 135,
+        "different": 42,
+        "absent": 2
+      },
+      "missing_implementation": [
+        "supabase/migrations/20261006000000_bct_contractor_navigation.sql"
+      ],
+      "changed_implementation": [
+        "agent-bct-photo-recommendation.js",
+        "api/agent-bct-photo-recommendation.js",
+        "bct-admin-control-board.js",
+        "bct-admin-mobile-fix.js",
+        "bct-estimator-admin.js",
+        "bct-estimator-portal.js",
+        "bct-home-gallery.js",
+        "bct-live-project-verification.js",
+        "index.html",
+        "service-worker.js"
+      ]
+    },
+    {
+      "branch": "feature/v46-handyman-combined-latest",
+      "sha": "645e61258d452e63c218587b1c2c921cb21b4198",
+      "compare": null,
+      "local_comparison": {
+        "identical": 179,
+        "different": 52,
+        "absent": 5
+      },
+      "missing_implementation": [],
+      "changed_implementation": [
+        "agent-bct-photo-recommendation.js",
+        "agent-bct-ui.css",
+        "agent-bct-ui.js",
+        "api/agent-bct-photo-recommendation.js",
+        "api/agent-bct/chat.js",
+        "bct-admin-control-board.js",
+        "bct-admin-mobile-fix.js",
+        "bct-estimator-admin.js",
+        "bct-estimator-portal.js",
+        "bct-handyman-admin.js",
+        "bct-handyman-operations.js",
+        "bct-handyman-portal.css",
+        "bct-handyman-portal.js",
+        "bct-home-gallery.js",
+        "bct-install.html",
+        "bct-live-project-verification.js",
+        "index.html",
+        "service-worker.js"
+      ]
+    },
+    {
+      "branch": "feature/insurance-claims-partner-foundation",
+      "sha": "40f51e1199fc2d099730b47f0d1c0c67bb7d8a6b",
+      "compare": null,
+      "local_comparison": {
+        "identical": 128,
+        "different": 43,
+        "absent": 41
+      },
+      "missing_implementation": [
+        "supabase/migrations/20261001230000_bct_insurance_portal_foundation.sql",
+        "supabase/migrations/20261001233000_bct_insurance_claim_workflow.sql",
+        "supabase/migrations/20261001234500_bct_insurance_per_claim_access.sql",
+        "supabase/migrations/20261001235500_bct_insurance_org_approval_guard.sql",
+        "supabase/migrations/20261002000500_bct_insurance_information_response.sql",
+        "supabase/migrations/20261002001500_bct_insurance_mutation_access_guard.sql",
+        "supabase/migrations/20261002002500_bct_insurance_internal_notes.sql",
+        "supabase/migrations/20261002003500_bct_insurance_admin_member_controls.sql",
+        "supabase/migrations/20261002004500_bct_insurance_project_handoff_boundary.sql",
+        "supabase/migrations/20261002005500_bct_insurance_linked_project_lifecycle.sql",
+        "supabase/migrations/20261002010500_bct_insurance_link_integrity.sql",
+        "supabase/migrations/20261002011500_bct_insurance_claim_history.sql",
+        "supabase/migrations/20261002012500_bct_insurance_admin_org_creation.sql"
+      ],
+      "changed_implementation": [
+        "bct-admin-control-board.js",
+        "bct-admin-mobile-fix.js",
+        "bct-admin-sections.js",
+        "bct-estimator-admin.js",
+        "bct-estimator-portal.js",
+        "bct-home-gallery.js",
+        "bct-insurance-admin.js",
+        "bct-insurance-portal.js",
+        "bct-live-project-verification.js",
+        "bct-photo-admin.js",
+        "index.html",
+        "service-worker.js"
+      ]
+    }
+  ],
+  "captured_utc": "2026-10-15T10:38:00Z",
+  "comparison_target": "43daf9c9322b67fe6eb30eb5ff525e16d0c62a8e plus isolated password accessibility change",
+  "note": "Git blob identity proves exact content only; divergence is not a missing-feature count. Insurance migrations under ordinary paths have already been staged under insurance-isolated-migrations and must not be duplicated."
+}

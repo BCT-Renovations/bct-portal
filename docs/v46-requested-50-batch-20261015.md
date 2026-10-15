@@ -81,3 +81,7 @@ Added blocked-network browser regressions for unsafe stored/input links, duplica
 
 
 Superseded count after combined review: 25 closed / 217 open. The saved video fixtures are preserved as live-verification-saved-browser.mjs alongside the expanded review fixtures. Same-callback addEventListener registration was browser-deduplicated already; it was not an independently reproduced duplicate-listener defect.
+
+## Password, source reconciliation and business-guidance batch
+
+Current local register: 41 closed / 201 open. Newly verified: 2/4/5 source mapping/reviews, 174 shared password validation/accessibility, and 84–94/96 protected-preview process scenarios. 83 and 95 remain partial because real permitted project context and reporting aggregates are absent. The 14-position catalog is not fourteen operational roles; no provider was called and no tool/write capability enabled. The requested fifty-item queue is not finished.
