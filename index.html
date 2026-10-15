@@ -2531,9 +2531,12 @@ function installBctDynamicTranslationObserver(){
     const addedControls=records.some(record=>[...record.addedNodes].some(node=>
       node.nodeType===1 && (node.matches?.('[data-i18n],[data-i18n-placeholder],[aria-label],[title],button,select,label,input,textarea,option') ||
       node.querySelector?.('[data-i18n],[data-i18n-placeholder],[aria-label],[title],button,select,label,input,textarea,option'))));
-    if(addedControls) scheduleBctDynamicTranslation();
+    const changedLabels=records.some(record=>record.type==='attributes' &&
+      (record.attributeName==='aria-label' || record.attributeName==='title' || record.attributeName==='placeholder') &&
+      record.target?.closest?.('main,header,footer'));
+    if(addedControls || changedLabels) scheduleBctDynamicTranslation();
   });
-  observer.observe(document.body,{childList:true,subtree:true});
+  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['aria-label','title','placeholder']});
   window.__bctDynamicTranslationObserver=observer;
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',installBctDynamicTranslationObserver);
