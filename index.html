@@ -2341,9 +2341,16 @@ function applyStaticLanguage(language){
      if(!el.hasAttribute(attribute)) continue;
      let originals=BCT_ORIGINAL_ACCESSIBLE_TEXT.get(el);
      if(!originals){originals={};BCT_ORIGINAL_ACCESSIBLE_TEXT.set(el,originals);}
-     if(!(attribute in originals)) originals[attribute]=el.getAttribute(attribute);
+     const current=el.getAttribute(attribute);
+     if(!(attribute in originals)) originals[attribute]=current;
      const original=originals[attribute];
-     const translated=translateRaw(original);
+     const previous=translateRaw(original);
+     // When a portal changes a tooltip dynamically, refresh its English source
+     // rather than restoring an obsolete label on every observer pass.
+     if(current!==original && current!==previous){
+       originals[attribute]=current;
+     }
+     const translated=translateRaw(originals[attribute]);
      if(el.getAttribute(attribute)!==translated) el.setAttribute(attribute,translated);
    }
  });
