@@ -6,8 +6,8 @@
   "verified_isolated_checkpoint": "bdf943db8da135ee06d6d5251878d4d4616f2d4b",
   "scope": "Local closure only; all hosted and physical-device/provider acceptance remains open. A partial item is never subtracted from remaining.",
   "total": 242,
-  "local_closed": 23,
-  "remaining": 219,
+  "local_closed": 24,
+  "remaining": 218,
   "partial": 40,
   "items": [
     {
@@ -400,7 +400,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Verify shared Handyman operations views open visibly and close on navigation; mounting a hidden section alone is not a working dashboard.",
-      "status": "pending"
+      "status": "partial",
+      "evidence": "15 mocked browser assertions verify module visibility, navigation cleanup, delayed-response rejection, duplicate guard and error retry. Module entrypoint integration and authenticated boundary remain open; do not activate email/code-only RPC access."
     },
     {
       "id": 50,
@@ -648,7 +649,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Test photo-response parsing against actual provider response shapes; the endpoint currently assumes data.output_text is directly present.",
-      "status": "partial"
+      "status": "local_closed",
+      "evidence": "Fresh 25-test photo-security suite: REST output message/content and SDK output_text parsing; incomplete, malformed, oversized and unauthorized cases rejected. Hosted calls remain pending."
     },
     {
       "id": 81,
@@ -1740,7 +1742,7 @@
     },
     {
       "id": 217,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Keep original TAKAI safe point distinct from Unfinished; preserve insurance commit 10df584a and do not activate operational modules during this inventory.",
@@ -1748,7 +1750,7 @@
     },
     {
       "id": 218,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "BUILD",
       "requires_hosted_supabase": false,
       "task": "Finish claim attachment selection/type/size/error handling and private-document UI using existing upload architecture; attachments are outside verified insurance flows.",
@@ -1756,7 +1758,7 @@
     },
     {
       "id": 219,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "BUILD",
       "requires_hosted_supabase": false,
       "task": "Complete translation of insurance partner/Admin intake, organization selection, claim detail/history/messages/supplements, errors, and preview copy.",
@@ -1764,7 +1766,7 @@
     },
     {
       "id": 220,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Verify the corrected insurance preview visibility build on an actual current isolated phone-width preview; a saved fix is not deployed proof.",
@@ -1772,7 +1774,7 @@
     },
     {
       "id": 221,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Run all 14 staged insurance migrations against the complete canonical schema in separate hosted Supabase, including replay and compatibility checks.",
@@ -1780,7 +1782,7 @@
     },
     {
       "id": 222,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Test real Auth and organization approval/membership for carrier admin, adjuster, claims representative, read-only, suspended/inactive, unrelated carrier, and anonymous roles.",
@@ -1788,7 +1790,7 @@
     },
     {
       "id": 223,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Verify per-claim read/write ownership, assigned adjusters, private BCT notes, direct API denials, and no member self-elevation.",
@@ -1796,7 +1798,7 @@
     },
     {
       "id": 224,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Verify claim intake, information requests/responses, communication, supplements, history, and read-only restrictions persist correctly.",
@@ -1804,7 +1806,7 @@
     },
     {
       "id": 225,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Verify one claim per company/claim-number rule, duplicate submissions, one canonical project per claim, existing contract numbering, and authorized handoff.",
@@ -1812,7 +1814,7 @@
     },
     {
       "id": 226,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Verify Admin organization/member review, claim acceptance/authorization/construction lifecycle, audit history, and suspended-company access boundaries.",
@@ -1820,7 +1822,7 @@
     },
     {
       "id": 227,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Verify attachment upload/download authorization, private storage, signed links, and claim attachment registration.",
@@ -1828,7 +1830,7 @@
     },
     {
       "id": 228,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Verify account/company switches cannot render stale claims/history/drafts, including delayed network responses and duplicate actions.",
@@ -1836,7 +1838,7 @@
     },
     {
       "id": 229,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "VERIFY",
       "requires_hosted_supabase": true,
       "task": "Run hosted advisors, cross-role browser tests, actual Safari/iPhone flows, and full existing TAKAI regression before proposing activation.",
@@ -1844,7 +1846,7 @@
     },
     {
       "id": 230,
-      "section": "P. Insurance and claims — parked as Unfinished",
+      "section": "P. Insurance and claims \u2014 parked as Unfinished",
       "type": "DECISION",
       "requires_hosted_supabase": false,
       "task": "Confirm any direct insurer/carrier API connectivity separately; the claims partner portal is not proof of an authorized carrier integration.",

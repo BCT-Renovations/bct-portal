@@ -55,7 +55,7 @@ const staticFiles=[
   "tests/v46-pwa-cold-launch-source.mjs"
 ];
 const unitFiles=fs.readdirSync(path.join(root,'tests/agent-bct')).filter(f=>f.endsWith('.test.js')).map(f=>'tests/agent-bct/'+f);
-const commands=[['--test',...unitFiles,'tests/offline/photo-security.test.mjs','tests/offline/control-integrity.test.mjs','tests/offline/live-baseline.test.mjs'],...staticFiles.map(f=>[f]),['scripts/agent-bct-capability-report.mjs','--check'],['tests/takai-insurance-database.mjs'],['tests/takai-insurance-browser.mjs'],...['estimator','agent','gallery','contractor','admin','photo-simulation'].map(f=>['tests/offline/'+f+'-browser.mjs'])];
+const commands=[['--test',...unitFiles,'tests/offline/photo-security.test.mjs','tests/offline/control-integrity.test.mjs','tests/offline/live-baseline.test.mjs'],...staticFiles.map(f=>[f]),['scripts/agent-bct-capability-report.mjs','--check'],['tests/takai-insurance-database.mjs'],['tests/takai-insurance-browser.mjs'],...['estimator','agent','gallery','contractor','admin','photo-simulation','handyman-operations'].map(f=>['tests/offline/'+f+'-browser.mjs'])];
 const failures=[];
 for(const args of commands){
  const result=spawnSync(process.execPath,args,{cwd:root,env,encoding:'utf8',timeout:120000,maxBuffer:4*1024*1024});

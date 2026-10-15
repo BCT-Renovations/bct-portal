@@ -1,6 +1,6 @@
 # 242-item checklist progress — October 15, 2026
 
-**23 local tasks closed; 219 remain open (including 40 partial tasks). Local closure: 9.5%.** No starred hosted task is closed. This counts numbered register tasks, not shipped features or production readiness. The earlier spoken 16 addressed items included partial work and is superseded by this explicit register.
+**24 local tasks closed; 218 remain open (including 40 partial tasks). Local closure: 9.9%.** No starred hosted task is closed. This counts numbered register tasks, not shipped features or production readiness. The earlier spoken 16 addressed items included partial work and is superseded by this explicit register.
 
 Current Live 6c90eb9a is preserved. Isolated checkpoint bdf943db is READY and its gallery asset served HTTP 200 with both approved translated fallback labels and the independent pagination/URL-reuse fixes. Its 56-command CI run 38717745885 succeeded. A later local Admin/simulation batch passes 59 commands and awaits its own save/CI verification.
 
@@ -45,3 +45,7 @@ Latest local batch: 59/59 commands, 183 unit checks, all 49 selected source suit
 If an isolated regression is found, compare/revert only the affected development changes against immutable bdf943db or the earlier saved checkpoints, keeping the current Live wording. Preserve branch history; use a reviewed follow-up/revert commit, never a force reset. Do not deploy a recovery to production or apply production migrations. Insurance remains Unfinished/dormant. Re-run the explicit offline suite before another preview; hosted/device/provider gates must pass before requesting any Live approval.
 
 The JSON register retains all 242 original task texts and marks each local_closed, partial or pending. Nothing was removed from the authoritative source file. No 100-item completion or full app completion is claimed.
+
+## Requested 50-item batch checkpoint
+
+Task 80 is additionally locally closed by a fresh 25-test provider-response parsing/security suite. Task 49 has a 15-assertion mocked-browser partial repair but remains open pending safe entrypoint and authentication integration. The requested batch of 50 is not complete. See [batch queue and evidence](v46-requested-50-batch-20261015.md).
