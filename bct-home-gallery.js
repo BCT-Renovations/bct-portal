@@ -17,20 +17,18 @@
     ru:{title:'Наши Работы',lead:'Некоторые недавние проекты BCT Renovations.',more:'Показать Больше Проектов',morePhotos:'Больше Фото',less:'Показать Меньше',full:'Открыть Полную Галерею',coming:'Галерея Скоро Откроется',close:'Закрыть',prev:'Назад',next:'Далее',all:'Все',category:'Категория',slot:'Фото проекта BCT'}
   };
 
-  const FALLBACK_PROJECTS=[
-    {id:'fallback-bct-1',image:'/bct-logo-master.png',caption:'BCT Renovations project gallery',alt:'BCT Renovations project gallery fallback',category:'BCT',project_work_date:'',image_text:'BCT Renovations'},
-    {id:'fallback-bct-2',image:'/bct-home-logo.webp',caption:'BCT home improvement work',alt:'BCT Renovations home improvement fallback',category:'BCT',project_work_date:'',image_text:'Licensed • Bonded • Insured'},
-    {id:'fallback-bct-3',image:'/bct-logo-master.png',caption:'General contractor managed projects',alt:'BCT general contractor fallback',category:'BCT',project_work_date:'',image_text:'Your General Contractor'},
-    {id:'fallback-bct-4',image:'/bct-home-logo.webp',caption:'BCT contractor network',alt:'BCT contractor network fallback',category:'BCT',project_work_date:'',image_text:'One BCT Process'},
-    {id:'fallback-bct-5',image:'/bct-logo-master.png',caption:'Project planning and coordination',alt:'BCT project planning fallback',category:'BCT',project_work_date:'',image_text:'Project Planning'},
-    {id:'fallback-bct-6',image:'/bct-home-logo.webp',caption:'Homeowner project support',alt:'BCT homeowner project support fallback',category:'BCT',project_work_date:'',image_text:'Homeowner Support'},
-    {id:'fallback-bct-7',image:'/bct-logo-master.png',caption:'Verified contractor process',alt:'BCT verified contractor process fallback',category:'BCT',project_work_date:'',image_text:'Verified Process'},
-    {id:'fallback-bct-8',image:'/bct-home-logo.webp',caption:'Managed renovation workflow',alt:'BCT managed renovation workflow fallback',category:'BCT',project_work_date:'',image_text:'Managed Workflow'}
-  ];
-  let PROJECTS=[]; // Loaded from the secure BCT gallery table, with static fallback if Supabase is unavailable.
+  let PROJECTS=[]; // Loaded from the secure BCT gallery table, never substitutes branding for completed project evidence.
 
   let expanded=false;
-  let loaded=false;
+  let loaded=false,projectLoad=null,fullLoading=false;
+  const signedPhotos=new Map();
+  async function signedPhoto(path){
+    const now=Date.now();for(const [key,value] of signedPhotos)if(value.expires<=now)signedPhotos.delete(key);
+    if(signedPhotos.has(path))return signedPhotos.get(path).promise;
+    const promise=(async()=>{try{const {data,error}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(path,3600);if(error||!data?.signedUrl){signedPhotos.delete(path);return null;}return data.signedUrl;}catch(_){signedPhotos.delete(path);return null;}})();
+    if(signedPhotos.size>=1000)signedPhotos.delete(signedPhotos.keys().next().value);
+    signedPhotos.set(path,{promise,expires:now+55*60*1000});return promise;
+  }
   let FULL=[];let fullIndex=0;let fullCategory='All';let fullPage=0;const FULL_PAGE=24;let fullHasMore=false;let fullModalScrollY=0;
   const $=id=>document.getElementById(id);
   function language(){try{return (localStorage.getItem('bctPreferredLanguage')||document.documentElement.lang||'en').toLowerCase().split('-')[0]}catch(_){return 'en'}}
@@ -110,11 +108,15 @@
   }
 
   function useFallbackProjects(){
-    PROJECTS=FALLBACK_PROJECTS.slice();
+    PROJECTS=[];
     render();
   }
 
-  async function loadProjects(){
+  function loadProjects(){
+    if(projectLoad)return projectLoad;
+    projectLoad=loadProjectsOnce().catch(()=>useFallbackProjects()).finally(()=>{projectLoad=null});return projectLoad;
+  }
+  async function loadProjectsOnce(){
     if(!window.supabaseClient){loaded=true;useFallbackProjects();return}
     const {data,error}=await window.supabaseClient.from('bct_gallery_photos')
       .select('id,storage_path,thumbnail_path,caption,caption_translations,alt_text,alt_text_translations,image_text,image_text_translations,project_work_date,category,category_translations,home_order')
@@ -122,7 +124,7 @@
     loaded=true;
     if(error){useFallbackProjects();return}
     const items=(data||[]).filter(x=>x.storage_path);
-    PROJECTS=(await Promise.all(items.map(async x=>{const path=x.thumbnail_path||x.storage_path;const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(path,3600);return signed&&signed.signedUrl?{image:signed.signedUrl,caption:x.caption,caption_translations:x.caption_translations||{},alt:x.alt_text,alt_translations:x.alt_text_translations||{},project_work_date:x.project_work_date,category:x.category,category_translations:x.category_translations||{},id:x.id,image_text:x.image_text||'',image_text_translations:x.image_text_translations||{}}:null}))).filter(Boolean);
+    PROJECTS=(await Promise.all(items.map(async x=>{const path=x.thumbnail_path||x.storage_path;const image=await signedPhoto(path);return image?{image,caption:x.caption,caption_translations:x.caption_translations||{},alt:x.alt_text,alt_translations:x.alt_text_translations||{},project_work_date:x.project_work_date,category:x.category,category_translations:x.category_translations||{},id:x.id,image_text:x.image_text||'',image_text_translations:x.image_text_translations||{}}:null}))).filter(Boolean);
     if(!PROJECTS.length)useFallbackProjects();
     render();
   }
@@ -135,7 +137,28 @@
   function closeFullGallery(){const modal=$('bctGalleryModal');if(modal)modal.hidden=true;unlockFullGalleryScroll()}
   function showFull(){ensureGalleryModal();const list=fullList();if(!list.length)return;fullIndex=Math.max(0,Math.min(fullIndex,list.length-1));const p=list[fullIndex];$('bctGalleryModalImage').src=p.image;$('bctGalleryModalImage').alt=translatedField(p,'alt')||copy().slot;const modalText=translatedField(p,'image_text');$('bctGalleryModalImage').dataset.imageText=modalText;$('bctGalleryModalCaption').textContent=[translatedField(p,'caption'),translatedCategory(p),formatDate(p.project_work_date)].filter(Boolean).join(' • ');$('bctGalleryModalCount').textContent=(fullIndex+1)+' / '+list.length;openFullGallery()}
   function moveFull(n){const list=fullList();if(!list.length)return;fullIndex=(fullIndex+n+list.length)%list.length;showFull()}
-  async function loadFull(reset=true){ensureGalleryModal();if(reset){FULL=[];fullPage=0;fullCategory='All';fullIndex=0;}if(!window.supabaseClient){FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const from=fullPage*FULL_PAGE,to=from+FULL_PAGE-1;const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,caption_translations,alt_text,alt_text_translations,image_text,image_text_translations,project_work_date,category,category_translations,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);if(error){if(!FULL.length)FULL=PROJECTS.slice();if(FULL.length)showFull();return;}const items=(data||[]).filter(x=>x.storage_path);const batch=(await Promise.all(items.map(async x=>{const {data:signed}=await window.supabaseClient.storage.from('bct-gallery').createSignedUrl(x.storage_path,3600);return signed&&signed.signedUrl?{...x,image:signed.signedUrl,caption_translations:x.caption_translations||{},alt_translations:x.alt_text_translations||{},category_translations:x.category_translations||{},image_text:x.image_text||'',image_text_translations:x.image_text_translations||{}}:null}))).filter(Boolean);const priorCategory=fullCategory,priorIndex=fullIndex;FULL=reset?batch:FULL.concat(batch);fullHasMore=batch.length===FULL_PAGE;const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(((CATEGORY_COPY[language()]||CATEGORY_COPY.en)[x]||x),x)));fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;showFull();/* Full gallery navigation intentionally shows Previous and Next only. */}
+  async function loadFull(reset=true){
+    if(fullLoading)return false;fullLoading=true;ensureGalleryModal();
+    const requestedPage=reset?0:fullPage+1;
+    try{
+      if(!window.supabaseClient)return false;
+      const from=requestedPage*FULL_PAGE,to=from+FULL_PAGE-1;
+      const {data,error}=await window.supabaseClient.from('bct_gallery_photos').select('id,storage_path,caption,caption_translations,alt_text,alt_text_translations,image_text,image_text_translations,project_work_date,category,category_translations,gallery_order').eq('is_published',true).order('gallery_order',{ascending:true}).order('project_work_date',{ascending:false}).range(from,to);
+      if(error||!Array.isArray(data))return false;
+      const items=data.filter(x=>x.storage_path),batch=(await Promise.all(items.map(async x=>{const image=await signedPhoto(x.storage_path);return image?{...x,image,caption_translations:x.caption_translations||{},alt_translations:x.alt_text_translations||{},category_translations:x.category_translations||{},image_text:x.image_text||'',image_text_translations:x.image_text_translations||{}}:null}))).filter(Boolean);
+      const priorCategory=fullCategory,priorIndex=fullIndex;
+      FULL=reset?batch:FULL.concat(batch.filter(row=>!FULL.some(old=>old.id===row.id)));fullPage=requestedPage;fullHasMore=data.length===FULL_PAGE;
+      const sel=$('bctGalleryCategory');sel.replaceChildren(new Option(copy().all||'All','All'));[...new Set(FULL.map(x=>x.category).filter(Boolean))].sort().forEach(x=>sel.add(new Option(((CATEGORY_COPY[language()]||CATEGORY_COPY.en)[x]||x),x)));
+      fullCategory=reset?'All':([...sel.options].some(o=>o.value===priorCategory)?priorCategory:'All');sel.value=fullCategory;fullIndex=reset?0:priorIndex;showFull();return true;
+    }catch(_){return false;}finally{fullLoading=false;}
+  }
+  async function nextFull(){
+    if(fullLoading)return;
+    const previousCount=fullList().length;
+    if(fullIndex===previousCount-1&&fullHasMore){const loaded=await loadFull(false);if(!loaded)return;if(fullList().length>previousCount){fullIndex=previousCount;showFull();return;}}
+    moveFull(1);
+  }
+
 
   function ensureGalleryModal(){
     if($('bctGalleryModal'))return;
@@ -143,8 +166,8 @@
     const c=copy();
     m.innerHTML='<div class="bct-gallery-modal-head"><button id="bctGalleryClose" type="button">'+c.close+'</button><label>'+c.category+' <select id="bctGalleryCategory"><option value="All">'+c.all+'</option></select></label><span id="bctGalleryModalCount"></span></div><div class="bct-gallery-stage"><div><img id="bctGalleryModalImage" alt=""><div id="bctGalleryModalCaption" class="bct-gallery-modal-caption"></div></div></div><div class="bct-gallery-modal-foot"><button id="bctGalleryPrev" type="button">← '+c.prev+'</button><button id="bctGalleryNext" type="button">'+c.next+' →</button></div>';
     document.body.appendChild(m);
-    $('bctGalleryClose').onclick=closeFullGallery;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=()=>moveFull(1);$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};
-    let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)moveFull(dx<0?1:-1)},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')closeFullGallery();else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')moveFull(1)});
+    $('bctGalleryClose').onclick=closeFullGallery;$('bctGalleryPrev').onclick=()=>moveFull(-1);$('bctGalleryNext').onclick=nextFull;$('bctGalleryCategory').onchange=e=>{fullCategory=e.target.value;fullIndex=0;showFull()};
+    let sx=0;m.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});m.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50){if(dx<0)nextFull();else moveFull(-1)}},{passive:true});document.addEventListener('keydown',e=>{if(m.hidden)return;if(e.key==='Escape')closeFullGallery();else if(e.key==='ArrowLeft')moveFull(-1);else if(e.key==='ArrowRight')nextFull()});
   }
 
   function wireGalleryControls(section){
@@ -177,6 +200,6 @@
   document.addEventListener('change',event=>{
     if(event.target&&['bctLoginLanguage','bctLanguage'].includes(event.target.id))setTimeout(render,0);
   },true);
-  window.addEventListener('pageshow',()=>{ensure();setTimeout(loadProjects,50)});window.addEventListener('bct-gallery-changed',()=>{setTimeout(loadProjects,0)});document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(loadProjects,50)});
+  window.addEventListener('pageshow',()=>{ensure();setTimeout(loadProjects,50)});window.addEventListener('bct-gallery-changed',()=>{signedPhotos.clear();setTimeout(loadProjects,0)});document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(loadProjects,50)});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure);else ensure();
 })();

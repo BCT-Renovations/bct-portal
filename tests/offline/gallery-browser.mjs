@@ -1,0 +1,19 @@
+// Offline gallery pagination/cache/empty-state regression, no storage service calls.
+import fs from 'node:fs';import assert from 'node:assert/strict';import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});let checks=0;const check=(a,b,label)=>{assert.deepEqual(a,b,label);checks++;};
+try{
+ const page=await browser.newPage();page.setDefaultTimeout(7000);await page.route('**/*',route=>route.fulfill({contentType:'text/html',body:'<html lang="en"><body><section id="view-home"><div id="bctPublicLicenseBar"></div></section></body></html>'}));await page.goto('http://gallery.offline.test');
+ await page.evaluate(()=>{
+  window.metaReads=0;window.signs=[];window.ranges=[];
+  window.rows=Array.from({length:25},(_,i)=>({id:'photo-'+i,storage_path:'original-'+i,thumbnail_path:'thumb-'+i,caption:'Fixture '+i,category:'Roofing',project_work_date:'2026-10-15'}));
+  window.supabaseClient={from:()=>{let range=null;const q={select:()=>q,eq:()=>q,order:()=>q,limit:()=>q,range:(from,to)=>{range=[from,to];ranges.push(range);return q},then:resolve=>{metaReads++;return resolve(window.failRead?{error:{message:'unavailable'}}:{data:range?rows.slice(range[0],range[1]+1):rows.slice(0,4)})}};return q;},storage:{from:()=>({createSignedUrl:async path=>{signs.push(path);return {data:{signedUrl:'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7#'+path}}}})}};
+ });
+ await page.addScriptTag({content:fs.readFileSync('bct-home-gallery.js','utf8')});await page.waitForFunction(()=>document.querySelectorAll('.bct-gallery-card').length===4);
+ check(await page.evaluate(()=>signs.length),4,'home uses only thumbnails');await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));await page.waitForTimeout(100);check(await page.evaluate(()=>signs.length),4,'navigation reuses signed URLs');
+ await page.click('#bctGalleryFull');await page.waitForFunction(()=>document.getElementById('bctGalleryModalCount').textContent==='1 / 24');check(await page.evaluate(()=>ranges[0]),[0,23],'first page bounded to 24');
+ for(let i=0;i<24;i++)await page.click('#bctGalleryNext');await page.waitForFunction(()=>document.getElementById('bctGalleryModalCount').textContent==='25 / 25');check(await page.evaluate(()=>ranges[1]),[24,47],'next fetches second page');check(await page.locator('#bctGalleryModalCaption').textContent().then(t=>t.includes('Fixture 24')),true,'second page photo rendered');
+ await page.click('#bctGalleryClose');await page.click('#bctGalleryFull');await page.waitForFunction(()=>document.getElementById('bctGalleryModalCount').textContent==='1 / 24');check(await page.evaluate(()=>signs.length),29,'full gallery reopening reuses original URLs');await page.click('#bctGalleryClose');
+ await page.evaluate(()=>{failRead=true;window.dispatchEvent(new Event('bct-gallery-changed'))});await page.waitForFunction(()=>document.querySelectorAll('.bct-gallery-card').length===0);check(await page.locator('#bctHomeGallery').isVisible(),true,'gallery entry remains visible when service unavailable');check(await page.locator('#bctHomeGallery img').count(),0,'branding never presented as real project evidence');check(await page.locator('#bctGalleryFull').textContent(),'Gallery Coming Soon','empty state is honest');
+ console.log(`Gallery offline browser regression: ${checks} assertions passed`);
+}finally{await browser.close();}

@@ -1,0 +1,10 @@
+{
+  "name": "bct-isolated-offline-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned disposable database and mocked browser dependencies; no production services",
+  "dependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "playwright": "1.62.1"
+  }
+}

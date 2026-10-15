@@ -35,7 +35,7 @@ const ROLE_GROUPS={
  estimator:["estimator","project_manager","assignment_scheduler","admin_escalation"],
  admin:POSITIONS.map(([value])=>value)
 };
-let transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0,conversationKey="",activePortal="";
+let transcript=[],pending=null,identity=null,lastFocus=null,scrollY=0,conversationKey="",activePortal="",scopeVersion=0,scopeRequest=0,sendBusy=false;
 function language(){return String(localStorage.getItem("bctPreferredLanguage")||document.getElementById("bctLoginLanguage")?.value||document.documentElement.lang||"en").toLowerCase().split("-")[0]}
 function t(){return COPY[language()]||COPY.en}
 function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -68,6 +68,7 @@ function saveTranscript(){
 }
 function switchConversation(key,portal){
  if(key===conversationKey)return;
+ if(pending)pending.abort();scopeVersion++;
  saveTranscript();
  conversationKey=key;
  activePortal=portal;
@@ -92,13 +93,13 @@ function syncRoleOptions(){
  select.innerHTML=POSITIONS.filter(([value])=>allowed.has(value)).map(([value,label])=>'<option value="'+escapeHtml(value)+'">'+escapeHtml(label)+'</option>').join("");
  if(allowed.has(current))select.value=current;
 }
-function clearPrivate(){transcript=[];identity=null;if(pending){pending.abort();pending=null}saveTranscript();renderMessages()}
+function clearPrivate(){scopeVersion++;scopeRequest++;transcript=[];identity=null;if(pending){pending.abort();pending=null}saveTranscript();renderMessages()}
 async function session(){
  if(typeof supabaseClient==="undefined"||!supabaseClient)return {token:"",userId:""};
  try{const r=await supabaseClient.auth.getSession(),s=r?.data?.session;return {token:s?.access_token||"",userId:s?.user?.id||""}}catch(_){return {token:"",userId:""}}
 }
 async function refreshConversationScope(){
- const s=await session();
+ const request=++scopeRequest,s=await session();if(request!==scopeRequest)return null;
  const portal=portalKind();
  switchConversation(transcriptStorageKey(portal,s.userId),portal);
  identity=s.userId||"public";
@@ -133,28 +134,31 @@ function close(){
  panel.hidden=true;document.body.classList.remove("bct-agent-open");window.scrollTo({top:scrollY,left:0,behavior:"auto"});lastFocus?.focus?.({preventScroll:true});
 }
 async function send(){
- const input=document.getElementById("bctAgentInput"),status=document.getElementById("bctAgentStatus"),button=document.getElementById("bctAgentSend");if(!input||pending)return;
+ const input=document.getElementById("bctAgentInput"),status=document.getElementById("bctAgentStatus"),button=document.getElementById("bctAgentSend");if(!input||sendBusy)return;
  const message=input.value.trim();if(!message)return;
- const s=await refreshConversationScope();
- transcript.push({role:"user",text:message});input.value="";saveTranscript();renderMessages();
- pending=new AbortController();button.disabled=true;status.textContent="…";
- const timer=setTimeout(()=>pending?.abort(),26000);
+ sendBusy=true;button.disabled=true;let controller,timer,version;
  try{
-  const headers={"content-type":"application/json"};if(s.token)headers.authorization="Bearer "+s.token;
+  const s=await refreshConversationScope();if(!s)return;
+  version=scopeVersion;const portal=portalKind(),key=conversationKey;
   const position=document.getElementById("bctAgentPosition")?.value||"customer_support";
-  const res=await fetch("/api/agent-bct/chat",{method:"POST",headers,cache:"no-store",credentials:"same-origin",signal:pending.signal,body:JSON.stringify({message,position,portal:portalKind(),languageCode:language(),history:transcript.slice(-12,-1).map(x=>({role:x.role,content:x.text}))})});
+  const allowed=new Set(ROLE_GROUPS[portal]||ROLE_GROUPS.client);if(!allowed.has(position)){syncRoleOptions();return;}
+  transcript.push({role:"user",text:message});input.value="";saveTranscript();renderMessages();
+  controller=new AbortController();pending=controller;status.textContent="…";
+  timer=setTimeout(()=>controller.abort(),26000);
+  const headers={"content-type":"application/json"};if(s.token)headers.authorization="Bearer "+s.token;
+  const res=await fetch("/api/agent-bct/chat",{method:"POST",headers,cache:"no-store",credentials:"same-origin",signal:controller.signal,body:JSON.stringify({message,position,portal,languageCode:language(),history:transcript.slice(-12,-1).map(x=>({role:x.role,content:x.text}))})});
   const body=await res.json().catch(()=>({}));
+  if(controller.signal.aborted||version!==scopeVersion||key!==conversationKey)return;
   if(res.status===401){clearPrivate();transcript.push({role:"assistant",text:t().signin,provenance:"unavailable"});saveTranscript();}
   else if(res.ok&&body.answer){transcript.push({role:"assistant",text:body.answer,provenance:body.provenance});saveTranscript();}
   else if(res.ok){transcript.push({role:"assistant",text:t().preview,provenance:body.provenance||"general_guidance"});saveTranscript();}
-  else if((res.status===401||res.status===403)&&/bct-v46-isolated-preview/i.test(location.hostname)){transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});saveTranscript();}
-  else{transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();}
+  else{if(!input.value)input.value=message;transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();}
  }catch(_){
-  if(/bct-v46-isolated-preview/i.test(location.hostname)){transcript.push({role:"assistant",text:t().preview,provenance:"general_guidance"});saveTranscript();}
-  else{transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();}
+  if(version===scopeVersion){if(!input.value)input.value=message;transcript.push({role:"assistant",text:t().offline,provenance:"unavailable"});saveTranscript();}
  }
- finally{clearTimeout(timer);pending=null;button.disabled=false;status.textContent="";renderMessages();input.focus({preventScroll:true});}
+ finally{clearTimeout(timer);if(pending===controller)pending=null;sendBusy=false;button.disabled=false;status.textContent="";renderMessages();if(version===scopeVersion)input.focus({preventScroll:true});}
 }
+
 function mount(){
  if(document.getElementById("bctAgentOpen"))return;
  const positionOptions=POSITIONS.map(([value,label])=>'<option value="'+escapeHtml(value)+'">'+escapeHtml(label)+'</option>').join("");
@@ -178,7 +182,7 @@ function mount(){
  document.addEventListener("bct:portal-change",()=>{syncRoleOptions();refreshConversationScope().then(applyCopy).catch(()=>{})});
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("bctAgentPanel").hidden)close()});
  document.addEventListener("change",e=>{if(e.target?.matches?.("#bctLoginLanguage,#bctLanguage,[data-language-selector]"))requestAnimationFrame(applyCopy)},true);
- if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth?.onAuthStateChange)supabaseClient.auth.onAuthStateChange((event,s)=>{identity=s?.user?.id||null;refreshConversationScope().then(applyCopy).catch(()=>{})});
+ if(typeof supabaseClient!=="undefined"&&supabaseClient?.auth?.onAuthStateChange)supabaseClient.auth.onAuthStateChange((event,s)=>{const next=s?.user?.id||null;if(event==="SIGNED_OUT"||(identity&&identity!==next)){clearPrivate();const input=document.getElementById("bctAgentInput");if(input)input.value="";}identity=next;refreshConversationScope().then(applyCopy).catch(()=>{})});
  applyCopy();refreshConversationScope().then(applyCopy).catch(()=>{});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount);else mount();

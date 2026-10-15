@@ -1,0 +1,39 @@
+name: TAKAI isolated offline regression
+
+on:
+  push:
+    branches: [feature/takai-insurance-integration-isolated-20261014]
+  pull_request:
+    paths:
+      - 'bct-insurance-*.js'
+      - 'bct-estimator-*.js'
+      - 'agent-bct*.js'
+      - 'bct-home-gallery.js'
+      - 'api/agent-bct/**'
+      - 'api/agent-bct-photo-recommendation.js'
+      - 'supabase/insurance-isolated-migrations/**'
+      - 'tests/**'
+      - 'scripts/bct-isolated-offline-regression.mjs'
+      - '.github/workflows/takai-isolated-offline.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/offline/package-lock.json
+      - name: Install pinned offline test dependencies
+        run: npm ci --prefix tests/offline --ignore-scripts --no-audit --no-fund
+      - name: Install pinned Chromium
+        run: node tests/offline/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Run mocked browser, security and disposable PostgreSQL gates
+        run: node scripts/bct-isolated-offline-regression.mjs

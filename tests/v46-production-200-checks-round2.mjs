@@ -196,7 +196,7 @@ check('theme color',()=>html.includes('name="theme-color"'));
 check('Apple web-app capable',()=>html.includes('apple-mobile-web-app-capable'));
 check('PWA manifest',()=>html.includes('rel="manifest"'));
 check('V46 title',()=>html.includes('V46 Launch Cutover'));
-check('official BCT logo',()=>html.includes('official-bct-logo-v46-green-band'));
+check('official BCT logo',()=>html.includes('official-bct-logo-v46-comma-20261010'));
 check('keyboard skip link',()=>html.includes('bct-skip-link'));
 check('visible keyboard focus',()=>html.includes(':focus-visible'));
 check('reduced-motion support',()=>html.includes('prefers-reduced-motion:reduce'));
