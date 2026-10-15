@@ -2357,7 +2357,8 @@ function applyStaticLanguage(language){
    if(!raw) return;
    const translated=translateRaw(raw);
    const leading=(original.match(/^\s*/)||[''])[0], trailing=(original.match(/\s*$/)||[''])[0];
-   t.nodeValue=leading+translated+trailing;
+   const nextValue=leading+translated+trailing;
+   if(t.nodeValue!==nextValue) t.nodeValue=nextValue;
  });
  document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
    if(el.hasAttribute('data-i18n-placeholder')) return;
