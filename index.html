@@ -2559,9 +2559,12 @@ function installBctDynamicTranslationObserver(){
     const changedLabels=records.some(record=>record.type==='attributes' &&
       (record.attributeName==='aria-label' || record.attributeName==='title' || record.attributeName==='placeholder' || record.attributeName==='value') &&
       record.target?.closest?.('main,header,footer'));
-    if(addedControls || changedLabels) scheduleBctDynamicTranslation();
+    // Existing dropdown option text may change without inserting a new node.
+    const changedOptionText=records.some(record=>record.type==='characterData' &&
+      record.target?.parentElement?.closest?.('main select option'));
+    if(addedControls || changedLabels || changedOptionText) scheduleBctDynamicTranslation();
   });
-  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['aria-label','title','placeholder','value']});
+  observer.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true,attributeFilter:['aria-label','title','placeholder','value']});
   window.__bctDynamicTranslationObserver=observer;
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',installBctDynamicTranslationObserver);
