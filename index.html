@@ -2501,9 +2501,11 @@ function scheduleBctDynamicTranslation(){
       const key=node.dataset.i18n;
       const local=language==='en' ? BCT_ENGLISH_FALLBACK[key] :
         (BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key] || BCT_LOCAL_TRANSLATIONS[language]?.[key]);
-      // Do not overwrite remote translations already applied by the main pass.
-      // The observer only supplies local translations for newly inserted keys.
-      if(local && !node.children.length && !node.dataset.bctRemoteTranslation && node.textContent!==local) node.textContent=local;
+      // Only replace untranslated English/key text; preserve a translation
+      // already supplied by the asynchronous translation service.
+      const fallback=BCT_ENGLISH_FALLBACK[key]||key;
+      const current=node.textContent.trim();
+      if(local && !node.children.length && (current===fallback || current===key) && current!==local) node.textContent=local;
     });
   });
 }
