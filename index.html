@@ -2529,8 +2529,8 @@ function installBctDynamicTranslationObserver(){
   if(window.__bctDynamicTranslationObserver || !document.body) return;
   const observer=new MutationObserver(records=>{
     const addedControls=records.some(record=>[...record.addedNodes].some(node=>
-      node.nodeType===1 && (node.matches?.('[data-i18n],[data-i18n-placeholder],button,select,label,input,textarea,option') ||
-      node.querySelector?.('[data-i18n],[data-i18n-placeholder],button,select,label,input,textarea,option'))));
+      node.nodeType===1 && (node.matches?.('[data-i18n],[data-i18n-placeholder],[aria-label],[title],button,select,label,input,textarea,option') ||
+      node.querySelector?.('[data-i18n],[data-i18n-placeholder],[aria-label],[title],button,select,label,input,textarea,option'))));
     if(addedControls) scheduleBctDynamicTranslation();
   });
   observer.observe(document.body,{childList:true,subtree:true});
