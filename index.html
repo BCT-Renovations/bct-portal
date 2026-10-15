@@ -2331,18 +2331,13 @@ const BCT_STATIC_PLACEHOLDER_ES={
 function applyStaticLanguage(language){
  const commonDict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
  const translateRaw=raw=>(language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw;
- // Translate ordinary leaf elements.
- document.querySelectorAll("main *").forEach(el=>{
-   if(el.children.length===0 && !el.closest('[data-i18n]') && !el.matches('script,style,template,option') && !el.closest('script,style,template')){
-     if(!BCT_ORIGINAL_TEXT.has(el)) BCT_ORIGINAL_TEXT.set(el,el.textContent);
-     const original=BCT_ORIGINAL_TEXT.get(el);
-     const raw=(original||'').trim();
-     el.textContent=raw ? original.replace(raw,translateRaw(raw)) : original;
-   }
- });
+ // Preserve original text nodes across language changes. Replacing an element's
+ // textContent creates new nodes and loses the original English source.
  // Translate text nodes inside labels/containers that also contain inputs or other elements.
  // This catches checkbox labels such as service names and certification statements.
- const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT);
+ const root=document.querySelector('main');
+ if(!root) return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
  const textNodes=[]; let node;
  while((node=walker.nextNode())) textNodes.push(node);
  textNodes.forEach(t=>{
