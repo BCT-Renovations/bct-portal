@@ -2550,6 +2550,16 @@ function scheduleBctDynamicTranslation(){
     });
   });
 }
+function translateBctKnownOptionText(option){
+  if(!option) return '';
+  const original=BCT_ORIGINAL_TEXT.get(option);
+  if(original===undefined) return option.textContent;
+  const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
+  const raw=(original||'').trim();
+  const dict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
+  const translated=language==='en' ? raw : ((language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || dict[raw] || raw);
+  return original.replace(raw,translated);
+}
 function installBctDynamicTranslationObserver(){
   if(window.__bctDynamicTranslationObserver || !document.body) return;
   const observer=new MutationObserver(records=>{
@@ -2561,7 +2571,8 @@ function installBctDynamicTranslationObserver(){
       record.target?.closest?.('main,header,footer'));
     // Existing dropdown option text may change without inserting a new node.
     const changedOptionText=records.some(record=>record.type==='characterData' &&
-      record.target?.parentElement?.closest?.('main select option'));
+      record.target?.parentElement?.closest?.('main select option') &&
+      record.target.textContent!==translateBctKnownOptionText(record.target.parentElement));
     if(addedControls || changedLabels || changedOptionText) scheduleBctDynamicTranslation();
   });
   observer.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true,attributeFilter:['aria-label','title','placeholder','value']});
