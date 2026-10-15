@@ -2329,6 +2329,7 @@ const BCT_STATIC_PLACEHOLDER_ES={
   "BCT Admin password":"Contraseña de administrador de BCT"
 };
 const BCT_ORIGINAL_ACCESSIBLE_TEXT=new WeakMap();
+const BCT_ORIGINAL_INPUT_BUTTON_TEXT=new WeakMap();
 function applyStaticLanguage(language){
  const commonDict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
  const translateRaw=raw=>language==='en' ? raw : ((language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw);
@@ -2353,6 +2354,14 @@ function applyStaticLanguage(language){
      const translated=translateRaw(originals[attribute]);
      if(el.getAttribute(attribute)!==translated) el.setAttribute(attribute,translated);
    }
+ });
+ // Some portal actions use input buttons instead of button elements.
+ // Translate their visible labels without changing submitted form values.
+ document.querySelectorAll('main input[type="button"],main input[type="submit"],main input[type="reset"]').forEach(el=>{
+   if(!BCT_ORIGINAL_INPUT_BUTTON_TEXT.has(el)) BCT_ORIGINAL_INPUT_BUTTON_TEXT.set(el,el.value);
+   const original=BCT_ORIGINAL_INPUT_BUTTON_TEXT.get(el);
+   const translated=translateRaw(original);
+   if(el.value!==translated) el.value=translated;
  });
  // Translate select options without replacing the option nodes or their values.
  document.querySelectorAll('main select option').forEach(option=>{
