@@ -2403,7 +2403,7 @@ const BCT_ORIGINAL_UI_TEXT=new WeakMap();
 function applyCommonPortalLanguage(language){
  const dict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
  document.querySelectorAll('button,label,h2,h3,h4,p,span,legend,th,td').forEach(el=>{
-   if(el.matches('[data-i18n],[data-login-language-label],[data-login-signin-heading],[data-entry-login],[data-bct-slogan]')) return;
+   if(el.children.length || el.closest('[data-i18n]') || el.matches('[data-login-language-label],[data-login-signin-heading],[data-entry-login],[data-bct-slogan]')) return;
    if(!BCT_ORIGINAL_UI_TEXT.has(el)) BCT_ORIGINAL_UI_TEXT.set(el,el.textContent.trim());
    const original=BCT_ORIGINAL_UI_TEXT.get(el);
    if(language==='en') el.textContent=original;
