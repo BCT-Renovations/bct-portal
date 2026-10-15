@@ -32,6 +32,8 @@ const checks=[
  ['Dynamic text preserves remote translations',languagePass.includes('(current===fallback || current===key) && current!==local')],
  ['Dynamic placeholder preserves remote translations',languagePass.includes('(current===fallback || current===key) && current!==local) node.setAttribute(\'placeholder\',local)')],
  ['Dynamic translation skips nested keyed controls',languagePass.includes('!node.children.length')],
+ ['Accessible labels and tooltips translated',staticPass.includes("for(const attribute of ['aria-label','title'])")],
+ ['Accessible labels retain English source',staticPass.includes('BCT_ORIGINAL_ACCESSIBLE_TEXT.get(el)')],
 ];
 for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+' '+name);}
 assert.ok(checks.every(([,ok])=>ok),'Translation source regression failed');
