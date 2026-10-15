@@ -2360,7 +2360,9 @@ function applyStaticLanguage(language){
  document.querySelectorAll('main input[type="button"],main input[type="submit"],main input[type="reset"]').forEach(el=>{
    if(!BCT_ORIGINAL_INPUT_BUTTON_TEXT.has(el)) BCT_ORIGINAL_INPUT_BUTTON_TEXT.set(el,el.value);
    const original=BCT_ORIGINAL_INPUT_BUTTON_TEXT.get(el);
-   const translated=translateRaw(original);
+   const previous=translateRaw(original);
+   if(el.value!==original && el.value!==previous) BCT_ORIGINAL_INPUT_BUTTON_TEXT.set(el,el.value);
+   const translated=translateRaw(BCT_ORIGINAL_INPUT_BUTTON_TEXT.get(el));
    if(el.value!==translated) el.value=translated;
  });
  // Translate select options without replacing the option nodes or their values.
