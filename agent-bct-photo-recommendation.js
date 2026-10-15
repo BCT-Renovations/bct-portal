@@ -46,9 +46,9 @@ function testRecommendation(photo){
 async function analyzePhoto(photo,mode){
  if(mode==='test')return testRecommendation(photo);
  const imageUrl=await signed(photo.thumbnail_path||photo.storage_path); if(!imageUrl)throw new Error('Could not create a private photo preview.');
- const res=await fetch('/api/agent-bct-photo-recommendation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photoId:photo.id,imageUrl,metadata:{category:photo.category,caption:photo.caption,project_work_date:photo.project_work_date}})});
- if(!res.ok)throw new Error((await res.text())||'Agent BCT analysis is unavailable.');
- return await res.json();
+ const {data:session,error:sessionError}=await window.supabaseClient.auth.getSession();const token=session?.session?.access_token;if(sessionError||!token)throw new Error('BCT Admin sign in is required.');
+ const res=await fetch('/api/agent-bct-photo-recommendation',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({photoId:photo.id,imageUrl,metadata:{category:photo.category,caption:photo.caption,project_work_date:photo.project_work_date}})});
+ const result=await res.json();if(!res.ok)throw new Error(result.error||'Agent BCT analysis is unavailable.');return result;
 }
 async function saveRecommendation(photoId,result){
  const {error}=await window.supabaseClient.from('bct_photo_recommendations').upsert({...result,photo_id:photoId,recommendation_status:'pending',admin_decision:null,corrected_category:null,admin_note:null},{onConflict:'photo_id'});
