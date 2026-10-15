@@ -1,0 +1,14 @@
+name: Takai Translation Source Gates
+on:
+  push:
+    branches:
+      - fix/takai-translation-audit-20261015
+  workflow_dispatch:
+jobs:
+  translation-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Takai translation source checks
+        run: node tests/takai-translation-source-regression.mjs
