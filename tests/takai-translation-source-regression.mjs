@@ -24,6 +24,10 @@ const checks=[
  ['Dynamic controls observed',languagePass.includes('MutationObserver(records=>')],
  ['Dynamic translations do not repeat remote fetches',!between('function scheduleBctDynamicTranslation(){','function installBctDynamicTranslationObserver(){').includes('fetchBctTranslation(')],
  ['Dynamic placeholders translated',languagePass.includes("document.querySelectorAll('[data-i18n-placeholder]').forEach")],
+ ['Unchanged option labels are not rewritten',staticPass.includes('if(option.textContent!==translated)')],
+ ['Unchanged placeholder attributes are not rewritten',staticPass.includes("if(el.getAttribute('placeholder')!==translated)")],
+ ['Unchanged portal text nodes are not rewritten',staticPass.includes('if(t.nodeValue!==nextValue)')],
+ ['Dynamic translation requires a mounted document body',languagePass.includes('if(!document.body) return;')],
 ];
 for(const [name,ok] of checks){console.log((ok?'PASS':'FAIL')+' '+name);}
 assert.ok(checks.every(([,ok])=>ok),'Translation source regression failed');
