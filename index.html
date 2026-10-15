@@ -2495,7 +2495,9 @@ function scheduleBctDynamicTranslation(){
       const key=node.dataset.i18nPlaceholder;
       const local=language==='en' ? BCT_ENGLISH_FALLBACK[key] :
         (BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key] || BCT_LOCAL_TRANSLATIONS[language]?.[key]);
-      if(local && node.getAttribute('placeholder')!==local) node.setAttribute('placeholder',local);
+      const fallback=BCT_ENGLISH_FALLBACK[key]||key;
+      const current=node.getAttribute('placeholder')||'';
+      if(local && (current===fallback || current===key) && current!==local) node.setAttribute('placeholder',local);
     });
     document.querySelectorAll('[data-i18n]').forEach(node=>{
       const key=node.dataset.i18n;
