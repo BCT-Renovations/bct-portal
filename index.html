@@ -2369,9 +2369,16 @@ function applyStaticLanguage(language){
  document.querySelectorAll('main select option').forEach(option=>{
    if(!BCT_ORIGINAL_TEXT.has(option)) BCT_ORIGINAL_TEXT.set(option,option.textContent);
    const original=BCT_ORIGINAL_TEXT.get(option);
-   const raw=(original||'').trim();
+   const previousRaw=(original||'').trim();
+   const previousTranslation=original.replace(previousRaw,translateRaw(previousRaw));
+   // Refresh the source when a portal repurposes an existing option node.
+   if(option.textContent!==original && option.textContent!==previousTranslation){
+     BCT_ORIGINAL_TEXT.set(option,option.textContent);
+   }
+   const source=BCT_ORIGINAL_TEXT.get(option);
+   const raw=(source||'').trim();
    if(!raw) return;
-   const translated=original.replace(raw,translateRaw(raw));
+   const translated=source.replace(raw,translateRaw(raw));
    if(option.textContent!==translated) option.textContent=translated;
  });
  // Translate text nodes inside labels/containers that also contain inputs or other elements.
