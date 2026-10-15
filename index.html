@@ -717,6 +717,17 @@ body.bct-contractor-signup:not(.bct-authenticated) #view-apply [data-handyman-pa
 #view-customer #bctHomeownerLoginCard { order:-2!important; }
 #view-customer #bctHomeownerSignupCard { order:-1!important; }
 </style>
+<style id="bct-takai-commitment-two-line-mobile">
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctCommitmentTitle .bct-commitment-line-one{display:block!important;white-space:nowrap!important;font:inherit!important;font-size:clamp(15px,4.6vw,23px)!important;line-height:1.4!important;color:inherit!important;margin:0!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctCommitmentTitle .bct-commitment-line-two{display:block!important;white-space:nowrap!important;font:inherit!important;font-size:clamp(25px,7.3vw,34px)!important;font-weight:700!important;line-height:1.35!important;color:inherit!important;margin:0!important}
+</style>
+<style id="bct-takai-homepage-emphasis-20261014">
+/* Isolated visual-only refinements; preserve existing fonts, colors, copy and behavior. */
+#bctShareAppHelp{font-size:19px!important;font-weight:900!important;line-height:1.45!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) #bctShareAppHelp{font-size:19px!important;line-height:1.45!important}
+body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-size:25px!important;font-weight:800!important;line-height:1.35!important}
+@media(max-width:380px){body:not(.bct-authenticated):not(.bct-portal-entered) .bct-public-commitment strong{font-size:23px!important}}
+</style>
 </head>
 <body>
 <a class="bct-skip-link" href="#bctMain">Skip to main content</a>
@@ -4326,7 +4337,13 @@ body.bct-home-signup:not(.bct-authenticated) #customerProjectForm .bct-step-cont
   if(!box){box=document.createElement("div");box.className="bct-public-commitment";share.insertAdjacentElement("afterend",box)}
   const t=COPY[lang()]||COPY.en;
   box.innerHTML='<strong id="bctCommitmentTitle"></strong><span id="bctCommitmentText"></span>';
-  box.querySelector("strong").textContent=t[0];box.querySelector("span").textContent=t[1];
+  box.querySelector("strong").style.whiteSpace="normal";
+  if(lang()==="en"){
+    const title=box.querySelector("strong");
+    title.style.display="block";
+    title.innerHTML='<span class="bct-commitment-line-one">Your Project, Your Home,</span><span class="bct-commitment-line-two">Our Commitment</span>';
+  }else{box.querySelector("strong").textContent=t[0]}
+  box.querySelector("#bctCommitmentText").textContent=t[1];
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render);else render();
  document.addEventListener("change",e=>{if(e.target&&["bctLoginLanguage","bctLanguage"].includes(e.target.id))setTimeout(render,0)});
