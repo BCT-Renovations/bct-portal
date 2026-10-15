@@ -2333,6 +2333,14 @@ function applyStaticLanguage(language){
  const translateRaw=raw=>language==='en' ? raw : ((language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw);
  // Preserve original text nodes across language changes. Replacing an element's
  // textContent creates new nodes and loses the original English source.
+ // Translate select options without replacing the option nodes or their values.
+ document.querySelectorAll('main select option').forEach(option=>{
+   if(!BCT_ORIGINAL_TEXT.has(option)) BCT_ORIGINAL_TEXT.set(option,option.textContent);
+   const original=BCT_ORIGINAL_TEXT.get(option);
+   const raw=(original||'').trim();
+   if(!raw) return;
+   option.textContent=original.replace(raw,translateRaw(raw));
+ });
  // Translate text nodes inside labels/containers that also contain inputs or other elements.
  // This catches checkbox labels such as service names and certification statements.
  const root=document.querySelector('main');
