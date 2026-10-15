@@ -2339,7 +2339,8 @@ function applyStaticLanguage(language){
    const original=BCT_ORIGINAL_TEXT.get(option);
    const raw=(original||'').trim();
    if(!raw) return;
-   option.textContent=original.replace(raw,translateRaw(raw));
+   const translated=original.replace(raw,translateRaw(raw));
+   if(option.textContent!==translated) option.textContent=translated;
  });
  // Translate text nodes inside labels/containers that also contain inputs or other elements.
  // This catches checkbox labels such as service names and certification statements.
