@@ -21,3 +21,17 @@ jobs:
           node --check tests/v46-iphone-portal-connection.mjs
           node --check tests/v46-iphone-homeowner-wizard.mjs
           node --check tests/v46-iphone-admin-controls.mjs
+
+  browser-iphone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps webkit
+      - name: Exercise isolated preview on iPhone WebKit
+        env:
+          BCT_URL: https://bct-v46-isolated-preview-fl4dso5bj-typerry1972-1855.vercel.app
+        run: node tests/v46-iphone-portal-connection.mjs
