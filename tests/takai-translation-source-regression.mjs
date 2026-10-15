@@ -22,6 +22,7 @@ const checks=[
  ['Original text nodes retained for language switching',staticPass.includes('BCT_ORIGINAL_TEXT_NODE.get(t)')],
  ['Dropdown options translated without changing values',staticPass.includes("main select option") && !staticPass.includes('option.value=')],
  ['Dynamic controls observed',languagePass.includes('MutationObserver(records=>')],
+ ['Dynamic dropdown options observed',languagePass.includes('button,select,label,input,textarea,option')],
  ['Dynamic translations do not repeat remote fetches',!between('function scheduleBctDynamicTranslation(){','function installBctDynamicTranslationObserver(){').includes('fetchBctTranslation(')],
  ['Dynamic placeholders translated',languagePass.includes("document.querySelectorAll('[data-i18n-placeholder]').forEach")],
  ['Unchanged option labels are not rewritten',staticPass.includes('if(option.textContent!==translated)')],
