@@ -2330,7 +2330,7 @@ const BCT_STATIC_PLACEHOLDER_ES={
 };
 function applyStaticLanguage(language){
  const commonDict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
- const translateRaw=raw=>(language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw;
+ const translateRaw=raw=>language==='en' ? raw : ((language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw);
  // Preserve original text nodes across language changes. Replacing an element's
  // textContent creates new nodes and loses the original English source.
  // Translate text nodes inside labels/containers that also contain inputs or other elements.
@@ -2342,7 +2342,7 @@ function applyStaticLanguage(language){
  while((node=walker.nextNode())) textNodes.push(node);
  textNodes.forEach(t=>{
    const parent=t.parentElement;
-   if(!parent || parent.closest('[data-i18n],script,style,template,option')) return;
+   if(!parent || parent.closest('[data-i18n],script,style,template,option,textarea,select,[contenteditable], [data-bct-slogan], [data-login-language-label], [data-login-signin-heading], [data-entry-login]')) return;
    if(!BCT_ORIGINAL_TEXT_NODE.has(t)) BCT_ORIGINAL_TEXT_NODE.set(t,t.nodeValue);
    const original=BCT_ORIGINAL_TEXT_NODE.get(t);
    const raw=(original||'').trim();
