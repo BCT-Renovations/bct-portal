@@ -2572,7 +2572,7 @@ function installBctDynamicTranslationObserver(){
     // Existing dropdown option text may change without inserting a new node.
     const changedOptionText=records.some(record=>record.type==='characterData' &&
       record.target?.parentElement?.closest?.('main select option') &&
-      record.target.textContent!==translateBctKnownOptionText(record.target.parentElement));
+      record.target.parentElement.textContent!==translateBctKnownOptionText(record.target.parentElement));
     if(addedControls || changedLabels || changedOptionText) scheduleBctDynamicTranslation();
   });
   observer.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true,attributeFilter:['aria-label','title','placeholder','value']});
