@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="bct-portal-translation-catalog.js?v=20261015-1"></script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0f5f63" />
@@ -2330,15 +2331,37 @@ const BCT_STATIC_PLACEHOLDER_ES={
 };
 const BCT_ORIGINAL_ACCESSIBLE_TEXT=new WeakMap();
 const BCT_ORIGINAL_INPUT_BUTTON_TEXT=new WeakMap();
+// Resolve keyed and unkeyed controls through the same approved local catalog.
+// This also recognizes labels left by a previous language before restoring English.
+let bctKnownCatalogCache;
+function bctTranslateKnownText(raw,language){
+ if(!bctKnownCatalogCache){
+ const catalogs=l=>Object.assign({},BCT_STATIC_FORMS[l]||{},BCT_COMMON_UI_TRANSLATIONS[l]||{},BCT_EXTENDED_UI_TRANSLATIONS[l]||{},l==='es'?BCT_STATIC_ES:{},BCT_STATIC_PLACEHOLDERS[l]||{},l==='es'?BCT_STATIC_PLACEHOLDER_ES:{},BCT_PORTAL_TRANSLATION_CATALOG[l]||{});
+ bctKnownCatalogCache={catalogs:{},sources:new Map()};
+ for(const l of ['es','fr','ht','pt','vi','zh','ar','ru']){
+  const dict=catalogs(l);
+  for(const [key,value] of Object.entries(BCT_LOCAL_TRANSLATIONS[l]||{})){const english=BCT_ENGLISH_FALLBACK[key];if(english && value && value!==english)dict[english]=value;}
+  bctKnownCatalogCache.catalogs[l]=dict;
+  for(const [source,value] of Object.entries(dict)){if(!bctKnownCatalogCache.sources.has(value))bctKnownCatalogCache.sources.set(value,source);}
+ }
+ }
+ const source=bctKnownCatalogCache.sources.get(raw)||raw;
+ return language==='en'?source:(bctKnownCatalogCache.catalogs[language]?.[source]||source);
+}
+function bctLocalKeyText(key,language){
+ const english=BCT_ENGLISH_FALLBACK[key]||key;
+ if(language==='en')return english;
+ return BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]||BCT_LOCAL_TRANSLATIONS[language]?.[key]||bctTranslateKnownText(english,language);
+}
 function applyStaticLanguage(language){
  const commonDict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
- const translateRaw=raw=>language==='en' ? raw : ((language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw);
+ const translateRaw=raw=>bctTranslateKnownText(raw,language);
  // Preserve original text nodes across language changes. Replacing an element's
  // textContent creates new nodes and loses the original English source.
  // Keep accessibility labels and tooltip titles in sync with the selected language.
  // Only translate known dictionary strings; leave application-generated labels intact.
  document.querySelectorAll('main [aria-label],main [title],header [aria-label],header [title],footer [aria-label],footer [title]').forEach(el=>{
-   for(const attribute of ['aria-label','title']){
+   for(const attribute of ['aria-label','title','data-bct-role-title']){
      if(!el.hasAttribute(attribute)) continue;
      let originals=BCT_ORIGINAL_ACCESSIBLE_TEXT.get(el);
      if(!originals){originals={};BCT_ORIGINAL_ACCESSIBLE_TEXT.set(el,originals);}
@@ -2392,7 +2415,8 @@ function applyStaticLanguage(language){
    const parent=t.parentElement;
    if(!parent || parent.closest('[data-i18n],script,style,template,option,textarea,select,[contenteditable], [data-bct-slogan], [data-login-language-label], [data-login-signin-heading], [data-entry-login]')) return;
    if(!BCT_ORIGINAL_TEXT_NODE.has(t)) BCT_ORIGINAL_TEXT_NODE.set(t,t.nodeValue);
-   const original=BCT_ORIGINAL_TEXT_NODE.get(t);
+   let original=BCT_ORIGINAL_TEXT_NODE.get(t);
+   if(t.nodeValue!==original && bctTranslateKnownText(t.nodeValue.trim(),'en')!==bctTranslateKnownText(original.trim(),'en')){original=t.nodeValue;BCT_ORIGINAL_TEXT_NODE.set(t,original);}
    const raw=(original||'').trim();
    if(!raw) return;
    const translated=translateRaw(raw);
@@ -2404,7 +2428,7 @@ function applyStaticLanguage(language){
    if(el.hasAttribute('data-i18n-placeholder')) return;
    if(!BCT_ORIGINAL_PLACEHOLDER.has(el)) BCT_ORIGINAL_PLACEHOLDER.set(el,el.getAttribute('placeholder'));
    const original=BCT_ORIGINAL_PLACEHOLDER.get(el);
-   const translated=language==='en' ? original : ((language==='es' && BCT_STATIC_PLACEHOLDER_ES[original]) ? BCT_STATIC_PLACEHOLDER_ES[original] : (BCT_STATIC_PLACEHOLDERS[language]?.[original]||commonDict[original]||original));
+   const translated=bctTranslateKnownText(original,language);
    if(el.getAttribute('placeholder')!==translated) el.setAttribute('placeholder',translated);
  });
 }
@@ -2461,6 +2485,8 @@ function applyCommonPortalLanguage(language){
 let BCT_LANGUAGE_REQUEST_ID=0;
 async function applyBctLanguage(languageCode){
   const language=languageCode||'en';
+  document.querySelectorAll('[data-i18n]').forEach(node=>{const key=node.dataset.i18n;if(!BCT_ENGLISH_FALLBACK[key] && node.textContent.trim()!==key)BCT_ENGLISH_FALLBACK[key]=node.textContent.trim();});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(node=>{const key=node.dataset.i18nPlaceholder;if(!BCT_ENGLISH_FALLBACK[key])BCT_ENGLISH_FALLBACK[key]=node.getAttribute('placeholder')||key;});
   const requestId=++BCT_LANGUAGE_REQUEST_ID;
   localStorage.setItem(BCT_LANGUAGE_KEY,language);
   document.documentElement.lang=language;
@@ -2473,15 +2499,17 @@ async function applyBctLanguage(languageCode){
   syncBrandSlogan(language);
   syncShareLanguage(language);
 
+  applyStaticLanguage(language);
+  document.querySelectorAll('[data-i18n]').forEach(node=>{if(!node.children.length)node.textContent=bctLocalKeyText(node.dataset.i18n,language);});
   const nodes=[...document.querySelectorAll('[data-i18n]')];
   await Promise.all(nodes.map(async node=>{
     const key=node.dataset.i18n;
-    let translated=BCT_ENGLISH_FALLBACK[key]||key;
+    let translated=bctLocalKeyText(key,language);
     if(language!=='en'){
-      const local=BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]||BCT_LOCAL_TRANSLATIONS[language]?.[key];
+      const local=bctLocalKeyText(key,language);
       if(local) translated=local;
       try{
-        const data=await fetchBctTranslation(key,language);
+        const data=translated!== (BCT_ENGLISH_FALLBACK[key]||key) ? translated : await fetchBctTranslation(key,language);
         if(typeof data==='string' && data && data!==key) translated=data;
       }catch(e){ console.warn('BCT translation fallback used for',key,e); }
       if(BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key]) translated=BCT_HOME_TRANSLATION_OVERRIDES[language][key];
@@ -2493,10 +2521,10 @@ async function applyBctLanguage(languageCode){
   const placeholderNodes=[...document.querySelectorAll('[data-i18n-placeholder]')];
   await Promise.all(placeholderNodes.map(async node=>{
     const key=node.dataset.i18nPlaceholder;
-    let translated=BCT_ENGLISH_FALLBACK[key]||node.getAttribute('placeholder')||key;
+    let translated=bctLocalKeyText(key,language);
     if(language!=='en'){
       try{
-        const data=await fetchBctTranslation(key,language);
+        const data=translated!== (BCT_ENGLISH_FALLBACK[key]||key) ? translated : await fetchBctTranslation(key,language);
         if(typeof data==='string' && data && data!==key) translated=data;
       }catch(e){ console.warn('BCT placeholder translation fallback used for',key,e); }
     }
@@ -2521,9 +2549,10 @@ let bctDynamicTranslationQueued=false;
 function scheduleBctDynamicTranslation(){
   if(bctDynamicTranslationQueued) return;
   bctDynamicTranslationQueued=true;
-  queueMicrotask(()=>{
+  setTimeout(()=>{
     bctDynamicTranslationQueued=false;
     if(!document.body) return;
+    window.__bctDynamicTranslationObserver?.disconnect();
     const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
     // New portal screens need an immediate local pass, not a network-wide
     // retranslation of every existing key on each navigation.
@@ -2532,22 +2561,22 @@ function scheduleBctDynamicTranslation(){
     updateFileUploadUI(language);
     document.querySelectorAll('[data-i18n-placeholder]').forEach(node=>{
       const key=node.dataset.i18nPlaceholder;
-      const local=language==='en' ? BCT_ENGLISH_FALLBACK[key] :
-        (BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key] || BCT_LOCAL_TRANSLATIONS[language]?.[key]);
+      const local=bctLocalKeyText(key,language);
       const fallback=BCT_ENGLISH_FALLBACK[key]||key;
       const current=node.getAttribute('placeholder')||'';
       if(local && (current===fallback || current===key) && current!==local) node.setAttribute('placeholder',local);
     });
     document.querySelectorAll('[data-i18n]').forEach(node=>{
       const key=node.dataset.i18n;
-      const local=language==='en' ? BCT_ENGLISH_FALLBACK[key] :
-        (BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key] || BCT_LOCAL_TRANSLATIONS[language]?.[key]);
+      if(!BCT_ENGLISH_FALLBACK[key] && node.textContent.trim()!==key)BCT_ENGLISH_FALLBACK[key]=node.textContent.trim();
+      const local=bctLocalKeyText(key,language);
       // Only replace untranslated English/key text; preserve a translation
       // already supplied by the asynchronous translation service.
       const fallback=BCT_ENGLISH_FALLBACK[key]||key;
       const current=node.textContent.trim();
       if(local && !node.children.length && (current===fallback || current===key) && current!==local) node.textContent=local;
     });
+    window.__bctDynamicTranslationObserver?.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true,attributeFilter:['aria-label','title','placeholder','value','data-bct-role-title']});
   });
 }
 function translateBctKnownOptionText(option){
@@ -2557,7 +2586,7 @@ function translateBctKnownOptionText(option){
   const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
   const raw=(original||'').trim();
   const dict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
-  const translated=language==='en' ? raw : ((language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || dict[raw] || raw);
+  const translated=bctTranslateKnownText(raw,language);
   return original.replace(raw,translated);
 }
 function installBctDynamicTranslationObserver(){
@@ -2567,15 +2596,19 @@ function installBctDynamicTranslationObserver(){
       node.nodeType===1 && (node.matches?.('[data-i18n],[data-i18n-placeholder],[aria-label],[title],button,select,label,input,textarea,option') ||
       node.querySelector?.('[data-i18n],[data-i18n-placeholder],[aria-label],[title],button,select,label,input,textarea,option'))));
     const changedLabels=records.some(record=>record.type==='attributes' &&
-      (record.attributeName==='aria-label' || record.attributeName==='title' || record.attributeName==='placeholder' || record.attributeName==='value') &&
+      (record.attributeName==='data-bct-role-title' || record.attributeName==='aria-label' || record.attributeName==='title' || record.attributeName==='placeholder' || record.attributeName==='value') &&
       record.target?.closest?.('main,header,footer'));
     // Existing dropdown option text may change without inserting a new node.
     const changedOptionText=records.some(record=>record.type==='characterData' &&
       record.target?.parentElement?.closest?.('main select option') &&
       record.target.parentElement.textContent!==translateBctKnownOptionText(record.target.parentElement));
-    if(addedControls || changedLabels || changedOptionText) scheduleBctDynamicTranslation();
+    const changedCopy=records.some(record=>{
+      const nodes=record.type==='characterData'?[record.target]:[...record.addedNodes];
+      return nodes.some(node=>{const parent=node.nodeType===3?node.parentElement:node;if(!parent?.closest?.('main')||parent.closest('script,style,textarea,[contenteditable],[data-i18n]'))return false;if(node.nodeType===1)return true;const text=(node.textContent||'').trim();return text && bctTranslateKnownText(text,localStorage.getItem(BCT_LANGUAGE_KEY)||'en')!==text;});
+    });
+    if(addedControls || changedLabels || changedOptionText || changedCopy) scheduleBctDynamicTranslation();
   });
-  observer.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true,attributeFilter:['aria-label','title','placeholder','value']});
+  observer.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true,attributeFilter:['aria-label','title','placeholder','value','data-bct-role-title']});
   window.__bctDynamicTranslationObserver=observer;
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',installBctDynamicTranslationObserver);
@@ -4115,7 +4148,7 @@ body.bct-entry-admin:not(.bct-authenticated) main.wrap{padding-top:10px!importan
 window.bctReturnToPublicLanding=function(){document.body.classList.remove('bct-home-signup','bct-contractor-signup');
   try{history.replaceState({bctView:'home'},'',location.pathname+location.search+'#home');}catch(_){}
   const b=document.body;
-  b.classList.remove('bct-authenticated','bct-entry-admin','bct-entry-client','bct-entry-contractor','bct-portal-entered');
+  b.classList.remove('bct-authenticated','bct-entry-admin','bct-entry-client','bct-entry-contractor','bct-entry-estimator','bct-portal-entered');
   b.classList.add('bct-signed-out');
   const landing=document.getElementById('view-home');
   if(landing){landing.classList.remove('hidden');landing.removeAttribute('aria-hidden');landing.style.removeProperty('display');}
@@ -4983,7 +5016,7 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
 <script src="/bct-admin-control-board.js?v=20261011-1"></script>
 <script src="/bct-admin-mobile-fix.js?v=20260930-4"></script>
 
-<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261009-1" defer></script>
+<script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261015-takai-captions-1" defer></script>
 <script src="/bct-contractor-roles.js?v=20261014-right-on-1" defer></script>
 <script src="/agent-bct-ui.js?v=20261014-right-on-2" defer></script>
 <script>/* October 11 matching contractor signup CTA */
