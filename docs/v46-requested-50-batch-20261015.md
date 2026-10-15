@@ -2,7 +2,7 @@
 
 Starting checkpoint: c0b8e18. Starting count: 23 closed / 219 open.
 
-This is a 50-item work queue, not a claim that 50 tasks are complete. One additional task (80) has verified local closure; task 49 has a tested partial repair. Current count: 24 local tasks closed / 218 open. No hosted acceptance or production changes.
+This is a 50-item work queue, not a claim that 50 tasks are complete. One additional task (80) has verified local closure; task 49 has a tested partial repair. Current count after the additional task 194 review: 25 local tasks closed / 217 open. No hosted acceptance or production changes.
 
 ## Verified work
 
@@ -71,8 +71,13 @@ Final full maintained suite passed 60/60 commands after all changes, including 1
 
 Do not subtract queued tasks, individual assertions, passing commands, or partially repaired workflows from the checklist.
 
-## Continued video repair checkpoint
+
+## Concurrent checkpoint 6b0ba0d (historical)
+
 
 Recovered exact branch head 28ea9c6. Hardened live-verification browser behavior: validate both submitted and stored HTTPS links using URL parsing; reject embedded credentials; retain the form before awaiting saves; guard duplicate submissions; preserve a new job's draft when an old save resolves; avoid replacing a pending form during language refresh. The existing repeated addEventListener with the same callback was already browser-deduplicated; no extra closure is claimed for removing it.
 
 Added blocked-network browser regressions for unsafe stored/input links, duplicate submissions, successful asynchronous reset and job-switch draft preservation. Full maintained suite: **61/61 offline commands pass** with Chromium /tmp/bct-chromium. No hosted Supabase, production, provider or Safari acceptance performed. Count remains **24 locally closed / 218 open**. Requested 50-item queue remains unfinished; these repairs are evidence toward task 200, not its full closure.
+
+
+Superseded count after combined review: 25 closed / 217 open. The saved video fixtures are preserved as live-verification-saved-browser.mjs alongside the expanded review fixtures. Same-callback addEventListener registration was browser-deduplicated already; it was not an independently reproduced duplicate-listener defect.

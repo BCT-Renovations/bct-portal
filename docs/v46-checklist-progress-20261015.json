@@ -3,11 +3,11 @@
   "source_filename": "BCT_V46_Remaining_Work_Numbered.txt",
   "source_sha256": "355aaa13b08698fd4408a9a4fba61097bcb6ae4ec188cc215dfd8e5eed5ed1f5",
   "live_sha": "6c90eb9a50b2eb1e0199683e07dc5ca1fb4667f1",
-  "verified_isolated_checkpoint": "bdf943db8da135ee06d6d5251878d4d4616f2d4b",
+  "verified_isolated_checkpoint": "6b0ba0d170301eddbf1085acb6f8f34bd6ead1de",
   "scope": "Local closure only; all hosted and physical-device/provider acceptance remains open. A partial item is never subtracted from remaining.",
   "total": 242,
-  "local_closed": 24,
-  "remaining": 218,
+  "local_closed": 25,
+  "remaining": 217,
   "partial": 40,
   "items": [
     {
@@ -1562,7 +1562,8 @@
       "type": "VERIFY",
       "requires_hosted_supabase": false,
       "task": "Review live walkthrough/video verification scheduling, secure join-link validation, checkpoint/result UI, and failure messaging against the existing module.",
-      "status": "pending"
+      "status": "local_closed",
+      "evidence": "tests/offline/live-verification-browser.mjs: 12 offline browser assertions against actual module; URL/rendering, scheduling, duplicate actions, stale job/account results, failure vs empty; real calls/hosted permissions excluded."
     },
     {
       "id": 195,

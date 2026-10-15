@@ -1,0 +1,13 @@
+# Review and video checkpoint — October 15, 2026
+
+Parent 6b0ba0d170301eddbf1085acb6f8f34bd6ead1de, which advanced concurrently through 28ea9c63 from c0b8e18. Its Handyman operations lifecycle and task 80 parsing evidence were preserved. Its GitHub push CI 38719881862 succeeded. Current Live 6c90eb9a remains unchanged.
+
+Handyman Admin now verifies the existing user and exact Admin permission before reading applications or reviewing an application. Caller-side checks complement existing server authorization, not replace it. Account changes clear private rows; generation guards discard old reads/actions. Per-application action locks prevent duplicate clicks. Invalid responses show unavailable instead of successful emptiness. Approved records no longer receive a fabricated pending tag. Record identity deduplicates parent/card badges; underscore status values are normalized. The board only intercepts clicks on urgent cards, so a review panel's category attribute cannot swallow review actions.
+
+Handyman queue state feeds the Contractors urgent category. Unknown/loading/failure can no longer be overwritten by a successful core Admin load. Other category results retain independent state. Task 70 stays partial because all other independent queues still require audit.
+
+Existing live video verification now rejects malformed, non-HTTPS, credential-bearing and control-character/backslash URLs for input and rendered join links. Saves capture their form before awaiting, validate date, prevent duplicate submits, and preserve drafts during language changes. Language refresh retains the existing submit listener. The old same-callback registration was already browser-deduplicated, so no duplicate-listener bug or separate closure is claimed. Result changes lock per checkpoint. Job/account generations discard late results and clear private rows; contractor failures no longer claim there are no checkpoints. This closes local review task 194, not hosted permissions or video-provider acceptance.
+
+Verification: 63/63 explicit offline commands pass, including 15 parked operations, 14 Handyman Admin, 18 Admin board and 12 video checkpoint browser assertions. The first integration test exposed the panel click-interception bug; the corrected actual-controller test now passes. Existing 14 staged insurance migrations/75 disposable PostgreSQL assertions and Live preservation checks still pass. No production deployment, database/project call, paid provider or real video call occurred.
+
+Progress: 25/242 local checklist items closed, 217 remain. The requested batch of 50 is still in progress. Tests are not counted as checklist items. Insurance remains Unfinished.

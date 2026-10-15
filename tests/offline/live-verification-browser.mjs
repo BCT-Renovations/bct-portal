@@ -1,33 +1,23 @@
-import fs from 'node:fs';
-import assert from 'node:assert/strict';
-import {createRequire} from 'node:module';
-const require=createRequire(import.meta.url);
-const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
-const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
+// Run the actual video-checkpoint module against isolated browser RPC fixtures.
+import fs from 'node:fs';import assert from 'node:assert/strict';import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),{chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});let checks=0;const check=(a,b,m)=>{assert.deepEqual(a,b,m);checks++;};
 try{
- const page=await browser.newPage();await page.route('**/*',r=>r.abort());
- await page.setContent('<main id="jobManagementPanel"></main><div id="view-jobs"></div>');
- await page.evaluate(()=>{window.activeManagedJob={project_id:'p1',job_id:'j1'};window.creates=[];window.rpc=async(name,args)=>{if(name==='bct_admin_create_live_verification')return new Promise(resolve=>creates.push({args,resolve}));return [{id:'bad',verification_mode:'live_video',video_join_url:'javascript:alert(1)'},{id:'good',verification_mode:'live_video',video_join_url:'https://meet.example.test/room'}];};});
- await page.addScriptTag({content:fs.readFileSync('bct-live-project-verification.js','utf8')});
- await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));
- await page.waitForFunction(()=>document.querySelector('#bctContractorLiveVerificationList a'));
- assert.equal(await page.locator('#bctContractorLiveVerificationList a').count(),1,'unsafe stored links omitted');
- const submit=()=>page.evaluate(()=>document.querySelector('#bctLiveVerificationForm').dispatchEvent(new Event('submit',{cancelable:true})));
- await page.fill('[name=scheduledFor]','2026-10-16T10:00');
- for(const url of ['javascript:alert(1)','https://','https://user:password@meet.example.test']){
-  await page.fill('[name=videoUrl]',url);await submit();assert.equal(await page.evaluate(()=>creates.length),0,'invalid URL rejected');
- }
- await page.fill('[name=videoUrl]','https://meet.example.test/room');await submit();await submit();
- assert.equal(await page.evaluate(()=>creates.length),1,'double submit only sends once');
- assert.equal(await page.locator('#bctLiveVerificationForm button').isDisabled(),true);
- await page.evaluate(()=>creates[0].resolve({}));
- await page.waitForFunction(()=>!document.querySelector('#bctLiveVerificationForm button').disabled);
- assert.match(await page.locator('#bctLiveVerificationStatus').textContent(),/saved/);
- assert.equal(await page.inputValue('[name=videoUrl]'),'','async completion resets original form');
- assert.equal(await page.locator('#bctLiveVerificationList a').count(),1,'admin also rejects unsafe saved URL');
- await page.fill('[name=scheduledFor]','2026-10-16T11:00');await submit();
- await page.evaluate(()=>{activeManagedJob={project_id:'p2',job_id:'j2'};document.querySelector('[name=notes]').value='new job draft';creates[1].resolve({});});
- await page.waitForFunction(()=>!document.querySelector('#bctLiveVerificationForm button').disabled);
- assert.equal(await page.inputValue('[name=notes]'),'new job draft','old save cannot reset new job draft');
- console.log('Live verification browser regressions passed: unsafe stored/input URLs, duplicate submits, async form reset and job-switch draft preservation. Hosted acceptance pending.');
+ const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route('**/*',r=>r.abort());await page.setContent('<main><section id="jobManagementPanel"></section><section id="view-jobs"></section><select id="bctLanguage"><option>en</option><option>fr</option></select><button data-contractor-view="jobs">Jobs</button></main>');
+ await page.evaluate(()=>{
+  window.activeManagedJob={project_id:'project-a',job_id:'job-a'};window.calls=[];window.savedRows=[{id:'v1',job_id:'job-a',verification_mode:'live_video',verification_checkpoint:'arrival',notes:'<script>bad</script>',video_join_url:'javascript:alert(1)'},{id:'v2',job_id:'job-a',verification_mode:'live_video',video_join_url:'https://meet.example.test/room'}];
+  window.supabaseClient={auth:{onAuthStateChange:cb=>window.authChange=cb}};
+  window.bctManageJob=async job=>{activeManagedJob=job;};
+  window.rpc=async(name,args)=>{calls.push({name,args});if(name==='bct_admin_create_live_verification'||name==='bct_admin_update_live_verification')return new Promise(resolve=>window.finishSave=()=>resolve({id:'saved'}));if(window.failed)throw Error('Fixture unavailable');if(window.hold&&name==='bct_admin_inspections')return new Promise(resolve=>window.releaseRead=()=>resolve(savedRows));return savedRows;};
+ });
+ await page.addScriptTag({content:fs.readFileSync('bct-live-project-verification.js','utf8')});await page.evaluate(()=>bctManageJob(activeManagedJob));
+ check(await page.locator('#bctLiveVerificationList a').count(),1,'unsafe stored video URL has no clickable link');check(await page.locator('#bctLiveVerificationList a').getAttribute('href'),'https://meet.example.test/room','valid https link remains');check(await page.locator('#bctLiveVerificationList script').count(),0,'notes escaped');
+ await page.fill('[name=notes]','Preserve this draft');await page.selectOption('#bctLanguage','fr');await page.waitForTimeout(30);check(await page.inputValue('[name=notes]'),'Preserve this draft','language refresh preserves draft');
+ await page.fill('[name=scheduledFor]','2026-10-16T12:30');await page.fill('[name=videoUrl]','https://user:password@meet.example.test/');await page.evaluate(()=>document.getElementById('bctLiveVerificationForm').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})));check(await page.evaluate(()=>calls.filter(c=>c.name==='bct_admin_create_live_verification').length),0,'credential-bearing URL rejected');
+ await page.fill('[name=videoUrl]','https://meet.example.test/room');await page.evaluate(()=>{const f=document.getElementById('bctLiveVerificationForm');f.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));f.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));});check(await page.evaluate(()=>calls.filter(c=>c.name==='bct_admin_create_live_verification').length),1,'one create after language changes and repeated submit');
+ await page.evaluate(()=>finishSave());await page.waitForFunction(()=>document.querySelector('[name=notes]').value==='');check(await page.locator('#bctLiveVerificationStatus').textContent(),'Live verification checkpoint saved.','async success resets captured form without event.currentTarget error');
+ await page.evaluate(()=>{document.querySelector('[data-live-id="v1"]').click();document.querySelector('[data-live-id="v1"]').click();});check(await page.evaluate(()=>calls.filter(c=>c.name==='bct_admin_update_live_verification').length),1,'duplicate result clicks issue one update');await page.evaluate(()=>finishSave());await page.waitForTimeout(30);
+ await page.evaluate(()=>{hold=true;window.reading=bctManageJob({project_id:'project-a',job_id:'job-a'});});await page.waitForFunction(()=>!!window.releaseRead);await page.evaluate(async()=>{activeManagedJob={project_id:'project-b',job_id:'job-b'};releaseRead();await reading;});check(await page.locator('#bctLiveVerificationList [data-live-verification-id]').count(),0,'late previous-job rows discarded');
+ await page.evaluate(()=>{hold=false;failed=true;});await page.click('[data-contractor-view=jobs]');await page.waitForFunction(()=>document.getElementById('bctContractorLiveVerificationList').textContent.includes('unavailable'));check(await page.locator('#bctContractorLiveVerificationList').textContent(),'Live verification list unavailable. Refresh to retry.','contractor backend error is not an empty success');
+ await page.evaluate(()=>authChange('SIGNED_IN',{user:{id:'one'}}));await page.evaluate(()=>authChange('SIGNED_OUT',null));check(await page.locator('#bctLiveVerificationList').textContent(),'Records not loaded.','account transition clears private verification records');check(errors,[],'no browser exceptions');
+ console.log(`Live verification offline browser: ${checks} assertions passed; actual video calls and hosted permissions not exercised`);
 }finally{await browser.close();}

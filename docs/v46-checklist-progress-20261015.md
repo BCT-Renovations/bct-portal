@@ -1,8 +1,8 @@
 # 242-item checklist progress — October 15, 2026
 
-**24 local tasks closed; 218 remain open (including 40 partial tasks). Local closure: 9.9%.** No starred hosted task is closed. This counts numbered register tasks, not shipped features or production readiness. The earlier spoken 16 addressed items included partial work and is superseded by this explicit register.
+**25 local tasks closed; 217 remain open (including 40 partial tasks). Local closure: 10.3%.** No starred hosted task is closed. This counts numbered register tasks, not shipped features or production readiness. The earlier spoken 16 addressed items included partial work and is superseded by this explicit register.
 
-Current Live 6c90eb9a is preserved. Isolated checkpoint bdf943db is READY and its gallery asset served HTTP 200 with both approved translated fallback labels and the independent pagination/URL-reuse fixes. Its 56-command CI run 38717745885 succeeded. A later local Admin/simulation batch passes 59 commands and awaits its own save/CI verification.
+Current Live 6c90eb9a is preserved. Isolated checkpoint bdf943db is READY and its gallery asset served HTTP 200 with both approved translated fallback labels and the independent pagination/URL-reuse fixes. Its 56-command CI run 38717745885 succeeded. Admin/simulation checkpoint c0b8e18d is saved and its push CI run 38719881862 succeeded. The review/video follow-up passes 63 offline commands.
 
 ## Closed local task IDs
 
@@ -32,6 +32,8 @@ Current Live 6c90eb9a is preserved. Isolated checkpoint bdf943db is READY and it
 | 237 | Resolve the independent Vercel deployment limit through allowed capacity/reset/account decisions; do not assume it cleared or purchase anything. | Automatic Git preview path is READY; no claim that manual API quota was measured/reset |
 | 242 | Produce a release evidence record with what passed, failed, remains blocked, exact commits/URLs, and recovery plan; request explicit Live approval only after required gates pass. | Current reconciliation/evidence record and focused offline regression |
 
+| 194 | Review existing live walkthrough/video checkpoint scheduling, secure links, results and failure messaging. | Actual module browser fixtures; 12 assertions, with hosted/video-provider acceptance excluded |
+
 ## Partial work stays open
 
 Private estimator uploads/assessment completeness are blocked rather than fabricated. Profile/assignment display is implemented, but payment history and account creation/recovery remain open. Admin core loading/error states and static estimator unknown metrics are improved; full per-queue health/readiness and connected data remain open under task 70. The 14 Agent UI routing fixtures are not the business-guidance acceptance scenarios in tasks 83–96. The capability map records those gaps explicitly.
@@ -40,12 +42,10 @@ Approved branding fallbacks and their translations are retained because current 
 
 ## Verification and recovery
 
-Latest local batch: 59/59 commands, 183 unit checks, all 49 selected source suites, 14 migrations/75 disposable PostgreSQL checks, mocked insurance browser, and 21 estimator / 21 Agent / 10 gallery / 39 contractor / 15 Admin / 18 simulation browser assertions. Shared entrypoints and source-check counts overlap; never convert them into completed feature counts.
+Latest local batch: 63/63 commands, 183 unit checks, all 49 selected source suites, 14 migrations/75 disposable PostgreSQL checks, mocked insurance browser, and 21 estimator / 21 Agent / 10 gallery / 39 contractor / 18 Admin / 18 simulation / 14 Handyman review / 12 video-checkpoint browser assertions. Shared entrypoints and source-check counts overlap; never convert them into completed feature counts.
 
 If an isolated regression is found, compare/revert only the affected development changes against immutable bdf943db or the earlier saved checkpoints, keeping the current Live wording. Preserve branch history; use a reviewed follow-up/revert commit, never a force reset. Do not deploy a recovery to production or apply production migrations. Insurance remains Unfinished/dormant. Re-run the explicit offline suite before another preview; hosted/device/provider gates must pass before requesting any Live approval.
 
 The JSON register retains all 242 original task texts and marks each local_closed, partial or pending. Nothing was removed from the authoritative source file. No 100-item completion or full app completion is claimed.
 
-## Requested 50-item batch checkpoint
-
-Task 80 is additionally locally closed by a fresh 25-test provider-response parsing/security suite. Task 49 has a 15-assertion mocked-browser partial repair but remains open pending safe entrypoint and authentication integration. The requested batch of 50 is not complete. See [batch queue and evidence](v46-requested-50-batch-20261015.md).
+Concurrent saved checkpoint 28ea9c63 was reconciled before this save. It adds locally closed task 80 (existing provider response parsing, freshly tested) and partial task 49 (parked Handyman operations lifecycle; 15 browser assertions). Both are preserved. Task 80 brings the closed count to 25 after task 194.

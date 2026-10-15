@@ -173,7 +173,7 @@
   }
 
   function severity(text){
-    const s=String(text||'').toLowerCase();
+    const s=String(text||'').toLowerCase().replace(/[_-]+/g,' ');
     if(/critical|failed|blocked|dispute|emergency|security failure|serious delay|payment blocked|escrow hold|inspection failed|safety violation|background check failed/.test(s))return 'critical';
     if(/expired|expiring|expires|30.day|14.day|7.day|delayed|overdue|needs attention|action required|pending approval|pending review|pending bct review|pending handyman review|awaiting approval|awaiting response|unanswered|on hold|missing|required action|failure|change order|inspection due|schedule issue|completion sign-off|financing pending|payment due|insurance due|bond due|license due|workers.? comp|credential|training overdue|compliance hold/.test(s))return 'warning';
     return '';
@@ -189,7 +189,7 @@
       candidates.forEach(node=>{
         const text=safeText((node.getAttribute('data-status')||'')+' '+(node.getAttribute('data-state')||'')+' '+(node.getAttribute('data-severity')||'')+' '+(node.getAttribute('aria-label')||'')+' '+(node.textContent||''));
         const level=severity(text);if(!level)return;
-        const key=category+'|'+panel.id+'|'+text.slice(0,180);if(seen.has(key))return;seen.add(key);
+        const record=node.closest('[data-bct-alert-id]');const key=category+'|'+panel.id+'|'+(record?'record:'+record.dataset.bctAlertId:text.slice(0,180));if(seen.has(key))return;seen.add(key);
         results[category].push({panelId:panel.id,title:panelTitle(panel),text:text.slice(0,220),level});
       });
     });
@@ -213,17 +213,22 @@
     ar:['جارٍ تحميل السجلات…','السجلات غير متاحة','لم تُحمَّل السجلات','عناصر معروفة؛ البيانات غير مكتملة'],
     ru:['Загрузка записей…','Записи недоступны','Записи не загружены','Известные пункты; данные неполные']
   };
-  function dataState(){const state=root()?.dataset.bctAdminDataState;return ['loading','ready','error'].includes(state)?state:'unknown';}
+  function dataState(category){
+    const state=root()?.dataset.bctAdminDataState;
+    const states=[['loading','ready','error'].includes(state)?state:'unknown'];
+    panels().forEach(panel=>{if(panel.hasAttribute('data-bct-admin-queue-state')&&(!category||categoryForPanel(panel)===category))states.push(panel.dataset.bctAdminQueueState);});
+    return states.includes('error')?'error':states.includes('loading')?'loading':states.some(s=>s!=='ready')?'unknown':'ready';
+  }
   function dataLabel(state){const labels=DATA_COPY[language()]||DATA_COPY.en;return labels[state==='loading'?0:state==='error'?1:2];}
   function renderUrgentCards(board){
-    const t=copy(),data=collectUrgent(),state=dataState();
+    const t=copy(),data=collectUrgent();
     const defs=[['jobs',t.jobs,t.noJobs],['contractors',t.contractors,t.noContractors],['clients',t.clients,t.noClients]];
     const grid=board.querySelector('.bct-admin-urgent-grid');if(!grid)return;
-    const renderKey=defs.map(([key,label,empty])=>{const items=data[key];return `${state}:${key}:${label}:${items.length}:${urgentLevel(items)}:${items.length?`${items.length} ${t.urgent}`:empty}`}).join('|');
+    const renderKey=defs.map(([key,label,empty])=>{const items=data[key],state=dataState(key);return `${state}:${key}:${label}:${items.length}:${urgentLevel(items)}:${items.length?`${items.length} ${t.urgent}`:empty}`}).join('|');
     if(grid.dataset.renderKey===renderKey)return;
     grid.dataset.renderKey=renderKey;
     grid.replaceChildren(...defs.map(([key,label,empty])=>{
-      const items=data[key];const button=document.createElement('button');button.type='button';button.className='bct-admin-urgent-card';button.dataset.bctUrgentCategory=key;button.dataset.level=state==='ready'?urgentLevel(items):state==='error'?'critical':'warning';button.dataset.loadState=state;button.setAttribute('aria-busy',String(state==='loading'));
+      const items=data[key],state=dataState(key);const button=document.createElement('button');button.type='button';button.className='bct-admin-urgent-card';button.dataset.bctUrgentCategory=key;button.dataset.level=state==='ready'?urgentLevel(items):state==='error'?'critical':'warning';button.dataset.loadState=state;button.setAttribute('aria-busy',String(state==='loading'));
       addTextEl(button,'strong',label);
       addTextEl(button,'span',state==='ready'?String(items.length):items.length?'≥ '+items.length:'—','bct-admin-alert-count');
       addTextEl(button,'small',state==='ready'?(items.length?`${items.length} ${t.urgent}`:empty):dataLabel(state));
@@ -278,7 +283,7 @@
     const labels={jobs:t.jobs,contractors:t.contractors,handymen:t.handymen||'HANDYMEN',clients:t.clients};
     view.innerHTML='<div class="bct-admin-board-head"><div><h2></h2><p></p></div><div><button type="button" class="bct-admin-board-back" data-bct-board-homeboard></button> <button type="button" class="bct-admin-board-home" data-bct-board-publichome></button></div></div><div class="bct-admin-urgent-list"></div>';
     view.querySelector('h2').textContent=`${t.urgent}: ${labels[category]||category}`;
-    view.querySelector('p').textContent=dataState()==='ready'?(data.length?`${data.length} ${t.urgent}`:t.none):dataLabel(dataState());
+    view.querySelector('p').textContent=dataState(category)==='ready'?(data.length?`${data.length} ${t.urgent}`:t.none):dataLabel(dataState(category));
     view.querySelector('[data-bct-board-homeboard]').textContent=t.board;
     view.querySelector('[data-bct-board-publichome]').textContent=t.home;
     const list=view.querySelector('.bct-admin-urgent-list');
@@ -323,7 +328,7 @@
     const r=root();if(!r)return;
     const portal=event.target?.closest?.('[data-bct-open-panel]');
     if(portal&&r.contains(portal)){event.preventDefault();event.stopPropagation();const panel=$(portal.dataset.bctOpenPanel);if(panel){openPanel(panel,true);if(panel.id==='adminContractorCredentials')loadCredentialsBoard();if(panel.id==='bctHandymanAdminMount'&&window.BCTHandymanAdmin?.load)window.BCTHandymanAdmin.load()}return}
-    const urgent=event.target?.closest?.('[data-bct-urgent-category]');
+    const urgent=event.target?.closest?.('.bct-admin-urgent-card[data-bct-urgent-category]');
     if(urgent&&r.contains(urgent)){event.preventDefault();event.stopPropagation();showUrgent(urgent.dataset.bctUrgentCategory);return}
     const back=event.target?.closest?.('[data-bct-board-back]');
     if(back&&r.contains(back)){event.preventDefault();event.stopPropagation();goBack();return}
@@ -353,7 +358,7 @@
         return true;
       });
       if(meaningful)schedule();
-    });observer.observe(r,{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-hidden','data-status','data-state','data-severity','data-bct-admin-data-state']})}
+    });observer.observe(r,{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-hidden','data-status','data-state','data-severity','data-bct-admin-data-state','data-bct-admin-queue-state']})}
     schedule();
   }
 
