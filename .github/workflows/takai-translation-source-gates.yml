@@ -12,3 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run Takai translation source checks
         run: node tests/takai-translation-source-regression.mjs
+      - name: Verify Agent BCT nine-language contract
+        run: node --test tests/agent-bct/languages.test.js
+      - name: Verify gallery translation integration
+        run: node tests/v46-gallery-image-text-translation.mjs
