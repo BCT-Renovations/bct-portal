@@ -5147,5 +5147,9 @@ button.bct-new-client-back,button.bct-agent-home,
  sync();
 })();
 </script>
+<style id="bct-takai-admin-entry-visibility-fix">
+/* Signed-out Admin entry must show the login gate; never expose authenticated content. */
+body.bct-portal-entered.bct-entry-admin:not(.bct-authenticated) main#bctMain > section#view-admin-login:not(.hidden){display:block!important;visibility:visible!important}
+</style>
 </body>
 </html>
