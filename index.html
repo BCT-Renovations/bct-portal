@@ -2328,11 +2328,25 @@ const BCT_STATIC_PLACEHOLDER_ES={
   "Tell BCT what is happening, what you want changed, and anything we should know.":"Cuéntele a BCT qué está ocurriendo, qué desea cambiar y cualquier otra información que debamos saber.",
   "BCT Admin password":"Contraseña de administrador de BCT"
 };
+const BCT_ORIGINAL_ACCESSIBLE_TEXT=new WeakMap();
 function applyStaticLanguage(language){
  const commonDict=Object.assign({},BCT_COMMON_UI_TRANSLATIONS[language]||{},BCT_EXTENDED_UI_TRANSLATIONS[language]||{});
  const translateRaw=raw=>language==='en' ? raw : ((language==='es' && BCT_STATIC_ES[raw]) || BCT_STATIC_FORMS[language]?.[raw] || commonDict[raw] || raw);
  // Preserve original text nodes across language changes. Replacing an element's
  // textContent creates new nodes and loses the original English source.
+ // Keep accessibility labels and tooltip titles in sync with the selected language.
+ // Only translate known dictionary strings; leave application-generated labels intact.
+ document.querySelectorAll('main [aria-label],main [title],header [aria-label],header [title],footer [aria-label],footer [title]').forEach(el=>{
+   for(const attribute of ['aria-label','title']){
+     if(!el.hasAttribute(attribute)) continue;
+     let originals=BCT_ORIGINAL_ACCESSIBLE_TEXT.get(el);
+     if(!originals){originals={};BCT_ORIGINAL_ACCESSIBLE_TEXT.set(el,originals);}
+     if(!(attribute in originals)) originals[attribute]=el.getAttribute(attribute);
+     const original=originals[attribute];
+     const translated=translateRaw(original);
+     if(el.getAttribute(attribute)!==translated) el.setAttribute(attribute,translated);
+   }
+ });
  // Translate select options without replacing the option nodes or their values.
  document.querySelectorAll('main select option').forEach(option=>{
    if(!BCT_ORIGINAL_TEXT.has(option)) BCT_ORIGINAL_TEXT.set(option,option.textContent);
