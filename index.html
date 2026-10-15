@@ -2474,7 +2474,17 @@ function scheduleBctDynamicTranslation(){
   queueMicrotask(()=>{
     bctDynamicTranslationQueued=false;
     const language=localStorage.getItem(BCT_LANGUAGE_KEY)||'en';
-    applyBctLanguage(language).catch(error=>console.warn('BCT dynamic language sync:',error));
+    // New portal screens need an immediate local pass, not a network-wide
+    // retranslation of every existing key on each navigation.
+    applyStaticLanguage(language);
+    applyCommonPortalLanguage(language);
+    updateFileUploadUI(language);
+    document.querySelectorAll('[data-i18n]').forEach(node=>{
+      const key=node.dataset.i18n;
+      const local=language==='en' ? BCT_ENGLISH_FALLBACK[key] :
+        (BCT_HOME_TRANSLATION_OVERRIDES[language]?.[key] || BCT_LOCAL_TRANSLATIONS[language]?.[key]);
+      if(local && !node.children.length && node.textContent!==local) node.textContent=local;
+    });
   });
 }
 function installBctDynamicTranslationObserver(){
