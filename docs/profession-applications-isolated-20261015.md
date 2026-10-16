@@ -117,3 +117,27 @@ then isolated preview deployment and exact-commit verification. Private uploads,
 Admin access, screening provider workflow, and connected persistence/permissions
 remain subject to the existing deferred verification boundaries. Do not replace
 the old preview link with a claim that this new batch is already visible.
+
+## October 16 structured-form continuation
+
+Added staged `bct-application-form.js`: renders the approved nineteen questions
+for each of the ten professions using native labelled inputs and fieldsets.
+Conditional credentials/insurance fields show and disable with the selected
+answer; inactive answers are excluded when reading the form. Portfolio selection
+collects each photo's description, personal role and supervisor, plus three
+professional references. File objects remain local; nothing is uploaded.
+Background acknowledgment and a live validation status are included. Multiple
+mounts use unique IDs and radio groups. There is no network, storage, submission,
+or approval code. Nothing has been added to the production/preview entry points.
+
+Verified: 111 structured-form browser assertions across all ten professions,
+using an existing local Chromium executable. Existing 620 source/preflight checks
+also pass. These totals describe different checks, not completed workflow items.
+
+Remaining: all supplementary form-control labels and 661 missing questionnaire
+strings per non-English locale need translation. Rendering refuses incomplete
+locales. Form state retention when switching profession/language, integrated
+portal navigation and accessibility/layout review remain unfinished. Secure
+uploads, persistence, Admin review/permissions and screening remain unverified;
+the existing October 31 connected-testing boundary remains in force. Do not
+claim these forms are visible in the previous preview or deployed to Live.
