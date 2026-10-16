@@ -51,3 +51,69 @@ User confirmed: the account-free question review is **preview only**. Real appli
 - Local verification: 232 review/navigation checks passed, including all 30 questions in all nine languages, zero review-page remote requests or browser storage writes, retained initial required fields, both Back controls, simulated slow session recovery, and suppression of review controls on a simulated Live hostname. The 286 profession application checks also passed. No connected accounts, Admin or Supabase were used.
 
 Remaining: authenticated save/approval verification and Handyman assignment dates/notes remain deferred. Do not mark the full connected workflow complete on the basis of local browser checks.
+
+## October 16 approved expanded applications — source/preflight checkpoint
+
+The owner supplied and approved expanded questionnaires for **ten distinct applications**:
+Electrician, Plumber, Contractor / Renovations, HVAC, Roofer, Drywaller,
+Concrete / Masonry, Flooring, Handyman, and Estimator. Drywall is included once.
+Earlier spoken counts of eight/nine trades were inconsistent; these ten names,
+not those running counts, define this batch. The existing Other Specialty Trade
+questionnaire is preserved, not silently replaced or counted as an approved set.
+
+`bct-application-catalogue.js` captures 15 core questions and their answer choices
+for each approved profession, plus four numbered questions: service area
+**city and state only**, availability/start time, crew/team, and ability to perform
+essential duties safely with or without reasonable accommodation. Crew details
+remain conditional follow-ups, not additional numbered questions: size, training,
+experience, required credentials, supervision, task qualifications, and subcontractor
+license/insurance verification. No past injury or medical-history questions.
+
+Later approved amendments supersede the older pasted boilerplate:
+
+- Portfolios: 5–10 prior-work photos, each with description and personal role;
+  three professional references. Apprentices/assistants may show supervised work,
+  identifying their responsibilities and supervisor. Fewer than five photos for
+  an apprentice routes to manual review, **not** an automatic rejection or approval.
+- Files must remain private for authorized BCT Admin review. Never claim that
+  local file selection or file metadata proves a secure upload or access policy.
+- All ten credential questions include Yes, No, Not required for my work/location,
+  and Apprentice under supervision. Yes requires credential details and supporting
+  documents; other branches require work/location or supervisor details. BCT must
+  verify actual location/scope requirements; no blanket trade exemption. An upload
+  is not verification. No claim that any specific jurisdiction's law was checked.
+- Required background screening across professional applications. A local
+  acknowledgment is not a completed check, consent workflow, or clearance.
+- Estimators submit assessments/recommendations; BCT approves final pricing.
+  Assessment concerns do not authorize engineering or specialized inspections.
+- Homeowner intake changes remain on hold. Do not impose professional portfolio,
+  licensing, or background-check gates on the homeowner forms.
+
+`bct-application-validation.js` implements **local preflight only**: conditional
+answer validation, recognized stable choice values, multi-selects, Other details,
+inactive-answer exclusion, portfolio bounds/descriptions/roles/supervision,
+references, city/state, crew size, and background acknowledgment. Results always
+remain pending BCT review, with credentials/background/private upload unverified
+and `submissionReady: false`. This module does not approve, upload, save, or
+connect to accounts/data services.
+
+Verification: `node tests/bct-approved-applications.mjs` passes **620 source and
+preflight assertions**, plus translation-gate checks. These are not browser or
+backend workflow checks. Tests cover all ten sets, nineteen questions each,
+duplicate photo rejection, under/over photo bounds, apprentice exception,
+required per-photo descriptions and references, conditional credential uploads,
+credential exemption review, stale hidden answers, and invalid choice rejection.
+
+**Not activated or deployed yet.** These new files are intentionally not loaded
+by `index.html` or `profession-review.html`: the existing working nine-language
+preview is preserved while the larger batch is prepared. New questionnaires have
+691 distinct source strings; the shared translation pack currently covers 30
+in each non-English language. `bct-application-locales.js` refuses incomplete
+localized catalogues instead of leaking English fallback. Remaining work:
+complete the eight non-English catalogues; accessible structured-form rendering;
+integration into contractor/Handyman and separate Estimator application paths;
+per-photo metadata/upload-category integration; all-nine-language browser tests;
+then isolated preview deployment and exact-commit verification. Private uploads,
+Admin access, screening provider workflow, and connected persistence/permissions
+remain subject to the existing deferred verification boundaries. Do not replace
+the old preview link with a claim that this new batch is already visible.
