@@ -141,3 +141,49 @@ portal navigation and accessibility/layout review remain unfinished. Secure
 uploads, persistence, Admin review/permissions and screening remain unverified;
 the existing October 31 connected-testing boundary remains in force. Do not
 claim these forms are visible in the previous preview or deployed to Live.
+
+## October 16 multilingual renderer and portfolio continuation
+
+Continued from the separate GitHub checkpoint branch
+`feature/v46-approved-applications-checkpoint-20261016`, including its saved
+photo-description fix (`550ecf814829550933661dedc392b27bd8b5fe97`). No entry point,
+Live deployment, database, or safe point changed in this batch.
+
+- Corrected mobile file selection to accumulate additional photo batches rather
+  than dropping previously selected photographs. Existing descriptions and roles
+  are retained, repeated selection of the same file does not inflate the count,
+  and individual photos can be removed. Over-limit selections remain visible for
+  validation rather than being silently truncated.
+- Added memory-only form snapshots and language remounting. Actual File objects,
+  answers, references, and photo descriptions survive language changes. Hidden
+  conditional answers survive locally but are excluded from the active read and
+  file lists. An unavailable language leaves the original form intact.
+- Added all-nine-language translations for supplementary controls and fifteen
+  validation reasons. Validation now shows a translated, clickable error list
+  with focus and invalid-state indication, not just an unexplained error count.
+  Estimator scope/engineering and final-price restrictions now render visibly.
+- Added `bct-application-translation-rows.js`. Electrician (76 distinct catalogue
+  strings), Plumber (79), and Contractor / Renovations (77) are fully mapped in
+  all nine supported languages, including their nineteen questions, choices,
+  conditional instructions, portfolio requirements and crew details. Role-scoped
+  translation gates allow testing these completed sections while refusing any
+  still-incomplete profession. Technical identifiers OSHA 10/30 remain unchanged.
+- Total new-catalogue coverage is 195 of 691 distinct strings per non-English
+  language, plus complete supplementary controls and validation messages. This
+  count is source-string coverage, not overall workflow completion.
+
+Verified locally: **530 structured-form browser assertions** and **620 existing
+source/preflight assertions**, plus supplementary translation assertions. Browser
+checks cover all ten English forms and repeated actual switching through all nine
+languages for Electrician, Plumber and Contractor, including retained answer
+values, retained photo file bytes/descriptions, hidden credential state, removal,
+translated errors and error-focus behavior. No account, network upload, saved
+submission or Admin flow was exercised.
+
+Remaining: trade-specific translations for HVAC, Roofer, Drywaller,
+Concrete / Masonry, Flooring, Handyman and Estimator; actual portal mounting and
+navigation/state integration; private-upload/persistence integration; then an
+isolated preview with exact-commit and hosted behavior verification. Current
+production and preview entry points still use the prior approved implementation.
+Do not claim this expanded batch is on the old preview. Connected tests remain
+deferred, and homeowner changes remain on hold.

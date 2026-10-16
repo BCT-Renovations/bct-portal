@@ -74,4 +74,12 @@ const est=sample(estimator);est.answers.software.value=['1','9'];check(!validate
 check(Object.isFrozen(catalogue)&&Object.isFrozen(catalogue[0].questions),'immutable approved source');
 for(const file of ['bct-application-catalogue.js','bct-application-validation.js']){const text=await readFile(new URL('../'+file,import.meta.url),'utf8');check(!/fetch\(|localStorage|sessionStorage|supabase\.|XMLHttpRequest/.test(text),'no network or storage side effects');}
 console.log(`${checks} approved application source and preflight checks passed. Rendering, translations and private backend uploads remain separate gates.`);
-for(const lang of policy.languages){const coverage=locales.coverage(lang);if(lang==='en')assert.equal(locales.catalogue(lang).length,10);else{assert.ok(coverage.translated>20);assert.ok(!coverage.ready);assert.throws(()=>locales.catalogue(lang),error=>error.code==='TRANSLATION_INCOMPLETE');}console.log(`${lang}: ${coverage.translated}/${coverage.total} distinct new questionnaire strings translated; ready=${coverage.ready}`);}
+const controls=locales.controls('en');
+for(const lang of policy.languages){const coverage=locales.coverage(lang),labels=locales.controls(lang);assert.deepEqual(Object.keys(labels),Object.keys(controls));assert.ok(Object.values(labels).every(text=>text.trim()));if(lang==='en')assert.equal(locales.catalogue(lang).length,10);else{assert.ok(Object.keys(labels).every(key=>labels[key]!==controls[key]),'every supplementary label translated: '+lang);assert.ok(coverage.translated>=87);assert.ok(!coverage.ready);assert.throws(()=>locales.catalogue(lang),error=>error.code==='TRANSLATION_INCOMPLETE');}console.log(`${lang}: ${coverage.translated}/${coverage.total} distinct new questionnaire strings translated; ready=${coverage.ready}`);}
+assert.throws(()=>locales.controls('unknown'));
+for(const lang of policy.languages){
+ for(const code of ['answer_required_or_invalid','maximum_10_photos','minimum_5_photos','image_file_required','duplicate_photo','description_required','personal_role_required','supervisor_required','supervisor_required_for_manual_review','three_professional_references_required','reference_details_required','city_and_state_required','positive_crew_size_required','no_software_is_exclusive','background_check_acknowledgment_required']){
+  const message=locales.errorMessage(lang,code);assert.ok(message.trim());if(lang!=='en')assert.notEqual(message,locales.errorMessage('en',code));
+ }
+ for(const id of ['electrical','plumbing','general_contractor'])assert.equal(locales.coverage(lang,id).ready,true);
+}
