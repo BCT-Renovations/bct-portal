@@ -16,7 +16,7 @@ try{
    for(const id of ['view-customer','view-apply','view-status','view-estimator','view-password-request','view-password-reset']){
     const root=document.getElementById(id);const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
     while(n=walk.nextNode()){
-     if(n.parentElement.closest('script,style,textarea'))continue;
+     if(n.parentElement.closest('script,style,textarea,[data-bct-profession-questions]'))continue;
      const text=n.nodeValue.trim();if(!/[A-Za-z]{2}/.test(text)||/^\$|^[A-Za-z ]+ \([A-Z]{2}\)$|^BCT Renovations|^myproject@|^317|^9465/.test(text))continue;
      const key=n.parentElement.dataset.i18n;const translated=key?bctLocalKeyText(key,language):bctTranslateKnownText(text,language);
      if((translated===text||translated===key)&&!identical[language].includes(text))missing.push(language+': '+text);
@@ -75,7 +75,7 @@ try{
    for(const id of ['view-customer','view-apply','view-status','view-estimator','view-password-request','view-password-reset']){
     const root=document.getElementById(id);if(!root)continue;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
     while(n=w.nextNode()){
-     if(n.parentElement.closest('script,style,textarea,select,[data-i18n]'))continue;
+     if(n.parentElement.closest('script,style,textarea,select,[data-i18n],[data-bct-profession-questions]'))continue;
      const text=n.nodeValue.trim();if(!text)continue;
      const expected=bctTranslateKnownText(text,language);
      if(text!==expected)issues.push(id+': '+text+' => '+expected);

@@ -1,0 +1,39 @@
+# Profession applications — isolated continuation, October 15, 2026
+
+Baseline: approved Live commit `2926cf5a5759e63209ad8c9567f73d65c477724d`. Continue on `fix/takai-translation-audit-20261015`; do not change Live or the Takai/THEO safe points.
+
+## This batch
+
+Added profession-specific questions within the existing contractor application, beside its primary-trade step. Shared contact, insurance, work history, references, screening and terms remain unchanged. Estimator already uses a separate application and is unchanged.
+
+| Profession | New questions |
+| --- | --- |
+| Electrician | License/registration jurisdiction and expiry; electrical work experience; isolation/testing procedures; permits, inspections and work limits |
+| Plumber | License/registration jurisdiction and expiry; plumbing work experience; leaks/pressure testing/drain inspection/shutoff; permits, inspections and work limits |
+| Contractor / Renovations | Renovation leadership and occupied-home experience; planning, subcontractors, change documentation and permit/licensed-trade boundaries |
+| HVAC | System experience and certifications; diagnostics, refrigerants, electrical isolation, combustion safety and work limits |
+| Roofer | Systems, repairs, flashing and leaks; fall protection, ladders, weather and occupied-property protection |
+| Drywaller | Hanging, taping, patches, finishing and texture matching; dust, occupied rooms, moisture and suspected hazardous materials |
+| Concrete / Masonry | Flatwork, repairs, forms, reinforcement and drainage; preparation, curing, weather, excavation checks and equipment |
+| Flooring | Materials, subfloors and transitions; moisture, substrate, dust and suspected hazardous materials |
+| Handyman | Independent repairs and licensed-trade limits; tools, ladders, availability, problem documentation and scope changes |
+| Other Specialty Trade | Specialty, projects and credentials; equipment, safety, permits and qualification limits |
+
+24 questions total. All new headings, instructions, question labels and application validation messages have explicit translations for English, Spanish, French, Haitian Creole, Portuguese, Vietnamese, Chinese, Arabic and Russian. Arabic uses RTL. Selecting multiple categories shows their own questions; deselected categories do not submit their answers. Answers survive trade/language switching within the open form and clear on reset. No draft is saved to browser storage.
+
+Answers are serialized with stable profession/question IDs into the existing `additional_work_history` payload alongside the original work history, for both existing-user RPC and new-user signup metadata paths. Backend persistence and Admin visibility are **not verified**. No new database field, migration or connected write is introduced. Public instructions explicitly exclude SSNs, bank details and identity document numbers.
+
+## Verification boundaries
+
+Local browser tests block every request outside the local test server. Use `node tests/bct-profession-questions-browser.mjs` (set `BCT_CHROMIUM_PATH` if needed). The test covers translations, required answers, whitespace rejection, selection changes, multi-profession payload isolation, preserved original history and reset.
+
+Run existing `tests/takai-translation-source-regression.mjs`, `tests/takai-portal-languages-browser.mjs`, `scripts/bct-contractor-onboarding-smoke.mjs`, and `scripts/bct-handyman-application-depth-smoke.mjs` for regression checks. The general translation audit delegates the new questionnaire region to its dedicated all-nine-language test because the region owns its localized text.
+
+Verified locally: 286 profession-application checks, 248 existing portal browser checks, 39 translation source checks, and contractor/Handyman application smoke checks passed. A known pre-existing Admin initialization error remains outside this batch and is deferred.
+
+## Still pending
+
+- Handyman assignment scheduling/notes: `bct-handyman-operations.js` disables the date input; assignment creation omits the date and notes. Correcting and proving the connected flow needs the backend contract and Admin verification. Do not enable a date input that would silently discard a promised schedule.
+- Authenticated application persistence, Admin review, credential approval, assignments and permissions remain deferred until the authorized connected testing window (October 31).
+- Profession questions are intake questions, not a scored trade examination or a substitute for credential verification.
+- The earlier 242-item checklist and unfinished 50-item batch are not present as an authoritative itemized ledger in this checkout. Do not subtract question counts, test assertions, or language variants from those totals. Reconcile by original item ID before reporting a new total.
