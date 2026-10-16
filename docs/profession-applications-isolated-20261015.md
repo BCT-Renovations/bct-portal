@@ -8,8 +8,8 @@ Added profession-specific questions within the existing contractor application, 
 
 | Profession | New questions |
 | --- | --- |
-| Electrician | License/registration jurisdiction and expiry; electrical work experience; isolation/testing procedures; permits, inspections and work limits |
-| Plumber | License/registration jurisdiction and expiry; plumbing work experience; leaks/pressure testing/drain inspection/shutoff; permits, inspections and work limits |
+| Electrician | License/registration jurisdiction and expiry; electrical work experience; isolation/testing procedures; permits, inspections and work limits; training, diagnostics/safe water isolation and a recent project example |
+| Plumber | License/registration jurisdiction and expiry; plumbing work experience; leaks/pressure testing/drain inspection/shutoff; permits, inspections and work limits; training, diagnostics/safe water isolation and a recent project example |
 | Contractor / Renovations | Renovation leadership and occupied-home experience; planning, subcontractors, change documentation and permit/licensed-trade boundaries |
 | HVAC | System experience and certifications; diagnostics, refrigerants, electrical isolation, combustion safety and work limits |
 | Roofer | Systems, repairs, flashing and leaks; fall protection, ladders, weather and occupied-property protection |
@@ -19,9 +19,11 @@ Added profession-specific questions within the existing contractor application, 
 | Handyman | Independent repairs and licensed-trade limits; tools, ladders, availability, problem documentation and scope changes |
 | Other Specialty Trade | Specialty, projects and credentials; equipment, safety, permits and qualification limits |
 
-24 questions total. All new headings, instructions, question labels and application validation messages have explicit translations for English, Spanish, French, Haitian Creole, Portuguese, Vietnamese, Chinese, Arabic and Russian. Arabic uses RTL. Selecting multiple categories shows their own questions; deselected categories do not submit their answers. Answers survive trade/language switching within the open form and clear on reset. No draft is saved to browser storage.
+30 questions total. All new headings, instructions, question labels and application validation messages have explicit translations for English, Spanish, French, Haitian Creole, Portuguese, Vietnamese, Chinese, Arabic and Russian. Arabic uses RTL. Selecting multiple categories shows their own questions; deselected categories do not submit their answers. Answers survive trade/language switching within the open form and clear on reset. No draft is saved to browser storage.
 
 Answers are serialized with stable profession/question IDs into the existing `additional_work_history` payload alongside the original work history, for both existing-user RPC and new-user signup metadata paths. Backend persistence and Admin visibility are **not verified**. No new database field, migration or connected write is introduced. Public instructions explicitly exclude SSNs, bank details and identity document numbers.
+
+A separate saved Electrician/Plumber draft was discovered at `8bfed4f9cd5ec9654eca426ea8dd589463968c7c` on `feature/takai-profession-applications-isolated-20261016`. Its branch and preview remain intact. This batch retains its training, scope, diagnostics, isolation and recent-project topics, and supplies the translated integration and questions for the other professions.
 
 ## Verification boundaries
 

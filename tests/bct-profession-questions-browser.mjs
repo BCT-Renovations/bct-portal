@@ -17,7 +17,7 @@ try{
  const eGroup=page.locator('[data-profession="electrical"]'),pGroup=page.locator('[data-profession="plumbing"]');
  await page.locator('[name=legalName]').fill('Sample Applicant');await page.locator('[name=businessName]').fill('Sample Crew');await page.locator('#applicationForm [name=phone]').fill('3175550100');await page.locator('#applicationForm [name=email]').fill('sample@example.test');await page.locator('[name=contractorPassword]').fill('Sample7!');await page.locator('[name=contractorPassword2]').fill('Sample7!');await page.locator('#applicationForm [data-bct-next]').click();
  await eGroup.waitFor({state:'visible'});assert.ok(await eGroup.isVisible());assert.ok(!await pGroup.isVisible());checks+=2;
- for(const key of ['license','scope','safety','permits'])await page.locator(`#bctProfession-electrical-${key}`).fill(`Electrical sample ${key}`);
+ for(const key of ['license','scope','safety','permits','training','diagnostics','example'])await page.locator(`#bctProfession-electrical-${key}`).fill(`Electrical sample ${key}`);
  await page.evaluate(()=>document.querySelector('[name=history2]').value='Original work history');
  // Direct trade changes and selected secondary categories both control questionnaires.
  await page.locator('#applicationForm [name="trade"]').selectOption('plumbing');
@@ -25,14 +25,14 @@ try{
  assert.ok(await pGroup.isVisible());assert.ok(!await eGroup.isVisible());checks+=2;
  const missing=await page.evaluate(()=>{try{BCTProfessionQuestions.read(document.getElementById('applicationForm'));return '';}catch(e){return e.message;}});
  assert.match(missing,/Answer each selected profession/);checks++;
- for(const key of ['license','scope','diagnostics','permits'])await page.locator(`#bctProfession-plumbing-${key}`).fill(`Plumbing sample ${key}`);
+ for(const key of ['license','scope','diagnostics','permits','training','isolation','example'])await page.locator(`#bctProfession-plumbing-${key}`).fill(`Plumbing sample ${key}`);
  await page.evaluate(()=>{const e=document.querySelector('[name=contractorNetworkRole][value=electrical]');e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}));});assert.ok(await eGroup.isVisible());checks++;
  const headings={en:'Profession-specific questions',es:'Preguntas específicas de la profesión',fr:'Questions propres au métier',ht:'Kesyon espesifik pou metye a',pt:'Perguntas específicas da profissão',vi:'Câu hỏi riêng cho từng nghề',zh:'专业申请问题',ar:'أسئلة خاصة بالمهنة',ru:'Вопросы по специальности'};
  for(const [lang,heading] of Object.entries(headings)){
   await page.locator('#bctLoginLanguage').selectOption(lang,{force:true});
   await page.waitForFunction(expected=>document.querySelector('#bctProfessionQuestions h3').textContent===expected,heading);
   assert.equal(await page.locator('#bctProfessionQuestions h3').textContent(),heading);
-  assert.equal(await eGroup.locator('label').count(),4);assert.equal(await pGroup.locator('label').count(),4);
+  assert.equal(await eGroup.locator('label').count(),7);assert.equal(await pGroup.locator('label').count(),7);
   const labels=await page.locator('#bctProfessionQuestions label').allTextContents();
   assert.ok(labels.every(label=>label.trim()));if(lang!=='en')assert.ok(labels.every(label=>!label.startsWith('Describe your')&&!label.startsWith('Which ')&&!label.startsWith('Electrical license')));
   assert.equal(await page.locator('#bctProfession-electrical-scope').inputValue(),'Electrical sample scope');
@@ -40,8 +40,8 @@ try{
   assert.equal(await page.locator('#bctProfessionQuestions').getAttribute('dir'),lang==='ar'?'rtl':'ltr');
   const payload=await page.evaluate(()=>BCTProfessionQuestions.history(document.getElementById('applicationForm')));
   assert.ok(payload.startsWith('Original work history\n\n'));const answers=JSON.parse(payload.split('BCT profession questionnaire v1\n\n')[1]);
-  assert.equal(answers.answers.electrical.scope,'Electrical sample scope');assert.equal(answers.answers.plumbing.scope,'Plumbing sample scope');assert.ok(!('diagnostics' in answers.answers.electrical));assert.ok(!('safety' in answers.answers.plumbing));
-  console.log('PASS',lang,'eight translated questions, answer retention, isolated answers, payload');checks+=12;
+  assert.equal(answers.answers.electrical.scope,'Electrical sample scope');assert.equal(answers.answers.plumbing.scope,'Plumbing sample scope');assert.ok(!('isolation' in answers.answers.electrical));assert.ok(!('safety' in answers.answers.plumbing));
+  console.log('PASS',lang,'fourteen translated questions, answer retention, isolated answers, payload');checks+=12;
  }
  await page.evaluate(()=>{const e=document.querySelector('[name=contractorNetworkRole][value=electrical]');e.checked=false;e.dispatchEvent(new Event('change',{bubbles:true}));});
  const single=await page.evaluate(()=>BCTProfessionQuestions.read(document.getElementById('applicationForm')));assert.deepEqual(Object.keys(single.answers),['plumbing']);checks++;
@@ -54,16 +54,16 @@ try{
  // Every other profession has its own questions; test all selected categories together.
  await page.evaluate(()=>{const f=document.getElementById('applicationForm');f.querySelectorAll('[name=contractorNetworkRole]').forEach(e=>e.checked=true);f.dispatchEvent(new Event('change',{bubbles:true}));});
  const roles=['general_contractor','electrical','plumbing','hvac','roofing','drywall','concrete_masonry','flooring','handyman_services','specialty_trade'];
- for(const role of roles){const group=page.locator(`[data-profession="${role}"]`);assert.ok(await group.isVisible());const inputs=await group.locator('textarea').all();assert.equal(inputs.length,['electrical','plumbing'].includes(role)?4:2);for(const input of inputs)await input.fill(`Sample ${role} response`);checks+=2;}
+ for(const role of roles){const group=page.locator(`[data-profession="${role}"]`);assert.ok(await group.isVisible());const inputs=await group.locator('textarea').all();assert.equal(inputs.length,['electrical','plumbing'].includes(role)?7:2);for(const input of inputs)await input.fill(`Sample ${role} response`);checks+=2;}
  await page.locator('#bctLoginLanguage').selectOption('en',{force:true});await page.waitForFunction(()=>document.documentElement.lang==='en');
  const english=await page.locator('#bctProfessionQuestions [data-profession-copy]').allTextContents();
  for(const [lang,heading] of Object.entries(headings)){
   await page.locator('#bctLoginLanguage').selectOption(lang,{force:true});await page.waitForFunction(expected=>document.querySelector('#bctProfessionQuestions h3').textContent===expected,heading);
-  const labels=await page.locator('#bctProfessionQuestions [data-profession-copy]').allTextContents();assert.equal(labels.length,36);assert.ok(labels.every(t=>t.trim()&&!t.includes('undefined')));
+  const labels=await page.locator('#bctProfessionQuestions [data-profession-copy]').allTextContents();assert.equal(labels.length,42);assert.ok(labels.every(t=>t.trim()&&!t.includes('undefined')));
   if(lang!=='en')assert.ok(labels.every((t,i)=>t!==english[i]),lang+' must translate every new label');
   const payload=await page.evaluate(()=>BCTProfessionQuestions.read(document.getElementById('applicationForm')));assert.equal(Object.keys(payload.answers).length,10);
   for(const role of roles)assert.ok(Object.values(payload.answers[role]).every(v=>v===`Sample ${role} response`));
-  console.log('PASS',lang,'all 10 profession sections and 24 questions translated; payload retains answers');checks+=14;
+  console.log('PASS',lang,'all 10 profession sections and 30 questions translated; payload retains answers');checks+=14;
  }
  await page.locator('#bctLoginLanguage').selectOption('en',{force:true});
  // Switching the primary trade shows its matching questionnaire with no stale answers submitted.

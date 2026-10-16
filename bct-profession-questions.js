@@ -121,6 +121,25 @@ for(const role of extraRoles)keys[role]=['experience','work_practices'];
 for(const lang of Object.keys(copy))copy[lang].push(...extraCopy[lang]);
 function indices(role){const i=extraRoles.indexOf(role);return i<0?{title:role==='electrical'?2:3,start:role==='electrical'?5:9}:{title:13+i*3,start:14+i*3};}
 
+
+// Retain training, diagnostics, isolation and recent-project topics from the
+// separately saved Electrician/Plumber draft (8bfed4f); its branch is preserved.
+const modelCopy={
+en:['Describe your electrical training and years of hands-on electrical experience.','Describe how you diagnose an electrical fault and the testing equipment you use.','Describe a recent electrical project, your responsibilities, and how the work was checked.','Describe your plumbing training and years of hands-on plumbing experience.','How do you isolate water and manage pressure, leaks, and sanitation risks before starting work?','Describe a recent plumbing project, your responsibilities, and how the work was checked.'],
+es:['Describa su formación eléctrica y sus años de experiencia práctica en electricidad.','Describa cómo diagnostica una falla eléctrica y los equipos de prueba que utiliza.','Describa un proyecto eléctrico reciente, sus responsabilidades y cómo se verificó el trabajo.','Describa su formación en plomería y sus años de experiencia práctica.','¿Cómo corta el agua y controla la presión, las fugas y los riesgos sanitarios antes de trabajar?','Describa un proyecto reciente de plomería, sus responsabilidades y cómo se verificó el trabajo.'],
+fr:['Décrivez votre formation en électricité et vos années d’expérience pratique.','Décrivez comment vous diagnostiquez une panne électrique et le matériel de contrôle utilisé.','Décrivez un chantier électrique récent, vos responsabilités et la vérification du travail.','Décrivez votre formation en plomberie et vos années d’expérience pratique.','Comment coupez-vous l’eau et maîtrisez-vous pression, fuites et risques sanitaires avant les travaux ?','Décrivez un chantier de plomberie récent, vos responsabilités et la vérification du travail.'],
+ht:['Dekri fòmasyon elektrik ou ak konbyen ane eksperyans pratik ou genyen.','Dekri fason ou jwenn yon pann elektrik ak ekipman tès ou itilize.','Dekri yon pwojè elektrik resan, responsablite ou ak fason yo te verifye travay la.','Dekri fòmasyon plonbri ou ak konbyen ane eksperyans pratik ou genyen.','Kijan ou koupe dlo epi jere presyon, fuit ak risk sanitè anvan ou kòmanse travay?','Dekri yon pwojè plonbri resan, responsablite ou ak fason yo te verifye travay la.'],
+pt:['Descreva sua formação elétrica e seus anos de experiência prática.','Descreva como diagnostica uma falha elétrica e os equipamentos de teste que utiliza.','Descreva um projeto elétrico recente, suas responsabilidades e como o trabalho foi verificado.','Descreva sua formação em encanamento e seus anos de experiência prática.','Como fecha a água e controla pressão, vazamentos e riscos sanitários antes de começar?','Descreva um projeto recente de encanamento, suas responsabilidades e como o trabalho foi verificado.'],
+vi:['Mô tả đào tạo ngành điện và số năm kinh nghiệm thực hành của bạn.','Mô tả cách chẩn đoán sự cố điện và thiết bị kiểm tra bạn sử dụng.','Mô tả một công trình điện gần đây, trách nhiệm của bạn và cách kiểm tra công việc.','Mô tả đào tạo ngành nước và số năm kinh nghiệm thực hành của bạn.','Bạn khóa nước và kiểm soát áp lực, rò rỉ, nguy cơ vệ sinh như thế nào trước khi làm việc?','Mô tả một công trình nước gần đây, trách nhiệm của bạn và cách kiểm tra công việc.'],
+zh:['请说明您的电气培训和实际操作经验年数。','请说明如何诊断电气故障以及使用的测试设备。','请说明近期的一个电气项目、您的职责以及如何检查工作。','请说明您的管道培训和实际操作经验年数。','开工前如何关闭水源并控制压力、漏水和卫生风险？','请说明近期的一个管道项目、您的职责以及如何检查工作。'],
+ar:['صف تدريبك في الكهرباء وسنوات خبرتك العملية.','صف كيفية تشخيص عطل كهربائي وأجهزة الفحص التي تستخدمها.','صف مشروعاً كهربائياً حديثاً ومسؤولياتك وكيف تم فحص العمل.','صف تدريبك في السباكة وسنوات خبرتك العملية.','كيف تعزل المياه وتتعامل مع الضغط والتسرب والمخاطر الصحية قبل بدء العمل؟','صف مشروع سباكة حديثاً ومسؤولياتك وكيف تم فحص العمل.'],
+ru:['Опишите обучение электротехнике и годы практического опыта.','Опишите диагностику электрической неисправности и используемые приборы.','Опишите недавний электротехнический проект, ваши обязанности и проверку работы.','Опишите обучение сантехническим работам и годы практического опыта.','Как вы перекрываете воду и контролируете давление, утечки и санитарные риски перед работой?','Опишите недавний сантехнический проект, ваши обязанности и проверку работы.']
+};
+keys.electrical.push('training','diagnostics','example');keys.plumbing.push('training','isolation','example');
+const modelStart=copy.en.length;
+for(const lang of Object.keys(copy))copy[lang].push(...modelCopy[lang]);
+function questionIndex(role,index){return extraRoles.includes(role)||index<4?indices(role).start+index:modelStart+(role==='electrical'?0:3)+index-4;}
+
 function language(){return (document.documentElement.lang||'en').split('-')[0];}
 function selected(form){return [...new Set([form.elements.trade?.value,...Array.from(form.querySelectorAll('[name="contractorNetworkRole"]:checked'),e=>e.value)].filter(role=>keys[role]))];}
 function sync(){
@@ -131,7 +150,7 @@ function sync(){
  const help=document.createElement('p');help.className='muted';help.dataset.professionCopy='1';root.append(help);
  for(const [role,questions] of Object.entries(keys)){
   const group=document.createElement('fieldset');group.dataset.profession=role;const legend=document.createElement('legend');legend.dataset.professionCopy=String(indices(role).title);group.append(legend);
-  questions.forEach((key,index)=>{const label=document.createElement('label'),input=document.createElement('textarea');input.id='bctProfession-'+role+'-'+key;input.name='profession_'+role+'_'+key;input.required=true;input.maxLength=1500;label.htmlFor=input.id;label.dataset.professionCopy=String(indices(role).start+index);group.append(label,input);});root.append(group);
+  questions.forEach((key,index)=>{const label=document.createElement('label'),input=document.createElement('textarea');input.id='bctProfession-'+role+'-'+key;input.name='profession_'+role+'_'+key;input.required=true;input.maxLength=1500;label.htmlFor=input.id;label.dataset.professionCopy=String(questionIndex(role,index));group.append(label,input);});root.append(group);
  }
  const tradeStep=form.querySelector('[name="trade"]')?.closest('.bct-form-step');
  if(tradeStep)tradeStep.append(root);else form.querySelector('#contractorTermsAgreement').before(root);
