@@ -2785,6 +2785,8 @@ function setVisibleView(name,options={}){
 }
 window.addEventListener('popstate',()=>{
   const name=(location.hash||'#home').slice(1);
+  // Application history is restored by the paging router, without restarting auth entry.
+  if(name==='apply'&&(history.state?.bctSub==='new-contractor'||history.state?.bctStepKey))return;
   const safe=document.getElementById('view-'+name)?name:'home';
   // Never expose a protected portal directly from browser history while signed out.
   if(!document.body.classList.contains('bct-authenticated')&&['customer','apply','status','jobs','admin'].includes(safe)){
@@ -3903,11 +3905,27 @@ renderAll();
  const protectedViews=new Set(['customer','apply','status','jobs','admin','estimator']);
  const publicShareMode=new URLSearchParams(location.search).get('shared')==='1';
  let entryIntent=null;
+ let entryTransition=0;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
  function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
+ function showContractorEntry(){
+     setVisibleView('status',{history:false});
+     const view=document.getElementById('view-status');
+     view?.classList.remove('hidden','bct-signedout-hidden');
+     // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
+     view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
+     const cards=view?[...view.children]:[];
+     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorBackHomeBtn'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout'||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
+     const login=document.getElementById('bctContractorSignupCard');
+     if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
+     view.style.display='block';
+     requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
+ }
  async function openEntry(kind){
+   const transition=++entryTransition;
    entryIntent=kind;
+   document.body.classList.remove('bct-contractor-signup','bct-home-signup');
    // Record the public-to-portal transition so Back can return to the prior in-app screen.
    if(kind==='contractor'&&location.hash!=='#status'){try{history.pushState({bctView:'status',bctEntry:'contractor'},'',location.pathname+location.search+'#status')}catch(_){}}
    // Authoritative portal transition: remove the public landing immediately, before any async auth work.
@@ -3922,10 +3940,13 @@ renderAll();
    // Show the secure gate first, then upgrade to the dashboard only after an admin-role check.
    if(kind==='estimator'){window.BCT_ESTIMATOR_PORTAL?.open?.();return;}
    if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});}
+   if(kind==='contractor')showContractorEntry();
    const s=await Promise.race([
      sessionNow(),
      new Promise(resolve=>setTimeout(()=>resolve(null),1800))
    ]);
+   // Ignore a late response after a newer navigation or opening the signup form.
+   if(transition!==entryTransition||document.body.classList.contains('bct-contractor-signup'))return;
    setAuthShell(s);
    if(s){
      if(kind==='admin'){
@@ -3944,17 +3965,7 @@ renderAll();
    if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});return;}
    if(kind==='estimator'){window.BCT_ESTIMATOR_PORTAL?.open?.();return;}
    if(kind==='contractor'){
-     setVisibleView('status');
-     const view=document.getElementById('view-status');
-     view?.classList.remove('hidden','bct-signedout-hidden');
-     // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
-     view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
-     const cards=view?[...view.children]:[];
-     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorBackHomeBtn'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout'||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
-     const login=document.getElementById('bctContractorSignupCard');
-     if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
-     view.style.display='block';
-     requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
+     showContractorEntry();
      return;
    }
    setVisibleView('customer');
@@ -3983,6 +3994,8 @@ renderAll();
    const name=(location.hash||'#home').slice(1);
    if(name==='home'){
      entryIntent=null;
+     ++entryTransition;
+     document.body.classList.remove('bct-contractor-signup','bct-home-signup');
      // Restore the landing shell when Safari history returns from any portal.
      // openEntry hides the header/home with inline !important, which must be cleared.
      document.body.classList.remove('bct-portal-entered','bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');
@@ -5206,5 +5219,18 @@ button.bct-new-client-back,button.bct-agent-home,
 /* Signed-out Admin entry must show the login gate; never expose authenticated content. */
 body.bct-portal-entered.bct-entry-admin:not(.bct-authenticated) main#bctMain > section#view-admin-login:not(.hidden){display:block!important;visibility:visible!important}
 </style>
+<script>
+/* Contractor signup exit: navigation only; signup validation remains unchanged. */
+(function(){
+ const form=document.getElementById('applicationForm');if(!form)return;
+ const back=document.createElement('button');back.type='button';back.id='bctContractorApplicationBack';
+ back.style.cssText='background:#a8e6cf;color:#0a4549;border:2px solid #0a4549;border-radius:10px;margin-bottom:14px;min-height:44px';
+ form.before(back);
+ const labels={en:'← Back',es:'← Atrás',fr:'← Retour',ht:'← Retounen',pt:'← Voltar',vi:'← Quay lại',zh:'← 返回',ar:'رجوع →',ru:'← Назад'};
+ function translate(){back.textContent=labels[(document.documentElement.lang||'en').split('-')[0]]||labels.en;}
+ back.addEventListener('click',()=>{document.body.classList.remove('bct-contractor-signup');window.bctOpenEntry?.('contractor');window.scrollTo({top:0,behavior:'auto'});});
+ new MutationObserver(translate).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});translate();
+})();
+</script>
 </body>
 </html>
