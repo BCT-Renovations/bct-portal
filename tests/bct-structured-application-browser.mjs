@@ -25,6 +25,12 @@ try{
   await page.locator('[data-category=work_photo]').setInputFiles([{name:'work.png',mimeType:'image/png',buffer:Buffer.from('sample')}]);
   const photo=await page.evaluate(()=>form.read().answers.portfolio.followups.work_portfolio.value.photos[0]);
   assert.equal(photo.file.name,'work.png');checks++;
+  const photoRow=page.locator('[data-question="portfolio.work_portfolio"] fieldset').first();
+  await photoRow.locator('textarea').fill('Existing project description');
+  await photoRow.locator('input[type=text]').first().fill('Personally repaired');
+  await page.evaluate(()=>{const input=document.querySelector('[data-category=work_photo]'),selection=new DataTransfer();selection.items.add(input.files[0]);selection.items.add(new File(['second'],'second.png',{type:'image/png'}));input.files=selection.files;input.dispatchEvent(new Event('change',{bubbles:true}));});
+  const retained=await page.evaluate(()=>form.read().answers.portfolio.followups.work_portfolio.value.photos);
+  assert.equal(retained[0].description,'Existing project description');assert.equal(retained[0].role,'Personally repaired');assert.equal(retained[1].description,'');checks+=3;
   const result=await page.evaluate(()=>form.validate());assert.equal(result.submissionReady,false);assert.equal(result.privateUploadStatus,'not_verified');checks+=2;
   assert.ok(result.errors.some(e=>e.code==='description_required'));checks++;
   await page.evaluate(()=>form.destroy());assert.equal(await page.locator('section').count(),0);checks++;

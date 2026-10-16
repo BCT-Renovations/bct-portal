@@ -35,13 +35,19 @@ function mount(container,professionId,{language='en'}={}){
    const note=element('p','Files selected here have not been uploaded.');group.append(note);
    const input=control(group,'Select up to 10 work photographs','file');input.multiple=true;input.accept='image/jpeg,image/png,image/webp,image/heic,image/heif';input.dataset.category='work_photo';
    const photos=element('div');group.append(photos);let photoReaders=[];
+   const photoKey=file=>JSON.stringify([file.name,file.size,file.type,file.lastModified]);
+   let selectedPhotoRows=[];
    input.addEventListener('change',()=>{
-    photos.replaceChildren();photoReaders=[];
+    const previous=new Map(selectedPhotoRows.map(row=>[row.key,row.read()]));
+    photos.replaceChildren();photoReaders=[];selectedPhotoRows=[];
     // Keep all selected files so preflight can report an over-limit selection.
     Array.from(input.files).forEach(file=>{
      const row=element('fieldset');row.append(element('legend',file.name));photos.append(row);
      const description=control(row,'Short work description','textarea'),role=control(row,'Work personally performed or supervised'),supervisor=control(row,'Supervisor, if apprentice or assistant');
-     photoReaders.push(()=>({file:fileInfo(file),description:description.value,role:role.value,supervisor:supervisor.value}));
+     const key=photoKey(file),saved=previous.get(key);
+     if(saved){description.value=saved.description;role.value=saved.role;supervisor.value=saved.supervisor;}
+     const read=()=>({file:fileInfo(file),description:description.value,role:role.value,supervisor:supervisor.value});
+     photoReaders.push(read);selectedPhotoRows.push({key,read});
     });
    });
    const supervisor=control(group,'Supervisor for apprentice manual review');
