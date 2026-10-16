@@ -39,3 +39,15 @@ Verified locally: 286 profession-application checks, 248 existing portal browser
 - Authenticated application persistence, Admin review, credential approval, assignments and permissions remain deferred until the authorized connected testing window (October 31).
 - Profession questions are intake questions, not a scored trade examination or a substitute for credential verification.
 - The earlier 242-item checklist and unfinished 50-item batch are not present as an authoritative itemized ledger in this checkout. Do not subtract question counts, test assertions, or language variants from those totals. Reconcile by original item ID before reporting a new total.
+
+## October 16 continuation — review and contractor navigation
+
+User confirmed: the account-free question review is **preview only**. Real applicants must still complete the required initial contact/password details before moving through their application. Do not create fake accounts or bypass Admin access. Live deployment of this continuation is not authorized.
+
+- Added `/profession-review.html`, a read-only review of all 30 saved profession questions, using the same question catalogue and all nine translations. There are no application fields, submit controls, account calls or draft storage. The page has `connect-src 'none'` and `form-action 'none'` CSP restrictions and is restricted to the isolated preview/local hosts. No Admin information is present.
+- The isolated Contractor profession chooser includes a link to this review. The link does not appear on Live hosts. Review-page styles are scoped to prevent changes to the existing app design.
+- Added an always-visible mint Back button above the application, translated in all nine languages. The first step's existing bottom Back now returns to the contractor entry instead of being disabled. Later step Back continues to move to the preceding application step.
+- Contractor entry now paints the public sign-in/profession shell before awaiting session recovery. A request guard discards late recovery results after navigation or opening the application. Browser history restores the public application directly without routing through the asynchronous sign-in gate.
+- Local verification: 232 review/navigation checks passed, including all 30 questions in all nine languages, zero review-page remote requests or browser storage writes, retained initial required fields, both Back controls, simulated slow session recovery, and suppression of review controls on a simulated Live hostname. The 286 profession application checks also passed. No connected accounts, Admin or Supabase were used.
+
+Remaining: authenticated save/approval verification and Handyman assignment dates/notes remain deferred. Do not mark the full connected workflow complete on the basis of local browser checks.

@@ -143,6 +143,7 @@ function questionIndex(role,index){return extraRoles.includes(role)||index<4?ind
 function language(){return (document.documentElement.lang||'en').split('-')[0];}
 function selected(form){return [...new Set([form.elements.trade?.value,...Array.from(form.querySelectorAll('[name="contractorNetworkRole"]:checked'),e=>e.value)].filter(role=>keys[role]))];}
 function sync(){
+ applicationBack();
  const form=document.getElementById('applicationForm');if(!form)return;
  let root=document.getElementById('bctProfessionQuestions');
  if(!root){root=document.createElement('section');root.id='bctProfessionQuestions';root.className='stage section';root.setAttribute('data-bct-profession-questions','');
@@ -166,7 +167,15 @@ function read(form){
  return {version:1,answers};
 }
 function history(form){const profile=read(form);const original=String(form.elements.history2?.value||'').trim();if(!Object.keys(profile.answers).length)return original;return [original,'BCT profession questionnaire v1',JSON.stringify(profile)].filter(Boolean).join('\n\n');}
-window.BCTProfessionQuestions={read,history};
+function review(lang){const labels=copy[lang]||copy.en;return Object.entries(keys).map(([role,questions])=>({id:role,title:labels[indices(role).title],questions:questions.map((id,index)=>({id,text:labels[questionIndex(role,index)]}))}));}
+const backLabels={en:'← Back',es:'← Atrás',fr:'← Retour',ht:'← Retounen',pt:'← Voltar',vi:'← Quay lại',zh:'← 返回',ar:'رجوع ←',ru:'← Назад'};
+function applicationBack(){
+ const form=document.getElementById('applicationForm');if(!form)return;
+ let button=document.getElementById('bctApplicationBack');
+ if(!button){button=document.createElement('button');button.type='button';button.id='bctApplicationBack';button.className='secondary bct-portal-back';button.setAttribute('data-bct-profession-questions','');form.closest('.card').prepend(button);button.addEventListener('click',()=>window.bctOpenEntry?.('contractor'));}
+ const label=backLabels[language()]||backLabels.en;if(button.textContent!==label)button.textContent=label;
+}
+window.BCTProfessionQuestions={read,history,review};
 function install(){sync();document.addEventListener('change',event=>{if(event.target.closest?.('#applicationForm')||event.target.matches?.('#bctLoginLanguage,#bctLanguage'))sync();});document.addEventListener('bct:contractor-role-change',sync);document.getElementById('applicationForm')?.addEventListener('reset',()=>setTimeout(sync,0));new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['data-bct-contractor-role']});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 })();

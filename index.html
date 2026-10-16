@@ -2789,7 +2789,12 @@ window.addEventListener('popstate',()=>{
   // Never expose a protected portal directly from browser history while signed out.
   if(!document.body.classList.contains('bct-authenticated')&&['customer','apply','status','jobs','admin'].includes(safe)){
     if(safe==='customer')return window.bctOpenEntry?.('client');
-    if(['apply','status','jobs'].includes(safe))return window.bctOpenEntry?.('contractor');
+    if(safe==='apply'){
+      document.body.classList.add('bct-portal-entered','bct-entry-contractor','bct-contractor-signup');
+      document.body.classList.remove('bct-entry-client','bct-entry-admin','bct-entry-estimator','bct-home-signup');
+      setVisibleView('apply',{history:false});return;
+    }
+    if(['status','jobs'].includes(safe))return window.bctOpenEntry?.('contractor');
     return window.bctOpenEntry?.('admin');
   }
   setVisibleView(safe,{history:false});
@@ -3841,7 +3846,7 @@ renderAll();
    function show(n,opts={}){
      step=Math.max(0,Math.min(n,blocks.length-1));sessionStorage.setItem(key,String(step));
      blocks.forEach((b,i)=>b.classList.toggle('bct-step-active',i===step));
-     back.disabled=step===0;next.textContent=step===blocks.length-1?'Review & Submit':'Next';
+     back.disabled=step===0&&form.id!=='applicationForm';next.textContent=step===blocks.length-1?'Review & Submit':'Next';
      progress.textContent='Step '+(step+1)+' of '+blocks.length;
      form.classList.toggle('bct-step-has-back',step>0);
      blocks[step].scrollIntoView({behavior:'smooth',block:'start'});
@@ -3852,7 +3857,7 @@ renderAll();
      const required=[...blocks[step].querySelectorAll('input,select,textarea')].filter(x=>!x.disabled&&x.required&&x.offsetParent!==null);
      const bad=required.find(x=>!x.checkValidity());if(bad){bad.reportValidity();bad.focus();return;}show(step+1);
    });
-   back.addEventListener('click',()=>show(step-1));
+   back.addEventListener('click',()=>{if(step===0&&form.id==='applicationForm'){document.getElementById('bctApplicationBack')?.click();return;}show(step-1);});
    window.addEventListener('bct:go-step',event=>{if(event.detail?.key===key)show(Number(event.detail.step||0),{history:false})});
    show(step,{history:false});
  }
@@ -3902,11 +3907,25 @@ renderAll();
 (function(){
  const protectedViews=new Set(['customer','apply','status','jobs','admin','estimator']);
  const publicShareMode=new URLSearchParams(location.search).get('shared')==='1';
- let entryIntent=null;
+ let entryIntent=null,entryRequest=0;
  function clearSignedOutIsolation(){document.querySelectorAll('.bct-signedout-hidden').forEach(el=>el.classList.remove('bct-signedout-hidden'));document.querySelectorAll('#view-status,#view-customer').forEach(el=>el.style.removeProperty('display'));}
  function setAuthShell(session){if(publicShareMode)session=null;document.documentElement.classList.add('bct-session-resolved');const hasSession=!!session?.user;const publicHome=!entryIntent&&!document.body.classList.contains('bct-portal-entered')&&!document.body.classList.contains('bct-home-signup')&&!document.body.classList.contains('bct-contractor-signup')&&(!location.hash||location.hash==='#home');const signedIn=hasSession&&!publicHome;document.body.classList.toggle('bct-authenticated',signedIn);document.body.classList.toggle('bct-signed-out',!signedIn);if(signedIn){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');clearSignedOutIsolation();}else if(!entryIntent){document.body.classList.remove('bct-entry-client','bct-entry-contractor','bct-entry-admin','bct-entry-estimator');setVisibleView('home');document.querySelectorAll('header nav').forEach(n=>n.style.setProperty('display','none','important'));}}
  async function sessionNow(){try{const r=await supabaseClient?.auth?.getSession?.();return r?.data?.session||null}catch(e){return null}}
+ function showPublicContractorEntry(){
+     setVisibleView('status');
+     const view=document.getElementById('view-status');
+     view?.classList.remove('hidden','bct-signedout-hidden');
+     // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
+     view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
+     const cards=view?[...view.children]:[];
+     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorBackHomeBtn'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout'||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
+     const login=document.getElementById('bctContractorSignupCard');
+     if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
+     view.style.display='block';
+     requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
+ }
  async function openEntry(kind){
+   const request=++entryRequest;
    entryIntent=kind;
    // Record the public-to-portal transition so Back can return to the prior in-app screen.
    if(kind==='contractor'&&location.hash!=='#status'){try{history.pushState({bctView:'status',bctEntry:'contractor'},'',location.pathname+location.search+'#status')}catch(_){}}
@@ -3922,10 +3941,14 @@ renderAll();
    // Show the secure gate first, then upgrade to the dashboard only after an admin-role check.
    if(kind==='estimator'){window.BCT_ESTIMATOR_PORTAL?.open?.();return;}
    if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});}
+   // Public contractor navigation must not wait for session recovery.
+   if(kind==='contractor'){document.body.classList.remove('bct-contractor-signup');showPublicContractorEntry();}
    const s=await Promise.race([
      sessionNow(),
      new Promise(resolve=>setTimeout(()=>resolve(null),1800))
    ]);
+   // Ignore session results after the user leaves or opens the application.
+   if(kind==='contractor'&&(request!==entryRequest||entryIntent!==kind||!document.body.classList.contains('bct-entry-'+kind)||location.hash==='#apply'))return;
    setAuthShell(s);
    if(s){
      if(kind==='admin'){
@@ -3943,20 +3966,7 @@ renderAll();
    }
    if(kind==='admin'){setVisibleView('admin-login');window.scrollTo({top:0,behavior:'auto'});return;}
    if(kind==='estimator'){window.BCT_ESTIMATOR_PORTAL?.open?.();return;}
-   if(kind==='contractor'){
-     setVisibleView('status');
-     const view=document.getElementById('view-status');
-     view?.classList.remove('hidden','bct-signedout-hidden');
-     // Keep the Contractor Portal shell and sign-in visible. Hide only protected applicant data until authentication.
-     view?.querySelectorAll(':scope>*').forEach(x=>x.classList.remove('bct-signedout-hidden'));
-     const cards=view?[...view.children]:[];
-     cards.forEach(x=>{const keep=x.id==='bctContractorPortalTitle'||x.id==='bctContractorBackHomeBtn'||x.id==='bctContractorRoleRouter'||x.id==='bctContractorSignupCard'||x.classList.contains('bct-public-contractor-login')||x.id==='bctContractorAbout'||x.id==='bctContractorNetworkChooser';x.classList.toggle('bct-signedout-hidden',!keep);});
-     const login=document.getElementById('bctContractorSignupCard');
-     if(login){login.classList.remove('hidden','bct-signedout-hidden');login.style.display='block';}
-     view.style.display='block';
-     requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'auto'}));
-     return;
-   }
+   if(kind==='contractor'){showPublicContractorEntry();return;}
    setVisibleView('customer');
    const view=document.getElementById('view-customer');
    view?.classList.remove('hidden','bct-signedout-hidden');
@@ -5040,7 +5050,9 @@ document.addEventListener('change',event=>{if(event.target&&event.target.matches
 <script id="bct-home-gallery-loader" src="/bct-home-gallery.js?v=20261015-takai-captions-1" defer></script>
 <script src="/bct-contractor-roles.js?v=20261014-right-on-1" defer></script>
 <script src="/agent-bct-ui.js?v=20261015-back-translation-1" defer></script>
-<script src="/bct-profession-questions.js?v=20261015-electrician-plumber-1" defer></script>
+<link rel="stylesheet" href="/bct-profession-review.css?v=20261016-review-1">
+<script src="/bct-profession-questions.js?v=20261016-review-1" defer></script>
+<script src="/bct-profession-review.js?v=20261016-review-1" defer></script>
 <script>/* October 11 matching contractor signup CTA */
 document.addEventListener("click",function(e){const btn=e.target.closest?.("#bctContractorSignupBottomBtn");if(!btn)return;e.preventDefault();document.getElementById("bctContractorSignupBtn")?.click();});
 </script>
