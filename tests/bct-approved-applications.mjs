@@ -81,5 +81,5 @@ for(const lang of policy.languages){
  for(const code of ['answer_required_or_invalid','maximum_10_photos','minimum_5_photos','image_file_required','duplicate_photo','description_required','personal_role_required','supervisor_required','supervisor_required_for_manual_review','three_professional_references_required','reference_details_required','city_and_state_required','positive_crew_size_required','no_software_is_exclusive','background_check_acknowledgment_required']){
   const message=locales.errorMessage(lang,code);assert.ok(message.trim());if(lang!=='en')assert.notEqual(message,locales.errorMessage('en',code));
  }
- for(const id of ['electrical','plumbing','general_contractor'])assert.equal(locales.coverage(lang,id).ready,true);
+ for(const id of ['electrical','plumbing','general_contractor','hvac'])assert.equal(locales.coverage(lang,id).ready,true);
 }

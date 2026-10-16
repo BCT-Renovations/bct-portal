@@ -163,24 +163,24 @@ Live deployment, database, or safe point changed in this batch.
   with focus and invalid-state indication, not just an unexplained error count.
   Estimator scope/engineering and final-price restrictions now render visibly.
 - Added `bct-application-translation-rows.js`. Electrician (76 distinct catalogue
-  strings), Plumber (79), and Contractor / Renovations (77) are fully mapped in
+  strings), Plumber (79), Contractor / Renovations (77), and HVAC (89) are fully mapped in
   all nine supported languages, including their nineteen questions, choices,
   conditional instructions, portfolio requirements and crew details. Role-scoped
   translation gates allow testing these completed sections while refusing any
   still-incomplete profession. Technical identifiers OSHA 10/30 remain unchanged.
-- Total new-catalogue coverage is 195 of 691 distinct strings per non-English
+- Total new-catalogue coverage is 242 of 691 distinct strings per non-English
   language, plus complete supplementary controls and validation messages. This
   count is source-string coverage, not overall workflow completion.
 
-Verified locally: **530 structured-form browser assertions** and **620 existing
+Verified locally: **619 structured-form browser assertions** and **620 existing
 source/preflight assertions**, plus supplementary translation assertions. Browser
 checks cover all ten English forms and repeated actual switching through all nine
-languages for Electrician, Plumber and Contractor, including retained answer
+languages for Electrician, Plumber, Contractor and HVAC, including retained answer
 values, retained photo file bytes/descriptions, hidden credential state, removal,
 translated errors and error-focus behavior. No account, network upload, saved
 submission or Admin flow was exercised.
 
-Remaining: trade-specific translations for HVAC, Roofer, Drywaller,
+Remaining: trade-specific translations for Roofer, Drywaller,
 Concrete / Masonry, Flooring, Handyman and Estimator; actual portal mounting and
 navigation/state integration; private-upload/persistence integration; then an
 isolated preview with exact-commit and hosted behavior verification. Current

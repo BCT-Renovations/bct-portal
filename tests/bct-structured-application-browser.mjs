@@ -57,7 +57,7 @@ try{
  }
  const blocked=await page.evaluate(()=>{try{BCTApplicationForm.mount(document.querySelector('main'),'flooring',{language:'es'});return false;}catch(e){return e.code==='TRANSLATION_INCOMPLETE';}});
  assert.ok(blocked);checks++;
- for(const profession of ['electrical','plumbing','general_contractor']){
+ for(const profession of ['electrical','plumbing','general_contractor','hvac']){
  await page.evaluate(profession=>{window.form=BCTApplicationForm.mount(document.querySelector('main'),profession);},profession);
  await page.locator('[data-question=experience] input[value="3"]').check();
  await page.locator('[data-question=portfolio] > div input[value="1"]').check();
